@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="东塬村应急预案">
+<title>东塬村应急预案地图</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="leaflet.css" />
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; overflow: hidden; }
+
+#map-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; background: #e8e8e8; }
+
+#top-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: linear-gradient(135deg, #d32f2f, #b71c1c);
+  color: #fff; padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+#top-bar .title { font-size: 17px; font-weight: 700; }
+#top-bar .subtitle { font-size: 11px; opacity: .85; margin-top: 2px; }
+#menu-btn {
+  background: rgba(255,255,255,.2); border: none; color: #fff;
+  width: 36px; height: 36px; border-radius: 50%; font-size: 18px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+
+#legend-bar {
+  position: fixed; top: 80px; left: 10px; right: 10px; z-index: 999;
+  background: rgba(255,255,255,.95); border-radius: 10px;
+  padding: 8px 12px; display: flex; flex-wrap: wrap; gap: 6px 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.15); font-size: 12px;
+  justify-content: center;
+}
+#legend-bar .legend-item { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+#legend-bar .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+#side-panel {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 2000;
+  width: 380px; max-width: 90vw;
+  background: #fff; box-shadow: -4px 0 20px rgba(0,0,0,.2);
+  transform: translateX(100%); transition: transform .3s ease;
+  display: flex; flex-direction: column;
+}
+#side-panel.open { transform: translateX(0); }
+#side-panel .panel-header {
+  background: linear-gradient(135deg, #d32f2f, #b71c1c);
+  color: #fff; padding: 14px 16px; display: flex;
+  align-items: center; justify-content: space-between;
+}
+#side-panel .panel-header h3 { font-size: 16px; }
+#close-panel {
+  background: none; border: none; color: #fff; font-size: 22px;
+  cursor: pointer; width: 32px; height: 32px; display: flex;
+  align-items: center; justify-content: center;
+}
+#side-panel .panel-tabs {
+  display: flex; border-bottom: 1px solid #eee;
+  background: #fafafa;
+}
+#side-panel .panel-tab {
+  flex: 1; padding: 12px 8px; border: none; background: none;
+  font-size: 13px; cursor: pointer; color: #666; text-align: center;
+  border-bottom: 2px solid transparent; transition: all .2s;
+}
+#side-panel .panel-tab.active { color: #d32f2f; border-bottom-color: #d32f2f; font-weight: 600; }
+#side-panel .panel-content { flex: 1; overflow-y: auto; padding: 12px; }
+#side-panel .panel-section { display: none; }
+#side-panel .panel-section.active { display: block; }
+
+.contact-group { margin-bottom: 16px; }
+.contact-group h4 { font-size: 14px; color: #d32f2f; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #eee; }
+.contact-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 0; border-bottom: 1px solid #f5f5f5;
+}
+.contact-item .ci-info { flex: 1; }
+.contact-item .ci-name { font-size: 14px; font-weight: 500; }
+.contact-item .ci-role { font-size: 12px; color: #888; }
+.contact-item .ci-phone {
+  font-size: 15px; color: #1976d2; font-weight: 600;
+  text-decoration: none; white-space: nowrap;
+}
+.call-btn {
+  display: inline-block; background: #4caf50; color: #fff;
+  padding: 6px 14px; border-radius: 16px; font-size: 12px;
+  text-decoration: none; margin-left: 8px;
+}
+
+#overlay {
+  position: fixed; inset: 0; z-index: 1500; background: rgba(0,0,0,.4);
+  display: none;
+}
+#overlay.show { display: block; }
+
+#layer-toggles {
+  position: fixed; right: 10px; bottom: 30px; z-index: 999;
+  display: flex; flex-direction: column; gap: 6px;
+}
+#layer-toggles button {
+  width: 44px; height: 44px; border-radius: 50%; border: none;
+  background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.2);
+  font-size: 20px; cursor: pointer; display: flex;
+  align-items: center; justify-content: center;
+  transition: opacity .2s;
+}
+#layer-toggles button:active { opacity: .7; }
+#layer-toggles button.off { opacity: .4; }
+
+#status-bar {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  z-index: 500; background: rgba(0,0,0,.7); color: #fff;
+  padding: 6px 16px; border-radius: 20px; font-size: 12px;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  #side-panel { width: 100%; max-width: 100%; }
+  #legend-bar { top: 70px; font-size: 11px; padding: 6px 10px; }
+  #top-bar { padding: 8px 12px; }
+  #top-bar .title { font-size: 15px; }
+  #layer-toggles { right: 6px; bottom: 20px; }
+  #layer-toggles button { width: 38px; height: 38px; font-size: 17px; }
+}
+</style>
+</head>
+<body>
+
+<div id="map-container"></div>
+
+<div id="top-bar">
+  <div>
+    <div class="title">东塬村应急预案地图</div>
+    <div class="subtitle">甘肃省白银市会宁县新塬镇</div>
+  </div>
+  <button id="menu-btn" onclick="togglePanel()">☰</button>
+</div>
+
+<div id="legend-bar">
+  <div class="legend-item"><span class="legend-dot" style="background:rgba(211,47,47,.4);border:2px solid #d32f2f"></span>泥石流隐患区</div>
+  <div class="legend-item"><span class="legend-dot" style="background:rgba(76,175,80,.4);border:2px solid #4caf50"></span>避险安置点</div>
+  <div class="legend-item"><span style="color:#1976d2;font-weight:700">━━</span>撤离路线</div>
+</div>
+
+<div id="layer-toggles">
+  <button id="toggle-hazards" title="隐患区" onclick="toggleLayer('hazards')">⚠</button>
+  <button id="toggle-routes" title="撤离路线" onclick="toggleLayer('routes')">➡</button>
+  <button id="toggle-sites" title="安置点" onclick="toggleLayer('sites')">🏠</button>
+  <button id="toggle-satellite" title="卫星/路网切换" onclick="toggleMapType()" style="font-size:15px">🛰</button>
+  <button id="locate-btn" title="我的位置" onclick="locateMe()">📍</button>
+</div>
+
+<div id="status-bar">地图数据加载中...</div>
+<div id="overlay" onclick="closePanel()"></div>
+
+<div id="side-panel">
+  <div class="panel-header">
+    <h3>应急预案信息</h3>
+    <button id="close-panel" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-tabs">
+    <button class="panel-tab active" onclick="switchTab(event, 'info')">灾害信息</button>
+    <button class="panel-tab" onclick="switchTab(event, 'contacts')">联系方式</button>
+  </div>
+  <div class="panel-content">
+    <div class="panel-section active" id="tab-info">
+      <div class="contact-group">
+        <h4>泥石流隐患点（4处）</h4>
+        <p style="font-size:13px;color:#555;line-height:1.6">东塬村存在4处切坡建房泥石流灾害隐患区域，分布在<a href="javascript:void(0)" onclick="zoomToHazard(0)" style="color:#d32f2f">上岔社</a>、<a href="javascript:void(0)" onclick="zoomToHazard(2)" style="color:#d32f2f">中岔社</a>、<a href="javascript:void(0)" onclick="zoomToHazard(3)" style="color:#d32f2f">下岔社</a>，已在图中用红色标记。暴雨期间请远离这些区域，听从监测员指挥。</p>
+      </div>
+      <div class="contact-group">
+        <h4>避险安置点（3处）</h4>
+        <p style="font-size:13px;color:#555;line-height:1.6">村内设有3处避险安置点（劝导站、旧村址、权正刚家），已在图中用绿色标记。灾害发生时请沿蓝色撤离路线前往。</p>
+      </div>
+      <div class="contact-group">
+        <h4>撤离路线（4条）</h4>
+        <p style="font-size:13px;color:#555;line-height:1.6">共有4条撤离路线，已在图中用蓝色线条标记。请提前熟悉路线，灾害发生时有序撤离。</p>
+      </div>
+      <div class="contact-group" id="weather-info" style="display:none">
+        <h4>实时天气</h4>
+        <div id="weather-content"></div>
+      </div>
+    </div>
+    <div class="panel-section" id="tab-contacts">
+      <div class="contact-group"><h4>村级应急联系人</h4><div id="village-contacts"></div></div>
+      <div class="contact-group"><h4>上级应急部门</h4><div id="authority-contacts"></div></div>
+    </div>
+  </div>
+</div>
+
+<script src="leaflet.js"></script>
+<script src="config.js"></script>
+<script src="geodata.js"></script>
+
+<script>
+var map = null;
+var layerGroups = {};
+var layerVisible = { hazards: true, routes: true, sites: true };
+var currentTileLayer = null;
+// 中心坐标：东塬村
+var MAP_CENTER = [36.1803, 105.333];
+// 限制地图范围：会宁县及周边（西南角→东北角）
+var MAP_BOUNDS = [[35.3, 104.0], [37.0, 106.5]];
+
+function showStatus(msg) {
+  var bar = document.getElementById('status-bar');
+  bar.textContent = msg;
+  bar.style.display = 'block';
+  clearTimeout(bar._timeout);
+  bar._timeout = setTimeout(function() { bar.style.display = 'none'; }, 3000);
+}
+
+function initMap() {
+  showStatus('正在初始化卫星地图...');
+
+  map = L.map('map-container', {
+    center: MAP_CENTER,
+    zoom: 16,
+    minZoom: 10,
+    maxBounds: MAP_BOUNDS,
+    maxBoundsViscosity: 0.8,
+    zoomControl: false
+  });
+
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+  layerGroups.hazards = L.layerGroup().addTo(map);
+  layerGroups.routes = L.layerGroup().addTo(map);
+  layerGroups.sites = L.layerGroup().addTo(map);
+
+  loadSatellite();  // 默认加载卫星图
+  loadGeoJSON();
+  renderContacts();
+}
+
+// 卫星影像瓦片源
+var SATELLITE_SOURCES = [
+  {
+    name: '高德卫星图',
+    url: 'https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}',
+    options: { subdomains: ['1','2','3','4'], maxZoom: 18, minZoom: 3 }
+  },
+  {
+    name: 'ESRI卫星图',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    options: { maxZoom: 18, minZoom: 3 }
+  }
+];
+
+// 交通路网瓦片源（备用）
+var STREET_SOURCES = [
+  {
+    name: '高德路网',
+    url: 'https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=8&x={x}&y={y}&z={z}',
+    options: { subdomains: ['1','2','3','4'], maxZoom: 18, minZoom: 3 }
+  },
+  {
+    name: 'OpenStreetMap',
+    url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    options: { maxZoom: 19, minZoom: 3 }
+  }
+];
+
+// 高德卫星+路网标注（叠加层）
+var AMAP_ANNOTATION = {
+  name: '高德标注',
+  url: 'https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}',
+  options: { subdomains: ['1','2','3','4'], maxZoom: 18, minZoom: 3, opacity: 0.6 }
+};
+
+function loadSatellite() {
+  if (currentTileLayer) { map.removeLayer(currentTileLayer); }
+  tryLoadFromSources(SATELLITE_SOURCES, function() {
+    // 卫星图加载成功后，叠加路网标注
+    if (currentTileLayer) {
+      var annotation = L.tileLayer(AMAP_ANNOTATION.url, AMAP_ANNOTATION.options);
+      annotation.addTo(map);
+      currentTileLayer._annotation = annotation;
+    }
+  });
+}
+
+function loadStreet() {
+  if (currentTileLayer) {
+    if (currentTileLayer._annotation) { map.removeLayer(currentTileLayer._annotation); }
+    map.removeLayer(currentTileLayer);
+  }
+  tryLoadFromSources(STREET_SOURCES);
+}
+
+function tryLoadFromSources(sources, onSuccess) {
+  var idx = 0;
+
+  function tryNext() {
+    if (idx >= sources.length) {
+      showStatus('所有地图源均不可用，但数据图层已加载');
+      return;
+    }
+
+    var src = sources[idx];
+    var layer = L.tileLayer(src.url, src.options);
+    var errorCount = 0;
+
+    layer.on('tileerror', function() {
+      errorCount++;
+      if (errorCount > 2) {
+        map.removeLayer(layer);
+        idx++;
+        tryNext();
+      }
+    });
+
+    layer.on('load', function() {
+      showStatus('地图加载成功：' + src.name);
+    });
+
+    layer.addTo(map);
+    currentTileLayer = layer;
+    if (onSuccess) { onSuccess(); }
+  }
+
+  tryNext();
+}
+
+function loadGeoJSON() {
+  // 直接使用 geodata.js 中嵌入的 SHP 转换数据，无需 fetch
+  var dataSources = [
+    { key: 'hazards', data: GEO_HAZARDS, style: { color: '#d32f2f', fillColor: '#d32f2f', fillOpacity: 0.3, weight: 3 }, label: '泥石流隐患区', icon: '⚠️' },
+    { key: 'sites', data: GEO_SITES, style: { color: '#2e7d32', fillColor: '#4caf50', fillOpacity: 0.35, weight: 3 }, label: '避险安置点', icon: '🏠' },
+    { key: 'routes', data: GEO_ROUTES, style: { color: '#1976d2', weight: 5, opacity: 0.85 }, label: '撤离路线', icon: '➡️' }
+  ];
+
+  dataSources.forEach(function(src) {
+    try {
+      var g = layerGroups[src.key];
+      var featureCount = src.data.features ? src.data.features.length : 0;
+      // WGS84 → GCJ-02 坐标转换，修正高德卫星图偏移
+      var converted = convertGeoJSON(src.data);
+
+      L.geoJSON(converted, {
+        style: src.style,
+        onEachFeature: function(feature, layer) {
+          var popupContent = '<div style="min-width:200px;max-width:320px;font-size:13px;line-height:1.7">';
+          popupContent += '<strong style="font-size:15px;color:#d32f2f">' + src.icon + ' ' + src.label + '</strong>';
+
+          var news = feature.properties.news;
+          if (news && news.trim()) {
+            var formatted = news.replace(/\r\n/g, '<br>').replace(/\n/g, '<br>').replace(/\r/g, '<br>');
+            popupContent += '<div style="margin-top:8px;padding:8px;background:#f9f9f9;border-radius:6px">' + formatted + '</div>';
+          }
+
+          popupContent += '</div>';
+          layer.bindPopup(popupContent, { maxWidth: 350 });
+        }
+      }).addTo(g);
+
+      showStatus(src.label + ' 已加载 (' + featureCount + '个)');
+    } catch(e) {
+      console.error('加载数据失败: ' + src.label, e);
+      showStatus('加载失败: ' + src.label + ' - ' + e.message);
+    }
+  });
+}
+
+// ========== WGS84 → GCJ-02 坐标转换（火星坐标系） ==========
+// 高德/腾讯/百度地图在中国境内使用 GCJ-02 加密坐标系
+// 你的 SHP 数据是 WGS84，需要转换后才能正确叠加到高德卫星图上
+var PI = Math.PI;
+var A = 6378245.0;           // 长半轴
+var EE = 0.00669342162296594323; // 偏心率平方
+
+function isOutOfChina(lng, lat) {
+  return lng < 72.004 || lng > 137.8347 || lat < 0.8293 || lat > 55.8271;
+}
+
+function transformLat(x, y) {
+  var ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+  ret += (20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0 / 3.0;
+  ret += (20.0 * Math.sin(y * PI) + 40.0 * Math.sin(y / 3.0 * PI)) * 2.0 / 3.0;
+  ret += (160.0 * Math.sin(y / 12.0 * PI) + 320.0 * Math.sin(y * PI / 30.0)) * 2.0 / 3.0;
+  return ret;
+}
+
+function transformLng(x, y) {
+  var ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+  ret += (20.0 * Math.sin(6.0 * x * PI) + 20.0 * Math.sin(2.0 * x * PI)) * 2.0 / 3.0;
+  ret += (20.0 * Math.sin(x * PI) + 40.0 * Math.sin(x / 3.0 * PI)) * 2.0 / 3.0;
+  ret += (150.0 * Math.sin(x / 12.0 * PI) + 300.0 * Math.sin(x / 30.0 * PI)) * 2.0 / 3.0;
+  return ret;
+}
+
+function wgs84ToGcj02(lng, lat) {
+  if (isOutOfChina(lng, lat)) return [lng, lat];
+  var dLat = transformLat(lng - 105.0, lat - 35.0);
+  var dLng = transformLng(lng - 105.0, lat - 35.0);
+  var radLat = lat / 180.0 * PI;
+  var magic = Math.sin(radLat);
+  magic = 1 - EE * magic * magic;
+  var sqrtMagic = Math.sqrt(magic);
+  dLat = (dLat * 180.0) / ((A * (1 - EE)) / (magic * sqrtMagic) * PI);
+  dLng = (dLng * 180.0) / (A / sqrtMagic * Math.cos(radLat) * PI);
+  return [lng + dLng, lat + dLat];
+}
+
+// 递归转换 GeoJSON 中所有坐标
+function convertCoords(obj) {
+  if (obj === null || obj === undefined) return obj;
+  // 判断是否是坐标对 [lng, lat]：长度为2的数组，且两个元素都是数字
+  if (Array.isArray(obj) && obj.length === 2 && typeof obj[0] === 'number' && typeof obj[1] === 'number') {
+    return wgs84ToGcj02(obj[0], obj[1]);
+  }
+  if (Array.isArray(obj)) {
+    return obj.map(convertCoords);
+  }
+  return obj;
+}
+
+function convertGeoJSON(geojson) {
+  return JSON.parse(JSON.stringify(geojson), function(key, value) {
+    if (key === 'coordinates') {
+      return convertCoords(value);
+    }
+    return value;
+  });
+}
+
+function toggleLayer(layerName) {
+  layerVisible[layerName] = !layerVisible[layerName];
+  var visible = layerVisible[layerName];
+  var btn = document.getElementById('toggle-' + layerName);
+  if (visible) {
+    layerGroups[layerName].addTo(map);
+  } else {
+    layerGroups[layerName].remove();
+  }
+  if (btn) {
+    visible ? btn.classList.remove('off') : btn.classList.add('off');
+  }
+}
+
+var isSatellite = true;
+function toggleMapType() {
+  isSatellite = !isSatellite;
+  var btn = document.getElementById('toggle-satellite');
+  if (isSatellite) {
+    loadSatellite();
+    btn.textContent = '🛰';
+    showStatus('已切换为卫星影像');
+  } else {
+    loadStreet();
+    btn.textContent = '🗺';
+    showStatus('已切换为交通路网');
+  }
+}
+
+function locateMe() {
+  if (!navigator.geolocation) { alert('浏览器不支持定位'); return; }
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    map.setView([pos.coords.latitude, pos.coords.longitude], 16);
+    L.circleMarker([pos.coords.latitude, pos.coords.longitude], {
+      radius: 8, fillColor: '#1976d2', color: '#fff', weight: 3, fillOpacity: 1
+    }).addTo(map).bindPopup('我的位置');
+  }, function() { alert('无法获取位置'); });
+}
+
+function togglePanel() {
+  document.getElementById('side-panel').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('show');
+}
+
+function closePanel() {
+  document.getElementById('side-panel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function switchTab(evt, tabName) {
+  document.querySelectorAll('.panel-tab').forEach(function(t) { t.classList.remove('active'); });
+  evt.target.classList.add('active');
+  document.querySelectorAll('.panel-section').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('tab-' + tabName).classList.add('active');
+}
+
+function renderContacts() {
+  var html = '';
+  EMERGENCY_CONTACTS.forEach(function(c) {
+    html += '<div class="contact-item">'
+      + '<div class="ci-info"><div class="ci-name">' + c.name + '</div><div class="ci-role">' + c.role + '</div></div>'
+      + '<div><a class="ci-phone" href="tel:' + c.phone + '">' + c.phone + '</a><a class="call-btn" href="tel:' + c.phone + '">拨打</a></div>'
+      + '</div>';
+  });
+  document.getElementById('village-contacts').innerHTML = html;
+
+  html = '';
+  AUTHORITY_CONTACTS.forEach(function(c) {
+    html += '<div class="contact-item">'
+      + '<div class="ci-info"><div class="ci-name">' + c.department + '</div><div class="ci-role">' + c.duty + '</div></div>'
+      + '<a class="ci-phone" href="tel:' + c.phone + '">' + c.phone + '</a>'
+      + '</div>';
+  });
+  document.getElementById('authority-contacts').innerHTML = html;
+}
+
+// 点击隐患点名称跳转并放大
+function zoomToHazard(index) {
+  var features = GEO_HAZARDS.features;
+  if (index >= 0 && index < features.length) {
+    var converted = convertGeoJSON({type:'FeatureCollection',features:[features[index]]});
+    var layer = L.geoJSON(converted);
+    map.fitBounds(layer.getBounds(), {padding: [50,50], maxZoom: 17});
+  }
+  closePanel();
+}
+
+// ========== 高德天气 API ==========
+var AMAP_KEY = 'e248637104ed123e4228c87928cea8f7';
+var AMAP_CITY = '620422'; // 会宁县行政区划代码
+
+function loadWeather() {
+  var url = 'https://restapi.amap.com/v3/weather/weatherInfo?key=' + AMAP_KEY + '&city=' + AMAP_CITY + '&extensions=all';
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status === '1' && data.forecasts && data.forecasts.length > 0) {
+        var f = data.forecasts[0];
+        var today = f.casts[0];
+        var rainLevel = getRainLevel(parseFloat(today.daypower) || 0);
+
+        var html = '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">';
+        html += '<span style="font-size:32px">' + rainLevel.icon + '</span>';
+        html += '<div>';
+        html += '<div style="font-weight:700;font-size:15px">东塬村 ' + today.date + '</div>';
+        html += '<div style="font-size:13px;color:#555">' + rainLevel.label + '</div>';
+        html += '<div style="font-size:12px;color:#888">白天: ' + today.dayweather + ' ' + today.daytemp + '°C / 夜间: ' + today.nightweather + ' ' + today.nighttemp + '°C</div>';
+        if (rainLevel.mm > 0) {
+          html += '<div style="font-size:12px;color:#1976d2;font-weight:600">预计降雨量: ' + rainLevel.mm + 'mm</div>';
+        }
+        html += '</div></div>';
+        document.getElementById('weather-content').innerHTML = html;
+        document.getElementById('weather-info').style.display = 'block';
+      }
+    })
+    .catch(function() {
+      console.log('天气数据加载失败，请检查高德 Key');
+    });
+}
+
+function getRainLevel(power) {
+  if (power <= 0.5) return { icon: '☀️', label: '无雨', mm: 0 };
+  if (power <= 2) return { icon: '💧', label: '小雨', mm: power };
+  if (power <= 5) return { icon: '💧💧', label: '中雨', mm: power };
+  if (power <= 10) return { icon: '💧💧💧', label: '大雨', mm: power };
+  return { icon: '🌧️', label: '暴雨', mm: power };
+}
+
+// 自动清除旧的 Service Worker 缓存
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    registrations.forEach(function(reg) { reg.unregister(); });
+  });
+}
+
+window.onload = function() {
+  initMap();
+  loadWeather();
+};
+</script>
+</body>
+</html>
