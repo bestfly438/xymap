@@ -9,12 +9,21 @@ var FEISHU_CONFIG = {
   tables: {
     patrol: 'tblz3JMnhmwDuNld',   // 巡查记录表
     villageData: 'tblwAxlJ9Ue5XNS1' // 村庄数据表
-  }
+  },
+  // Cloudflare Worker 代理地址（解决浏览器CORS跨域问题）
+  // 部署 Worker 后填写，例如：'https://xinyuan-feishu-proxy.xxxx.workers.dev'
+  // 留空则直连飞书官方接口（会被浏览器跨域拦截，仅用于本地接口调试）
+  apiBase: ''
 };
 
 // 获取 tenant_access_token（带缓存，有效期7200秒，提前10分钟刷新）
 var _feishuToken = null;
 var _feishuTokenExpire = 0;
+
+// 飞书 API 主机（配置了 Worker 代理则走代理，否则直连飞书）
+function feishuApiHost() {
+  return FEISHU_CONFIG.apiBase ? FEISHU_CONFIG.apiBase : 'https://open.feishu.cn';
+}
 
 function getFeishuToken(callback) {
   var now = Date.now();
@@ -22,7 +31,7 @@ function getFeishuToken(callback) {
     callback(_feishuToken);
     return;
   }
-  fetch('https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal', {
+  fetch(feishuApiHost() + '/open-apis/auth/v3/tenant_access_token/internal', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json; charset=utf-8' },
     body: JSON.stringify({ app_id: FEISHU_CONFIG.appId, app_secret: FEISHU_CONFIG.appSecret })
@@ -73,7 +82,7 @@ function feishuRequest(method, path, body, callback) {
       }
     };
     if (body && method !== 'GET') opts.body = JSON.stringify(body);
-    fetch('https://open.feishu.cn/open-apis' + path, opts)
+    fetch(feishuApiHost() + path, opts)
       .then(function(r) { return r.json(); })
       .then(function(data) { callback(data, null); })
       .catch(function(e) { callback(null, '网络错误: ' + e.message); });
