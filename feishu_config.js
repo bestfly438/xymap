@@ -1,51 +1,16 @@
 /**
- * 飞书多维表格配置（方案A：前端直接调用飞书API）
- * 用于巡查记录同步、村庄数据编辑同步
+ * 飞书多维表格配置（安全版）
+ * 安全凭证（appSecret）已移入腾讯云函数服务端，前端不再保存任何秘密。
+ * 所有飞书读写统一走腾讯云函数 /api/feishu（会话校验 + 服务端权限规则）。
  */
 var FEISHU_CONFIG = {
-  appId: 'cli_aafb78770922dcc2',
-  appSecret: 'EIg7866khATK9EATVzkzebbFjGMkYTOd',
-  baseToken: 'RfabbIErzaadtFsM9jZcqffvnOb',
+  apiBase: 'https://1463495179-bhdx6dldr1.ap-guangzhou.tencentscf.com', // 腾讯云函数URL
+  baseToken: 'RfabbIErzaadtFsM9jZcqffvnOb',   // 多维表格 app_token（仅用于拼路径）
   tables: {
     patrol: 'tblz3JMnhmwDuNld',   // 巡查记录表
     villageData: 'tblwAxlJ9Ue5XNS1' // 村庄数据表
-  },
-  // 腾讯云函数代理地址（解决浏览器CORS跨域问题，已部署验证通过）
-  apiBase: 'https://1463495179-bhdx6dldr1.ap-guangzhou.tencentscf.com'
-};
-
-// 获取 tenant_access_token（带缓存，有效期7200秒，提前10分钟刷新）
-var _feishuToken = null;
-var _feishuTokenExpire = 0;
-
-// 飞书 API 主机（配置了 Worker 代理则走代理，否则直连飞书）
-function feishuApiHost() {
-  return FEISHU_CONFIG.apiBase ? FEISHU_CONFIG.apiBase : 'https://open.feishu.cn';
-}
-
-function getFeishuToken(callback) {
-  var now = Date.now();
-  if (_feishuToken && now < _feishuTokenExpire - 600000) {
-    callback(_feishuToken);
-    return;
   }
-  fetch(feishuApiHost() + '/open-apis/auth/v3/tenant_access_token/internal', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json; charset=utf-8' },
-    body: JSON.stringify({ app_id: FEISHU_CONFIG.appId, app_secret: FEISHU_CONFIG.appSecret })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(data) {
-    if (data.code === 0 && data.tenant_access_token) {
-      _feishuToken = data.tenant_access_token;
-      _feishuTokenExpire = now + data.expire * 1000;
-      callback(_feishuToken);
-    } else {
-      callback(null);
-    }
-  })
-  .catch(function() { callback(null); });
-}
+};
 
 // 将飞书"查询记录列表"的返回（列数组格式）转换为对象数组 [{record_id, fields}]
 // 返回结构：data.data = { data: [[...行...]], fields: [...列名...], record_id_list: [...记录ID...] }
@@ -68,21 +33,49 @@ function feishuRowsToObjects(data) {
   return out;
 }
 
-// 通用飞书API请求
+// 通用飞书API请求：走腾讯云函数转发（带会话凭证，服务端校验权限）
 function feishuRequest(method, path, body, callback) {
-  getFeishuToken(function(token) {
-    if (!token) { callback(null, '获取飞书凭证失败'); return; }
-    var opts = {
-      method: method,
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'Content-Type': 'application/json; charset=utf-8'
-      }
-    };
-    if (body && method !== 'GET') opts.body = JSON.stringify(body);
-    fetch(feishuApiHost() + path, opts)
-      .then(function(r) { return r.json(); })
-      .then(function(data) { callback(data, null); })
-      .catch(function(e) { callback(null, '网络错误: ' + e.message); });
-  });
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  if (!key || !device) { callback(null, '未登录或会话失效，请重新登录'); return; }
+  fetch(FEISHU_CONFIG.apiBase + '/api/feishu', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-xyc-key': key,
+      'x-xyc-device': device
+    },
+    body: JSON.stringify({ method: method, path: path, body: body })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data && (data.code === 401 || data.code === 403)) {
+      callback(null, data.msg || '无权限');
+      return;
+    }
+    callback(data, null);
+  })
+  .catch(function(e) { callback(null, '网络错误: ' + e.message); });
+}
+
+// 管理员接口请求（密钥管理 / 解绑 / 登录记录）
+function adminRequest(sub, payload, callback) {
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  if (!key || !device) { callback(null, '未登录或会话失效'); return; }
+  fetch(FEISHU_CONFIG.apiBase + '/api/admin/' + sub, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-xyc-key': key,
+      'x-xyc-device': device
+    },
+    body: JSON.stringify(payload || {})
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data && data.code !== 0) { callback(null, data.msg || '操作失败'); return; }
+    callback(data, null);
+  })
+  .catch(function(e) { callback(null, '网络错误: ' + e.message); });
 }

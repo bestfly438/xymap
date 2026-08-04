@@ -110,7 +110,7 @@ body {
   </div>
 </div>
 
-<script src="keys.js"></script>
+<script src="feishu_config.js"></script>
 <script>
 (function() {
   // 如果已经登录，直接跳转
@@ -136,28 +136,54 @@ input.addEventListener('input', function() {
   if (upper.length <= 20) input.value = upper;
 });
 
+// 生成/复用设备标识（本机固定，用于设备绑定）
+function getDeviceToken() {
+  var d = localStorage.getItem('xyc_device');
+  if (!d) {
+    d = 'dev-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+    localStorage.setItem('xyc_device', d);
+  }
+  return d;
+}
+
 function doLogin() {
   var key = input.value.trim();
   if (!key) {
     showError('请输入访问密钥');
     return;
   }
-
-  var keyObj = validateKey(key);
-  if (keyObj) {
-    sessionStorage.setItem('xyc_auth', '1');
-    sessionStorage.setItem('xyc_key', key);
-    if (keyObj.admin) {
-      sessionStorage.setItem('xyc_admin', '1');
+  btn.textContent = '正在验证...';
+  btn.disabled = true;
+  fetch(FEISHU_CONFIG.apiBase + '/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    body: JSON.stringify({ key: key, device_token: getDeviceToken() })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data && data.code === 0 && data.data) {
+      var d = data.data;
+      sessionStorage.setItem('xyc_auth', '1');
+      sessionStorage.setItem('xyc_key', d.key);
+      sessionStorage.setItem('xyc_label', d.label || '');
+      sessionStorage.setItem('xyc_role', d.role || '村级');
+      sessionStorage.setItem('xyc_village', d.village || '');
+      sessionStorage.setItem('xyc_device', getDeviceToken());
+      btn.textContent = '验证通过，正在进入...';
+      setTimeout(function() {
+        window.location.replace('dashboard.html');
+      }, 500);
+    } else {
+      btn.textContent = '进入系统';
+      btn.disabled = false;
+      showError((data && data.msg) || '登录失败，请稍后重试');
     }
-    btn.textContent = '验证通过，正在进入...';
-    btn.disabled = true;
-    setTimeout(function() {
-      window.location.replace('dashboard.html');
-    }, 500);
-  } else {
-    showError('密钥无效，请检查后重试');
-  }
+  })
+  .catch(function() {
+    btn.textContent = '进入系统';
+    btn.disabled = false;
+    showError('网络错误，请检查网络后重试');
+  });
 }
 
 function showError(msg) {
