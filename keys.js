@@ -36,3 +36,6 @@ function isAdminKey(inputKey) {
   }
   return false;
 }
+
+// 高德开放平台 Web 服务 API Key（用于PC端路线规划）
+var AMAP_KEY = 'e248637104ed123e4228c87928cea8f7';
