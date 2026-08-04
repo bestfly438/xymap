@@ -197,7 +197,7 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 #side-panel .sp-contact-row:last-child { border-bottom: none; }
 #side-panel .sp-contact-row .sp-label { color: #64748b; font-size: 12px; min-width: 56px; }
 #side-panel .sp-contact-row .sp-value { color: #e2e8f0; font-weight: 500; flex: 1; }
-#side-panel .sp-contact-row .sp-phone { color: #60a5fa; font-size: 12px; white-space: nowrap; }
+#side-panel .sp-contact-row .sp-phone { color: #60a5fa; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
 #side-panel .sp-risk-item {
   padding: 8px 10px; margin-bottom: 6px; border-radius: 8px;
   background: rgba(239,68,68,0.05); border: 1px solid rgba(239,68,68,0.1);
@@ -251,15 +251,16 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 
 /* 联系人卡片 */
 .vp-person {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   padding: 8px 10px; margin-bottom: 6px; border-radius: 8px;
   background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
 }
 .vp-person .vp-role {
   font-size: 11px; color: #64748b; min-width: 64px; flex-shrink: 0;
 }
-.vp-person .vp-name { color: #e2e8f0; font-weight: 600; flex: 1; font-size: 13px; }
-.vp-person .vp-phone { color: #60a5fa; font-size: 12px; white-space: nowrap; margin-right: 6px; }
+.vp-person .vp-name { color: #e2e8f0; font-weight: 600; flex: 1 1 auto; font-size: 13px; min-width: 0; }
+.vp-person .vp-phone { color: #60a5fa; font-size: 12px; white-space: nowrap; margin-right: 6px; flex-shrink: 0; }
+.vp-person .call-btn { flex-shrink: 0; margin-left: auto; }
 
 /* 隐患点卡片 */
 .vp-hazard {
@@ -282,6 +283,7 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 .vp-hh .vp-hh-list { color: #94a3b8; font-size: 11px; line-height: 1.6; margin-top: 3px; }
 .vp-h-info { color: #64748b; font-size: 11px; margin-top: 5px; line-height: 1.5; }
 .vp-h-info b { color: #60a5fa; font-weight: 600; }
+.vp-h-info .call-btn { flex-shrink: 0; }
 
 /* 规则列表 */
 .vp-rule {
@@ -294,13 +296,14 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 
 /* 应急电话 */
 .vp-phone-item {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
   padding: 9px 10px; margin-bottom: 6px; border-radius: 8px;
   background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15);
 }
-.vp-phone-item .vp-phone-dep { color: #e2e8f0; font-weight: 600; font-size: 13px; flex: 1; }
-.vp-phone-item .vp-phone-duty { color: #64748b; font-size: 11px; }
-.vp-phone-item .vp-phone-num { color: #60a5fa; font-size: 13px; font-weight: 600; }
+.vp-phone-item .vp-phone-dep { color: #e2e8f0; font-weight: 600; font-size: 13px; flex: 1; min-width: 0; }
+.vp-phone-item .vp-phone-duty { color: #64748b; font-size: 11px; flex-shrink: 0; }
+.vp-phone-item .vp-phone-num { color: #60a5fa; font-size: 13px; font-weight: 600; white-space: nowrap; flex-shrink: 0; }
+.vp-phone-item .call-btn { flex-shrink: 0; }
 
 /* 拨打按钮 */
 .call-btn {
@@ -1028,6 +1031,16 @@ function extractPhone(str) {
   return m ? m[0] : '';
 }
 
+// 从"职位姓名电话"文本中去掉电话号码，只留姓名/职位（避免与电话号码重复显示导致一行过长）
+function cleanContactName(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/\d{11}|(?:\d{3,4})-?\d{7,8}/g, '')
+    .replace(/[：:]\s*/g, ' ')
+    .replace(/\s{2,}/g, ' ')
+    .trim();
+}
+
 var VP_TABS = [
   ['cmd', '&#x1F465;', '应急指挥'],
   ['transfer', '&#x26A0;', '转移谁'],
@@ -1045,12 +1058,12 @@ function renderVpTabContent(vid, tab, plan) {
     if (!has || (!plan.leader && !plan.town_contact)) return h + '<div class="vp-empty">暂无应急指挥信息</div>';
     if (plan.leader) {
       var lp = extractPhone(plan.leader);
-      h += '<div class="vp-person"><span class="vp-role">总指挥</span><span class="vp-name">' + esc(plan.leader) + '</span>' +
+      h += '<div class="vp-person"><span class="vp-role">总指挥</span><span class="vp-name">' + esc(cleanContactName(plan.leader)) + '</span>' +
         (lp ? '<span class="vp-phone">' + lp + '</span><a class="call-btn" href="tel:' + lp + '">&#x1F4DE; 拨打</a>' : '') + '</div>';
     }
     if (plan.town_contact) {
       var tp = extractPhone(plan.town_contact);
-      h += '<div class="vp-person"><span class="vp-role">乡镇责任人</span><span class="vp-name">' + esc(plan.town_contact) + '</span>' +
+      h += '<div class="vp-person"><span class="vp-role">乡镇责任人</span><span class="vp-name">' + esc(cleanContactName(plan.town_contact)) + '</span>' +
         (tp ? '<span class="vp-phone">' + tp + '</span><a class="call-btn" href="tel:' + tp + '">&#x1F4DE; 拨打</a>' : '') + '</div>';
     }
     return h;
@@ -1073,7 +1086,7 @@ function renderVpTabContent(vid, tab, plan) {
       }
       if (hz.responsible) {
         var rp = extractPhone(hz.responsible);
-        h += '<div class="vp-h-info">责任人：<b>' + esc(hz.responsible) + '</b>' + (rp ? ' <a class="call-btn red" href="tel:' + rp + '">&#x1F4DE; 拨打</a>' : '') + '</div>';
+        h += '<div class="vp-h-info">责任人：<b>' + esc(cleanContactName(hz.responsible)) + '</b>' + (rp ? ' <a class="call-btn red" href="tel:' + rp + '">&#x1F4DE; 拨打</a>' : '') + '</div>';
       }
       if (hz.shelter) h += '<div class="vp-h-info">安置点：' + esc(hz.shelter) + '</div>';
       h += '</div>';
@@ -1099,7 +1112,7 @@ function renderVpTabContent(vid, tab, plan) {
       if (s.shelter) h += '<div class="vp-h-info">安置地点：<b>' + esc(s.shelter) + '</b></div>';
       if (s.responsible) {
         var sp = extractPhone(s.responsible);
-        h += '<div class="vp-h-info">安置点负责人：<b>' + esc(s.responsible) + '</b>' + (sp ? ' <a class="call-btn" href="tel:' + sp + '">&#x1F4DE; 拨打</a>' : '') + '</div>';
+        h += '<div class="vp-h-info">安置点负责人：<b>' + esc(cleanContactName(s.responsible)) + '</b>' + (sp ? ' <a class="call-btn" href="tel:' + sp + '">&#x1F4DE; 拨打</a>' : '') + '</div>';
       }
       h += '</div>';
     });
