@@ -10,10 +10,8 @@ var FEISHU_CONFIG = {
     patrol: 'tblz3JMnhmwDuNld',   // 巡查记录表
     villageData: 'tblwAxlJ9Ue5XNS1' // 村庄数据表
   },
-  // Cloudflare Worker 代理地址（解决浏览器CORS跨域问题）
-  // 部署 Worker 后填写，例如：'https://xinyuan-feishu-proxy.xxxx.workers.dev'
-  // 留空则直连飞书官方接口（会被浏览器跨域拦截，仅用于本地接口调试）
-  apiBase: ''
+  // 腾讯云函数代理地址（解决浏览器CORS跨域问题，已部署验证通过）
+  apiBase: 'https://1463495179-bhdx6dldr1.ap-guangzhou.tencentscf.com'
 };
 
 // 获取 tenant_access_token（带缓存，有效期7200秒，提前10分钟刷新）
