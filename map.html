@@ -787,8 +787,12 @@ function loadHazardPoints() {
       }
 
       // 导航前往按钮（手机唤起高德App，PC显示驾车路线）
-      html += '<div class="pop-nav"><button class="pn-btn" onclick="navigateTo(' +
-        latlng.lng + ',' + latlng.lat + ',\'' + escAttr(p.HZXM || '隐患点') + '\')">&#x1F9ED; 导航前往</button></div>';
+      // 注意：onEachFeature 回调没有 latlng 参数，需用 layer.getLatLng() 获取点坐标
+      var ll = layer.getLatLng ? layer.getLatLng() : null;
+      if (ll) {
+        html += '<div class="pop-nav"><button class="pn-btn" onclick="navigateTo(' +
+          ll.lng + ',' + ll.lat + ',\'' + escAttr(p.HZXM || '隐患点') + '\')">&#x1F9ED; 导航前往</button></div>';
+      }
 
       html += '</div>';
       layer.bindPopup(html, { maxWidth: 400, className: 'custom-popup' });
