@@ -312,7 +312,45 @@ body {
 @keyframes savePop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes saveFade { to { opacity: 0; transform: translateY(-10px); } }
 
-/* ===== 响应式 ===== */
+/* ===== PC/手机切换按钮 ===== */
+#mode-toggle {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: #94a3b8; padding: 6px 10px; border-radius: 6px; font-size: 14px; cursor: pointer;
+  transition: all 0.2s; display: flex; align-items: center; gap: 4px; white-space: nowrap;
+}
+#mode-toggle:hover { background: rgba(255,255,255,0.1); color: #e2e8f0; }
+#mode-toggle.mobile-active { background: rgba(59,130,246,0.15); color: #60a5fa; border-color: rgba(59,130,246,0.3); }
+
+/* ===== 手机端适配（手动切换） ===== */
+body.mobile-mode .container { padding: 12px; }
+body.mobile-mode .stats-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+body.mobile-mode .stat-card { padding: 12px 10px; }
+body.mobile-mode .stat-card .sc-num { font-size: 24px; }
+body.mobile-mode .stat-card .sc-label { font-size: 11px; }
+body.mobile-mode .stat-card .sc-sub { font-size: 10px; }
+body.mobile-mode .stat-card .sc-icon { width: 32px; height: 32px; font-size: 16px; margin-bottom: 8px; }
+body.mobile-mode .village-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+body.mobile-mode .village-card { padding: 14px 12px; }
+body.mobile-mode .village-card .vc-name { font-size: 14px; }
+body.mobile-mode .village-card .vc-stats { gap: 10px; }
+body.mobile-mode .village-card .vc-stat .vcs-num { font-size: 18px; }
+body.mobile-mode .two-col { grid-template-columns: 1fr; }
+body.mobile-mode .topbar { padding: 0 12px; height: 52px; }
+body.mobile-mode .topbar .logo-icon { width: 32px; height: 32px; font-size: 16px; }
+body.mobile-mode .topbar .logo-text h1 { font-size: 14px; }
+body.mobile-mode .topbar .logo-text p { display: none; }
+body.mobile-mode .topbar .weather-badge { display: none; }
+body.mobile-mode .topbar .time-display { display: none; }
+body.mobile-mode .topbar .btn { padding: 7px 14px; font-size: 12px; }
+body.mobile-mode .section-title { font-size: 15px; }
+body.mobile-mode .contact-card .cc-item { font-size: 12px; padding: 8px 0; }
+body.mobile-mode .rain-card .rc-list { grid-template-columns: 1fr; }
+body.mobile-mode .rain-card .rc-item { font-size: 12px; }
+body.mobile-mode .warn-item { font-size: 12px; padding: 10px; }
+body.mobile-mode .map-entry a { padding: 14px 36px; font-size: 15px; }
+body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
+
+/* ===== 响应式（自动降级） ===== */
 @media (max-width: 1400px) {
   .stats-row { grid-template-columns: repeat(3, 1fr); }
   .village-grid { grid-template-columns: repeat(3, 1fr); }
@@ -354,6 +392,7 @@ body {
     </div>
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
+    <button id="mode-toggle" title="切换PC/手机版" onclick="toggleMode()">&#x1F4F1;</button>
     <a href="map.html" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
   </div>
@@ -742,6 +781,49 @@ function doLogout() {
   sessionStorage.removeItem('xyc_village');
   window.location.replace('index.html');
 }
+
+// ========== PC/手机端切换 ==========
+var isMobileMode = false;
+
+function initMode() {
+  var saved = localStorage.getItem('xyc_mode');
+  if (saved === 'mobile') {
+    isMobileMode = true;
+  } else if (saved === 'pc') {
+    isMobileMode = false;
+  } else {
+    isMobileMode = window.innerWidth <= 768;
+  }
+  applyMode();
+}
+
+function toggleMode() {
+  isMobileMode = !isMobileMode;
+  localStorage.setItem('xyc_mode', isMobileMode ? 'mobile' : 'pc');
+  applyMode();
+}
+
+function applyMode() {
+  var btn = document.getElementById('mode-toggle');
+  if (isMobileMode) {
+    document.body.classList.add('mobile-mode');
+    if (btn) {
+      btn.innerHTML = '&#x1F5A5;';
+      btn.classList.add('mobile-active');
+      btn.title = '切换为PC版';
+    }
+  } else {
+    document.body.classList.remove('mobile-mode');
+    if (btn) {
+      btn.innerHTML = '&#x1F4F1;';
+      btn.classList.remove('mobile-active');
+      btn.title = '切换为手机版';
+    }
+  }
+}
+
+// 页面加载时初始化模式
+initMode();
 
 // ========== 编辑模式 ==========
 var isEditMode = false;
