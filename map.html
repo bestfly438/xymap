@@ -23,9 +23,9 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 }
 #topbar .logo-area { display: flex; align-items: center; gap: 10px; }
 #topbar .logo-icon {
-  width: 36px; height: 36px; background: linear-gradient(135deg, #ef4444, #dc2626);
+  width: 36px; height: 36px; background: linear-gradient(135deg, #4d6bfe, #7c3aed);
   border-radius: 8px; display: flex; align-items: center; justify-content: center;
-  font-size: 18px; box-shadow: 0 0 16px rgba(239,68,68,0.3);
+  font-size: 18px; box-shadow: 0 0 16px rgba(77,107,254,0.35);
 }
 #topbar h1 { font-size: 15px; font-weight: 700; white-space: nowrap; letter-spacing: 0.5px; }
 #topbar .village-select {
@@ -130,6 +130,14 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 .popup-content .pop-badge.warn { background: rgba(255,152,0,0.2); color: #ffb74d; }
 .popup-content .pop-badge.info { background: rgba(33,150,243,0.2); color: #64b5f6; }
 .popup-content .pop-desc { margin-top: 8px; padding: 8px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; color: #aaa; font-size: 12px; line-height: 1.7; border-left: 2px solid rgba(211,47,47,0.3); }
+.popup-content .pop-nav { margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); }
+.popup-content .pn-btn {
+  width: 100%; padding: 9px 0; border: none; border-radius: 8px; cursor: pointer;
+  background: linear-gradient(135deg, #3b82f6, #2563eb); color: #fff;
+  font-size: 13px; font-weight: 700; transition: all 0.2s;
+  box-shadow: 0 0 14px rgba(59,130,246,0.25);
+}
+.popup-content .pn-btn:hover { transform: translateY(-1px); box-shadow: 0 0 22px rgba(59,130,246,0.45); }
 
 /* ===== 状态栏 ===== */
 #status {
@@ -527,6 +535,11 @@ body.mobile-mode .patrol-list .pl-del { font-size: 18px; padding: 4px 10px; }
 
 <div id="status"></div>
 
+<div id="route-info" style="display:none;position:absolute;left:50%;top:72px;transform:translateX(-50%);z-index:999;background:rgba(17,24,39,0.95);border:1px solid #3b82f6;border-radius:10px;padding:10px 16px;font-size:13px;color:#e2e8f0;align-items:center;gap:12px;box-shadow:0 8px 30px rgba(0,0,0,.45);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);max-width:92vw;flex-wrap:wrap;justify-content:center;">
+  <span id="route-info-text" style="white-space:nowrap;">规划路线中...</span>
+  <button onclick="clearRoute()" style="background:rgba(239,68,68,.15);border:1px solid rgba(239,68,68,.4);color:#f87171;padding:4px 12px;border-radius:6px;font-size:12px;cursor:pointer;white-space:nowrap;">&#x2716; 清除路线</button>
+</div>
+
 <div class="photo-overlay" id="photoOverlay" onclick="closePhotoPreview()">
   <img id="photoPreviewImg" src="" alt="巡查照片" />
 </div>
@@ -772,6 +785,10 @@ function loadHazardPoints() {
         var desc = p.YHXX.replace(/\n/g, '<br>');
         html += '<div class="pop-desc">' + desc + '</div>';
       }
+
+      // 导航前往按钮（手机唤起高德App，PC显示驾车路线）
+      html += '<div class="pop-nav"><button class="pn-btn" onclick="navigateTo(' +
+        latlng.lng + ',' + latlng.lat + ',\'' + escAttr(p.HZXM || '隐患点') + '\')">&#x1F9ED; 导航前往</button></div>';
 
       html += '</div>';
       layer.bindPopup(html, { maxWidth: 400, className: 'custom-popup' });
@@ -1183,6 +1200,99 @@ function locateMe() {
     }).addTo(map).bindPopup('我的位置').openPopup();
     showStatus('已定位');
   }, function() { showStatus('无法获取位置'); }, { enableHighAccuracy: true, timeout: 10000 });
+}
+
+// ========== 导航功能 ==========
+var routeLayer = null;
+var routeMarker = null;
+
+// 判断是否移动设备
+function isMobileDevice() {
+  return /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth < 768;
+}
+
+// 导航前往：手机唤起高德App导航，PC端在地图上显示驾车路线
+function navigateTo(lng, lat, name) {
+  if (isMobileDevice()) {
+    // 手机端：唤起高德地图App（未安装则打开网页版导航）
+    var url = 'https://uri.amap.com/navigation?to=' + lng + ',' + lat + ',' + encodeURIComponent(name) + '&mode=car&src=xinyuan';
+    window.open(url, '_blank');
+    return;
+  }
+  // PC端：先获取当前位置作为起点，再规划驾车路线
+  if (!navigator.geolocation) { alert('浏览器不支持定位，无法规划路线'); return; }
+  showRouteInfo('正在获取当前位置...');
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    var gcj = wgs84ToGcj02(pos.coords.longitude, pos.coords.latitude);
+    planRoute(gcj[0], gcj[1], lng, lat, name);
+  }, function() {
+    hideRouteInfo();
+    alert('无法获取当前位置，请先在浏览器中允许定位，或直接用手机导航');
+  }, { enableHighAccuracy: true, timeout: 10000 });
+}
+
+// PC端：调用高德Web服务API规划驾车路线（JSONP方式，不受跨域限制）
+function planRoute(slng, slat, elng, elat, name) {
+  clearRoute();
+  if (typeof AMAP_KEY === 'undefined' || !AMAP_KEY) {
+    hideRouteInfo();
+    alert('未配置高德API Key，无法规划路线');
+    return;
+  }
+  showRouteInfo('正在规划驾车路线...');
+  var url = 'https://restapi.amap.com/v3/direction/driving?origin=' + slng + ',' + slat +
+    '&destination=' + elng + ',' + elat + '&extensions=all&key=' + AMAP_KEY + '&callback=__amapRouteCb';
+  window.__amapRouteCb = function(data) {
+    var s = document.querySelector('script[data-navroute="1"]');
+    if (s) s.parentNode.removeChild(s);
+    if (!data || data.status !== '1' || !data.route || !data.route.paths || data.route.paths.length === 0) {
+      hideRouteInfo();
+      alert('未找到可行路线：' + ((data && data.info) || '未知原因'));
+      return;
+    }
+    var path = data.route.paths[0];
+    var points = [];
+    (path.steps || []).forEach(function(st) {
+      if (!st.polyline) return;
+      st.polyline.split(';').forEach(function(pt) {
+        var xy = pt.split(',');
+        if (xy.length >= 2) points.push([parseFloat(xy[1]), parseFloat(xy[0])]);
+      });
+    });
+    if (points.length === 0) { hideRouteInfo(); alert('路线解析失败，请重试'); return; }
+    routeLayer = L.polyline(points, { color: '#3b82f6', weight: 5, opacity: 0.9, dashArray: '10, 8' }).addTo(map);
+    map.fitBounds(routeLayer.getBounds(), { padding: [60, 60] });
+    routeMarker = L.circleMarker([elat, elng], { radius: 8, fillColor: '#ef4444', color: '#fff', weight: 2, fillOpacity: 0.9 })
+      .addTo(map).bindPopup('<b>' + name + '</b>（终点）');
+    var distKm = (path.distance / 1000).toFixed(1);
+    var mins = Math.round(path.duration / 60);
+    showRouteInfo('&#x1F6E3; 驾车约 <b>' + distKm + ' 公里</b> · 预计 <b>' + mins + ' 分钟</b>');
+  };
+  var script = document.createElement('script');
+  script.setAttribute('data-navroute', '1');
+  script.src = url;
+  script.onerror = function() { hideRouteInfo(); alert('路线规划服务暂不可用，请重试'); };
+  document.body.appendChild(script);
+}
+
+// 清除路线
+function clearRoute() {
+  if (routeLayer) { map.removeLayer(routeLayer); routeLayer = null; }
+  if (routeMarker) { map.removeLayer(routeMarker); routeMarker = null; }
+  hideRouteInfo();
+}
+
+// 显示/隐藏路线信息条
+function showRouteInfo(text) {
+  var el = document.getElementById('route-info');
+  var txt = document.getElementById('route-info-text');
+  if (!el || !txt) return;
+  txt.innerHTML = text;
+  el.style.display = 'flex';
+}
+function hideRouteInfo() {
+  var el = document.getElementById('route-info');
+  if (el) el.style.display = 'none';
 }
 
 // ========== 侧边信息面板 ==========

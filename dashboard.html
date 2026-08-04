@@ -15,8 +15,8 @@
   --text: #e2e8f0;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  --primary: #ef4444;
-  --primary-glow: rgba(239,68,68,0.3);
+  --primary: #4d6bfe;
+  --primary-glow: rgba(77,107,254,0.3);
   --accent: #3b82f6;
   --accent-glow: rgba(59,130,246,0.3);
   --success: #22c55e;
@@ -36,9 +36,9 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(59,130,246,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(239,68,68,0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.03) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 0%, rgba(77,107,254,0.09) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(124,58,237,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(77,107,254,0.04) 0%, transparent 50%);
 }
 
 /* ===== 顶栏 ===== */
@@ -54,10 +54,10 @@ body {
 .topbar .logo { display: flex; align-items: center; gap: 14px; }
 .topbar .logo-icon {
   width: 40px; height: 40px;
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: linear-gradient(135deg, #4d6bfe, #7c3aed);
   border-radius: 10px; display: flex; align-items: center; justify-content: center;
   font-size: 20px; color: #fff;
-  box-shadow: 0 0 20px var(--primary-glow);
+  box-shadow: 0 0 20px rgba(77,107,254,0.35);
 }
 .topbar .logo-text h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
 .topbar .logo-text p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
@@ -77,11 +77,11 @@ body {
 }
 .topbar .btn:hover { background: var(--bg-card-hover); border-color: var(--border-light); color: var(--text); }
 .topbar .btn-primary {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: linear-gradient(135deg, #4d6bfe, #6a5ae0);
   color: #fff; border-color: transparent;
   box-shadow: 0 0 20px var(--primary-glow);
 }
-.topbar .btn-primary:hover { box-shadow: 0 0 30px rgba(239,68,68,0.5); transform: translateY(-1px); }
+.topbar .btn-primary:hover { box-shadow: 0 0 30px rgba(77,107,254,0.5); transform: translateY(-1px); }
 .topbar .time-display { font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
 
 /* ===== 主容器 ===== */
@@ -133,7 +133,7 @@ body {
   position: absolute; top: -20px; right: -20px; width: 80px; height: 80px;
   border-radius: 50%; opacity: 0.06; pointer-events: none;
 }
-.stat-card:nth-child(1) .sc-glow { background: #ef4444; }
+.stat-card:nth-child(1) .sc-glow { background: #4d6bfe; }
 .stat-card:nth-child(2) .sc-glow { background: #f59e0b; }
 .stat-card:nth-child(3) .sc-glow { background: #22c55e; }
 .stat-card:nth-child(4) .sc-glow { background: #3b82f6; }
@@ -150,7 +150,7 @@ body {
   display: flex; align-items: center; gap: 10px;
 }
 .section-title .st-dot { width: 4px; height: 20px; border-radius: 2px; }
-.section-title .st-dot.red { background: #ef4444; }
+.section-title .st-dot.red { background: #4d6bfe; }
 .section-title .st-dot.blue { background: #3b82f6; }
 .section-title .st-dot.green { background: #22c55e; }
 .section-title .st-dot.purple { background: #8b5cf6; }
@@ -262,13 +262,13 @@ body {
 .map-entry { text-align: center; margin: 36px 0 16px; }
 .map-entry a {
   display: inline-flex; align-items: center; gap: 12px;
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: linear-gradient(135deg, #4d6bfe, #6a5ae0);
   color: #fff; padding: 18px 52px; border-radius: 12px;
   font-size: 17px; font-weight: 700; text-decoration: none;
   box-shadow: 0 0 30px var(--primary-glow);
   transition: var(--transition);
 }
-.map-entry a:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(239,68,68,0.5); }
+.map-entry a:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(77,107,254,0.5); }
 
 /* ===== 页脚 ===== */
 .footer { text-align: center; padding: 32px; color: var(--text-muted); font-size: 12px; opacity: 0.5; }
@@ -393,6 +393,7 @@ body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button id="mode-toggle" title="切换PC/手机版" onclick="toggleMode()">&#x1F4F1;</button>
+    <a href="guide.html" class="btn">&#x1F6A8; 防汛指南</a>
     <a href="map.html" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
   </div>
