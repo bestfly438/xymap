@@ -503,6 +503,7 @@ body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
 <script src="keys.js"></script>
+<script src="feishu_config.js"></script>
 <script src="js_data/village_centers.js"></script>
 <script src="js_data/village_info.js"></script>
 <script src="js_data/village_plans.js"></script>
@@ -751,6 +752,12 @@ var townList = document.getElementById('townContactList');
 // 使用统一的渲染函数（支持 localStorage 优先）
 refreshContactLists();
 
+// ========== 从飞书云端加载编辑数据（多账号同步） ==========
+loadCloudEditData(function() {
+  refreshVillageGrid();
+  refreshContactLists();
+});
+
 // ========== 各村天气 ==========
 var weatherData = null; // 全局存储天气数据
 
@@ -835,6 +842,8 @@ if (isAdmin) {
   document.getElementById('editModeBtn').style.display = 'flex';
 }
 
+// ===== 村庄编辑数据：飞书云端同步 =====
+
 // 从 localStorage 读取编辑数据
 function getEditData() {
   try {
@@ -845,14 +854,97 @@ function getEditData() {
   }
 }
 
-// 保存编辑数据到 localStorage
+// 保存编辑数据到 localStorage，并异步同步到飞书云端
 function saveEditData(data) {
   try {
     localStorage.setItem(EDIT_STORAGE_KEY, JSON.stringify(data));
   } catch(e) {}
+  syncEditDataToCloud(data);
 }
 
-// 获取村庄数据（优先 localStorage）
+// 将编辑数据逐项同步到飞书"村庄数据"表（串行 upsert）
+function syncEditDataToCloud(data) {
+  if (typeof FEISHU_CONFIG === 'undefined') return;
+  var tasks = [];
+  for (var vname in data) {
+    for (var field in data[vname]) {
+      if (typeof data[vname][field] === 'string') {
+        tasks.push({ vname: vname, field: field, value: data[vname][field] });
+      }
+    }
+  }
+  var idx = 0;
+  function next() {
+    if (idx >= tasks.length) return;
+    var t = tasks[idx++];
+    upsertCloudVillageField(t.vname, t.field, t.value, next);
+  }
+  next();
+}
+
+// upsert 单个村庄字段到飞书
+function upsertCloudVillageField(vname, field, value, callback) {
+  // 先查该村该字段的已有记录
+  var filter = JSON.stringify({
+    logic: 'and',
+    conditions: [['村名', '==', vname], ['字段名', '==', field]]
+  });
+  var base = '/open-apis/base/v3/bases/' + FEISHU_CONFIG.baseToken +
+    '/tables/' + FEISHU_CONFIG.tables.villageData;
+  feishuRequest('GET', base + '/records?page_size=10&filter=' + encodeURIComponent(filter), null, function(data, err) {
+    var now = new Date();
+    var timeStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' +
+      String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' +
+      String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
+    var fields = {
+      '村名': vname,
+      '字段名': field,
+      '字段值': value,
+      '更新时间': timeStr
+    };
+    var items = feishuRowsToObjects(data);
+    if (!err && data && data.code === 0 && items.length > 0) {
+      var rid = items[0].record_id;
+      feishuRequest('PATCH', base + '/records/' + encodeURIComponent(rid), fields, function() {
+        if (callback) callback();
+      });
+    } else {
+      feishuRequest('POST', base + '/records', fields, function() {
+        if (callback) callback();
+      });
+    }
+  });
+}
+
+// 从飞书拉取全部村庄编辑数据，合并到本地并刷新界面
+function loadCloudEditData(callback) {
+  if (typeof FEISHU_CONFIG === 'undefined') { if (callback) callback(); return; }
+  var path = '/open-apis/base/v3/bases/' + FEISHU_CONFIG.baseToken +
+    '/tables/' + FEISHU_CONFIG.tables.villageData + '/records?page_size=200';
+  feishuRequest('GET', path, null, function(data, err) {
+    if (err || !data || data.code !== 0) { if (callback) callback(); return; }
+    var items = feishuRowsToObjects(data);
+    var cloud = {};
+    items.forEach(function(it) {
+      var f = it.fields || {};
+      var vname = f['村名'], field = f['字段名'], value = f['字段值'];
+      if (vname && field && value != null) {
+        if (!cloud[vname]) cloud[vname] = {};
+        cloud[vname][field] = String(value);
+      }
+    });
+    // 与本地合并：云端优先（多账号共享最新数据）
+    var local = getEditData();
+    for (var v in cloud) {
+      if (!local[v]) local[v] = {};
+      for (var fld in cloud[v]) local[v][fld] = cloud[v][fld];
+    }
+    try { localStorage.setItem(EDIT_STORAGE_KEY, JSON.stringify(local)); } catch(e) {}
+    if (callback) callback();
+  });
+}
+
+// 获取村庄数据（优先 localStorage，云端已合并入）
 function getVillageData(vname) {
   var editData = getEditData();
   if (editData[vname]) {
