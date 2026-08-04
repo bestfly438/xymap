@@ -1684,12 +1684,19 @@ function escAttr(s) { return String(s || '').replace(/'/g, "\\'").replace(/"/g, 
 
 function renderPatrolTab(vid) {
   currentPatrolVid = vid;
+  // 权限：村级密钥只能在本村添加巡查记录；删除/修改仅管理员
+  var role = sessionStorage.getItem('xyc_role') || '';
+  var myVillage = sessionStorage.getItem('xyc_village') || '';
+  var isAdmin = role === '管理员';
+  var canAdd = isAdmin || role === '镇级' || (role === '村级' && myVillage === vid);
+  var canDel = isAdmin;
   // 先用本地缓存快速渲染，再异步从云端刷新
   var records = getLocalPatrolRecords(vid);
   var lastInspector = localStorage.getItem('xyc_last_inspector') || '';
 
   var h = '<div class="patrol-form">';
 
+  if (canAdd) {
   // 巡查人
   h += '<div class="pf-row">';
   h += '<div class="pf-label">&#x1F464; 巡查人姓名</div>';
@@ -1736,6 +1743,9 @@ function renderPatrolTab(vid) {
   h += '<button class="pf-export" onclick="exportPatrolCSV(\'' + escAttr(vid) + '\')">&#x1F4E5; 导出本村巡查记录（Excel）</button>';
 
   h += '</div>';
+  } else {
+    h += '<div class="pl-empty">当前密钥为村级权限，仅能在本村（' + esc(myVillage) + '）添加巡查记录</div>';
+  }
 
   // 巡查记录列表
   h += '<div class="patrol-list">';
@@ -1745,7 +1755,7 @@ function renderPatrolTab(vid) {
   } else {
     records.forEach(function(r) {
       h += '<div class="pl-item">';
-      h += '<button class="pl-del" onclick="event.stopPropagation();delPatrol(\'' + escAttr(r.id) + '\',\'' + escAttr(vid) + '\')">&#x2716;</button>';
+      if (canDel) h += '<button class="pl-del" onclick="event.stopPropagation();delPatrol(\'' + escAttr(r.id) + '\',\'' + escAttr(vid) + '\')">&#x2716;</button>';
       h += '<div class="pl-time">' + esc(r.time) + '</div>';
       h += '<div class="pl-inspector">&#x1F464; ' + esc(r.inspector || '未知') + ' <span style="color:#94a3b8;font-weight:400;">' + esc(r.weather || '') + '</span></div>';
       h += '<div class="pl-loc">&#x1F4CD; ' + esc(r.locationText || '') + '</div>';
@@ -1800,6 +1810,12 @@ function onPatrolPhotoSelect(input) {
 
 // 提交巡查记录
 function submitPatrol(vid) {
+  var role = sessionStorage.getItem('xyc_role') || '';
+  var myVillage = sessionStorage.getItem('xyc_village') || '';
+  if (role === '村级' && myVillage !== vid) {
+    showPfMsg('村级密钥仅能在本村（' + myVillage + '）添加巡查记录', 'error');
+    return;
+  }
   var inspector = document.getElementById('pf-inspector');
   var desc = document.getElementById('pf-desc');
   var inspectorVal = inspector ? inspector.value.trim() : '';
@@ -1855,8 +1871,12 @@ function submitPatrol(vid) {
   });
 }
 
-// 删除巡查记录
+// 删除巡查记录（仅管理员）
 function delPatrol(id, vid) {
+  if (sessionStorage.getItem('xyc_role') !== '管理员') {
+    alert('仅管理员可删除巡查记录');
+    return;
+  }
   if (!confirm('确定删除这条巡查记录吗？')) return;
   deletePatrolRecord(id, vid, function() {
     refreshPatrolList(vid);
@@ -1865,6 +1885,7 @@ function delPatrol(id, vid) {
 
 // 刷新巡查记录列表（云端优先）
 function refreshPatrolList(vid) {
+  var canDel = sessionStorage.getItem('xyc_role') === '管理员';
   getPatrolRecords(vid, function(records) {
     var listEl = document.querySelector('.patrol-list');
     if (!listEl) return;
@@ -1874,7 +1895,7 @@ function refreshPatrolList(vid) {
     } else {
       records.forEach(function(r) {
         h += '<div class="pl-item">';
-        h += '<button class="pl-del" onclick="event.stopPropagation();delPatrol(\'' + escAttr(r.id) + '\',\'' + escAttr(vid) + '\')">&#x2716;</button>';
+        if (canDel) h += '<button class="pl-del" onclick="event.stopPropagation();delPatrol(\'' + escAttr(r.id) + '\',\'' + escAttr(vid) + '\')">&#x2716;</button>';
         h += '<div class="pl-time">' + esc(r.time) + '</div>';
         h += '<div class="pl-inspector">&#x1F464; ' + esc(r.inspector || '未知') + ' <span style="color:#94a3b8;font-weight:400;">' + esc(r.weather || '') + '</span></div>';
         h += '<div class="pl-loc">&#x1F4CD; ' + esc(r.locationText || '') + '</div>';
