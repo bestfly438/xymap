@@ -261,7 +261,7 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 
 /* ===== 子菜单面板（村级详情） ===== */
 .vp-tabs {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;
   padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.06);
   background: rgba(0,0,0,0.15);
 }
@@ -358,18 +358,158 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
   text-align: center; padding: 24px 10px; color: #555; font-size: 12px;
 }
 
-/* ===== 手机适配 ===== */
-@media (max-width: 768px) {
-  #topbar h1 { font-size: 13px; }
-  #topbar .logo-icon { width: 28px; height: 28px; font-size: 14px; }
-  #village-info { width: calc(100vw - 32px); left: 16px; right: 16px; max-height: 50vh; }
-  #legend { bottom: 80px; font-size: 11px; padding: 8px 12px; }
-  #layer-ctrl { right: 8px; bottom: 80px; }
-  #layer-ctrl button { width: 36px; height: 36px; font-size: 14px; border-radius: 8px; }
-  #stats-panel { top: 60px; left: 8px; }
-  #stats-panel .stat-card { padding: 8px 12px; }
-  #stats-panel .stat-card .stat-num { font-size: 18px; }
+/* ===== PC/手机切换按钮 ===== */
+#mode-toggle {
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  color: #94a3b8; padding: 5px 10px; border-radius: 6px; font-size: 14px; cursor: pointer;
+  transition: all 0.2s; display: flex; align-items: center; gap: 4px; white-space: nowrap;
 }
+#mode-toggle:hover { background: rgba(255,255,255,0.1); color: #e2e8f0; }
+#mode-toggle.mobile-active { background: rgba(59,130,246,0.15); color: #60a5fa; border-color: rgba(59,130,246,0.3); }
+
+/* ===== 巡查记录模块 ===== */
+.patrol-form { padding: 2px 0; }
+.patrol-form .pf-row { margin-bottom: 12px; }
+.patrol-form .pf-label {
+  font-size: 11px; color: #64748b; margin-bottom: 5px; font-weight: 600;
+  display: flex; align-items: center; gap: 4px;
+}
+.patrol-form .pf-input {
+  width: 100%; padding: 9px 11px; border-radius: 8px; font-size: 13px;
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  color: #e2e8f0; outline: none; font-family: inherit; transition: border-color 0.2s;
+}
+.patrol-form .pf-input:focus { border-color: #3b82f6; }
+.patrol-form textarea.pf-input { min-height: 80px; resize: vertical; }
+.patrol-form .pf-auto {
+  padding: 9px 11px; border-radius: 8px; font-size: 12px;
+  background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15);
+  color: #60a5fa; line-height: 1.5;
+}
+.patrol-form .pf-auto .pf-auto-label { font-size: 10px; color: #64748b; }
+.patrol-form .pf-photo-preview {
+  width: 100%; max-height: 160px; border-radius: 8px; object-fit: cover;
+  margin-top: 8px; display: none; border: 1px solid rgba(255,255,255,0.1);
+}
+.patrol-form .pf-photo-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer;
+  background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25);
+  color: #60a5fa; transition: all 0.2s;
+}
+.patrol-form .pf-photo-btn:hover { background: rgba(59,130,246,0.2); }
+.patrol-form .pf-submit {
+  width: 100%; padding: 11px; border-radius: 10px; font-size: 14px; font-weight: 600;
+  cursor: pointer; border: none; color: #fff; transition: all 0.2s;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  box-shadow: 0 0 16px rgba(59,130,246,0.25);
+}
+.patrol-form .pf-submit:hover { transform: translateY(-1px); box-shadow: 0 0 24px rgba(59,130,246,0.4); }
+.patrol-form .pf-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.patrol-form .pf-export {
+  width: 100%; padding: 9px; border-radius: 10px; font-size: 13px; font-weight: 600;
+  cursor: pointer; border: 1px solid rgba(34,197,94,0.3); color: #4ade80;
+  background: rgba(34,197,94,0.08); margin-top: 8px; transition: all 0.2s;
+}
+.patrol-form .pf-export:hover { background: rgba(34,197,94,0.18); }
+.patrol-form .pf-msg {
+  text-align: center; font-size: 12px; margin-top: 8px; min-height: 18px; transition: all 0.3s;
+}
+.patrol-form .pf-msg.success { color: #4ade80; }
+.patrol-form .pf-msg.error { color: #f87171; }
+
+/* 巡查记录列表 */
+.patrol-list { margin-top: 14px; }
+.patrol-list .pl-title {
+  font-size: 11px; color: #64748b; letter-spacing: 1px; font-weight: 600;
+  margin-bottom: 8px; display: flex; align-items: center; gap: 6px;
+}
+.patrol-list .pl-item {
+  padding: 8px 10px; margin-bottom: 6px; border-radius: 8px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+  font-size: 12px; line-height: 1.6;
+}
+.patrol-list .pl-item .pl-time { color: #64748b; font-size: 11px; }
+.patrol-list .pl-item .pl-inspector { color: #60a5fa; font-weight: 600; }
+.patrol-list .pl-item .pl-loc { color: #94a3b8; }
+.patrol-list .pl-item .pl-desc { color: #94a3b8; margin-top: 2px; }
+.patrol-list .pl-item .pl-photo {
+  width: 60px; height: 60px; border-radius: 6px; object-fit: cover;
+  margin-top: 4px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1);
+  transition: transform 0.2s;
+}
+.patrol-list .pl-item .pl-photo:hover { transform: scale(1.05); }
+.patrol-list .pl-empty { text-align: center; padding: 16px; color: #555; font-size: 12px; }
+.patrol-list .pl-del {
+  float: right; background: none; border: none; color: #64748b; cursor: pointer;
+  font-size: 14px; padding: 2px 6px; border-radius: 4px; transition: all 0.2s;
+}
+.patrol-list .pl-del:hover { color: #f87171; background: rgba(239,68,68,0.1); }
+
+/* 照片全屏预览 */
+.photo-overlay {
+  position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.9);
+  display: none; align-items: center; justify-content: center; cursor: pointer;
+}
+.photo-overlay.show { display: flex; }
+.photo-overlay img { max-width: 95vw; max-height: 95vh; border-radius: 8px; }
+
+/* ===== 手机端适配（手动切换） ===== */
+body.mobile-mode #topbar { height: 46px; padding: 0 10px; }
+body.mobile-mode #topbar h1 { font-size: 12px; }
+body.mobile-mode #topbar .logo-icon { width: 28px; height: 28px; font-size: 14px; }
+body.mobile-mode #topbar .logo-area { gap: 6px; }
+body.mobile-mode #topbar .village-select { font-size: 11px; padding: 5px 10px; }
+body.mobile-mode #topbar .logout-btn { font-size: 11px; padding: 5px 10px; }
+body.mobile-mode #topbar .back-link { font-size: 11px; padding: 3px 6px; }
+body.mobile-mode #mode-toggle { font-size: 12px; padding: 4px 8px; }
+
+body.mobile-mode #village-dropdown {
+  top: 48px; right: 8px; left: 8px; min-width: auto; max-height: 50vh;
+  border-radius: 0 0 12px 12px;
+}
+body.mobile-mode #village-dropdown .v-item { padding: 14px 16px; font-size: 14px; }
+
+body.mobile-mode #side-panel {
+  top: auto; bottom: 0; left: 0; right: 0; width: 100%; max-height: 55vh;
+  border-radius: 16px 16px 0 0; z-index: 1001;
+}
+body.mobile-mode #side-panel-toggle {
+  top: auto; bottom: 20px; left: 16px; z-index: 1002;
+  width: 44px; height: 44px; border-radius: 50%; font-size: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+}
+body.mobile-mode #side-panel .vp-tabs { grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 8px; }
+body.mobile-mode #side-panel .vp-tab { font-size: 11px; padding: 8px 4px; }
+body.mobile-mode #side-panel .vp-tab .vp-tab-icon { font-size: 14px; }
+
+body.mobile-mode #village-info {
+  top: auto; bottom: 0; left: 0; right: 0; width: 100%; max-height: 55vh;
+  border-radius: 16px 16px 0 0; z-index: 1001;
+}
+body.mobile-mode #village-info .vp-tabs { grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 8px; }
+body.mobile-mode #village-info .vp-tab { font-size: 11px; padding: 8px 4px; }
+
+body.mobile-mode #stats-panel { top: 52px; left: 8px; gap: 4px; }
+body.mobile-mode #stats-panel .stat-card { padding: 6px 10px; min-width: 60px; border-radius: 8px; }
+body.mobile-mode #stats-panel .stat-card .stat-num { font-size: 16px; }
+body.mobile-mode #stats-panel .stat-card .stat-label { font-size: 10px; }
+
+body.mobile-mode #legend { bottom: 85px; left: 8px; font-size: 10px; padding: 8px 10px; border-radius: 8px; }
+body.mobile-mode #legend .l-item { margin-bottom: 4px; gap: 5px; }
+
+body.mobile-mode #layer-ctrl { right: 8px; bottom: 85px; flex-direction: row; gap: 4px; }
+body.mobile-mode #layer-ctrl button { width: 34px; height: 34px; font-size: 13px; border-radius: 8px; }
+
+body.mobile-mode .leaflet-control-zoom { display: none; }
+body.mobile-mode .leaflet-popup-content-wrapper { max-width: 85vw !important; }
+body.mobile-mode .popup-content { min-width: 200px; max-width: 85vw; font-size: 12px; }
+body.mobile-mode .popup-content .pop-title { font-size: 14px; }
+
+body.mobile-mode .patrol-form .pf-input { font-size: 16px; padding: 10px 12px; }
+body.mobile-mode .patrol-form .pf-submit { font-size: 16px; padding: 13px; }
+body.mobile-mode .patrol-list .pl-item { font-size: 13px; }
+body.mobile-mode .patrol-list .pl-del { font-size: 18px; padding: 4px 10px; }
 </style>
 </head>
 <body>
@@ -383,6 +523,7 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
   </div>
   <div style="display:flex;align-items:center;gap:10px">
     <a href="dashboard.html" class="back-link">&#x2190; 返回看板</a>
+    <button id="mode-toggle" title="切换PC/手机版" onclick="toggleMode()">&#x1F4F1;</button>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
       <span class="arrow">&#x25BC;</span>
@@ -445,6 +586,10 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 
 <div id="status"></div>
 
+<div class="photo-overlay" id="photoOverlay" onclick="closePhotoPreview()">
+  <img id="photoPreviewImg" src="" alt="巡查照片" />
+</div>
+
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="keys.js"></script>
 <script src="js_data/village_centers.js"></script>
@@ -466,19 +611,16 @@ if (sessionStorage.getItem('xyc_auth') !== '1') {
 }
 
 // ========== 村庄配置 ==========
-// SHP数据中的村名映射（SHP名 → 完整名）
 var SHP_VILLAGE_MAP = {
   '常坪村': '常家坪村',
   '河坝村': '杨家河坝村'
 };
 
-// 完整名 → SHP名
 var REVERSE_SHP_MAP = {
   '常家坪村': '常坪村',
   '杨家河坝村': '河坝村'
 };
 
-// 从 village_centers.js 动态构建村庄列表
 var VILLAGE_ORDER = ['上塬村', '东塬村', '刘家湾社区', '孟塬村', '常家坪村', '新塬村', '杨坪村', '杨家河坝村', '甘岔村', '老庄村'];
 var VILLAGES = [{ id: 'all', name: '全部村庄', center: [36.15, 105.38], zoom: 13 }];
 
@@ -498,7 +640,6 @@ var currentVillageId = 'all';
 var MAP_BOUNDS = [[35.5, 104.5], [37.0, 106.8]];
 
 // ========== 工具函数 ==========
-// 各村切坡建房户数 / 隐患点数量（来源：《新塬镇一页纸数据》Excel，非矢量点位）
 function getVillagePlanStats(vname) {
   var stats = { hazards: 0, households: 0, people: 0 };
   if (typeof VILLAGE_PLANS === 'undefined' || !VILLAGE_PLANS[vname]) return stats;
@@ -566,12 +707,10 @@ function convertGeoJSON(geojson) {
   });
 }
 
-// SHP村名 → 完整村名
 function shpToFullName(shpName) {
   return SHP_VILLAGE_MAP[shpName] || shpName;
 }
 
-// 完整村名 → SHP村名
 function fullToShpName(fullName) {
   return REVERSE_SHP_MAP[fullName] || fullName;
 }
@@ -592,17 +731,14 @@ function initMap() {
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-  // 高德卫星图
   L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}', {
     subdomains: ['1','2','3','4'], maxZoom: 18, minZoom: 3
   }).addTo(map);
 
-  // 高德路网标注
   L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}', {
     subdomains: ['1','2','3','4'], maxZoom: 18, minZoom: 3, opacity: 0.6
   }).addTo(map);
 
-  // 初始化图层组
   layers.hazards = L.layerGroup().addTo(map);
   layers.routes = L.layerGroup().addTo(map);
   layers.sites = L.layerGroup().addTo(map);
@@ -614,7 +750,6 @@ function initMap() {
   layers.majorRoads = L.layerGroup().addTo(map);
   layers.placeNames = L.layerGroup().addTo(map);
 
-  // 加载数据
   loadHazardPoints();
   loadHazardAreas();
   loadEvacuationRoutes();
@@ -624,14 +759,12 @@ function initMap() {
   loadThreatenedAreas();
   loadLargeLayers();
 
-  // 构建村庄下拉
   buildVillageDropdown();
   updateStats();
 
   showStatus('地图加载完成');
 }
 
-// ========== 加载数据图层 ==========
 function loadHazardPoints() {
   if (typeof DATA_HAZARD_POINTS === 'undefined') return;
   var data = convertGeoJSON(DATA_HAZARD_POINTS);
@@ -653,39 +786,24 @@ function loadHazardPoints() {
     onEachFeature: function(feature, layer) {
       var p = feature.properties;
       var risk = p.risk_level || '';
-
-      // 风险等级徽章
       var badgeClass = 'info';
       if (risk.indexOf('严重') >= 0 || risk.indexOf('重大') >= 0) badgeClass = 'danger';
       else if (risk.indexOf('一般') >= 0) badgeClass = 'warn';
 
       var html = '<div class="popup-content">';
       html += '<div class="pop-title">' + (p.HZXM || '隐患点') + ' 的家</div>';
-
-      // 户主信息
       if (p.HZXM) html += '<div class="pop-row"><span class="pop-label">户主</span><span class="pop-val">' + p.HZXM + '</span></div>';
       if (p.phone) html += '<div class="pop-row"><span class="pop-label">电话</span><span class="pop-val">' + p.phone + '</span></div>';
-
-      // 村组
       var cz = shpToFullName(p.CZ) || p.CZ;
       if (cz) html += '<div class="pop-row"><span class="pop-label">所属村组</span><span class="pop-val">' + cz + '</span></div>';
-
-      // 风险等级
       if (risk) html += '<div class="pop-row"><span class="pop-label">风险等级</span><span class="pop-val"><span class="pop-badge ' + badgeClass + '">' + risk + '</span></span></div>';
-
-      // 责任人
       if (p.resp_person) html += '<div class="pop-row"><span class="pop-label">避险责任人</span><span class="pop-val">' + p.resp_person + '</span></div>';
       if (p.resp_phone) html += '<div class="pop-row"><span class="pop-label">责任人电话</span><span class="pop-val">' + p.resp_phone + '</span></div>';
-
-      // 避险点
       if (p.evac_site) html += '<div class="pop-row"><span class="pop-label">避险点</span><span class="pop-val">' + p.evac_site + '</span></div>';
-
-      // 隐患详情（YHXX原始文本）
       if (p.YHXX) {
         var desc = p.YHXX.replace(/\n/g, '<br>');
         html += '<div class="pop-desc">' + desc + '</div>';
       }
-
       html += '</div>';
       layer.bindPopup(html, { maxWidth: 400, className: 'custom-popup' });
     }
@@ -805,7 +923,6 @@ function loadLargeLayers() {
     })
     .catch(function() { console.log('道路数据加载失败'); });
 
-  // 主要道路（省道县道）
   fetch('js_data/major_roads.js')
     .then(function(r) { return r.text(); })
     .then(function(js) {
@@ -819,14 +936,12 @@ function loadLargeLayers() {
     })
     .catch(function() { console.log('主要道路数据加载失败'); });
 
-  // 地名标注
   fetch('js_data/place_names.js')
     .then(function(r) { return r.text(); })
     .then(function(js) {
       eval(js);
       if (typeof DATA_PLACE_NAMES !== 'undefined') {
         var data = convertGeoJSON(DATA_PLACE_NAMES);
-        // 只加载新塬镇范围内的地名（约36.0-36.3, 105.2-105.5）
         var filtered = { type: 'FeatureCollection', features: data.features.filter(function(f) {
           var c = f.geometry.coordinates;
           return c[0] > 105.2 && c[0] < 105.5 && c[1] > 35.95 && c[1] < 36.35;
@@ -882,7 +997,6 @@ function selectVillage(id, name) {
   document.getElementById('village-dropdown').classList.remove('show');
   document.getElementById('villageSelect').classList.remove('open');
 
-  // 更新下拉高亮
   document.querySelectorAll('#village-dropdown .v-item').forEach(function(el) {
     el.classList.remove('active');
     if (el.getAttribute('data-vid') === id) el.classList.add('active');
@@ -893,7 +1007,6 @@ function selectVillage(id, name) {
     map.flyTo(v.center, v.zoom, { duration: 1 });
   }
 
-  // 显示/隐藏村庄信息面板
   if (id === 'all') {
     closeVillageInfo();
     if (sidePanelOpen) showSidePanelOverview();
@@ -903,12 +1016,10 @@ function selectVillage(id, name) {
   }
 }
 
-// ========== 村庄信息面板（子菜单模板） ==========
 function esc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// 从文本提取电话号码
 function extractPhone(str) {
   if (!str) return '';
   var m = str.match(/\d{11}|(?:\d{3,4})-?\d{7,8}/);
@@ -921,7 +1032,8 @@ var VP_TABS = [
   ['when', '&#x23F0;', '何时转'],
   ['where', '&#x1F3E0;', '转何处'],
   ['return', '&#x1F6AB;', '不擅返'],
-  ['phone', '&#x1F4DE;', '应急电话']
+  ['phone', '&#x1F4DE;', '应急电话'],
+  ['patrol', '&#x1F4CB;', '巡查记录']
 ];
 
 function renderVpTabContent(vid, tab, plan) {
@@ -1014,10 +1126,13 @@ function renderVpTabContent(vid, tab, plan) {
     });
     return h;
   }
+
+  if (tab === 'patrol') {
+    return renderPatrolTab(vid);
+  }
   return '';
 }
 
-// 渲染村级详情面板（子菜单）
 function renderVillagePanel(vid, container) {
   var plan = (typeof VILLAGE_PLANS !== 'undefined' && VILLAGE_PLANS[vid]) ? VILLAGE_PLANS[vid] : null;
   var contentId = 'vp-content-' + encodeURIComponent(vid);
@@ -1065,7 +1180,6 @@ function closeVillageInfo() {
   if (sidePanelOpen) showSidePanelOverview();
 }
 
-// ========== 图层切换 ==========
 function toggleLayer(name) {
   layerVisible[name] = !layerVisible[name];
   var visible = layerVisible[name];
@@ -1090,7 +1204,6 @@ function toggleLayer(name) {
   }
 }
 
-// ========== 定位 ==========
 function locateMe() {
   if (!navigator.geolocation) { showStatus('浏览器不支持定位'); return; }
   showStatus('正在获取位置...');
@@ -1189,7 +1302,6 @@ function showSidePanelVillage(vid) {
   if (sidePanelOpen) panel.classList.add('show');
 }
 
-// ========== 统计 ==========
 function updateStats() {
   var hazardsTotal = 0;
   VILLAGE_ORDER.forEach(function(vname) { hazardsTotal += getVillagePlanStats(vname).hazards; });
@@ -1207,14 +1319,376 @@ function updateStats() {
   document.getElementById('stat-villages').textContent = VILLAGES.length - 1;
 }
 
-// ========== 退出 ==========
 function doLogout() {
   sessionStorage.removeItem('xyc_auth');
   sessionStorage.removeItem('xyc_key');
   window.location.replace('index.html');
 }
 
-// ========== 关闭下拉（点击外部） ==========
+// ========== PC/手机端切换 ==========
+var isMobileMode = false;
+
+function initMode() {
+  var saved = localStorage.getItem('xyc_mode');
+  if (saved === 'mobile') {
+    isMobileMode = true;
+  } else if (saved === 'pc') {
+    isMobileMode = false;
+  } else {
+    isMobileMode = window.innerWidth <= 768;
+  }
+  applyMode();
+}
+
+function toggleMode() {
+  isMobileMode = !isMobileMode;
+  localStorage.setItem('xyc_mode', isMobileMode ? 'mobile' : 'pc');
+  applyMode();
+}
+
+function applyMode() {
+  var btn = document.getElementById('mode-toggle');
+  if (isMobileMode) {
+    document.body.classList.add('mobile-mode');
+    btn.innerHTML = '&#x1F5A5;';
+    btn.classList.add('mobile-active');
+    btn.title = '切换为PC版';
+  } else {
+    document.body.classList.remove('mobile-mode');
+    btn.innerHTML = '&#x1F4F1;';
+    btn.classList.remove('mobile-active');
+    btn.title = '切换为手机版';
+  }
+}
+
+// ========== 巡查记录模块 ==========
+var PATROL_STORAGE_KEY = 'xyc_patrol_records';
+
+function getPatrolRecords(vname) {
+  try {
+    var all = JSON.parse(localStorage.getItem(PATROL_STORAGE_KEY) || '[]');
+    return all.filter(function(r) { return r.village === vname; });
+  } catch(e) { return []; }
+}
+
+function savePatrolRecord(record) {
+  try {
+    var all = JSON.parse(localStorage.getItem(PATROL_STORAGE_KEY) || '[]');
+    all.unshift(record);
+    localStorage.setItem(PATROL_STORAGE_KEY, JSON.stringify(all));
+    return true;
+  } catch(e) { return false; }
+}
+
+function deletePatrolRecord(id, vname) {
+  try {
+    var all = JSON.parse(localStorage.getItem(PATROL_STORAGE_KEY) || '[]');
+    all = all.filter(function(r) { return !(r.id === id && r.village === vname); });
+    localStorage.setItem(PATROL_STORAGE_KEY, JSON.stringify(all));
+    return true;
+  } catch(e) { return false; }
+}
+
+function compressPhoto(file, callback) {
+  if (!file) { callback(''); return; }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var maxW = 800;
+      var scale = Math.min(1, maxW / img.width);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      callback(canvas.toDataURL('image/jpeg', 0.55));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function getWeatherText() {
+  if (typeof weatherCache !== 'undefined' && weatherCache) {
+    var info = wmoInfo(weatherCache.weathercode);
+    return info[1] + ' ' + info[0] + ' ' + Math.round(weatherCache.temperature_2m) + '°C';
+  }
+  return '天气数据获取中...';
+}
+
+var weatherCache = null;
+
+function fetchPatrolWeather(lat, lng) {
+  var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lng +
+    '&current=temperature_2m,weathercode,wind_speed_10m&timezone=Asia%2FShanghai';
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data && data.current) {
+        weatherCache = data.current;
+        var el = document.getElementById('patrol-weather-' + escAttr(currentPatrolVid));
+        if (el) el.textContent = getWeatherText();
+      }
+    })
+    .catch(function() {});
+}
+
+var WMO_MAP = {
+  0: ['晴', '&#x2600;'], 1: ['晴间多云', '&#x26C5;'], 2: ['多云', '&#x26C5;'], 3: ['阴', '&#x2601;'],
+  45: ['雾', '&#x1F32B;'], 48: ['雾凇', '&#x1F32B;'],
+  51: ['毛毛雨', '&#x1F327;'], 53: ['毛毛雨', '&#x1F327;'], 55: ['毛毛雨', '&#x1F327;'],
+  56: ['冻雨', '&#x1F327;'], 57: ['冻雨', '&#x1F327;'],
+  61: ['小雨', '&#x1F327;'], 63: ['中雨', '&#x1F327;'], 65: ['大雨', '&#x1F327;'],
+  66: ['冻雨', '&#x1F327;'], 67: ['冻雨', '&#x1F327;'],
+  71: ['小雪', '&#x1F328;'], 73: ['中雪', '&#x1F328;'], 75: ['大雪', '&#x1F328;'],
+  77: ['雪粒', '&#x1F328;'],
+  80: ['阵雨', '&#x1F327;'], 81: ['阵雨', '&#x1F327;'], 82: ['强阵雨', '&#x1F327;'],
+  85: ['阵雪', '&#x1F328;'], 86: ['阵雪', '&#x1F328;'],
+  95: ['雷阵雨', '&#x26A1;'], 96: ['雷雨伴冰雹', '&#x26A1;'], 99: ['雷雨伴冰雹', '&#x26A1;']
+};
+function wmoInfo(code) { return WMO_MAP[code] || ['未知', '&#x2600;']; }
+
+var currentPatrolVid = '';
+var currentPatrolLocation = null;
+
+function escAttr(s) { return String(s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+function renderPatrolTab(vid) {
+  currentPatrolVid = vid;
+  var records = getPatrolRecords(vid);
+  var lastInspector = localStorage.getItem('xyc_last_inspector') || '';
+
+  var h = '<div class="patrol-form">';
+
+  h += '<div class="pf-row">';
+  h += '<div class="pf-label">&#x1F464; 巡查人姓名</div>';
+  h += '<input class="pf-input" id="pf-inspector" value="' + esc(lastInspector) + '" placeholder="请输入巡查人姓名">';
+  h += '</div>';
+
+  h += '<div class="pf-row">';
+  h += '<div class="pf-label">&#x1F4CD; 巡查点位 <span style="font-weight:400;font-size:10px;">（点击获取当前位置）</span></div>';
+  h += '<div class="pf-auto" id="pf-location" style="cursor:pointer;" onclick="getPatrolLocation()">';
+  if (currentPatrolLocation) {
+    h += '经度：' + currentPatrolLocation.lng.toFixed(6) + '，纬度：' + currentPatrolLocation.lat.toFixed(6);
+  } else {
+    h += '点击获取GPS位置...';
+  }
+  h += '</div>';
+  h += '</div>';
+
+  h += '<div class="pf-row">';
+  h += '<div class="pf-label">&#x2600; 天气情况</div>';
+  h += '<div class="pf-auto" id="patrol-weather-' + escAttr(vid) + '">' + getWeatherText() + '</div>';
+  h += '</div>';
+
+  h += '<div class="pf-row">';
+  h += '<div class="pf-label">&#x1F4F7; 巡查照片</div>';
+  h += '<input type="file" id="pf-photo-input" accept="image/*" capture="environment" style="display:none;" onchange="onPatrolPhotoSelect(this)">';
+  h += '<label class="pf-photo-btn" for="pf-photo-input">&#x1F4F7; 拍照/选择照片</label>';
+  h += '<img class="pf-photo-preview" id="pf-photo-preview" src="" alt="照片预览">';
+  h += '</div>';
+
+  h += '<div class="pf-row">';
+  h += '<div class="pf-label">&#x1F4DD; 巡查情况描述</div>';
+  h += '<textarea class="pf-input" id="pf-desc" placeholder="请描述巡查情况（如：隐患点状态、有无异常、需要关注的事项等）"></textarea>';
+  h += '</div>';
+
+  h += '<button class="pf-submit" onclick="submitPatrol(\'' + escAttr(vid) + '\')">&#x2705; 提交巡查记录</button>';
+  h += '<div class="pf-msg" id="pf-msg"></div>';
+
+  h += '<button class="pf-export" onclick="exportPatrolCSV(\'' + escAttr(vid) + '\')">&#x1F4E5; 导出本村巡查记录（Excel）</button>';
+
+  h += '</div>';
+
+  h += '<div class="patrol-list">';
+  h += '<div class="pl-title">&#x1F4CB; 历史巡查记录（' + records.length + '条）</div>';
+  if (records.length === 0) {
+    h += '<div class="pl-empty">暂无巡查记录</div>';
+  } else {
+    records.forEach(function(r) {
+      h += '<div class="pl-item">';
+      h += '<button class="pl-del" onclick="event.stopPropagation();delPatrol(' + r.id + ',\'' + escAttr(vid) + '\')">&#x2716;</button>';
+      h += '<div class="pl-time">' + esc(r.time) + '</div>';
+      h += '<div class="pl-inspector">&#x1F464; ' + esc(r.inspector || '未知') + ' <span style="color:#94a3b8;font-weight:400;">' + esc(r.weather || '') + '</span></div>';
+      h += '<div class="pl-loc">&#x1F4CD; ' + esc(r.locationText || '') + '</div>';
+      if (r.description) h += '<div class="pl-desc">' + esc(r.description) + '</div>';
+      if (r.photo) h += '<img class="pl-photo" src="' + r.photo + '" onclick="event.stopPropagation();previewPhoto(\'' + escAttr(r.photo) + '\')" alt="巡查照片">';
+      h += '</div>';
+    });
+  }
+  h += '</div>';
+
+  return h;
+}
+
+function getPatrolLocation() {
+  if (!navigator.geolocation) {
+    showPfMsg('浏览器不支持定位功能', 'error');
+    return;
+  }
+  var el = document.getElementById('pf-location');
+  if (el) el.textContent = '正在获取位置...';
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    currentPatrolLocation = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    if (el) el.textContent = '经度：' + pos.coords.longitude.toFixed(6) + '，纬度：' + pos.coords.latitude.toFixed(6);
+    fetchPatrolWeather(pos.coords.latitude, pos.coords.longitude);
+  }, function(err) {
+    if (el) el.textContent = '获取位置失败，请重试';
+    showPfMsg('获取位置失败，请检查GPS权限', 'error');
+  }, { enableHighAccuracy: true, timeout: 10000 });
+}
+
+var patrolPhotoData = '';
+
+function onPatrolPhotoSelect(input) {
+  var file = input.files[0];
+  if (!file) return;
+  showPfMsg('正在压缩照片...', '');
+  compressPhoto(file, function(dataUrl) {
+    patrolPhotoData = dataUrl;
+    var preview = document.getElementById('pf-photo-preview');
+    if (preview && dataUrl) {
+      preview.src = dataUrl;
+      preview.style.display = 'block';
+    }
+    showPfMsg('照片已压缩（约' + Math.round(dataUrl.length / 1024) + 'KB）', 'success');
+  });
+}
+
+function submitPatrol(vid) {
+  var inspector = document.getElementById('pf-inspector');
+  var desc = document.getElementById('pf-desc');
+  var inspectorVal = inspector ? inspector.value.trim() : '';
+  var descVal = desc ? desc.value.trim() : '';
+
+  if (!inspectorVal) { showPfMsg('请填写巡查人姓名', 'error'); return; }
+  if (!currentPatrolLocation) { showPfMsg('请先获取巡查点位', 'error'); return; }
+
+  var btn = document.querySelector('.pf-submit');
+  if (btn) { btn.disabled = true; btn.textContent = '提交中...'; }
+
+  var now = new Date();
+  var timeStr = now.getFullYear() + '-' +
+    String(now.getMonth()+1).padStart(2,'0') + '-' +
+    String(now.getDate()).padStart(2,'0') + ' ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0') + ':' +
+    String(now.getSeconds()).padStart(2,'0');
+
+  var record = {
+    id: now.getTime(),
+    village: vid,
+    inspector: inspectorVal,
+    location: currentPatrolLocation,
+    locationText: '经度' + currentPatrolLocation.lng.toFixed(6) + ' 纬度' + currentPatrolLocation.lat.toFixed(6),
+    weather: getWeatherText(),
+    photo: patrolPhotoData,
+    description: descVal,
+    time: timeStr
+  };
+
+  if (savePatrolRecord(record)) {
+    localStorage.setItem('xyc_last_inspector', inspectorVal);
+    showPfMsg('巡查记录已保存！', 'success');
+    patrolPhotoData = '';
+    currentPatrolLocation = null;
+    var preview = document.getElementById('pf-photo-preview');
+    if (preview) { preview.src = ''; preview.style.display = 'none'; }
+    var photoInput = document.getElementById('pf-photo-input');
+    if (photoInput) photoInput.value = '';
+    if (desc) desc.value = '';
+    var locEl = document.getElementById('pf-location');
+    if (locEl) locEl.textContent = '点击获取GPS位置...';
+    refreshPatrolList(vid);
+  } else {
+    showPfMsg('保存失败，请检查存储空间', 'error');
+  }
+  if (btn) { btn.disabled = false; btn.textContent = '✅ 提交巡查记录'; }
+}
+
+function delPatrol(id, vid) {
+  if (!confirm('确定删除这条巡查记录吗？')) return;
+  if (deletePatrolRecord(id, vid)) {
+    refreshPatrolList(vid);
+  }
+}
+
+function refreshPatrolList(vid) {
+  var records = getPatrolRecords(vid);
+  var listEl = document.querySelector('.patrol-list');
+  if (!listEl) return;
+  var h = '<div class="pl-title">&#x1F4CB; 历史巡查记录（' + records.length + '条）</div>';
+  if (records.length === 0) {
+    h += '<div class="pl-empty">暂无巡查记录</div>';
+  } else {
+    records.forEach(function(r) {
+      h += '<div class="pl-item">';
+      h += '<button class="pl-del" onclick="event.stopPropagation();delPatrol(' + r.id + ',\'' + escAttr(vid) + '\')">&#x2716;</button>';
+      h += '<div class="pl-time">' + esc(r.time) + '</div>';
+      h += '<div class="pl-inspector">&#x1F464; ' + esc(r.inspector || '未知') + ' <span style="color:#94a3b8;font-weight:400;">' + esc(r.weather || '') + '</span></div>';
+      h += '<div class="pl-loc">&#x1F4CD; ' + esc(r.locationText || '') + '</div>';
+      if (r.description) h += '<div class="pl-desc">' + esc(r.description) + '</div>';
+      if (r.photo) h += '<img class="pl-photo" src="' + r.photo + '" onclick="event.stopPropagation();previewPhoto(\'' + escAttr(r.photo) + '\')" alt="巡查照片">';
+      h += '</div>';
+    });
+  }
+  listEl.innerHTML = h;
+}
+
+function previewPhoto(dataUrl) {
+  var overlay = document.getElementById('photoOverlay');
+  var img = document.getElementById('photoPreviewImg');
+  if (overlay && img) {
+    img.src = dataUrl;
+    overlay.classList.add('show');
+  }
+}
+
+function closePhotoPreview() {
+  var overlay = document.getElementById('photoOverlay');
+  if (overlay) overlay.classList.remove('show');
+}
+
+function showPfMsg(msg, type) {
+  var el = document.getElementById('pf-msg');
+  if (el) {
+    el.textContent = msg;
+    el.className = 'pf-msg ' + (type || '');
+    if (type === 'success') {
+      setTimeout(function() { el.textContent = ''; el.className = 'pf-msg'; }, 3000);
+    }
+  }
+}
+
+function exportPatrolCSV(vid) {
+  var records = getPatrolRecords(vid);
+  if (records.length === 0) {
+    alert('该村暂无巡查记录可导出');
+    return;
+  }
+  var BOM = '\uFEFF';
+  var header = '序号,村名,巡查人,巡查点位（经度）,巡查点位（纬度）,天气情况,巡查情况描述,巡查时间\n';
+  var rows = '';
+  records.forEach(function(r, i) {
+    var desc = (r.description || '').replace(/"/g, '""');
+    rows += (i + 1) + ',' + r.village + ',' + (r.inspector || '') + ',' +
+      (r.location ? r.location.lng.toFixed(6) : '') + ',' +
+      (r.location ? r.location.lat.toFixed(6) : '') + ',' +
+      (r.weather || '').replace(/,/g, ' ') + ',"' + desc + '",' + r.time + '\n';
+  });
+  var csv = BOM + header + rows;
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = vid + '_巡查记录_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
 document.addEventListener('click', function(e) {
   var dd = document.getElementById('village-dropdown');
   var sel = document.getElementById('villageSelect');
@@ -1224,10 +1698,9 @@ document.addEventListener('click', function(e) {
   }
 });
 
-// ========== 启动 ==========
 window.onload = function() {
+  initMode();
   initMap();
-  // 如果从仪表盘跳转过来，自动选中村庄
   var preVillage = sessionStorage.getItem('xyc_village');
   if (preVillage) {
     sessionStorage.removeItem('xyc_village');
