@@ -743,13 +743,16 @@ var VILLAGE_ORDER = ['上塬村', '东塬村', '刘家湾社区', '孟塬村', '
 
 // 各村切坡建房户数 / 隐患点数量（来源：《新塬镇一页纸数据》Excel，非矢量点位）
 function getVillagePlanStats(vname) {
-  var stats = { hazards: 0, households: 0 };
+  var stats = { hazards: 0, households: 0, people: 0 };
   if (typeof VILLAGE_PLANS === 'undefined' || !VILLAGE_PLANS[vname]) return stats;
   var hazards = VILLAGE_PLANS[vname].hazards || [];
   stats.hazards = hazards.length;
   hazards.forEach(function(h) {
-    var m = (h.scope || '').match(/(\d+)\s*户/);
-    if (m) stats.households += parseInt(m[1], 10);
+    var m = (h.scope || '').match(/(\d+)\s*户(?:\s*(\d+)\s*人)?/);
+    if (m) {
+      stats.households += parseInt(m[1], 10);
+      if (m[2]) stats.people += parseInt(m[2], 10);
+    }
   });
   return stats;
 }
@@ -767,17 +770,11 @@ var siteCount = (typeof DATA_EVACUATION_SITES !== 'undefined' ? DATA_EVACUATION_
                 (typeof DATA_BACKUP_SITES !== 'undefined' ? DATA_BACKUP_SITES.features.length : 0);
 var routeCount = (typeof DATA_EVACUATION_ROUTES !== 'undefined') ? DATA_EVACUATION_ROUTES.features.length : 0;
 
-// 计算受威胁人口
+// 计算受威胁人口（与地图页一致，来源：《新塬镇一页纸数据》，各村切坡建房隐患点人口合计）
 var totalPopulation = 0;
-if (typeof VILLAGE_INFO !== 'undefined') {
+if (typeof VILLAGE_PLANS !== 'undefined') {
   VILLAGE_ORDER.forEach(function(vname) {
-    var info = VILLAGE_INFO[vname];
-    if (info && info.households) {
-      info.households.forEach(function(hh) {
-        var p = parseInt(hh.p);
-        if (!isNaN(p)) totalPopulation += p;
-      });
-    }
+    totalPopulation += getVillagePlanStats(vname).people;
   });
 }
 
