@@ -1324,6 +1324,10 @@ function loadAdminKeys() {
   adminRequest('keys', {}, function(data, err) {
     if (err || !data) { adminBodyHtml('<div class="ad-empty">加载失败：' + (err || '未知错误') + '</div>'); return; }
     var keys = data.data || [];
+    if (!keys.length) {
+      adminBodyHtml('<div class="ad-empty">未查询到任何密钥记录（服务端返回：' + JSON.stringify(data).substring(0, 300) + '）</div>');
+      return;
+    }
     var h = '<table class="admin-table"><tr><th>标签</th><th>角色</th><th>所属村</th><th>状态</th><th>绑定设备</th><th>操作</th></tr>';
     keys.forEach(function(k) {
       var devs = (k['绑定设备'] || '').split(/[,，\n]/).filter(function(x){return x.trim();});
