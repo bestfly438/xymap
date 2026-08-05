@@ -49,6 +49,13 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
   border-radius: 6px; transition: all 0.2s;
 }
 #topbar .back-link:hover { background: rgba(255,255,255,0.06); color: #e2e8f0; }
+#topbar .admin-link {
+  color: #fbbf24; text-decoration: none; font-size: 13px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 4px; padding: 4px 10px;
+  border-radius: 6px; transition: all 0.2s;
+  background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25);
+}
+#topbar .admin-link:hover { background: rgba(251,191,36,0.2); color: #fcd34d; }
 
 /* ===== 村庄下拉 ===== */
 #village-dropdown {
@@ -419,14 +426,20 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 .photo-overlay img { max-width: 95vw; max-height: 95vh; border-radius: 8px; }
 
 /* ===== 手机端适配（手动切换） ===== */
-body.mobile-mode #topbar { height: 46px; padding: 0 10px; }
-body.mobile-mode #topbar h1 { font-size: 12px; }
-body.mobile-mode #topbar .logo-icon { width: 28px; height: 28px; font-size: 14px; }
-body.mobile-mode #topbar .logo-area { gap: 6px; }
-body.mobile-mode #topbar .village-select { font-size: 11px; padding: 5px 10px; }
-body.mobile-mode #topbar .logout-btn { font-size: 11px; padding: 5px 10px; }
-body.mobile-mode #topbar .back-link { font-size: 11px; padding: 3px 6px; }
-body.mobile-mode #mode-toggle { font-size: 12px; padding: 4px 8px; }
+body.mobile-mode #topbar { height: 48px; padding: 0 10px; }
+body.mobile-mode #topbar h1 {
+  font-size: 11px; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+}
+body.mobile-mode #topbar .logo-icon { width: 26px; height: 26px; font-size: 13px; flex-shrink: 0; }
+body.mobile-mode #topbar .logo-area { gap: 5px; min-width: 0; flex: 1; }
+body.mobile-mode #topbar > div:last-child { flex-shrink: 0; }
+body.mobile-mode #topbar .village-select { font-size: 11px; padding: 4px 8px; max-width: 108px; }
+body.mobile-mode #topbar .village-select #currentVillage {
+  max-width: 62px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+body.mobile-mode #topbar .logout-btn { font-size: 11px; padding: 4px 9px; flex-shrink: 0; }
+body.mobile-mode #topbar .back-link { display: none; }
+body.mobile-mode #mode-toggle { font-size: 12px; padding: 4px 7px; flex-shrink: 0; }
 
 body.mobile-mode #village-dropdown {
   top: 48px; right: 8px; left: 8px; min-width: auto; max-height: 50vh;
@@ -480,6 +493,7 @@ body.mobile-mode .patrol-list .pl-del { font-size: 18px; padding: 4px 10px; }
   </div>
   <div style="display:flex;align-items:center;gap:10px">
     <a href="dashboard.html" class="back-link">&#x2190; 返回看板</a>
+    <a href="dashboard.html#admin" class="admin-link" id="adminLink" title="系统管理（密钥/账号）" style="display:none">&#x2699;</a>
     <button id="mode-toggle" title="切换PC/手机版" onclick="toggleMode()">&#x1F4F1;</button>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
@@ -566,6 +580,12 @@ body.mobile-mode .patrol-list .pl-del { font-size: 18px; padding: 4px 10px; }
 // ========== 权限验证 ==========
 if (sessionStorage.getItem('xyc_auth') !== '1') {
   window.location.replace('index.html');
+}
+
+// 管理员显示"系统管理"入口（跳转看板页并自动打开管理面板）
+if (sessionStorage.getItem('xyc_role') === '管理员') {
+  var adminLink = document.getElementById('adminLink');
+  if (adminLink) adminLink.style.display = 'inline-flex';
 }
 
 // ========== 村庄配置 ==========
@@ -717,6 +737,11 @@ function initMap() {
   layers.majorRoads = L.layerGroup().addTo(map);
   layers.placeNames = L.layerGroup().addTo(map);
 
+  // 面状图层专用 pane：置于 overlayPane(400) 之下，
+  // 避免受威胁区域/隐患区域（面）盖住其下方的切坡建房点（点），保证点始终可点击
+  map.createPane('areaUnderPane');
+  map.getPane('areaUnderPane').style.zIndex = 350;
+
   // 加载数据
   loadHazardPoints();
   loadHazardAreas();
@@ -808,6 +833,7 @@ function loadHazardAreas() {
   if (typeof DATA_HAZARD_AREAS === 'undefined') return;
   var data = convertGeoJSON(DATA_HAZARD_AREAS);
   L.geoJSON(data, {
+    pane: 'areaUnderPane',
     style: { color: '#ff4444', fillColor: '#ff4444', fillOpacity: 0.12, weight: 2 },
     onEachFeature: function(feature, layer) {
       var p = feature.properties;
@@ -882,6 +908,7 @@ function loadThreatenedAreas() {
   if (typeof DATA_THREATENED_AREAS === 'undefined') return;
   var data = convertGeoJSON(DATA_THREATENED_AREAS);
   L.geoJSON(data, {
+    pane: 'areaUnderPane',
     style: { color: '#ff9800', fillColor: '#ff9800', fillOpacity: 0.15, weight: 2, dashArray: '5, 3' },
     onEachFeature: function(feature, layer) {
       layer.bindTooltip('受威胁区域', { direction: 'center', className: 'threatened-tooltip' });
@@ -1544,12 +1571,16 @@ function getPatrolRecords(vname, callback) {
       var merged = records.concat(all.filter(function(r) {
         return r.village === vname && (!r.record_id || !cloudIds[r.record_id]);
       }));
-      // 去重（按 id）
+      // 去重（按 id），再按内容去重（同村+巡查人+时间+描述，应对网络超时导致的云端/本地双写）
       var seen = {};
+      var seenContent = {};
       merged = merged.filter(function(r) {
         var k = r.id || r.record_id;
         if (!k || seen[k]) return false;
         seen[k] = true;
+        var ck = (r.village||'') + '|' + (r.inspector||'') + '|' + (r.time||'') + '|' + (r.description||'');
+        if (seenContent[ck]) return false;
+        seenContent[ck] = true;
         return true;
       });
       while (merged.length > 200) merged.pop();
@@ -1583,9 +1614,10 @@ function savePatrolRecord(record, callback) {
     '/tables/' + FEISHU_CONFIG.tables.patrol + '/records';
   feishuRequest('POST', path, fields, function(data, err) {
     if (err || !data || data.code !== 0) {
-      // 云端失败仍保存本地
+      // 云端失败仍保存本地（下次刷新时与云端合并，重复内容会自动去重）
       saveLocalPatrolRecord(record);
-      if (callback) callback(false, err || (data && data.msg));
+      var reason = err || (data && data.msg) || '云端响应超时，已暂存本机';
+      if (callback) callback(false, reason);
       return;
     }
     // 记录云端返回的 record_id，保证删除时能同步删除云端
@@ -1824,8 +1856,16 @@ function submitPatrol(vid) {
   if (!inspectorVal) { showPfMsg('请填写巡查人姓名', 'error'); return; }
   if (!currentPatrolLocation) { showPfMsg('请先获取巡查点位', 'error'); return; }
 
+  // 防重复提交：3 秒内同村+同巡查人+同描述视为连点，直接忽略（按钮禁用 + 内存标记双保险）
+  var dupKey = vid + '|' + inspectorVal + '|' + descVal;
+  if (window._lastPatrolSubmit && window._lastPatrolSubmit.key === dupKey && Date.now() - window._lastPatrolSubmit.ts < 3000) {
+    showPfMsg('正在提交中，请勿重复点击', 'error');
+    return;
+  }
+
   var btn = document.querySelector('.pf-submit');
   if (btn) { btn.disabled = true; btn.textContent = '提交中...'; }
+  window._lastPatrolSubmit = { key: dupKey, ts: Date.now() };
 
   var now = new Date();
   var timeStr = now.getFullYear() + '-' +
