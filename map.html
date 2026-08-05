@@ -1738,12 +1738,10 @@ function deleteLocalPatrolRecord(id, vname) {
 
 // 从飞书拉取某村巡查记录（异步），成功则更新本地缓存并回调
 function getPatrolRecords(vname, callback) {
-  // base v3 filter 规范格式
+  // 飞书列出记录接口的 JSON filter 格式
   var filter = JSON.stringify({
-    conjunction: 'and',
-    conditions: [
-      { field_name: '村名', operator: 'is', value: [vname] }
-    ]
+    logic: 'and',
+    conditions: [['村名', '==', vname]]
   });
   var path = '/open-apis/base/v3/bases/' + FEISHU_CONFIG.baseToken +
     '/tables/' + FEISHU_CONFIG.tables.patrol +
