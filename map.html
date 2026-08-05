@@ -4,9 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>新塬镇应急避险指挥系统</title>
+<meta name="color-scheme" content="light">
 <link rel="stylesheet" href="leaflet/leaflet.css" />
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
+:root { color-scheme: light; }
 html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; overflow: hidden; background: #0a0f14; }
 
 #map { position: fixed; inset: 0; z-index: 1; background: #1a1a2e; }
@@ -700,6 +702,8 @@ html, body { background: #eef2f7; }
   <div class="l-item"><span style="color:#fdd835;font-weight:700">&#x2501;&#x2501;</span>县道（X）</div>
   <div class="l-item"><span style="color:#8d6e63;font-weight:700">&#x2501;&#x2501;</span>乡道（Y）</div>
   <div class="l-item"><span style="color:#bcaaa4;">&#x2501;&#x2501;</span>村道（C）</div>
+  <div class="l-item"><span style="display:inline-block;width:12px;height:3.5px;background:#1e293b;border-radius:2px;"></span>本村主要道路</div>
+  <div class="l-item"><span style="display:inline-block;width:12px;height:3px;background:#0284c7;border-radius:2px;"></span>本村河流</div>
   <div class="l-item" style="font-size:10px;color:#64748b;margin-top:5px;border-top:1px dashed rgba(15,23,42,0.15);padding-top:5px;">注：底图上的灰白道路与 X333 等路名标注<br>为卫星底图自带，非本系统矢量数据</div>
 </div>
 
@@ -737,6 +741,8 @@ html, body { background: #eef2f7; }
 <script src="js_data/threatened_areas.js"></script>
 <script src="js_data/village_hazard_summary.js"></script>
 <script src="js_data/village_plans.js"></script>
+<script src="js_data/village_roads.js"></script>
+<script src="js_data/village_rivers.js"></script>
 
 <script>
 // ========== 权限验证 ==========
@@ -898,6 +904,8 @@ function initMap() {
   layers.threatened = L.layerGroup().addTo(map);
   layers.majorRoads = L.layerGroup().addTo(map);
   layers.placeNames = L.layerGroup().addTo(map);
+  layers.villageRoads = L.layerGroup().addTo(map);
+  layers.villageRivers = L.layerGroup().addTo(map);
 
   // 面状图层专用 pane：置于 overlayPane(400) 之下，
   // 避免受威胁区域/隐患区域（面）盖住其下方的切坡建房点（点），保证点始终可点击
@@ -1193,6 +1201,28 @@ function loadLargeLayers() {
       }
     })
     .catch(function() { console.log('地名数据加载失败'); });
+
+  // 本村主要道路（用户提供 SHP）：白色底边 + 深蓝黑粗线，置于最上层醒目显示
+  if (typeof DATA_VILLAGE_ROADS !== 'undefined') {
+    var vd = convertGeoJSON(DATA_VILLAGE_ROADS);
+    L.geoJSON(vd, {
+      style: function() { return { color: '#ffffff', weight: 6, opacity: 0.95 }; }
+    }).addTo(layers.villageRoads);
+    L.geoJSON(vd, {
+      style: function() { return { color: '#1e293b', weight: 3.5, opacity: 0.95 }; }
+    }).addTo(layers.villageRoads);
+  }
+
+  // 本村河流（用户提供 SHP）：白色底边 + 亮蓝粗线
+  if (typeof DATA_VILLAGE_RIVERS !== 'undefined') {
+    var vr = convertGeoJSON(DATA_VILLAGE_RIVERS);
+    L.geoJSON(vr, {
+      style: function() { return { color: '#ffffff', weight: 5.5, opacity: 0.9 }; }
+    }).addTo(layers.villageRivers);
+    L.geoJSON(vr, {
+      style: function() { return { color: '#0284c7', weight: 3, opacity: 0.95 }; }
+    }).addTo(layers.villageRivers);
+  }
 }
 
 // ========== 村庄下拉菜单 ==========
