@@ -965,13 +965,10 @@ function syncEditDataToCloud(data) {
 
 // upsert 单个村庄字段到飞书
 function upsertCloudVillageField(vname, field, value, callback) {
-  // 先查该村该字段的已有记录（base v3 filter 规范格式）
+  // 先查该村该字段的已有记录（飞书列出记录接口的 JSON filter 格式）
   var filter = JSON.stringify({
-    conjunction: 'and',
-    conditions: [
-      { field_name: '村名', operator: 'is', value: [vname] },
-      { field_name: '字段名', operator: 'is', value: [field] }
-    ]
+    logic: 'and',
+    conditions: [['村名', '==', vname], ['字段名', '==', field]]
   });
   var base = '/open-apis/base/v3/bases/' + FEISHU_CONFIG.baseToken +
     '/tables/' + FEISHU_CONFIG.tables.villageData;
