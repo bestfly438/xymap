@@ -552,7 +552,7 @@ html, body { background: #eef2f7; }
 .popup-content .pop-desc { background: rgba(15,23,42,0.04); color: #475569; border-left: 2px solid rgba(220,38,38,0.3); }
 .popup-content .pop-nav { border-top: 1px solid rgba(15,23,42,0.08); }
 
-#status { background: rgba(15,23,42,0.85); color: #fff; }
+#status { background: rgba(255,255,255,0.95); color: #334155; border: 1px solid rgba(15,23,42,0.12); box-shadow: 0 4px 16px rgba(15,23,42,0.12); }
 
 #side-panel-toggle {
   border: 1px solid rgba(15,23,42,0.12);
@@ -693,10 +693,14 @@ html, body { background: #eef2f7; }
   <div class="l-item"><span class="l-dot" style="background:#4caf50;border:2px solid #66bb6a"></span>转移安置点</div>
   <div class="l-item"><span class="l-dot" style="background:#ff9800;border:2px solid #ffb74d"></span>备选安置点</div>
   <div class="l-item"><span style="color:#2196f3;font-weight:700">&#x2545;&#x2545;</span>撤离路线</div>
-  <div class="l-item"><span style="color:#f5a623;font-weight:700">&#x2501;&#x2501;</span>主要道路（国/省/县道）</div>
-  <div class="l-item"><span style="color:#9e9e9e;">&#x2501;&#x2501;</span>一般道路（乡/村道）</div>
   <div class="l-item"><span style="color:#1565c0;">&#x2501;&#x2501;</span>河道（常年河）</div>
   <div class="l-item"><span style="color:#90caf9;">&#x2545;&#x2545;</span>干涸河 / 时令河</div>
+  <div class="l-item"><span style="color:#e53935;font-weight:700">&#x2501;&#x2501;</span>国道（G）</div>
+  <div class="l-item"><span style="color:#fb8c00;font-weight:700">&#x2501;&#x2501;</span>省道（S）</div>
+  <div class="l-item"><span style="color:#fdd835;font-weight:700">&#x2501;&#x2501;</span>县道（X）</div>
+  <div class="l-item"><span style="color:#8d6e63;font-weight:700">&#x2501;&#x2501;</span>乡道（Y）</div>
+  <div class="l-item"><span style="color:#bcaaa4;">&#x2501;&#x2501;</span>村道（C）</div>
+  <div class="l-item" style="font-size:10px;color:#64748b;margin-top:5px;border-top:1px dashed rgba(15,23,42,0.15);padding-top:5px;">注：底图上的灰白道路与 X333 等路名标注<br>为卫星底图自带，非本系统矢量数据</div>
 </div>
 
 <div id="layer-ctrl">
@@ -704,7 +708,7 @@ html, body { background: #eef2f7; }
   <button id="btn-threatened" title="受威胁区域" onclick="toggleLayer('threatened')">&#x1F3D8;</button>
   <button id="btn-routes" title="撤离路线" onclick="toggleLayer('routes')">&#x27A1;</button>
   <button id="btn-sites" title="安置点" onclick="toggleLayer('sites')">&#x1F3E0;</button>
-  <button id="btn-majorRoads" title="主要道路" onclick="toggleLayer('majorRoads')">&#x1F6E3;</button>
+  <button id="btn-majorRoads" title="国/省/县道" onclick="toggleLayer('majorRoads')">&#x1F6E3;</button>
   <button id="btn-locate" title="定位" onclick="locateMe()">&#x1F4CD;</button>
 </div>
 
@@ -1106,15 +1110,30 @@ function loadLargeLayers() {
           return t !== '国道' && t !== '省道' && t !== '县道';
         });
         if (minor.length) {
+          // 双层渲染：白色底边 + 彩色核心，在灰色卫星底图上清晰可辨
+          // 乡道=棕赭色，村道/连接道=浅褐色
           L.geoJSON({ type: 'FeatureCollection', features: minor }, {
-            style: { color: '#9e9e9e', weight: 1.5, opacity: 0.6 }
+            style: function(feature) {
+              var t = (feature.properties && feature.properties.TYPE) || '';
+              return (t === '乡道')
+                ? { color: '#ffffff', weight: 4.2, opacity: 0.95 }
+                : { color: '#ffffff', weight: 3.2, opacity: 0.9 };
+            }
+          }).addTo(layers.roads);
+          L.geoJSON({ type: 'FeatureCollection', features: minor }, {
+            style: function(feature) {
+              var t = (feature.properties && feature.properties.TYPE) || '';
+              if (t === '乡道') return { color: '#8d6e63', weight: 2.2, opacity: 0.95 };
+              if (t === '村道') return { color: '#bcaaa4', weight: 1.4, opacity: 0.95 };
+              return { color: '#c3a88a', weight: 1.4, opacity: 0.9 };
+            }
           }).addTo(layers.roads);
         }
       }
     })
     .catch(function() { console.log('道路数据加载失败'); });
 
-  // 主要道路（国道/省道/县道）
+  // 主要道路（国道/省道/县道）：白底边 + 国红/省橙/县黄，采用全国公路网标准配色
   fetch('js_data/major_roads.js')
     .then(function(r) { return r.text(); })
     .then(function(js) {
@@ -1127,7 +1146,19 @@ function loadLargeLayers() {
         });
         if (major.length) {
           L.geoJSON({ type: 'FeatureCollection', features: major }, {
-            style: { color: '#f5a623', weight: 3, opacity: 0.85 }
+            style: function(feature) {
+              var t = (feature.properties && feature.properties.TYPE) || '';
+              return (t === '国道') ? { color: '#ffffff', weight: 5.5, opacity: 0.95 }
+                : { color: '#ffffff', weight: 5, opacity: 0.9 };
+            }
+          }).addTo(layers.majorRoads);
+          L.geoJSON({ type: 'FeatureCollection', features: major }, {
+            style: function(feature) {
+              var t = (feature.properties && feature.properties.TYPE) || '';
+              if (t === '国道') return { color: '#e53935', weight: 3.2, opacity: 0.95 };
+              if (t === '省道') return { color: '#fb8c00', weight: 2.8, opacity: 0.95 };
+              return { color: '#fdd835', weight: 2.2, opacity: 0.95 };
+            }
           }).addTo(layers.majorRoads);
         }
       }
