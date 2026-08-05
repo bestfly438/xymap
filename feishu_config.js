@@ -12,25 +12,13 @@ var FEISHU_CONFIG = {
   }
 };
 
-// 将飞书"查询记录列表"的返回（列数组格式）转换为对象数组 [{record_id, fields}]
-// 返回结构：data.data = { data: [[...行...]], fields: [...列名...], record_id_list: [...记录ID...] }
+// 将飞书"查询记录列表"的返回转换为对象数组 [{record_id, fields}]
+// base v3 返回结构：data.items = [{record_id, fields}]
 function feishuRowsToObjects(data) {
-  if (!data || !data.data) return [];
-  var d = data.data;
-  var names = d.fields || [];
-  var rows = d.data || [];
-  var ids = d.record_id_list || [];
-  var out = [];
-  for (var i = 0; i < rows.length; i++) {
-    var row = rows[i] || [];
-    var fields = {};
-    for (var j = 0; j < names.length && j < row.length; j++) {
-      var v = row[j];
-      if (v !== null && v !== undefined && v !== '') fields[names[j]] = v;
-    }
-    out.push({ record_id: ids[i] || '', fields: fields });
-  }
-  return out;
+  if (!data || !data.data || !Array.isArray(data.data.items)) return [];
+  return data.data.items.map(function(it) {
+    return { record_id: it.record_id || '', fields: it.fields || {} };
+  });
 }
 
 // 通用飞书API请求：走腾讯云函数转发（带会话凭证，服务端校验权限）
