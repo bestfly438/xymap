@@ -1285,6 +1285,11 @@ function openAdminPanel() {
 function closeAdminPanel() {
   document.getElementById('adminOverlay').style.display = 'none';
 }
+// 支持 #admin 锚点：从地图页"系统管理"入口跳转过来时自动打开管理面板
+if (isAdmin && window.location.hash === '#admin') {
+  openAdminPanel();
+  window.location.hash = '';
+}
 function switchAdminTab(tab) {
   document.getElementById('at-keys').classList.toggle('active', tab === 'keys');
   document.getElementById('at-logs').classList.toggle('active', tab === 'logs');
