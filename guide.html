@@ -165,9 +165,13 @@ td { color: var(--text-secondary); line-height: 1.7; }
 /* 底部 */
 .footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; opacity: 0.6; }
 @media (max-width: 640px) {
-  .topbar { padding: 0 14px; height: 52px; }
-  .topbar .logo-text h1 { font-size: 14px; }
+  .topbar { padding: 0 10px; height: 52px; }
+  .topbar .logo { gap: 8px; min-width: 0; }
+  .topbar .logo-text { min-width: 0; }
+  .topbar .logo-text h1 { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .topbar .logo-text p { display: none; }
+  .topbar .top-actions { gap: 6px; }
+  .topbar .btn { white-space: nowrap; padding: 5px 9px; font-size: 11px; flex-shrink: 0; }
   .container { padding: 20px 14px 40px; }
   .page-head h2 { font-size: 21px; }
   .toc .toc-grid { grid-template-columns: 1fr; }

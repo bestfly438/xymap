@@ -352,13 +352,20 @@ body.mobile-mode .village-card .vc-name { font-size: 14px; }
 body.mobile-mode .village-card .vc-stats { gap: 10px; }
 body.mobile-mode .village-card .vc-stat .vcs-num { font-size: 18px; }
 body.mobile-mode .two-col { grid-template-columns: 1fr; }
-body.mobile-mode .topbar { padding: 0 12px; height: 52px; }
-body.mobile-mode .topbar .logo-icon { width: 32px; height: 32px; font-size: 16px; }
-body.mobile-mode .topbar .logo-text h1 { font-size: 14px; }
+body.mobile-mode .topbar { padding: 0 10px; height: 52px; }
+body.mobile-mode .topbar .logo { gap: 8px; min-width: 0; }
+body.mobile-mode .topbar .logo-text { min-width: 0; }
+body.mobile-mode .topbar .logo-icon { width: 32px; height: 32px; font-size: 16px; flex-shrink: 0; }
+body.mobile-mode .topbar .logo-text h1 { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 30vw; }
 body.mobile-mode .topbar .logo-text p { display: none; }
 body.mobile-mode .topbar .weather-badge { display: none; }
 body.mobile-mode .topbar .time-display { display: none; }
-body.mobile-mode .topbar .btn { padding: 7px 14px; font-size: 12px; }
+body.mobile-mode .topbar .top-actions { gap: 6px; }
+body.mobile-mode .topbar .btn { padding: 5px 9px; font-size: 11px; white-space: nowrap; flex-shrink: 0; }
+body.mobile-mode .topbar a[href="guide.html"] { display: none; }
+body.mobile-mode #userRoleBadge { display: none !important; }
+body.mobile-mode #editModeBtn { display: none !important; }
+body.mobile-mode .admin-txt { display: none; }
 body.mobile-mode .section-title { font-size: 15px; }
 body.mobile-mode .contact-card .cc-item { font-size: 12px; padding: 8px 0; }
 body.mobile-mode .rain-card .rc-list { grid-template-columns: 1fr; }
@@ -383,10 +390,15 @@ body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
   .village-grid { grid-template-columns: 1fr; }
   .stat-card { padding: 14px; }
   .stat-card .sc-num { font-size: 28px; }
-  .topbar { padding: 0 14px; height: 52px; }
-  .topbar h1 { font-size: 14px; }
+  .topbar { padding: 0 10px; height: 52px; }
+  .topbar h1 { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar .btn { white-space: nowrap; }
   .topbar .weather-badge { display: none; }
   .topbar .time-display { display: none; }
+  .topbar a[href="guide.html"] { display: none; }
+  #userRoleBadge { display: none !important; }
+  #editModeBtn { display: none !important; }
+  .admin-txt { display: none; }
 }
 /* ===== 系统管理面板 ===== */
 .admin-overlay {
@@ -457,7 +469,7 @@ body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
     <div class="time-display" id="timeDisplay"></div>
     <span id="userRoleBadge" style="display:none;font-size:12px;color:var(--accent);background:rgba(77,107,254,0.12);border:1px solid rgba(77,107,254,0.25);padding:4px 10px;border-radius:12px;white-space:nowrap;"></span>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
-    <button class="btn" id="adminBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
+    <button class="btn" id="adminBtn" style="display:none" onclick="openAdminPanel()"><span>&#x2699;</span><span class="admin-txt"> 系统管理</span></button>
     <button id="mode-toggle" title="切换PC/手机版" onclick="toggleMode()">&#x1F4F1;</button>
     <a href="guide.html" class="btn">&#x1F6A8; 防汛指南</a>
     <a href="map.html" class="btn btn-primary">&#x1F5FA; 进入地图</a>
