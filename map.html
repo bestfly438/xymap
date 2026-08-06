@@ -1955,11 +1955,11 @@ function escAttr(s) { return String(s || '').replace(/'/g, "\\'").replace(/"/g, 
 
 function renderPatrolTab(vid) {
   currentPatrolVid = vid;
-  // 权限：村级密钥只能在本村添加巡查记录；删除/修改仅管理员
+  // 权限：村级密钥可在任意面板提交巡查，但记录强制记入登录的本村；删除/修改仅管理员
   var role = sessionStorage.getItem('xyc_role') || '';
   var myVillage = sessionStorage.getItem('xyc_village') || '';
   var isAdmin = role === '管理员';
-  var canAdd = isAdmin || role === '镇级' || (role === '村级' && myVillage === vid);
+  var canAdd = isAdmin || role === '镇级' || role === '村级';
   var canDel = isAdmin;
   // 先用本地缓存快速渲染，再异步从云端刷新
   var records = getLocalPatrolRecords(vid);
@@ -1968,6 +1968,10 @@ function renderPatrolTab(vid) {
   var h = '<div class="patrol-form">';
 
   if (canAdd) {
+  // 村级用户在本村面板之外打开巡查时，明确提示记录将记入本村
+  if (role === '村级' && myVillage && myVillage !== vid) {
+    h += '<div style="background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.25);border-radius:8px;padding:8px 12px;font-size:12px;color:#2563eb;margin-bottom:12px;line-height:1.6;">您的账号为村级密钥，巡查记录将自动记入<b>本村（' + esc(myVillage) + '）</b></div>';
+  }
   // 巡查人
   h += '<div class="pf-row">';
   h += '<div class="pf-label">&#x1F464; 巡查人姓名</div>';
@@ -2084,10 +2088,8 @@ function onPatrolPhotoSelect(input) {
 function submitPatrol(vid) {
   var role = sessionStorage.getItem('xyc_role') || '';
   var myVillage = sessionStorage.getItem('xyc_village') || '';
-  if (role === '村级' && myVillage !== vid) {
-    showPfMsg('村级密钥仅能在本村（' + myVillage + '）添加巡查记录', 'error');
-    return;
-  }
+  // 村级密钥提交的巡查记录强制记入登录的本村，避免误记到其他村
+  var recordVillage = (role === '村级' && myVillage) ? myVillage : vid;
   var inspector = document.getElementById('pf-inspector');
   var desc = document.getElementById('pf-desc');
   var inspectorVal = inspector ? inspector.value.trim() : '';
@@ -2121,7 +2123,7 @@ function submitPatrol(vid) {
 
   var record = {
     id: now.getTime(),
-    village: vid,
+    village: recordVillage,
     inspector: inspectorVal,
     location: currentPatrolLocation,
     locationText: '经度' + currentPatrolLocation.lng.toFixed(6) + ' 纬度' + currentPatrolLocation.lat.toFixed(6),
