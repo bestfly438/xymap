@@ -49,7 +49,13 @@ function feishuRequest(method, path, body, callback) {
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
-    if (data && (data.code === 401 || data.code === 403)) {
+    // 会话失效（401）：自动清除会话并跳回登录页重新登录，避免残留旧会话导致功能异常
+    if (data && data.code === 401) {
+      try { sessionStorage.clear(); } catch(e) {}
+      window.location.replace('index.html');
+      return;
+    }
+    if (data && data.code === 403) {
       callback(null, data.msg || '无权限');
       return;
     }
@@ -74,6 +80,12 @@ function adminRequest(sub, payload, callback) {
   })
   .then(function(r) { return r.json(); })
   .then(function(data) {
+    // 会话失效或权限不足（401/403）：自动清除会话并跳回登录页重新登录
+    if (data && (data.code === 401 || data.code === 403)) {
+      try { sessionStorage.clear(); } catch(e) {}
+      window.location.replace('index.html');
+      return;
+    }
     if (data && data.code !== 0) { callback(null, data.msg || '操作失败'); return; }
     callback(data, null);
   })
