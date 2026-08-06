@@ -2056,8 +2056,9 @@ function getPatrolLocation() {
     // 获取天气（用原始 WGS84 坐标查询即可，天气 API 不要求 GCJ02）
     fetchPatrolWeather(pos.coords.latitude, pos.coords.longitude);
   }, function(err) {
-    if (el) el.textContent = '获取位置失败，请重试';
-    showPfMsg('获取位置失败，请检查GPS权限', 'error');
+    if (el) el.textContent = '定位失败';
+    // 提示用户可跳过定位直接提交（会自动使用地图中心点）
+    showPfMsg('定位失败（请允许浏览器定位权限）。可直接提交，将使用地图中心点位', 'error');
   }, { enableHighAccuracy: true, timeout: 10000 });
 }
 
@@ -2093,7 +2094,11 @@ function submitPatrol(vid) {
   var descVal = desc ? desc.value.trim() : '';
 
   if (!inspectorVal) { showPfMsg('请填写巡查人姓名', 'error'); return; }
-  if (!currentPatrolLocation) { showPfMsg('请先获取巡查点位', 'error'); return; }
+  if (!currentPatrolLocation) {
+    // 定位不可用时不拦截：用地图当前中心点作为默认点位，保证巡查记录能正常提交
+    var mapCenter = map && map.getCenter();
+    if (mapCenter) currentPatrolLocation = { lng: mapCenter.lng, lat: mapCenter.lat };
+  }
 
   // 防重复提交：3 秒内同村+同巡查人+同描述视为连点，直接忽略（按钮禁用 + 内存标记双保险）
   var dupKey = vid + '|' + inspectorVal + '|' + descVal;
@@ -2265,6 +2270,15 @@ window.onload = function() {
     setTimeout(function() {
       selectVillage(preVillage, preVillage);
     }, 800);
+  } else {
+    // 村级用户打开地图时自动聚焦本村并打开村级面板，保证巡查入口可见
+    var role = sessionStorage.getItem('xyc_role') || '';
+    var myVillage = sessionStorage.getItem('xyc_village');
+    if (role === '村级' && myVillage) {
+      setTimeout(function() {
+        selectVillage(myVillage, myVillage);
+      }, 800);
+    }
   }
 };
 </script>
