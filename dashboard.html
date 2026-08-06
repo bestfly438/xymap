@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>新塬镇应急避险指挥系统 - 数据看板</title>
 <meta name="color-scheme" content="light">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -594,6 +597,26 @@ body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
 <script src="js_data/rain_stations.js"></script>
 
 <script>
+// ========== 自动版本检测：发现版本更新强制刷新，避免浏览器缓存旧页面（无需手动清缓存） ==========
+(function() {
+  try {
+    fetch('version.txt?t=' + Date.now(), { cache: 'no-store' })
+      .then(function(r) { return r.text(); })
+      .then(function(v) {
+        v = (v || '').trim();
+        if (!v) return;
+        var cur = sessionStorage.getItem('xyc_app_version');
+        if (cur && cur !== v) {
+          sessionStorage.setItem('xyc_app_version', v);
+          location.reload(true);
+        } else {
+          sessionStorage.setItem('xyc_app_version', v);
+        }
+      })
+      .catch(function() {});
+  } catch(e) {}
+})();
+
 // 权限验证
 if (sessionStorage.getItem('xyc_auth') !== '1') {
   window.location.replace('index.html');

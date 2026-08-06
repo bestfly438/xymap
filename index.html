@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>新塬镇应急避险指挥系统</title>
 <meta name="color-scheme" content="light">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <style>
 :root {
   --bg: #f1f5f9;
@@ -114,6 +117,26 @@ body {
 
 <script src="feishu_config.js"></script>
 <script>
+// ========== 自动版本检测：发现版本更新强制刷新，避免浏览器缓存旧页面（无需手动清缓存） ==========
+(function() {
+  try {
+    fetch('version.txt?t=' + Date.now(), { cache: 'no-store' })
+      .then(function(r) { return r.text(); })
+      .then(function(v) {
+        v = (v || '').trim();
+        if (!v) return;
+        var cur = sessionStorage.getItem('xyc_app_version');
+        if (cur && cur !== v) {
+          sessionStorage.setItem('xyc_app_version', v);
+          location.reload(true);
+        } else {
+          sessionStorage.setItem('xyc_app_version', v);
+        }
+      })
+      .catch(function() {});
+  } catch(e) {}
+})();
+
 (function() {
   // 如果已经登录，直接跳转
   if (sessionStorage.getItem('xyc_auth') === '1') {
