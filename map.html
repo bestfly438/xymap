@@ -221,6 +221,12 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
   font-size: 10px; padding: 3px 10px; border-radius: 12px; font-weight: 600;
   background: rgba(239,68,68,0.15); color: #ef4444;
 }
+#side-panel .sp-close {
+  background: none; border: none; color: #64748b; font-size: 16px;
+  width: 26px; height: 26px; border-radius: 50%; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; padding: 0;
+}
+#side-panel .sp-close:hover { background: rgba(255,255,255,0.08); color: #e2e8f0; }
 #side-panel .sp-body { padding: 14px 16px; }
 #side-panel .sp-section { margin-bottom: 16px; }
 #side-panel .sp-section:last-child { margin-bottom: 0; }
@@ -444,8 +450,17 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 
 /* ===== 手机适配 ===== */
 @media (max-width: 768px) {
-  #topbar h1 { font-size: 13px; }
-  #topbar .logo-icon { width: 28px; height: 28px; font-size: 14px; }
+  #topbar { height: 48px; padding: 0 10px; }
+  #topbar h1 { font-size: 11px; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  #topbar .logo-icon { width: 26px; height: 26px; font-size: 13px; flex-shrink: 0; }
+  #topbar .logo-area { gap: 5px; min-width: 0; flex: 1; }
+  #topbar > div:last-child { flex-shrink: 0; }
+  #topbar .village-select { font-size: 11px; padding: 4px 8px; max-width: 108px; }
+  #topbar .village-select #currentVillage {
+    max-width: 62px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  #topbar .logout-btn { font-size: 11px; padding: 4px 9px; flex-shrink: 0; }
+  #topbar .back-link { display: none; }
   #village-info { width: calc(100vw - 32px); left: 16px; right: 16px; max-height: 50vh; }
   #legend { bottom: 80px; font-size: 11px; padding: 8px 12px; }
   #layer-ctrl { right: 8px; bottom: 80px; }
@@ -542,8 +557,14 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
     color: #cbd5e1; font-size: 12px; cursor: pointer; font-family: inherit;
   }
 
-  /* 信息面板盖住底部工具栏 */
-  #side-panel { z-index: 1003; }
+  /* 信息面板改为底部弹出（类APP），盖住底部工具栏 */
+  #side-panel {
+    top: auto; bottom: 0; left: 0; right: 0; width: 100%;
+    max-height: 55vh; border-radius: 16px 16px 0 0; z-index: 1003;
+  }
+  #side-panel .vp-tabs { grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 8px; }
+  #side-panel .vp-tab { font-size: 11px; padding: 8px 4px; }
+  #side-panel .vp-tab .vp-tab-icon { font-size: 14px; }
 }
 </style>
 </head>
@@ -594,7 +615,10 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 <div id="side-panel">
   <div class="sp-header">
     <h3 id="sp-title">新塬镇应急指挥</h3>
-    <span class="sp-badge" id="sp-badge">全镇概览</span>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="sp-badge" id="sp-badge">全镇概览</span>
+      <button class="sp-close" onclick="toggleSidePanel()" title="关闭">&#x2715;</button>
+    </div>
   </div>
   <div class="sp-body" id="sp-body"></div>
 </div>
@@ -1111,7 +1135,7 @@ function toggleVillageDropdown() {
   sel.classList.toggle('open');
 }
 
-function selectVillage(id, name) {
+function selectVillage(id, name, suppressInfo) {
   currentVillageId = id;
   document.getElementById('currentVillage').textContent = name;
   document.getElementById('village-dropdown').classList.remove('show');
@@ -1135,7 +1159,7 @@ function selectVillage(id, name) {
     var bbAll = document.getElementById('bb-panel');
     if (bbAll) bbAll.classList.remove('active');
   } else {
-    showVillageInfo(id);
+    if (!suppressInfo) showVillageInfo(id);
     if (sidePanelOpen) showSidePanelVillage(id);
     var bbSel = document.getElementById('bb-panel');
     if (bbSel) bbSel.classList.add('active');
@@ -1261,11 +1285,13 @@ function renderVpTabContent(vid, tab, plan) {
 }
 
 // 渲染村级详情面板（子菜单）
-function renderVillagePanel(vid, container) {
+// hidePatrol: 为 true 时隐藏"巡查记录"页签（左上角村庄信息弹窗用它，巡查统一走底部工具栏入口）
+function renderVillagePanel(vid, container, hidePatrol) {
   var plan = (typeof VILLAGE_PLANS !== 'undefined' && VILLAGE_PLANS[vid]) ? VILLAGE_PLANS[vid] : null;
   var contentId = 'vp-content-' + encodeURIComponent(vid);
   var html = '<div class="vp-tabs">';
   VP_TABS.forEach(function(t, i) {
+    if (hidePatrol && t[0] === 'patrol') return;
     html += '<div class="vp-tab' + (i === 0 ? ' active' : '') + '" data-tab="' + t[0] + '"><span class="vp-tab-icon">' + t[1] + '</span>' + t[2] + '</div>';
   });
   html += '</div>';
@@ -1300,7 +1326,8 @@ function showVillageInfo(vid) {
   panel.classList.add('show');
   document.getElementById('stats-panel').classList.add('hidden');
 
-  renderVillagePanel(vid, body);
+  // 村庄信息弹窗隐藏"巡查记录"页签：巡查统一走底部工具栏入口，避免重复
+  renderVillagePanel(vid, body, true);
 }
 
 function closeVillageInfo() {
@@ -1416,7 +1443,15 @@ function closeLayerSheet() {
 
 // 移动端底部工具栏：直接打开当前村的信息面板并定位到指定页签（转移谁 / 巡查记录）
 function openVillageTab(tab) {
-  if (currentVillageId === 'all') {
+  var vid = currentVillageId;
+  var role = sessionStorage.getItem('xyc_role') || '';
+  var myVillage = sessionStorage.getItem('xyc_village') || '';
+  // 村级账号：即使当前视图是"全部村庄"，也自动定位到本村，巡查/转移直接对本村操作
+  if (vid === 'all' && role === '村级' && myVillage) {
+    vid = myVillage;
+    selectVillage(myVillage, myVillage, true);
+  }
+  if (vid === 'all') {
     showStatus('请先在上方选择村庄，再查看转移/巡查信息');
     return;
   }
@@ -1426,9 +1461,19 @@ function openVillageTab(tab) {
     document.getElementById('stats-panel').classList.add('hidden');
     var b = document.getElementById('bb-panel');
     if (b) b.classList.add('active');
+    // 关闭左上角村庄信息弹窗，避免两个面板叠加拥挤
+    var vi = document.getElementById('village-info');
+    if (vi && vi.classList.contains('show')) vi.classList.remove('show');
   }
-  showSidePanelVillage(currentVillageId);
-  var el = document.querySelector('.vp-tab[data-tab="' + tab + '"]');
+  showSidePanelVillage(vid);
+  if (tab === 'patrol') {
+    // 巡查记录不再占用子菜单页签：从底部工具栏进入时直接渲染巡查内容
+    var body = document.getElementById('sp-body');
+    body.innerHTML = renderPatrolTab(vid);
+    if (typeof refreshPatrolList === 'function') refreshPatrolList(vid);
+    return;
+  }
+  var el = document.querySelector('#side-panel .vp-tab[data-tab="' + tab + '"]');
   if (el) el.click();
 }
 
@@ -2025,13 +2070,22 @@ document.addEventListener('click', function(e) {
 // ========== 启动 ==========
 window.onload = function() {
   initMap();
-  // 如果从仪表盘跳转过来，自动选中村庄
-  var preVillage = sessionStorage.getItem('xyc_village');
-  if (preVillage) {
-    sessionStorage.removeItem('xyc_village');
+  // 从看板点击村庄卡片跳转：自动选中目标村（一次性），不弹左上角信息窗（避免手机端拥挤）
+  var target = sessionStorage.getItem('xyc_map_village');
+  if (target) {
+    sessionStorage.removeItem('xyc_map_village');
     setTimeout(function() {
-      selectVillage(preVillage, preVillage);
+      selectVillage(target, target, true);
     }, 800);
+  } else {
+    // 村级账号：自动定位到本村，巡查记录直接归本村
+    var myVillage = sessionStorage.getItem('xyc_village');
+    var role = sessionStorage.getItem('xyc_role') || '';
+    if (myVillage && role === '村级') {
+      setTimeout(function() {
+        selectVillage(myVillage, myVillage, true);
+      }, 800);
+    }
   }
 };
 </script>
