@@ -171,8 +171,9 @@ function initMap() {
     subdomains: ['1', '2', '3', '4'], maxZoom: 18, minZoom: 3, opacity: 0.6
   }).addTo(map);
 
-  layerFlood = L.geoJSON(VULN_FLOOD, { style: styleFor(VULN_FLOOD, 0.55) }).addTo(map);
-  layerMud = L.geoJSON(VULN_MUD, { style: styleFor(VULN_MUD, 0.55) }).addTo(map);
+  layerFlood = L.geoJSON(VULN_FLOOD, { style: styleFor(VULN_FLOOD, 0.55) });
+  layerMud = L.geoJSON(VULN_MUD, { style: styleFor(VULN_MUD, 0.55) });
+  applyMode(); // 按当前单选状态只显示对应图层，避免叠加
 }
 
 function setFloodOpacity(v) { if (layerFlood) layerFlood.setStyle(styleFor(VULN_FLOOD, v / 100)); }

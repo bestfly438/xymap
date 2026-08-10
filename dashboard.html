@@ -312,6 +312,28 @@ body {
 @keyframes savePop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes saveFade { to { opacity: 0; transform: translateY(-10px); } }
 
+/* ===== 顶栏"更多"菜单（手机端收纳入口） ===== */
+.more-btn {
+  display: none;
+}
+.more-menu {
+  display: none; position: fixed; top: 56px; right: 12px; z-index: 200;
+  background: var(--bg-card); border: 1px solid var(--border-light);
+  border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+  min-width: 200px; overflow: hidden;
+}
+.more-menu.show { display: block; animation: mmIn 0.18s ease; }
+@keyframes mmIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+.more-menu .mm-item {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 13px 18px; background: none; border: none; border-bottom: 1px solid var(--border);
+  color: var(--text); font-size: 14px; cursor: pointer; font-family: inherit; text-align: left;
+  text-decoration: none;
+}
+.more-menu .mm-item:last-child { border-bottom: none; }
+.more-menu .mm-item:hover { background: var(--bg-card-hover); }
+.more-menu .mm-item.primary { color: #ef4444; font-weight: 600; }
+
 /* ===== 响应式 ===== */
 @media (max-width: 1400px) {
   .stats-row { grid-template-columns: repeat(3, 1fr); }
@@ -332,6 +354,17 @@ body {
   .topbar h1 { font-size: 14px; }
   .topbar .weather-badge { display: none; }
   .topbar .time-display { display: none; }
+  .topbar .edit-mode-btn { display: none !important; }
+  /* 手机端把易发性/进入地图/退出收进"更多"抽屉（保留"更多"按钮本身） */
+  .topbar .top-actions > a:not(.more-btn), .topbar .top-actions > button:not(.more-btn) { display: none !important; }
+  .more-btn {
+    display: flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--bg-card); border: 1px solid var(--border);
+    color: var(--text); font-size: 20px; cursor: pointer;
+  }
+  .more-btn.active { border-color: #ef4444; color: #ef4444; }
+  .more-menu { top: 60px; }
 }
 </style>
 </head>
@@ -357,7 +390,16 @@ body {
     <a href="vuln.html" class="btn btn-primary">&#x1F3D4; 易发性分析</a>
     <a href="map.html" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
+    <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
+</div>
+
+<!-- 手机端"更多"抽屉菜单 -->
+<div class="more-menu" id="moreMenu">
+  <a href="map.html" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="vuln.html" class="mm-item">&#x1F3D4; 易发性分析</a>
+  <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
+  <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
 </div>
 
 <div class="container">
@@ -652,16 +694,35 @@ setInterval(loadWarnings, 5 * 60 * 1000); // 每5分钟自动刷新预警
 // ========== 统计数据 ==========
 var VILLAGE_ORDER = ['上塬村', '东塬村', '刘家湾社区', '孟塬村', '常家坪村', '新塬村', '杨坪村', '杨家河坝村', '甘岔村', '老庄村'];
 
-// 各村切坡建房户数 / 隐患点数量（来源：《新塬镇一页纸数据》Excel，非矢量点位）
+// SHP村名映射（SHP数据用简称 → 完整名）
+var SHP_VILLAGE_MAP = {
+  '常坪村': '常家坪村',
+  '河坝村': '杨家河坝村'
+};
+var REVERSE_SHP_MAP = {};
+Object.keys(SHP_VILLAGE_MAP).forEach(function(k) { REVERSE_SHP_MAP[SHP_VILLAGE_MAP[k]] = k; });
+
+// 各村切坡建房户数（按 SHP 隐患点位统计：每户一个点，与地图红点一一对应）
+// 隐患点数量（来源：《新塬镇一页纸数据》Excel）；排除7个"全镇级"地质灾害汇总点
+function getShpHouseholds(vname) {
+  var shpName = REVERSE_SHP_MAP[vname] || vname;
+  var count = 0;
+  if (typeof DATA_HAZARD_POINTS === 'undefined' || !DATA_HAZARD_POINTS.features) return 0;
+  DATA_HAZARD_POINTS.features.forEach(function(f) {
+    var p = f.properties || {};
+    if (p.source === 'vector_data') return; // 全镇地质灾害点不算切坡建房户
+    if ((p.CZ || '') === shpName) count++;
+  });
+  return count;
+}
+
 function getVillagePlanStats(vname) {
   var stats = { hazards: 0, households: 0 };
   if (typeof VILLAGE_PLANS === 'undefined' || !VILLAGE_PLANS[vname]) return stats;
   var hazards = VILLAGE_PLANS[vname].hazards || [];
   stats.hazards = hazards.length;
-  hazards.forEach(function(h) {
-    var m = (h.scope || '').match(/(\d+)\s*户/);
-    if (m) stats.households += parseInt(m[1], 10);
-  });
+  // 切坡建房户数改为按 SHP 隐患点位统计（与地图红点一致），不再用"一页纸威胁户数"
+  stats.households = getShpHouseholds(vname);
   return stats;
 }
 
@@ -744,6 +805,29 @@ function doLogout() {
   window.location.replace('index.html');
 }
 
+// ========== 手机端"更多"抽屉菜单 ==========
+function toggleMoreMenu() {
+  var menu = document.getElementById('moreMenu');
+  var btn = document.getElementById('moreBtn');
+  if (!menu) return;
+  menu.classList.toggle('show');
+  if (btn) btn.classList.toggle('active');
+}
+
+// 点击页面其他区域关闭"更多"菜单
+document.addEventListener('click', function(e) {
+  var menu = document.getElementById('moreMenu');
+  var btn = document.getElementById('moreBtn');
+  if (menu && menu.classList.contains('show')) {
+    var isMenu = menu.contains(e.target);
+    var isBtn = btn && btn.contains(e.target);
+    if (!isMenu && !isBtn) {
+      menu.classList.remove('show');
+      if (btn) btn.classList.remove('active');
+    }
+  }
+});
+
 // ========== 编辑模式 ==========
 var isEditMode = false;
 var isAdmin = sessionStorage.getItem('xyc_admin') === '1';
@@ -752,6 +836,8 @@ var EDIT_STORAGE_KEY = 'xyc_village_edit_data';
 // 显示管理员按钮
 if (isAdmin) {
   document.getElementById('editModeBtn').style.display = 'flex';
+  var em2 = document.getElementById('editModeBtn2');
+  if (em2) em2.style.display = 'flex';
 }
 
 // 从 localStorage 读取编辑数据
