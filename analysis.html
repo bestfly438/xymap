@@ -132,7 +132,7 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   #topbar .sub { display: none; }
   #topbar .nav-links .back-link { display: none; }
   #tabs { top: 48px; }
-  #tabs .tab { font-size: 12px; padding: 9px 1px; }
+  #tabs .tab { font-size: 11px; padding: 9px 1px; letter-spacing: -0.2px; }
   #summary { top: 92px; font-size: 12px; padding: 5px 12px; }
   #ctrl-panel { display: none; }
   #list-panel { display: none; }
@@ -216,6 +216,7 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   <div class="tab active" data-tab="rain">&#x1F4A7; 雨量响应</div>
   <div class="tab" data-tab="grade">&#x1F534; 风险分级</div>
   <div class="tab" data-tab="zone">&#x1F30A; 洪水影响带</div>
+  <div class="tab" data-tab="pond">&#x1F30A;&#xFE0F; 积水分析</div>
   <div class="tab" data-tab="vuln">&#x1F3D4; 易发性叠加</div>
 </div>
 
@@ -249,6 +250,8 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
 <script src="js_data/risk_grading.js"></script>
 <script src="js_data/flood_zones.js"></script>
 <script src="js_data/analysis_meta.js"></script>
+<script src="js_data/flood_depression.js"></script>
+<script src="js_data/depression_meta.js"></script>
 <script src="js_data/vuln_data.js"></script>
 <script src="js_data/village_centers.js"></script>
 <script src="js_data/rain_stations.js"></script>
@@ -270,9 +273,21 @@ var PTS = RISK_GRADING.features.map(function(f){
   var p = f.properties, c = f.geometry.coordinates;
   return {name:p.name, cz:p.cz, full:(SHORT2FULL[p.cz]||p.cz), lng:c[0], lat:c[1],
           score:p.score, grade:p.grade, desc:p.desc, phone:p.phone, resp:p.resp, evac:p.evac,
-          flood:p.flood_grade||0, mud:p.mud_grade||0, z50:p.z50||0, z100:p.z100||0};
+          flood:p.flood_grade||0, mud:p.mud_grade||0, z50:p.z50||0, z100:p.z100||0, dep:null};
 });
 var STATIONS = (DATA_RAIN_STATIONS && DATA_RAIN_STATIONS.features) || [];
+
+// 融合 DEM 积水洼地落区（dep: 洼地平均积水深度 / 0 不在洼地）
+var DEPPTS = (DEPRESSION_META && DEPRESSION_META.points) || [];
+var DEP_MAP = {};
+DEPPTS.forEach(function(d){ DEP_MAP[d.name + '|' + d.cz] = d; });
+PTS.forEach(function(p){
+  var d = DEP_MAP[p.name + '|' + p.cz] || DEP_MAP[p.name + '|' + SHORT2FULL[p.cz]];
+  if (d) { p.dep = d.depth || 0; }
+});
+var DEP_VILLAGES = (DEPRESSION_META && DEPRESSION_META.villages) || [];
+var DEP_STATS = (DEPRESSION_META && DEPRESSION_META.stats) || {};
+var POND_DEPRESSION = (typeof FLOOD_DEPRESSION !== 'undefined') ? FLOOD_DEPRESSION : null;
 
 var CLASS_COLORS = ['#00cc66', '#ffdd00', '#ff8800', '#ff1a1a'];  // 1低2较低3较高4高
 var GRADE_COLORS = {高: '#dc2626', 中: '#f97316', 低: '#16a34a'};
@@ -285,6 +300,7 @@ var LEVELS = [
 ];
 var RAIN_IDX = 1;                 // 默认 20mm 黄色
 var ZSTATE = {z50: true, z100: true, pts: true};
+var PONDSTATE = {heavy: true, mid: true, light: true, pts: true};
 var VILLAGE_FILTER = '';
 var MODE = 'flood';               // vuln 叠加模式
 var OPACITY = {flood: 55, mud: 55};
@@ -397,6 +413,14 @@ function ctrlHTML(tab){
       + ck('z50', '50m 影响带') + ck('z100', '100m 影响带') + ck('pts', '带内隐患点') + '</div></div>'
       + '<div class="cp-hint">以全镇河道为中心线生成的 <b>50m / 100m 缓冲带</b>，近似指示强降雨（如 80mm）下的洪水漫溢与积水高风险范围。红色圆点为带内隐患户，灰点为带外对照。</div>';
   }
+  if (tab === 'pond') {
+    var pk = function(k, t){ return '<label><input type="checkbox" data-pcb="' + k + '"' + (PONDSTATE[k]?' checked':'') + '> ' + t + '</label>'; };
+    return '<div class="cp-title">积水分析（12.5m DEM）</div>'
+      + '<div class="cp-row"><div class="cp-name">显示图层</div><div class="cp-chk">'
+      + pk('heavy', '重度积水区（平均水深&gt;2.5m）') + pk('mid', '中度积水区（1~2.5m）')
+      + pk('light', '轻度积水区（&lt;1m）') + pk('pts', '洼地内隐患点') + '</div></div>'
+      + '<div class="cp-hint">基于 <b>CGCS2000 高斯克吕格 12.5m 高程数据</b>做地形填洼分析（priority-flood）：洼地即强降雨时蓄水的低洼区，颜色越深积水越深。红色圆点为<b>位于洼地内的隐患户（暴雨最易积水受灾）</b>，共 ' + (DEPPTS.length||0) + ' 处。</div>';
+  }
   /* vuln */
   return '<div class="cp-title">易发性叠加</div>'
     + '<div class="cp-row"><div class="cp-name">分析图层</div><div class="cp-modes">'
@@ -422,6 +446,9 @@ function legendHTML(tab){
   if (tab === 'zone') {
     return '<span class="lg-title">洪水影响带</span>' + it('#7dd3fc','50m 带') + it('#38bdf8','100m 带') + it('#dc2626','带内隐患点',1) + it('#94a3b8','带外对照',1);
   }
+  if (tab === 'pond') {
+    return '<span class="lg-title">洼地积水深度</span>' + it('#1d4ed8','重 &gt;2.5m') + it('#3b82f6','中 1~2.5m') + it('#93c5fd','轻 &lt;1m') + it('#dc2626','洼地内隐患户',1) + it('#94a3b8','洼地外对照',1);
+  }
   return '<span class="lg-title">易发性等级</span>' + it('#00cc66','低') + it('#ffdd00','较低') + it('#ff8800','较高') + it('#ff1a1a','高') + it('#94a3b8','区外隐患点',1);
 }
 
@@ -435,7 +462,7 @@ function summaryHTML(tab){
     if (idx === 2) {
       var z = PTS.filter(function(x){ return x.z50||x.z100; }).length;
       var f = PTS.filter(function(x){ return x.flood>0; }).length;
-      return '\uD83D\uDFE7 ' + LEVELS[idx].name + '：洪水影响带内隐患点 ' + z + ' 处 · 山洪易发区内 ' + f + ' 处需重点巡查';
+      return '\uD83D\uDFE7 ' + LEVELS[idx].name + '：洪水影响带内隐患点 ' + z + ' 处 · 山洪易发区内 ' + f + ' 处 · 低洼积水户 ' + (DEPPTS.length||0) + ' 处需重点巡查';
     }
     if (idx === 1) return '\uD83D\uDFE1 ' + LEVELS[idx].name + '：已叫应全镇 ' + VILLAGES.length + ' 个村责任人，提醒威胁户';
     return '\uD83D\uDD35 ' + LEVELS[idx].name + '：全镇值班值守，密切关注雨情';
@@ -453,6 +480,13 @@ function summaryHTML(tab){
     var n100 = PTS.filter(function(x){ return x.z100; }).length;
     var vs = {}; inPts.forEach(function(x){ vs[x.full]=1; });
     return '50m 带内 ' + n50 + ' 处 · 100m 带内 ' + n100 + ' 处 · 涉及 ' + Object.keys(vs).length + ' 个村';
+  }
+  if (tab === 'pond') {
+    var nf = (POND_DEPRESSION && POND_DEPRESSION.features) ? POND_DEPRESSION.features.length : 0;
+    var g3 = PTS.filter(function(x){ return x.dep && x.dep > 2.5; }).length;
+    var g2 = PTS.filter(function(x){ return x.dep && x.dep > 1 && x.dep <= 2.5; }).length;
+    var g1 = PTS.filter(function(x){ return x.dep && x.dep <= 1; }).length;
+    return '12.5m DEM 识别积水洼地 ' + nf + ' 处 · 洼地内隐患户 ' + (DEPPTS.length||0) + ' 处（深&gt;2.5m ' + g3 + ' · 1~2.5m ' + g2 + ' · &lt;1m ' + g1 + '）';
   }
   var nf = PTS.filter(function(x){ return x.flood>0; }).length;
   var nm = PTS.filter(function(x){ return x.mud>0; }).length;
@@ -484,6 +518,20 @@ function renderList(){
       html += '<div class="zl-row" data-lng="' + p.lng + '" data-lat="' + p.lat + '"><b>' + p.name + '</b> · ' + p.full
         + (p.z50 ? '<span class="z-tag">50m</span>' : '') + (p.z100 ? '<span class="z-tag">100m</span>' : '')
         + '<div>评分 ' + p.score + ' 分（' + p.grade + '）' + (p.evac ? ' · 避险点：' + p.evac : '') + '</div></div>';
+    });
+  } else if (TAB === 'pond') {
+    var depPts = PTS.filter(function(x){ return x.dep && x.dep > 0; })
+      .sort(function(a, b){ return b.dep - a.dep; });
+    html = '<div class="lp-title">\uD83C\uDF0A 洼地内隐患户（' + depPts.length + ' 处，点击定位）</div>';
+    if (!depPts.length) html += '<div class="zl-row">暂无</div>';
+    depPts.forEach(function(p){
+      html += '<div class="zl-row" data-lng="' + p.lng + '" data-lat="' + p.lat + '"><b>' + p.name + '</b> · ' + p.full
+        + '<span class="z-tag" style="background:#1d4ed8">洼地 ' + p.dep.toFixed(1) + 'm</span>'
+        + '<div>综合评分 ' + p.score + ' 分（' + p.grade + '）' + (p.evac ? ' · 避险点：' + p.evac : '') + '</div></div>';
+    });
+    var dv = DEP_VILLAGES.filter(function(v){ return v.grade > 0; });
+    dv.forEach(function(v){
+      html += '<div class="zl-row" data-lng="' + v.lng + '" data-lat="' + v.lat + '"><b>' + v.name + '</b>（村中心位于洼地内，平均水深 ' + v.depth.toFixed(1) + 'm）</div>';
     });
   } else {
     html = '<div class="lp-title">' + (TAB==='grade' ? '\uD83D\uDD34 风险分级' : '\uD83D\uDCD0 易发性叠加') + '</div>'
@@ -582,6 +630,51 @@ function refreshMap(){
       });
     }
   }
+  else if (TAB === 'pond') {
+    // 洼地积水区（12.5m DEM 填洼分析）
+    if (POND_DEPRESSION) {
+      var PCOL = {3: '#1d4ed8', 2: '#3b82f6', 1: '#93c5fd'};
+      var POP = {3: '重度积水', 2: '中度积水', 1: '轻度积水'};
+      var pondFeats = POND_DEPRESSION.features.filter(function(f){
+        var g = f.properties.grade || 1;
+        if (g === 3 && !PONDSTATE.heavy) return false;
+        if (g === 2 && !PONDSTATE.mid) return false;
+        if (g === 1 && !PONDSTATE.light) return false;
+        return true;
+      });
+      if (pondFeats.length) {
+        grpZones.addLayer(L.geoJSON({type:'FeatureCollection', features: pondFeats}, {
+          style: function(f){
+            var g = f.properties.grade || 1;
+            return { color:'#ffffff', weight:.6, opacity:.7, fillColor: PCOL[g], fillOpacity: g===3 ? .62 : (g===2 ? .52 : .45) };
+          },
+          onEachFeature: function(f, layer){
+            var pr = f.properties;
+            layer.bindPopup('<b>' + (POP[pr.grade] || '积水区') + '</b>'
+              + '<div>平均水深 ' + pr.mean + 'm · 最深 ' + pr.max + 'm</div>'
+              + '<div>面积约 ' + (pr.area >= 10000 ? (pr.area/10000).toFixed(1) + ' 万m²' : Math.round(pr.area/1000) + ' 千m²') + '</div>');
+          }
+        }));
+      }
+    }
+    if (PONDSTATE.pts) {
+      PTS.forEach(function(p){
+        var inPond = p.dep && p.dep > 0;
+        grpPts.addLayer(L.circleMarker([p.lat, p.lng], {
+          radius: inPond ? 8 : 3.5, color: inPond ? '#ffffff' : '#94a3b8',
+          weight: inPond ? 2.5 : 0, fillColor: inPond ? '#dc2626' : '#cbd5e1', fillOpacity: inPond ? 1 : .5
+        }).bindPopup(inPond ? ptPopup(p) + '<div style="color:#b91c1c;font-weight:700;">\u26A0\uFE0F 位于积水洼地内（平均水深 ' + p.dep.toFixed(1) + 'm），暴雨最易积水受灾</div>' : ptPopup(p)));
+      });
+    }
+    // 洼地内村中心
+    DEP_VILLAGES.forEach(function(v){
+      if (!(v.grade > 0)) return;
+      grpVillage.addLayer(L.circleMarker([v.lat, v.lng], {
+        radius: 11, color: '#ffffff', weight: 2.5, fillColor: '#b91c1c', fillOpacity: .95
+      }).bindPopup('<b>' + v.name + '</b> <span style="color:#b91c1c;font-weight:700;">村中心位于积水洼地内</span>'
+        + '<div>平均积水深度约 ' + v.depth.toFixed(1) + 'm，强降雨时注意防范内涝</div>'));
+    });
+  }
   else { /* vuln */
     var showF = (MODE==='flood'||MODE==='both');
     var showM = (MODE==='mud'||MODE==='both');
@@ -630,6 +723,10 @@ document.addEventListener('input', function(e){
 document.addEventListener('change', function(e){
   if (e.target.hasAttribute('data-zcb')) {
     ZSTATE[e.target.getAttribute('data-zcb')] = e.target.checked;
+    refreshMap();
+  }
+  else if (e.target.hasAttribute('data-pcb')) {
+    PONDSTATE[e.target.getAttribute('data-pcb')] = e.target.checked;
     refreshMap();
   }
   else if (e.target.classList && e.target.classList.contains('village-filter')) {
