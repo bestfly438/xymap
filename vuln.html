@@ -47,6 +47,9 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
 .cp-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 .cp-row .cp-name { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
 .cp-row .cp-name input[type=checkbox] { width: 16px; height: 16px; accent-color: #d32f2f; }
+.cp-modes { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.cp-modes label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+.cp-modes input[type=radio] { width: 15px; height: 15px; accent-color: #d32f2f; }
 .cp-row .cp-slider { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
 .cp-row .cp-slider input[type=range] { flex: 1; accent-color: #d32f2f; }
 .cp-row .cp-slider span { font-size: 11px; color: #666; width: 34px; text-align: right; }
@@ -95,22 +98,28 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
 <div id="ctrl-panel">
   <div class="cp-title">图层控制</div>
   <div class="cp-row">
-    <div class="cp-name"><input type="checkbox" id="ck-flood" checked> 山洪易发性</div>
+    <div class="cp-name">显示图层</div>
+    <div class="cp-modes">
+      <label><input type="radio" name="layer-mode" value="flood" checked> 山洪易发性</label>
+      <label><input type="radio" name="layer-mode" value="mud"> 泥石流易发性</label>
+      <label><input type="radio" name="layer-mode" value="both"> 叠加对比</label>
+    </div>
+  </div>
+  <div class="cp-row">
+    <div class="cp-name">山洪透明度</div>
     <div class="cp-slider">
-      <span style="width:auto">透明度</span>
       <input type="range" id="op-flood" min="0" max="100" value="45">
       <span id="op-flood-v">45%</span>
     </div>
   </div>
   <div class="cp-row">
-    <div class="cp-name"><input type="checkbox" id="ck-mud" checked> 泥石流易发性</div>
+    <div class="cp-name">泥石流透明度</div>
     <div class="cp-slider">
-      <span style="width:auto">透明度</span>
       <input type="range" id="op-mud" min="0" max="100" value="45">
       <span id="op-mud-v">45%</span>
     </div>
   </div>
-  <div class="cp-hint">提示：滑块调节分区色块透明度，数值越大颜色越实；卫星影像始终位于分区图层之下。</div>
+  <div class="cp-hint">提示：默认单选显示一个图层，避免两图层色块重叠；选择"叠加对比"可同时查看两者，并分别调节透明度。卫星影像始终位于分区图层之下。</div>
 </div>
 
 <div id="legend">
@@ -169,13 +178,18 @@ function initMap() {
 function setFloodOpacity(v) { if (layerFlood) layerFlood.setStyle(styleFor(VULN_FLOOD, v / 100)); }
 function setMudOpacity(v) { if (layerMud) layerMud.setStyle(styleFor(VULN_MUD, v / 100)); }
 
-document.getElementById('ck-flood').addEventListener('change', function(e) {
-  if (e.target.checked) { if (!map.hasLayer(layerFlood)) layerFlood.addTo(map); }
+// 单选模式：默认只显示一个图层，避免重叠
+function applyMode() {
+  var mode = document.querySelector('input[name="layer-mode"]:checked').value;
+  var showFlood = (mode === 'flood' || mode === 'both');
+  var showMud = (mode === 'mud' || mode === 'both');
+  if (showFlood) { if (!map.hasLayer(layerFlood)) layerFlood.addTo(map); }
   else { map.removeLayer(layerFlood); }
-});
-document.getElementById('ck-mud').addEventListener('change', function(e) {
-  if (e.target.checked) { if (!map.hasLayer(layerMud)) layerMud.addTo(map); }
+  if (showMud) { if (!map.hasLayer(layerMud)) layerMud.addTo(map); }
   else { map.removeLayer(layerMud); }
+}
+document.querySelectorAll('input[name="layer-mode"]').forEach(function(rb) {
+  rb.addEventListener('change', applyMode);
 });
 document.getElementById('op-flood').addEventListener('input', function(e) {
   document.getElementById('op-flood-v').textContent = e.target.value + '%';
