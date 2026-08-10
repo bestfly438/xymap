@@ -860,6 +860,7 @@ function doLogout() {
   sessionStorage.removeItem('xyc_auth');
   sessionStorage.removeItem('xyc_key');
   sessionStorage.removeItem('xyc_admin');
+  sessionStorage.removeItem('xyc_role');
   sessionStorage.removeItem('xyc_village');
   window.location.replace('index.html');
 }
@@ -889,7 +890,7 @@ document.addEventListener('click', function(e) {
 
 // ========== 编辑模式 ==========
 var isEditMode = false;
-var isAdmin = sessionStorage.getItem('xyc_admin') === '1';
+var isAdmin = sessionStorage.getItem('xyc_admin') === '1' || sessionStorage.getItem('xyc_role') === '管理员';
 var EDIT_STORAGE_KEY = 'xyc_village_edit_data';
 
 // 显示管理员按钮
