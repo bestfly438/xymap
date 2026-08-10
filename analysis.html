@@ -83,6 +83,8 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
 .cp-chk { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .cp-chk label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
 .cp-chk input[type=checkbox], .cp-chk input[type=radio] { width: 16px; height: 16px; accent-color: #d32f2f; }
+.cp-chk label.on { color: #b71c1c; font-weight: 700; }
+.cp-chk label.on input[type=radio] { outline: 2px solid rgba(183,28,28,.55); outline-offset: 2px; border-radius: 50%; }
 
 /* 图例(PC) */
 #legend {
@@ -422,7 +424,7 @@ function ctrlHTML(tab){
   }
   if (tab === 'pond') {
     var pk = function(k, t){ return '<label><input type="checkbox" data-pcb="' + k + '"' + (PONDSTATE[k]?' checked':'') + '> ' + t + '</label>'; };
-    var prk = function(mm){ return '<label><input type="radio" name="prain" data-prain="' + mm + '" value="' + mm + '"' + (PRAIN===mm?' checked':'') + '> ' + mm + 'mm</label>'; };
+    var prk = function(mm){ return '<label class="' + (PRAIN===mm?'on':'') + '"><input type="radio" name="prain" data-prain="' + mm + '" value="' + mm + '"' + (PRAIN===mm?' checked':'') + '> ' + mm + 'mm</label>'; };
     return '<div class="cp-title">积水分析（12.5m DEM）</div>'
       + '<div class="cp-row"><div class="cp-name">模拟降雨</div><div class="cp-chk">'
       + prk(20) + prk(50) + prk(80) + '</div></div>'
@@ -594,8 +596,17 @@ function renderList(){
   lp.innerHTML = html;
   lp.querySelectorAll('[data-lng]').forEach(function(r){
     r.addEventListener('click', function(){
-      map.flyTo([parseFloat(r.getAttribute('data-lat')), parseFloat(r.getAttribute('data-lng'))], 15, {duration: .8});
+      var lat = parseFloat(r.getAttribute('data-lat')), lng = parseFloat(r.getAttribute('data-lng'));
+      map.flyTo([lat, lng], 15, {duration: .8});
       if (window.innerWidth <= 768) { toggleList(); }
+      // 定位后自动弹出对应隐患点信息（存在匹配点时）
+      setTimeout(function(){
+        var hit = null;
+        for (var i = 0; i < PTS.length; i++) {
+          if (Math.abs(PTS[i].lng - lng) < 1e-6 && Math.abs(PTS[i].lat - lat) < 1e-6) { hit = PTS[i]; break; }
+        }
+        if (hit) L.popup().setLatLng([lat, lng]).setContent(ptPopup(hit)).openOn(map);
+      }, 900);
     });
   });
 }
@@ -623,20 +634,26 @@ function ptPopup(p){
     + '<div style="color:#64748b;font-size:11px;">' + (p.desc||'') + '</div></div>';
 }
 
+// 隐患点 = 淡色范围圆（提示威胁覆盖区域，区域内可能还有其他居住人员）+ 中心点，两者均可点击查看信息
+function addPtRange(p, fill, markerOpts){
+  grpPts.addLayer(L.circle([p.lat, p.lng], { radius: 60, color: 'transparent', weight: 0, fillColor: fill, fillOpacity: .14 }).bindPopup(ptPopup(p)));
+  grpPts.addLayer(L.circleMarker([p.lat, p.lng], markerOpts).bindPopup(ptPopup(p)));
+}
+
 function refreshMap(){
   grpPts.clearLayers(); grpVillage.clearLayers(); grpZones.clearLayers(); grpVuln.clearLayers(); grpStations.clearLayers(); grpRivers.clearLayers();
   if (TAB === 'rain') {
     var idx = RAIN_IDX, lv = LEVELS[idx];
     // 镇内河流（背景）
     if (RIVERS_TOWN_FC) grpRivers.addLayer(L.geoJSON(RIVERS_TOWN_FC, { style: { color:'#0284c7', weight:1.4, opacity:.7 } }));
-    // 隐患点
+    // 隐患点（淡色范围圆标注威胁覆盖区域）
     PTS.forEach(function(p){
       var inZone = idx >= 2 && (p.z50||p.z100);
       var r = inZone ? 8 : (p.grade==='高' ? 7 : (p.grade==='中' ? 5 : 4));
-      grpPts.addLayer(L.circleMarker([p.lat, p.lng], {
+      addPtRange(p, GRADE_COLORS[p.grade], {
         radius: r, color: inZone ? '#06b6d4' : '#ffffff', weight: inZone ? 2.5 : 1,
         fillColor: GRADE_COLORS[p.grade], fillOpacity: .95
-      }).bindPopup(ptPopup(p)));
+      });
     });
     // 雨量站
     STATIONS.forEach(function(f){
@@ -676,10 +693,10 @@ function refreshMap(){
   else if (TAB === 'grade') {
     PTS.forEach(function(p){
       if (VILLAGE_FILTER && p.full !== VILLAGE_FILTER) return;
-      grpPts.addLayer(L.circleMarker([p.lat, p.lng], {
+      addPtRange(p, GRADE_COLORS[p.grade], {
         radius: p.grade==='高' ? 8 : (p.grade==='中' ? 6 : 4.5),
         color: '#ffffff', weight: 1.5, fillColor: GRADE_COLORS[p.grade], fillOpacity: .95
-      }).bindPopup(ptPopup(p)));
+      });
     });
     if (VILLAGE_FILTER) {
       var c = centerOf(VILLAGE_FILTER);
@@ -768,10 +785,10 @@ function refreshMap(){
     PTS.forEach(function(p){
       var g = MODE==='mud' ? p.mud : p.flood;
       var on = g > 0;
-      grpPts.addLayer(L.circleMarker([p.lat, p.lng], {
+      addPtRange(p, on ? CLASS_COLORS[Math.min(g,4)-1] : '#cbd5e1', {
         radius: on ? 6 : 3.5, color: on ? '#ffffff' : '#94a3b8',
         weight: on ? 1.5 : 0, fillColor: on ? CLASS_COLORS[Math.min(g,4)-1] : '#cbd5e1', fillOpacity: on ? .95 : .55
-      }).bindPopup(ptPopup(p)));
+      });
     });
   }
 }
@@ -816,7 +833,11 @@ document.addEventListener('change', function(e){
   }
   else if (e.target.hasAttribute('data-prain')) {
     PRAIN = parseInt(e.target.getAttribute('data-prain'), 10);
-    document.querySelectorAll('[data-prain]').forEach(function(rb){ rb.checked = (parseInt(rb.getAttribute('data-prain'), 10) === PRAIN); });
+    document.querySelectorAll('[data-prain]').forEach(function(rb){
+      var sel = (parseInt(rb.getAttribute('data-prain'), 10) === PRAIN);
+      rb.checked = sel;
+      if (rb.parentElement) rb.parentElement.classList.toggle('on', sel);
+    });
     document.getElementById('summary').innerHTML = summaryHTML('pond');
     renderList();
     refreshMap();
