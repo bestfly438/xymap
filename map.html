@@ -470,8 +470,42 @@ body.mobile-mode #stats-panel .stat-card { padding: 6px 10px; min-width: 60px; b
 body.mobile-mode #stats-panel .stat-card .stat-num { font-size: 16px; }
 body.mobile-mode #stats-panel .stat-card .stat-label { font-size: 10px; }
 
-body.mobile-mode #legend { bottom: 85px; left: 8px; font-size: 10px; padding: 8px 10px; border-radius: 8px; }
+/* 图例收起/展开按钮（手机端显示，PC端隐藏） */
+#legend-toggle {
+  display: none;
+}
+#legend .l-head { display: none; }
+
+body.mobile-mode #legend-toggle {
+  display: flex; align-items: center; justify-content: center;
+  position: fixed; bottom: 85px; left: 8px; z-index: 996;
+  height: 34px; padding: 0 14px; border-radius: 17px;
+  background: rgba(255,255,255,0.95); border: 1px solid rgba(15,23,42,0.12);
+  color: #1e293b; font-size: 12px; font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  cursor: pointer; gap: 5px;
+}
+body.mobile-mode #legend-toggle.active {
+  background: #dc2626; color: #fff; border-color: #dc2626;
+}
+body.mobile-mode #legend { display: none; bottom: 85px; left: 8px; font-size: 10px; padding: 8px 10px; border-radius: 8px; }
+body.mobile-mode #legend.open {
+  display: block; max-height: 56vh; overflow-y: auto;
+  background: rgba(255,255,255,0.97);
+}
 body.mobile-mode #legend .l-item { margin-bottom: 4px; gap: 5px; }
+body.mobile-mode #legend .l-head {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 12px; font-weight: 700; color: #1e293b;
+  margin-bottom: 6px; padding-bottom: 6px;
+  border-bottom: 1px solid rgba(15,23,42,0.1);
+}
+body.mobile-mode #legend .l-close {
+  cursor: pointer; font-size: 15px; line-height: 1;
+  width: 22px; height: 22px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; color: #64748b;
+}
+body.mobile-mode #legend .l-close:active { background: rgba(15,23,42,0.1); }
 
 body.mobile-mode #layer-ctrl { right: 8px; bottom: 85px; flex-direction: row; gap: 4px; }
 body.mobile-mode #layer-ctrl button { width: 34px; height: 34px; font-size: 13px; border-radius: 8px; }
@@ -654,8 +688,8 @@ html, body { background: #eef2f7; }
     <h1>新塬镇应急避险指挥系统</h1>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="dashboard.html?v=v20260806-04" class="back-link">&#x2190; 返回看板</a>
-    <a href="dashboard.html?v=v20260806-04#admin" class="admin-link" id="adminLink" title="系统管理（密钥/账号）" style="display:none">&#x2699;</a>
+    <a href="dashboard.html?v=v20260806-05" class="back-link">&#x2190; 返回看板</a>
+    <a href="dashboard.html?v=v20260806-05#admin" class="admin-link" id="adminLink" title="系统管理（密钥/账号）" style="display:none">&#x2699;</a>
     <button id="mode-toggle" title="切换PC/手机版" onclick="toggleMode()">&#x1F4F1;</button>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
@@ -692,7 +726,9 @@ html, body { background: #eef2f7; }
   <div class="sp-body" id="sp-body"></div>
 </div>
 
+<button id="legend-toggle" onclick="toggleLegend()">&#x1F4D0;&nbsp;图例</button>
 <div id="legend">
+  <div class="l-head"><span>图例</span><span class="l-close" onclick="toggleLegend()" title="收起">&#x2715;</span></div>
   <div class="l-item"><span class="l-dot" style="background:#ff4444;border:2px solid #ff6666"></span>地质灾害隐患点</div>
   <div class="l-item"><span class="l-dot" style="background:#ff9800;border:2px dashed #ffb74d"></span>受威胁区域（面状）</div>
   <div class="l-item"><span class="l-dot" style="background:#4caf50;border:2px solid #66bb6a"></span>转移安置点</div>
@@ -700,14 +736,13 @@ html, body { background: #eef2f7; }
   <div class="l-item"><span style="color:#2196f3;font-weight:700">&#x2545;&#x2545;</span>撤离路线</div>
   <div class="l-item"><span style="color:#1565c0;">&#x2501;&#x2501;</span>河道（常年河）</div>
   <div class="l-item"><span style="color:#90caf9;">&#x2545;&#x2545;</span>干涸河 / 时令河</div>
-  <div class="l-item"><span style="color:#e53935;font-weight:700">&#x2501;&#x2501;</span>国道（G）</div>
   <div class="l-item"><span style="color:#fb8c00;font-weight:700">&#x2501;&#x2501;</span>省道（S）</div>
   <div class="l-item"><span style="color:#fdd835;font-weight:700">&#x2501;&#x2501;</span>县道（X）</div>
   <div class="l-item"><span style="color:#8d6e63;font-weight:700">&#x2501;&#x2501;</span>乡道（Y）</div>
   <div class="l-item"><span style="color:#bcaaa4;">&#x2501;&#x2501;</span>村道（C）</div>
   <div class="l-item"><span style="display:inline-block;width:12px;height:3.5px;background:#1e293b;border-radius:2px;"></span>本村主要道路</div>
   <div class="l-item"><span style="display:inline-block;width:12px;height:3px;background:#0284c7;border-radius:2px;"></span>本村河流</div>
-  <div class="l-item" style="font-size:10px;color:#64748b;margin-top:5px;border-top:1px dashed rgba(15,23,42,0.15);padding-top:5px;">注：底图上的灰白道路与 X333 等路名标注<br>为卫星底图自带，非本系统矢量数据</div>
+  <div class="l-item" style="font-size:10px;color:#64748b;margin-top:5px;border-top:1px dashed rgba(15,23,42,0.15);padding-top:5px;">注：底图上的灰白道路与路名标注为卫星底图自带，非本系统矢量数据</div>
 </div>
 
 <div id="layer-ctrl">
@@ -715,7 +750,7 @@ html, body { background: #eef2f7; }
   <button id="btn-threatened" title="受威胁区域" onclick="toggleLayer('threatened')">&#x1F3D8;</button>
   <button id="btn-routes" title="撤离路线" onclick="toggleLayer('routes')">&#x27A1;</button>
   <button id="btn-sites" title="安置点" onclick="toggleLayer('sites')">&#x1F3E0;</button>
-  <button id="btn-majorRoads" title="国/省/县道" onclick="toggleLayer('majorRoads')">&#x1F6E3;</button>
+  <button id="btn-majorRoads" title="省/县道" onclick="toggleLayer('majorRoads')">&#x1F6E3;</button>
   <button id="btn-locate" title="定位" onclick="locateMe()">&#x1F4CD;</button>
 </div>
 
@@ -905,6 +940,9 @@ function initMap() {
   });
 
   L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+  // 手机端：点击地图收起图例
+  bindLegendDismiss();
 
   // 高德卫星图
   L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}', {
@@ -1129,20 +1167,38 @@ function loadLargeLayers() {
     })
     .catch(function() { console.log('河道数据加载失败'); });
 
+  // 道路：按 TYPE 分流渲染——省道/县道进"主要道路"图层（省橙/县黄），
+  // 国道/乡道/村道等进"一般道路"图层（乡道棕/村道浅褐，国道按普通路渲染——新塬镇范围无国道，图例不列国道）
+  // （roads_simple.js 含全部道路且带 TYPE 字段；不再使用 major_roads.js，其缺 TYPE 无法分级）
   fetch('js_data/roads_simple.js')
     .then(function(r) { return r.text(); })
     .then(function(js) {
       eval(js);
       if (typeof DATA_ROADS_SIMPLE !== 'undefined') {
         var data = convertGeoJSON(DATA_ROADS_SIMPLE);
-        // 一般道路 = 乡道/村道/连接道等（国道/省道/县道由"主要道路"图层绘制，避免同一路段画两遍）
+        var major = data.features.filter(function(f) {
+          var t = (f.properties && f.properties.TYPE) || '';
+          return t === '省道' || t === '县道';
+        });
         var minor = data.features.filter(function(f) {
           var t = (f.properties && f.properties.TYPE) || '';
-          return t !== '国道' && t !== '省道' && t !== '县道';
+          return t !== '省道' && t !== '县道';
         });
+        // 主要道路（省/县道）：双层渲染，白底边 + 彩色核心，在灰色卫星底图上清晰可辨
+        if (major.length) {
+          L.geoJSON({ type: 'FeatureCollection', features: major }, {
+            style: function() { return { color: '#ffffff', weight: 5.5, opacity: 0.95 }; }
+          }).addTo(layers.majorRoads);
+          L.geoJSON({ type: 'FeatureCollection', features: major }, {
+            style: function(feature) {
+              var t = (feature.properties && feature.properties.TYPE) || '';
+              if (t === '省道') return { color: '#fb8c00', weight: 2.8, opacity: 0.95 };
+              return { color: '#fdd835', weight: 2.2, opacity: 0.95 };
+            }
+          }).addTo(layers.majorRoads);
+        }
+        // 一般道路（乡/村道等）：双层渲染
         if (minor.length) {
-          // 双层渲染：白色底边 + 彩色核心，在灰色卫星底图上清晰可辨
-          // 乡道=棕赭色，村道/连接道=浅褐色
           L.geoJSON({ type: 'FeatureCollection', features: minor }, {
             style: function(feature) {
               var t = (feature.properties && feature.properties.TYPE) || '';
@@ -1163,38 +1219,6 @@ function loadLargeLayers() {
       }
     })
     .catch(function() { console.log('道路数据加载失败'); });
-
-  // 主要道路（国道/省道/县道）：白底边 + 国红/省橙/县黄，采用全国公路网标准配色
-  fetch('js_data/major_roads.js')
-    .then(function(r) { return r.text(); })
-    .then(function(js) {
-      eval(js);
-      if (typeof DATA_MAJOR_ROADS !== 'undefined') {
-        var data = convertGeoJSON(DATA_MAJOR_ROADS);
-        var major = data.features.filter(function(f) {
-          var t = (f.properties && f.properties.TYPE) || '';
-          return t === '国道' || t === '省道' || t === '县道';
-        });
-        if (major.length) {
-          L.geoJSON({ type: 'FeatureCollection', features: major }, {
-            style: function(feature) {
-              var t = (feature.properties && feature.properties.TYPE) || '';
-              return (t === '国道') ? { color: '#ffffff', weight: 5.5, opacity: 0.95 }
-                : { color: '#ffffff', weight: 5, opacity: 0.9 };
-            }
-          }).addTo(layers.majorRoads);
-          L.geoJSON({ type: 'FeatureCollection', features: major }, {
-            style: function(feature) {
-              var t = (feature.properties && feature.properties.TYPE) || '';
-              if (t === '国道') return { color: '#e53935', weight: 3.2, opacity: 0.95 };
-              if (t === '省道') return { color: '#fb8c00', weight: 2.8, opacity: 0.95 };
-              return { color: '#fdd835', weight: 2.2, opacity: 0.95 };
-            }
-          }).addTo(layers.majorRoads);
-        }
-      }
-    })
-    .catch(function() { console.log('主要道路数据加载失败'); });
 
   // 地名标注
   fetch('js_data/place_names.js')
@@ -1489,6 +1513,33 @@ function toggleLayer(name) {
   }
   if (btn) {
     visible ? btn.classList.remove('off') : btn.classList.add('off');
+  }
+}
+
+// ========== 图例（手机端收起/展开，参考主流地图APP：默认折叠为小按钮，点开查看） ==========
+function setLegendOpen(open) {
+  var legend = document.getElementById('legend');
+  var btn = document.getElementById('legend-toggle');
+  if (!legend) return;
+  if (open) {
+    legend.classList.add('open');
+    if (btn) btn.classList.add('active');
+  } else {
+    legend.classList.remove('open');
+    if (btn) btn.classList.remove('active');
+  }
+}
+
+function toggleLegend() {
+  setLegendOpen(!document.getElementById('legend').classList.contains('open'));
+}
+
+// 手机端：点击地图空白处自动收起图例，避免遮挡
+function bindLegendDismiss() {
+  if (map) {
+    map.on('click', function() {
+      if (document.body.classList.contains('mobile-mode')) setLegendOpen(false);
+    });
   }
 }
 
