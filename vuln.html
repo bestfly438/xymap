@@ -67,13 +67,79 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
 #legend .l-item { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
 #legend .l-dot { width: 12px; height: 12px; border-radius: 3px; border: 1px solid rgba(0,0,0,.25); flex-shrink: 0; }
 
+/* 图例折叠按钮 / 底部工具栏 / 图层弹出面板：默认隐藏，仅移动端显示 */
+#legend-toggle { display: none; }
+#bottom-bar { display: none; }
+#layer-sheet { display: none; }
+
 @media (max-width: 768px) {
   #topbar { padding: 8px 10px; }
   #topbar h1 { font-size: 14px; }
   #topbar .sub { display: none; }
   .back-link { font-size: 11px; padding: 5px 9px; }
-  #ctrl-panel { right: 8px; top: 62px; width: 190px; }
-  #legend { bottom: 90px; left: 8px; right: 8px; transform: none; justify-content: center; font-size: 11px; }
+
+  /* 控制面板收进底部"图层"弹出面板，不再常驻右侧 */
+  #ctrl-panel { display: none; }
+
+  /* 图例：默认折叠为左下角小按钮，点击展开 */
+  #legend { display: none; bottom: 80px; left: 8px; right: auto; transform: none; justify-content: flex-start; font-size: 11px; }
+  #legend.open {
+    display: flex; max-height: 46vh; overflow-y: auto;
+    align-items: flex-start; flex-direction: column; gap: 6px;
+    background: rgba(255,255,255,.97);
+  }
+  #legend-toggle {
+    display: flex; align-items: center; justify-content: center;
+    position: fixed; bottom: 80px; left: 8px; z-index: 996;
+    height: 34px; padding: 0 14px; border-radius: 17px;
+    background: rgba(255,255,255,.95); border: 1px solid rgba(15,23,42,.12);
+    color: #1e293b; font-size: 12px; font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15);
+    cursor: pointer; gap: 5px;
+  }
+  #legend-toggle.active { background: #dc2626; color: #fff; border-color: #dc2626; }
+
+  /* 底部工具栏：图层 / 图例 / 返回地图 */
+  #bottom-bar {
+    display: flex; align-items: center; justify-content: space-around;
+    position: fixed; left: 8px; right: 8px; bottom: 8px; z-index: 1002;
+    background: rgba(255,255,255,.97); border: 1px solid rgba(15,23,42,.12);
+    border-radius: 26px; box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    padding: 5px 6px;
+  }
+  #bottom-bar button, #bottom-bar .bb-link {
+    flex: 1; max-width: 76px;
+    background: none; border: none; color: #475569;
+    font-size: 10px; cursor: pointer; font-family: inherit;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 6px 2px; border-radius: 14px; text-decoration: none;
+  }
+  #bottom-bar button .bb-ico, #bottom-bar .bb-link .bb-ico { font-size: 19px; line-height: 1; }
+  #bottom-bar button.active,
+  #bottom-bar button:active { color: #dc2626; background: rgba(220,38,38,.08); }
+
+  /* 图层控制弹出面板 */
+  #layer-sheet {
+    position: fixed; left: 8px; right: 8px; bottom: 66px; z-index: 1002;
+    background: rgba(255,255,255,.98); border: 1px solid rgba(15,23,42,.12);
+    border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    padding: 10px 12px;
+  }
+  #layer-sheet.show { display: block; }
+  #layer-sheet .ls-header {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; font-weight: 700; color: #1e293b;
+    padding-bottom: 8px; border-bottom: 1px solid rgba(15,23,42,.08);
+    margin-bottom: 8px;
+  }
+  #layer-sheet .ls-close {
+    cursor: pointer; color: #64748b; font-size: 16px;
+    width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+  }
+  #layer-sheet .ls-close:active { background: rgba(15,23,42,.08); }
+  #layer-sheet .cp-row { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
+  #layer-sheet .cp-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 }
 </style>
 </head>
@@ -130,6 +196,44 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   <span class="l-item"><span class="l-dot" style="background:#ff1a1a"></span>高易发</span>
 </div>
 
+<!-- 图例折叠按钮（手机端显示） -->
+<button id="legend-toggle" onclick="toggleLegend()">&#x1F4D0;&nbsp;图例</button>
+
+<!-- 移动端底部工具栏：图层/图例/返回（类APP） -->
+<div id="bottom-bar">
+  <button id="bb-layers" title="图层控制" onclick="toggleLayerSheet()"><span class="bb-ico">&#x1F3D4;</span>图层</button>
+  <button id="bb-legend" title="图例" onclick="toggleLegend()"><span class="bb-ico">&#x1F4D0;</span>图例</button>
+  <a class="bb-link" href="map.html" title="返回地图">&#x1F5FA;<span>返回地图</span></a>
+</div>
+
+<!-- 移动端图层控制弹出面板 -->
+<div id="layer-sheet">
+  <div class="ls-header"><span>图层控制</span><span class="ls-close" onclick="toggleLayerSheet()">&#x2715;</span></div>
+  <div class="cp-row">
+    <div class="cp-name">显示图层</div>
+    <div class="cp-modes">
+      <label><input type="radio" name="layer-mode-m" value="flood" checked> 山洪易发性</label>
+      <label><input type="radio" name="layer-mode-m" value="mud"> 泥石流易发性</label>
+      <label><input type="radio" name="layer-mode-m" value="both"> 叠加对比</label>
+    </div>
+  </div>
+  <div class="cp-row">
+    <div class="cp-name">山洪透明度</div>
+    <div class="cp-slider">
+      <input type="range" id="op-flood-m" min="0" max="100" value="55">
+      <span id="op-flood-m-v">55%</span>
+    </div>
+  </div>
+  <div class="cp-row">
+    <div class="cp-name">泥石流透明度</div>
+    <div class="cp-slider">
+      <input type="range" id="op-mud-m" min="0" max="100" value="55">
+      <span id="op-mud-m-v">55%</span>
+    </div>
+  </div>
+  <div class="cp-hint">提示：单选模式避免两图层色块重叠；"叠加对比"可同时查看并分别调节透明度。</div>
+</div>
+
 <script src="leaflet/leaflet.js"></script>
 <script src="js_data/vuln_data.js"></script>
 <script>
@@ -174,6 +278,24 @@ function initMap() {
   layerFlood = L.geoJSON(VULN_FLOOD, { style: styleFor(VULN_FLOOD, 0.55) });
   layerMud = L.geoJSON(VULN_MUD, { style: styleFor(VULN_MUD, 0.55) });
   applyMode(); // 按当前单选状态只显示对应图层，避免叠加
+
+  // 手机端：点击地图空白处自动收起图例/图层面板，避免遮挡
+  map.on('click', function() {
+    if (window.innerWidth <= 768) {
+      var lg = document.getElementById('legend');
+      if (lg && lg.classList.contains('open')) {
+        lg.classList.remove('open');
+        var b = document.getElementById('legend-toggle');
+        if (b) b.classList.remove('active');
+      }
+      var sh = document.getElementById('layer-sheet');
+      if (sh && sh.classList.contains('show')) {
+        sh.classList.remove('show');
+        var bb = document.getElementById('bb-layers');
+        if (bb) bb.classList.remove('active');
+      }
+    }
+  });
 }
 
 function setFloodOpacity(v) { if (layerFlood) layerFlood.setStyle(styleFor(VULN_FLOOD, v / 100)); }
@@ -181,7 +303,7 @@ function setMudOpacity(v) { if (layerMud) layerMud.setStyle(styleFor(VULN_MUD, v
 
 // 单选模式：默认只显示一个图层，避免重叠
 function applyMode() {
-  var mode = document.querySelector('input[name="layer-mode"]:checked').value;
+  var mode = document.querySelector('input[name="layer-mode"]:checked, input[name="layer-mode-m"]:checked').value;
   var showFlood = (mode === 'flood' || mode === 'both');
   var showMud = (mode === 'mud' || mode === 'both');
   if (showFlood) { if (!map.hasLayer(layerFlood)) layerFlood.addTo(map); }
@@ -189,17 +311,51 @@ function applyMode() {
   if (showMud) { if (!map.hasLayer(layerMud)) layerMud.addTo(map); }
   else { map.removeLayer(layerMud); }
 }
-document.querySelectorAll('input[name="layer-mode"]').forEach(function(rb) {
-  rb.addEventListener('change', applyMode);
-});
-document.getElementById('op-flood').addEventListener('input', function(e) {
-  document.getElementById('op-flood-v').textContent = e.target.value + '%';
-  setFloodOpacity(parseInt(e.target.value, 10));
-});
-document.getElementById('op-mud').addEventListener('input', function(e) {
-  document.getElementById('op-mud-v').textContent = e.target.value + '%';
-  setMudOpacity(parseInt(e.target.value, 10));
-});
+// 两组单选控件（PC右侧面板 + 移动端弹出面板）互相联动
+function syncModeRadios(src) {
+  var val = src.value;
+  document.querySelectorAll('input[name="layer-mode"], input[name="layer-mode-m"]').forEach(function(rb) {
+    rb.checked = (rb.value === val);
+  });
+}
+function bindMode(name) {
+  document.querySelectorAll('input[name="' + name + '"]').forEach(function(rb) {
+    rb.addEventListener('change', function() {
+      syncModeRadios(this);
+      applyMode();
+    });
+  });
+}
+bindMode('layer-mode');
+bindMode('layer-mode-m');
+
+// 透明度滑块（PC + 移动端两套，共用图层样式更新）
+function bindOpacity(sliderId, valId, fn) {
+  document.getElementById(sliderId).addEventListener('input', function(e) {
+    document.getElementById(valId).textContent = e.target.value + '%';
+    fn(parseInt(e.target.value, 10));
+  });
+}
+bindOpacity('op-flood', 'op-flood-v', setFloodOpacity);
+bindOpacity('op-mud', 'op-mud-v', setMudOpacity);
+bindOpacity('op-flood-m', 'op-flood-m-v', setFloodOpacity);
+bindOpacity('op-mud-m', 'op-mud-m-v', setMudOpacity);
+
+// 移动端：图例折叠 / 图层控制面板
+function toggleLegend() {
+  var lg = document.getElementById('legend');
+  var btn = document.getElementById('legend-toggle');
+  if (!lg) return;
+  var open = lg.classList.toggle('open');
+  if (btn) btn.classList.toggle('active', open);
+}
+function toggleLayerSheet() {
+  var sh = document.getElementById('layer-sheet');
+  var btn = document.getElementById('bb-layers');
+  if (!sh) return;
+  var open = sh.classList.toggle('show');
+  if (btn) btn.classList.toggle('active', open);
+}
 
 // 版本自检：version.txt 变化则自动刷新
 fetch('version.txt?t=' + Date.now(), { cache: 'no-store' })
