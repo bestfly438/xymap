@@ -426,9 +426,9 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 
 <div id="legend">
   <div class="l-item"><span class="l-dot" style="background:#ff4444;border:2px solid #ff6666"></span>地质灾害隐患点</div>
-  <div class="l-item"><span class="l-dot" style="background:#ff9800;border:2px dashed #ffb74d"></span>受威胁区域（面状）</div>
-  <div class="l-item"><span class="l-dot" style="background:#4caf50;border:2px solid #66bb6a"></span>转移安置点</div>
-  <div class="l-item"><span class="l-dot" style="background:#ff9800;border:2px solid #ffb74d"></span>备选安置点</div>
+  <div class="l-item"><span class="l-dot" style="background:#ff1a1a;border:2px dashed #ff5252"></span>受威胁区域（面状）</div>
+  <div class="l-item"><span class="l-dot" style="background:#00c853;border:2px solid #69f0ae"></span>转移安置点</div>
+  <div class="l-item"><span class="l-dot" style="background:#e91e63;border:2px solid #ff80ab"></span>备选安置点</div>
   <div class="l-item"><span style="color:#2196f3;font-weight:700">&#x2501;&#x2501;</span>撤离路线</div>
   <div class="l-item"><span style="color:#f5a623;font-weight:700">&#x2501;&#x2501;</span>主要道路</div>
   <div class="l-item"><span style="color:#00bcd4;">&#x2501;&#x2501;</span>河道</div>
@@ -728,7 +728,7 @@ function loadEvacuationSites() {
   L.geoJSON(data, {
     pointToLayer: function(feature, latlng) {
       return L.circleMarker(latlng, {
-        radius: 8, fillColor: '#4caf50', color: '#fff', weight: 2, fillOpacity: 0.9
+        radius: 9, fillColor: '#00c853', color: '#fff', weight: 2, fillOpacity: 0.95
       });
     },
     onEachFeature: function(feature, layer) {
@@ -745,7 +745,7 @@ function loadBackupSites() {
   L.geoJSON(data, {
     pointToLayer: function(feature, latlng) {
       return L.circleMarker(latlng, {
-        radius: 6, fillColor: '#ff9800', color: '#fff', weight: 2, fillOpacity: 0.9
+        radius: 8, fillColor: '#e91e63', color: '#fff', weight: 2, fillOpacity: 0.95
       });
     },
     onEachFeature: function(feature, layer) {
@@ -772,7 +772,7 @@ function loadThreatenedAreas() {
   if (typeof DATA_THREATENED_AREAS === 'undefined') return;
   var data = convertGeoJSON(DATA_THREATENED_AREAS);
   L.geoJSON(data, {
-    style: { color: '#ff9800', fillColor: '#ff9800', fillOpacity: 0.15, weight: 2, dashArray: '5, 3' },
+    style: { color: '#ff1a1a', fillColor: '#ff1a1a', fillOpacity: 0.35, weight: 3, dashArray: '5, 3' },
     onEachFeature: function(feature, layer) {
       layer.bindTooltip('受威胁区域', { direction: 'center', className: 'threatened-tooltip' });
     }
