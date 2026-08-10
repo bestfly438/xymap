@@ -108,15 +108,15 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   <div class="cp-row">
     <div class="cp-name">山洪透明度</div>
     <div class="cp-slider">
-      <input type="range" id="op-flood" min="0" max="100" value="45">
-      <span id="op-flood-v">45%</span>
+      <input type="range" id="op-flood" min="0" max="100" value="55">
+      <span id="op-flood-v">55%</span>
     </div>
   </div>
   <div class="cp-row">
     <div class="cp-name">泥石流透明度</div>
     <div class="cp-slider">
-      <input type="range" id="op-mud" min="0" max="100" value="45">
-      <span id="op-mud-v">45%</span>
+      <input type="range" id="op-mud" min="0" max="100" value="55">
+      <span id="op-mud-v">55%</span>
     </div>
   </div>
   <div class="cp-hint">提示：默认单选显示一个图层，避免两图层色块重叠；选择"叠加对比"可同时查看两者，并分别调节透明度。卫星影像始终位于分区图层之下。</div>
@@ -124,10 +124,10 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
 
 <div id="legend">
   <span class="lg-title">易发性等级</span>
-  <span class="l-item"><span class="l-dot" style="background:#1a9850"></span>低易发</span>
-  <span class="l-item"><span class="l-dot" style="background:#fee08b"></span>较低易发</span>
-  <span class="l-item"><span class="l-dot" style="background:#fdae61"></span>较高易发</span>
-  <span class="l-item"><span class="l-dot" style="background:#d73027"></span>高易发</span>
+  <span class="l-item"><span class="l-dot" style="background:#00cc66"></span>低易发</span>
+  <span class="l-item"><span class="l-dot" style="background:#ffdd00"></span>较低易发</span>
+  <span class="l-item"><span class="l-dot" style="background:#ff8800"></span>较高易发</span>
+  <span class="l-item"><span class="l-dot" style="background:#ff1a1a"></span>高易发</span>
 </div>
 
 <script src="leaflet/leaflet.js"></script>
@@ -138,14 +138,14 @@ var layerFlood = null, layerMud = null;
 var MAP_CENTER = [36.152, 105.39];
 var MAP_BOUNDS = [[35.88, 104.9], [36.42, 105.9]];
 
-// 分级配色（1低 2较低 3较高 4高）
-var CLASS_COLORS = ['#1a9850', '#fee08b', '#fdae61', '#d73027'];
+// 分级配色（1低 2较低 3较高 4高）- 高饱和醒目色
+var CLASS_COLORS = ['#00cc66', '#ffdd00', '#ff8800', '#ff1a1a'];
 
 function styleFor(data, fillOpacity) {
   return function(feature) {
     var gc = feature.properties.gridcode || 1;
     return {
-      color: '#000000', weight: 0.6, opacity: 0.35,
+      color: '#000000', weight: 1, opacity: 0.85,
       fillColor: CLASS_COLORS[Math.min(Math.max(gc, 1), 4) - 1],
       fillOpacity: fillOpacity
     };
@@ -171,8 +171,8 @@ function initMap() {
     subdomains: ['1', '2', '3', '4'], maxZoom: 18, minZoom: 3, opacity: 0.6
   }).addTo(map);
 
-  layerFlood = L.geoJSON(VULN_FLOOD, { style: styleFor(VULN_FLOOD, 0.45) }).addTo(map);
-  layerMud = L.geoJSON(VULN_MUD, { style: styleFor(VULN_MUD, 0.45) }).addTo(map);
+  layerFlood = L.geoJSON(VULN_FLOOD, { style: styleFor(VULN_FLOOD, 0.55) }).addTo(map);
+  layerMud = L.geoJSON(VULN_MUD, { style: styleFor(VULN_MUD, 0.55) }).addTo(map);
 }
 
 function setFloodOpacity(v) { if (layerFlood) layerFlood.setStyle(styleFor(VULN_FLOOD, v / 100)); }
