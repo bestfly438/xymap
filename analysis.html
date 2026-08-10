@@ -329,6 +329,7 @@ function initMap(){
   grpZones = L.layerGroup().addTo(map);
   grpVuln = L.layerGroup().addTo(map);
   grpStations = L.layerGroup().addTo(map);
+  grpRivers = L.layerGroup().addTo(map);
 
   map.on('click', function(){
     if (window.innerWidth <= 768) { closeMobile(); }
