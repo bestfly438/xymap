@@ -510,6 +510,71 @@ body.mobile-mode #legend .l-close:active { background: rgba(15,23,42,0.1); }
 body.mobile-mode #layer-ctrl { right: 8px; bottom: 85px; flex-direction: row; gap: 4px; }
 body.mobile-mode #layer-ctrl button { width: 34px; height: 34px; font-size: 13px; border-radius: 8px; }
 
+/* ===== 移动端底部工具栏：信息/转移/巡查/图层/定位 集中到底部一条，地图不再被分散按钮遮挡 ===== */
+#bottom-bar, #layer-sheet { display: none; }
+
+/* 手机端隐藏原来分散在四角的按钮，统一由底部工具栏接管 */
+body.mobile-mode #side-panel-toggle,
+body.mobile-mode #legend-toggle,
+body.mobile-mode #layer-ctrl { display: none !important; }
+
+body.mobile-mode #bottom-bar {
+  display: flex; align-items: center; justify-content: space-around;
+  position: fixed; left: 8px; right: 8px; bottom: 8px; z-index: 1002;
+  background: rgba(255,255,255,0.97); border: 1px solid rgba(15,23,42,0.12);
+  border-radius: 26px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  padding: 5px 6px;
+}
+body.mobile-mode #bottom-bar button {
+  flex: 1; max-width: 76px;
+  background: none; border: none; color: #475569;
+  font-size: 10px; cursor: pointer; font-family: inherit;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 2px; border-radius: 14px;
+}
+body.mobile-mode #bottom-bar button .bb-ico { font-size: 19px; line-height: 1; }
+body.mobile-mode #bottom-bar button.active,
+body.mobile-mode #bottom-bar button:active { color: #dc2626; background: rgba(220,38,38,0.08); }
+
+/* 移动端图层弹出面板 */
+body.mobile-mode #layer-sheet {
+  position: fixed; left: 8px; right: 8px; bottom: 66px; z-index: 1002;
+  background: rgba(255,255,255,0.98); border: 1px solid rgba(15,23,42,0.12);
+  border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  padding: 10px 12px;
+}
+body.mobile-mode #layer-sheet.show { display: block; }
+#layer-sheet .ls-header {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px; font-weight: 700; color: #1e293b;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(15,23,42,0.08);
+  margin-bottom: 8px;
+}
+#layer-sheet .ls-close {
+  cursor: pointer; color: #64748b; font-size: 16px;
+  width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+}
+#layer-sheet .ls-close:active { background: rgba(15,23,42,0.08); }
+#layer-sheet .ls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+#layer-sheet .ls-item {
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  padding: 8px 4px; border-radius: 8px;
+  border: 1px solid rgba(15,23,42,0.1); background: #fff; color: #475569;
+  font-size: 11px; cursor: pointer;
+}
+#layer-sheet .ls-item.off { opacity: 0.35; }
+#layer-sheet .ls-item.active-layer { background: rgba(220,38,38,0.08); border-color: rgba(220,38,38,0.35); color: #dc2626; }
+#layer-sheet .ls-item .ls-ico { font-size: 15px; }
+#layer-sheet .ls-legend-btn {
+  margin-top: 8px; width: 100%; padding: 8px; border-radius: 8px;
+  border: 1px dashed rgba(15,23,42,0.2); background: rgba(15,23,42,0.03);
+  color: #475569; font-size: 12px; cursor: pointer;
+}
+
+/* 移动端信息面板盖住底部工具栏，保证面板可完整操作 */
+body.mobile-mode #side-panel { z-index: 1003; }
+
 body.mobile-mode .leaflet-control-zoom { display: none; }
 body.mobile-mode .leaflet-popup-content-wrapper { max-width: 85vw !important; }
 body.mobile-mode .popup-content { min-width: 200px; max-width: 85vw; font-size: 12px; }
@@ -688,8 +753,8 @@ html, body { background: #eef2f7; }
     <h1>新塬镇应急避险指挥系统</h1>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="dashboard.html?v=v20260806-06" class="back-link">&#x2190; 返回看板</a>
-    <a href="dashboard.html?v=v20260806-06#admin" class="admin-link" id="adminLink" title="系统管理（密钥/账号）" style="display:none">&#x2699;</a>
+    <a href="dashboard.html?v=v20260806-07" class="back-link">&#x2190; 返回看板</a>
+    <a href="dashboard.html?v=v20260806-07#admin" class="admin-link" id="adminLink" title="系统管理（密钥/账号）" style="display:none">&#x2699;</a>
     <button id="mode-toggle" title="切换PC/手机版" onclick="toggleMode()">&#x1F4F1;</button>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
@@ -752,6 +817,22 @@ html, body { background: #eef2f7; }
   <button id="btn-sites" title="安置点" onclick="toggleLayer('sites')">&#x1F3E0;</button>
   <button id="btn-majorRoads" title="省/县道" onclick="toggleLayer('majorRoads')">&#x1F6E3;</button>
   <button id="btn-locate" title="定位" onclick="locateMe()">&#x1F4CD;</button>
+</div>
+
+<!-- 移动端底部工具栏：手机上看地图不再被分散按钮遮挡，常用功能集中到底部一条 -->
+<div id="bottom-bar">
+  <button id="bb-panel" title="信息面板" onclick="toggleSidePanel()"><span class="bb-ico">&#x1F4CB;</span>信息</button>
+  <button id="bb-transfer" title="转移谁" onclick="openVillageTab('transfer')"><span class="bb-ico">&#x26A0;</span>转移</button>
+  <button id="bb-patrol" title="巡查记录" onclick="openVillageTab('patrol')"><span class="bb-ico">&#x1F4DD;</span>巡查</button>
+  <button id="bb-layers" title="图层" onclick="toggleLayerSheet()"><span class="bb-ico">&#x1F5FA;</span>图层</button>
+  <button id="bb-locate" title="定位" onclick="locateMe()"><span class="bb-ico">&#x1F4CD;</span>定位</button>
+</div>
+
+<!-- 移动端图层弹出面板 -->
+<div id="layer-sheet">
+  <div class="ls-header"><span>图层显示</span><span class="ls-close" onclick="toggleLayerSheet()">&#x2715;</span></div>
+  <div class="ls-grid" id="ls-grid"></div>
+  <button class="ls-legend-btn" onclick="toggleLayerSheet();toggleLegend();">&#x1F4D0;&nbsp;查看图例</button>
 </div>
 
 <div id="status"></div>
@@ -1334,11 +1415,15 @@ function selectVillage(id, name) {
   if (id === 'all') {
     document.getElementById('side-panel').classList.remove('show');
     document.getElementById('side-panel-toggle').classList.remove('active');
+    var bbAll = document.getElementById('bb-panel');
+    if (bbAll) bbAll.classList.remove('active');
     sidePanelOpen = false;
     document.getElementById('stats-panel').classList.remove('hidden');
   } else {
     document.getElementById('side-panel').classList.add('show');
     document.getElementById('side-panel-toggle').classList.add('active');
+    var bbSel = document.getElementById('bb-panel');
+    if (bbSel) bbSel.classList.add('active');
     sidePanelOpen = true;
     document.getElementById('stats-panel').classList.add('hidden');
     showSidePanelVillage(id);
@@ -1548,11 +1633,89 @@ function toggleLegend() {
   setLegendOpen(!document.getElementById('legend').classList.contains('open'));
 }
 
-// 手机端：点击地图空白处自动收起图例，避免遮挡
+// ========== 移动端图层弹出面板 ==========
+var LS_LAYERS = [
+  ['hazards', '&#x26A0;', '隐患点'],
+  ['threatened', '&#x1F3D8;', '受威胁区'],
+  ['routes', '&#x27A1;', '撤离路线'],
+  ['sites', '&#x1F3E0;', '安置点'],
+  ['majorRoads', '&#x1F6E3;', '道路']
+];
+
+// 生成图层面板按钮并同步当前开关状态
+function renderLayerSheet() {
+  var grid = document.getElementById('ls-grid');
+  if (!grid) return;
+  var html = '';
+  LS_LAYERS.forEach(function(l) {
+    var on = layerVisible[l[0]];
+    html += '<div class="ls-item' + (on ? ' active-layer' : ' off') + '" data-layer="' + l[0] + '"><span class="ls-ico">' + l[1] + '</span>' + l[2] + '</div>';
+  });
+  grid.innerHTML = html;
+  var items = grid.querySelectorAll('.ls-item');
+  for (var i = 0; i < items.length; i++) {
+    (function(item) {
+      item.onclick = function() {
+        toggleLayer(item.getAttribute('data-layer'));
+        syncLayerSheet();
+      };
+    })(items[i]);
+  }
+}
+
+function syncLayerSheet() {
+  var grid = document.getElementById('ls-grid');
+  if (!grid) return;
+  var items = grid.querySelectorAll('.ls-item');
+  for (var i = 0; i < items.length; i++) {
+    var on = layerVisible[items[i].getAttribute('data-layer')];
+    items[i].className = 'ls-item' + (on ? ' active-layer' : ' off');
+  }
+}
+
+function toggleLayerSheet() {
+  var sheet = document.getElementById('layer-sheet');
+  if (!sheet) return;
+  var open = !sheet.classList.contains('show');
+  if (open) renderLayerSheet();
+  sheet.classList.toggle('show', open);
+  var btn = document.getElementById('bb-layers');
+  if (btn) btn.classList.toggle('active', open);
+}
+
+function closeLayerSheet() {
+  var sheet = document.getElementById('layer-sheet');
+  if (sheet) sheet.classList.remove('show');
+  var btn = document.getElementById('bb-layers');
+  if (btn) btn.classList.remove('active');
+}
+
+// 移动端底部工具栏：直接打开当前村的信息面板并定位到指定页签（转移谁 / 巡查记录）
+function openVillageTab(tab) {
+  if (currentVillageId === 'all') {
+    showStatus('请先在上方选择村庄，再查看转移/巡查信息');
+    return;
+  }
+  if (!sidePanelOpen) {
+    sidePanelOpen = true;
+    document.getElementById('side-panel').classList.add('show');
+    document.getElementById('stats-panel').classList.add('hidden');
+    var b = document.getElementById('bb-panel');
+    if (b) b.classList.add('active');
+  }
+  showSidePanelVillage(currentVillageId);
+  var el = document.querySelector('.vp-tab[data-tab="' + tab + '"]');
+  if (el) el.click();
+}
+
+// 手机端：点击地图空白处自动收起图例 / 图层面板，避免遮挡
 function bindLegendDismiss() {
   if (map) {
     map.on('click', function() {
-      if (document.body.classList.contains('mobile-mode')) setLegendOpen(false);
+      if (document.body.classList.contains('mobile-mode')) {
+        setLegendOpen(false);
+        closeLayerSheet();
+      }
     });
   }
 }
@@ -1672,12 +1835,15 @@ function toggleSidePanel() {
   sidePanelOpen = !sidePanelOpen;
   var panel = document.getElementById('side-panel');
   var btn = document.getElementById('side-panel-toggle');
+  var bbBtn = document.getElementById('bb-panel');
   var stats = document.getElementById('stats-panel');
+  var isMobile = document.body.classList.contains('mobile-mode');
   if (sidePanelOpen) {
     panel.classList.add('show');
-    btn.classList.add('active');
-    // 面板展开时隐藏切换按钮，避免遮挡面板内容（尤其移动端底部面板）
-    btn.style.display = 'none';
+    if (btn) btn.classList.add('active');
+    if (bbBtn) bbBtn.classList.add('active');
+    // 面板展开时隐藏切换按钮，避免遮挡面板内容（PC端；移动端由底部工具栏按钮接管）
+    if (!isMobile && btn) btn.style.display = 'none';
     stats.classList.add('hidden');
     if (currentVillageId === 'all') {
       showSidePanelOverview();
@@ -1686,8 +1852,9 @@ function toggleSidePanel() {
     }
   } else {
     panel.classList.remove('show');
-    btn.classList.remove('active');
-    btn.style.display = 'flex';
+    if (btn) btn.classList.remove('active');
+    if (bbBtn) bbBtn.classList.remove('active');
+    if (!isMobile && btn) btn.style.display = 'flex';
     // 面板关闭时恢复统计卡片（仅"全部村庄"视图显示）
     if (currentVillageId === 'all') stats.classList.remove('hidden');
   }
