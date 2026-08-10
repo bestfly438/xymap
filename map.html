@@ -688,8 +688,8 @@ html, body { background: #eef2f7; }
     <h1>新塬镇应急避险指挥系统</h1>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="dashboard.html?v=v20260806-05" class="back-link">&#x2190; 返回看板</a>
-    <a href="dashboard.html?v=v20260806-05#admin" class="admin-link" id="adminLink" title="系统管理（密钥/账号）" style="display:none">&#x2699;</a>
+    <a href="dashboard.html?v=v20260806-06" class="back-link">&#x2190; 返回看板</a>
+    <a href="dashboard.html?v=v20260806-06#admin" class="admin-link" id="adminLink" title="系统管理（密钥/账号）" style="display:none">&#x2699;</a>
     <button id="mode-toggle" title="切换PC/手机版" onclick="toggleMode()">&#x1F4F1;</button>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
@@ -847,16 +847,30 @@ var currentVillageId = 'all';
 var MAP_BOUNDS = [[35.5, 104.5], [37.0, 106.8]];
 
 // ========== 工具函数 ==========
-// 各村切坡建房户数 / 隐患点数量（来源：《新塬镇一页纸数据》Excel，非矢量点位）
+// 各村切坡建房户数（按 SHP 隐患点位统计：每户一个点，与地图红点一一对应）
+// 隐患点数量 / 受威胁人口（来源：《新塬镇一页纸数据》Excel）
+function getShpHouseholds(vname) {
+  var shpName = REVERSE_SHP_MAP[vname] || vname;
+  var count = 0;
+  if (typeof DATA_HAZARD_POINTS === 'undefined' || !DATA_HAZARD_POINTS.features) return 0;
+  DATA_HAZARD_POINTS.features.forEach(function(f) {
+    var p = f.properties || {};
+    if (p.source === 'vector_data') return; // 全镇7个地质灾害点不算切坡建房户
+    if ((p.CZ || '') === shpName) count++;
+  });
+  return count;
+}
+
 function getVillagePlanStats(vname) {
   var stats = { hazards: 0, households: 0, people: 0 };
   if (typeof VILLAGE_PLANS === 'undefined' || !VILLAGE_PLANS[vname]) return stats;
   var hazards = VILLAGE_PLANS[vname].hazards || [];
   stats.hazards = hazards.length;
+  // 切坡建房户数改为按 SHP 隐患点位统计（非一页纸威胁户数），与地图红点一致
+  stats.households = getShpHouseholds(vname);
   hazards.forEach(function(h) {
     var m = (h.scope || '').match(/(\d+)\s*户\s*(\d+)\s*人/);
     if (m) {
-      stats.households += parseInt(m[1], 10);
       stats.people += parseInt(m[2], 10);
     }
   });

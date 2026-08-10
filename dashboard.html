@@ -474,8 +474,8 @@ body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button class="btn" id="adminBtn" style="display:none" onclick="openAdminPanel()"><span>&#x2699;</span><span class="admin-txt"> 系统管理</span></button>
     <button id="mode-toggle" title="切换PC/手机版" onclick="toggleMode()">&#x1F4F1;</button>
-    <a href="guide.html?v=v20260806-05" class="btn">&#x1F6A8; 防汛指南</a>
-    <a href="map.html?v=v20260806-05" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="guide.html?v=v20260806-06" class="btn">&#x1F6A8; 防汛指南</a>
+    <a href="map.html?v=v20260806-06" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
   </div>
 </div>
@@ -582,7 +582,7 @@ body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
   </div>
 </div>
 
-<div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024 · 系统版本 v20260806-05</div>
+<div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024 · 系统版本 v20260806-06</div>
 
 <script src="feishu_config.js"></script>
 <script src="js_data/village_centers.js"></script>
@@ -792,16 +792,38 @@ setInterval(loadWarnings, 5 * 60 * 1000); // 每5分钟自动刷新预警
 // ========== 统计数据 ==========
 var VILLAGE_ORDER = ['上塬村', '东塬村', '刘家湾社区', '孟塬村', '常家坪村', '新塬村', '杨坪村', '杨家河坝村', '甘岔村', '老庄村'];
 
-// 各村切坡建房户数 / 隐患点数量（来源：《新塬镇一页纸数据》Excel，非矢量点位）
+// SHP村名映射（SHP名 → 完整名；SHP数据用简称）
+var SHP_VILLAGE_MAP = {
+  '常坪村': '常家坪村',
+  '河坝村': '杨家河坝村'
+};
+var REVERSE_SHP_MAP = {};
+Object.keys(SHP_VILLAGE_MAP).forEach(function(k) { REVERSE_SHP_MAP[SHP_VILLAGE_MAP[k]] = k; });
+
+// 各村切坡建房户数（按 SHP 隐患点位统计：每户一个点，与地图红点一一对应）
+// 隐患点数量 / 受威胁人口（来源：《新塬镇一页纸数据》Excel）
+function getShpHouseholds(vname) {
+  var shpName = REVERSE_SHP_MAP[vname] || vname;
+  var count = 0;
+  if (typeof DATA_HAZARD_POINTS === 'undefined' || !DATA_HAZARD_POINTS.features) return 0;
+  DATA_HAZARD_POINTS.features.forEach(function(f) {
+    var p = f.properties || {};
+    if (p.source === 'vector_data') return; // 全镇7个地质灾害点不算切坡建房户
+    if ((p.CZ || '') === shpName) count++;
+  });
+  return count;
+}
+
 function getVillagePlanStats(vname) {
   var stats = { hazards: 0, households: 0, people: 0 };
   if (typeof VILLAGE_PLANS === 'undefined' || !VILLAGE_PLANS[vname]) return stats;
   var hazards = VILLAGE_PLANS[vname].hazards || [];
   stats.hazards = hazards.length;
+  // 切坡建房户数改为按 SHP 隐患点位统计（非一页纸威胁户数），与地图红点一致
+  stats.households = getShpHouseholds(vname);
   hazards.forEach(function(h) {
     var m = (h.scope || '').match(/(\d+)\s*户(?:\s*(\d+)\s*人)?/);
     if (m) {
-      stats.households += parseInt(m[1], 10);
       if (m[2]) stats.people += parseInt(m[2], 10);
     }
   });
@@ -810,7 +832,7 @@ function getVillagePlanStats(vname) {
 
 // 统计值
 var hazardCount = 0;          // 全镇隐患点数（一页纸数据）
-var householdCount = 0;       // 全镇切坡建房户数（一页纸数据）
+var householdCount = 0;       // 全镇切坡建房户数（按 SHP 隐患点位统计，与地图红点一致）
 VILLAGE_ORDER.forEach(function(vname) {
   var s = getVillagePlanStats(vname);
   hazardCount += s.hazards;
