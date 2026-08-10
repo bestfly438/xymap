@@ -193,6 +193,9 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   #sheet .sh-close:active { background: rgba(15,23,42,.08); }
   #sheet .sheet-legend { margin-top: 10px; padding-top: 8px; border-top: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 5px; font-size: 12px; }
 }
+#loading { display: none; position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%);
+  background: rgba(15,23,42,.85); color: #fff; font-size: 13px; padding: 8px 16px;
+  border-radius: 20px; z-index: 1200; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.25); }
 </style>
 </head>
 <body>
@@ -247,18 +250,51 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   <div id="sheet-body"></div>
 </div>
 
-<script src="leaflet/leaflet.js?v=v20260810-15"></script>
-<script src="js_data/risk_grading.js?v=v20260810-15"></script>
-<script src="js_data/flood_zones.js?v=v20260810-15"></script>
-<script src="js_data/analysis_meta.js?v=v20260810-15"></script>
-<script src="js_data/flood_depression.js?v=v20260810-15"></script>
-<script src="js_data/depression_meta.js?v=v20260810-15"></script>
-<script src="js_data/vuln_data.js?v=v20260810-15"></script>
-<script src="js_data/village_centers.js?v=v20260810-15"></script>
-<script src="js_data/village_areas.js?v=v20260810-15"></script>
-<script src="js_data/rivers_town.js?v=v20260810-15"></script>
-<script src="js_data/rain_stations.js?v=v20260810-15"></script>
+<script src="leaflet/leaflet.js?v=v20260810-16"></script>
+<script src="js_data/risk_grading.js?v=v20260810-16"></script>
+<script src="js_data/analysis_meta.js?v=v20260810-16"></script>
+<script src="js_data/village_centers.js?v=v20260810-16"></script>
+<script src="js_data/village_areas.js?v=v20260810-16"></script>
+<script src="js_data/rivers_town.js?v=v20260810-16"></script>
+<script src="js_data/rain_stations.js?v=v20260810-16"></script>
 <script>
+/* ================= 按需加载（首屏只加载必要数据，其余切 Tab 时再下载） ================= */
+var FLOOD_ZONES = null, VULN_FLOOD = null, VULN_MUD = null, FLOOD_DEPRESSION = null, DEPRESSION_META = null;
+var _loading_el = null;
+function _showLoad(txt){
+  if (!_loading_el) {
+    _loading_el = document.createElement('div');
+    _loading_el.id = 'loading';
+    document.body.appendChild(_loading_el);
+  }
+  _loading_el.textContent = txt || '正在加载数据…';
+  _loading_el.style.display = 'block';
+}
+function _hideLoad(){ if (_loading_el) _loading_el.style.display = 'none'; }
+function _loadScript(src, cb){
+  var s = document.createElement('script');
+  s.src = src;
+  s.onload = function(){ cb(); };
+  s.onerror = function(){ _hideLoad(); alert('数据加载失败，请检查网络后重试'); };
+  document.head.appendChild(s);
+}
+function _loadSeq(arr, i, cb){
+  if (i >= arr.length) { cb(); return; }
+  _loadScript(arr[i] + '?v=v20260810-16', function(){ _loadSeq(arr, i + 1, cb); });
+}
+// 切换 Tab 前确保该 Tab 所需数据已加载
+function ensureTabData(tab, cb){
+  var need = [];
+  if (tab === 'zone' && !FLOOD_ZONES) need.push('js_data/flood_zones.js');
+  if (tab === 'vuln' && !VULN_FLOOD) need.push('js_data/vuln_data.js');
+  if (tab === 'pond') {
+    if (!FLOOD_DEPRESSION) need.push('js_data/flood_depression.js');
+    if (!DEPRESSION_META) need.push('js_data/depression_meta.js');
+  }
+  if (!need.length) { cb(); return; }
+  _showLoad('正在加载分析数据…');
+  _loadSeq(need, 0, function(){ _hideLoad(); cb(); });
+}
 /* ================= 基础数据 ================= */
 var map = null;
 var TAB = 'rain';
@@ -384,7 +420,7 @@ document.querySelectorAll('#tabs .tab').forEach(function(t){
     TAB = t.getAttribute('data-tab');
     document.querySelectorAll('#tabs .tab').forEach(function(x){ x.classList.toggle('active', x===t); });
     closeMobile();
-    renderAll();
+    ensureTabData(TAB, function(){ renderAll(); });
   });
 });
 
@@ -706,8 +742,8 @@ function refreshMap(){
   else if (TAB === 'zone') {
     // 镇内河流线
     if (RIVERS_TOWN_FC) grpRivers.addLayer(L.geoJSON(RIVERS_TOWN_FC, { style: { color:'#0284c7', weight:1.8, opacity:.85 } }));
-    if (ZSTATE.z50) grpZones.addLayer(L.geoJSON(FLOOD_ZONES.z50, { style: { color:'#0284c7', weight:1, opacity:.9, fillColor:'#7dd3fc', fillOpacity:.5 } }));
-    if (ZSTATE.z100) grpZones.addLayer(L.geoJSON(FLOOD_ZONES.z100, { style: { color:'#0369a1', weight:1, opacity:.9, fillColor:'#38bdf8', fillOpacity:.35 } }));
+    if (ZSTATE.z50 && FLOOD_ZONES) grpZones.addLayer(L.geoJSON(FLOOD_ZONES.z50, { style: { color:'#0284c7', weight:1, opacity:.9, fillColor:'#7dd3fc', fillOpacity:.5 } }));
+    if (ZSTATE.z100 && FLOOD_ZONES) grpZones.addLayer(L.geoJSON(FLOOD_ZONES.z100, { style: { color:'#0369a1', weight:1, opacity:.9, fillColor:'#38bdf8', fillOpacity:.35 } }));
     if (ZSTATE.pts) {
       PTS.forEach(function(p){
         var inZone = p.z50||p.z100;
@@ -780,8 +816,8 @@ function refreshMap(){
   else { /* vuln */
     var showF = (MODE==='flood'||MODE==='both');
     var showM = (MODE==='mud'||MODE==='both');
-    if (showF) grpVuln.addLayer(L.geoJSON(VULN_FLOOD, { style: vulnStyle(VULN_FLOOD, OPACITY.flood/100) }));
-    if (showM) grpVuln.addLayer(L.geoJSON(VULN_MUD, { style: vulnStyle(VULN_MUD, OPACITY.mud/100) }));
+    if (showF && VULN_FLOOD) grpVuln.addLayer(L.geoJSON(VULN_FLOOD, { style: vulnStyle(VULN_FLOOD, OPACITY.flood/100) }));
+    if (showM && VULN_MUD) grpVuln.addLayer(L.geoJSON(VULN_MUD, { style: vulnStyle(VULN_MUD, OPACITY.mud/100) }));
     PTS.forEach(function(p){
       var g = MODE==='mud' ? p.mud : p.flood;
       var on = g > 0;
