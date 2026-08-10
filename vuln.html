@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="color-scheme" content="light">
+<title>易发性分析 - 新塬镇应急避险指挥系统</title>
+<link rel="stylesheet" href="leaflet/leaflet.css" />
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif; overflow: hidden; background: #e8e8e8; }
+
+#map { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: linear-gradient(135deg, #d32f2f, #b71c1c);
+  color: #fff; padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+#topbar .logo-area { display: flex; align-items: center; gap: 8px; min-width: 0; }
+#topbar .logo-icon {
+  width: 34px; height: 34px; border-radius: 8px; background: rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+#topbar h1 { font-size: 16px; white-space: nowrap; }
+#topbar .sub { font-size: 11px; opacity: .85; margin-top: 2px; }
+#topbar .nav-links { display: flex; align-items: center; gap: 8px; }
+.back-link {
+  color: #fff; text-decoration: none; font-size: 12px;
+  background: rgba(255,255,255,.15); padding: 6px 12px; border-radius: 16px;
+  white-space: nowrap;
+}
+
+/* 控制面板 */
+#ctrl-panel {
+  position: fixed; right: 12px; top: 70px; z-index: 999;
+  width: 210px; background: rgba(255,255,255,.96); border-radius: 12px;
+  box-shadow: 0 3px 14px rgba(0,0,0,.18); padding: 12px;
+}
+#ctrl-panel .cp-title { font-size: 14px; font-weight: 700; color: #b71c1c; margin-bottom: 10px; }
+.cp-row { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
+.cp-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.cp-row .cp-name { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.cp-row .cp-name input[type=checkbox] { width: 16px; height: 16px; accent-color: #d32f2f; }
+.cp-row .cp-slider { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.cp-row .cp-slider input[type=range] { flex: 1; accent-color: #d32f2f; }
+.cp-row .cp-slider span { font-size: 11px; color: #666; width: 34px; text-align: right; }
+.cp-hint { font-size: 11px; color: #888; margin-top: 4px; line-height: 1.5; }
+
+/* 图例 */
+#legend {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 998; background: rgba(255,255,255,.95); border-radius: 10px;
+  padding: 8px 14px; display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.15); font-size: 12px; flex-wrap: wrap;
+  justify-content: center;
+}
+#legend .lg-title { font-weight: 700; color: #555; }
+#legend .l-item { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+#legend .l-dot { width: 12px; height: 12px; border-radius: 3px; border: 1px solid rgba(0,0,0,.25); flex-shrink: 0; }
+
+@media (max-width: 768px) {
+  #topbar { padding: 8px 10px; }
+  #topbar h1 { font-size: 14px; }
+  #topbar .sub { display: none; }
+  .back-link { font-size: 11px; padding: 5px 9px; }
+  #ctrl-panel { right: 8px; top: 62px; width: 190px; }
+  #legend { bottom: 90px; left: 8px; right: 8px; transform: none; justify-content: center; font-size: 11px; }
+}
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="topbar">
+  <div class="logo-area">
+    <div class="logo-icon">&#x1F3D4;</div>
+    <div>
+      <h1>山洪与泥石流易发性分析</h1>
+      <div class="sub">甘肃省白银市会宁县新塬镇 · 四级分区 · 叠加卫星影像</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="map.html" class="back-link">&#x1F5FA; 返回地图</a>
+    <a href="dashboard.html" class="back-link">&#x2190; 返回看板</a>
+  </div>
+</div>
+
+<div id="ctrl-panel">
+  <div class="cp-title">图层控制</div>
+  <div class="cp-row">
+    <div class="cp-name"><input type="checkbox" id="ck-flood" checked> 山洪易发性</div>
+    <div class="cp-slider">
+      <span style="width:auto">透明度</span>
+      <input type="range" id="op-flood" min="0" max="100" value="45">
+      <span id="op-flood-v">45%</span>
+    </div>
+  </div>
+  <div class="cp-row">
+    <div class="cp-name"><input type="checkbox" id="ck-mud" checked> 泥石流易发性</div>
+    <div class="cp-slider">
+      <span style="width:auto">透明度</span>
+      <input type="range" id="op-mud" min="0" max="100" value="45">
+      <span id="op-mud-v">45%</span>
+    </div>
+  </div>
+  <div class="cp-hint">提示：滑块调节分区色块透明度，数值越大颜色越实；卫星影像始终位于分区图层之下。</div>
+</div>
+
+<div id="legend">
+  <span class="lg-title">易发性等级</span>
+  <span class="l-item"><span class="l-dot" style="background:#1a9850"></span>低易发</span>
+  <span class="l-item"><span class="l-dot" style="background:#fee08b"></span>较低易发</span>
+  <span class="l-item"><span class="l-dot" style="background:#fdae61"></span>较高易发</span>
+  <span class="l-item"><span class="l-dot" style="background:#d73027"></span>高易发</span>
+</div>
+
+<script src="leaflet/leaflet.js"></script>
+<script src="js_data/vuln_data.js"></script>
+<script>
+var map = null;
+var layerFlood = null, layerMud = null;
+var MAP_CENTER = [36.152, 105.39];
+var MAP_BOUNDS = [[35.88, 104.9], [36.42, 105.9]];
+
+// 分级配色（1低 2较低 3较高 4高）
+var CLASS_COLORS = ['#1a9850', '#fee08b', '#fdae61', '#d73027'];
+
+function styleFor(data, fillOpacity) {
+  return function(feature) {
+    var gc = feature.properties.gridcode || 1;
+    return {
+      color: '#000000', weight: 0.6, opacity: 0.35,
+      fillColor: CLASS_COLORS[Math.min(Math.max(gc, 1), 4) - 1],
+      fillOpacity: fillOpacity
+    };
+  };
+}
+
+function initMap() {
+  map = L.map('map', {
+    center: MAP_CENTER,
+    zoom: 13,
+    minZoom: 10,
+    maxBounds: MAP_BOUNDS,
+    maxBoundsViscosity: 0.8,
+    zoomControl: false
+  });
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+  // 高德卫星影像底图（GCJ02，位于最底层）+ 路网叠加
+  L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}', {
+    subdomains: ['1', '2', '3', '4'], maxZoom: 18, minZoom: 3
+  }).addTo(map);
+  L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}', {
+    subdomains: ['1', '2', '3', '4'], maxZoom: 18, minZoom: 3, opacity: 0.6
+  }).addTo(map);
+
+  layerFlood = L.geoJSON(VULN_FLOOD, { style: styleFor(VULN_FLOOD, 0.45) }).addTo(map);
+  layerMud = L.geoJSON(VULN_MUD, { style: styleFor(VULN_MUD, 0.45) }).addTo(map);
+}
+
+function setFloodOpacity(v) { if (layerFlood) layerFlood.setStyle(styleFor(VULN_FLOOD, v / 100)); }
+function setMudOpacity(v) { if (layerMud) layerMud.setStyle(styleFor(VULN_MUD, v / 100)); }
+
+document.getElementById('ck-flood').addEventListener('change', function(e) {
+  if (e.target.checked) { if (!map.hasLayer(layerFlood)) layerFlood.addTo(map); }
+  else { map.removeLayer(layerFlood); }
+});
+document.getElementById('ck-mud').addEventListener('change', function(e) {
+  if (e.target.checked) { if (!map.hasLayer(layerMud)) layerMud.addTo(map); }
+  else { map.removeLayer(layerMud); }
+});
+document.getElementById('op-flood').addEventListener('input', function(e) {
+  document.getElementById('op-flood-v').textContent = e.target.value + '%';
+  setFloodOpacity(parseInt(e.target.value, 10));
+});
+document.getElementById('op-mud').addEventListener('input', function(e) {
+  document.getElementById('op-mud-v').textContent = e.target.value + '%';
+  setMudOpacity(parseInt(e.target.value, 10));
+});
+
+// 版本自检：version.txt 变化则自动刷新
+fetch('version.txt?t=' + Date.now(), { cache: 'no-store' })
+  .then(function(r) { return r.text(); })
+  .then(function(txt) {
+    var v = (txt || '').trim();
+    var cur = localStorage.getItem('xyy_version');
+    if (cur && cur !== v) { localStorage.setItem('xyy_version', v); location.reload(); }
+    localStorage.setItem('xyy_version', v);
+  }).catch(function() {});
+
+window.onload = initMap;
+</script>
+</body>
+</html>

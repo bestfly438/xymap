@@ -4,73 +4,68 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>新塬镇应急避险指挥系统 - 数据看板</title>
-<meta name="color-scheme" content="light">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --bg: #f2f5fa;
-  --bg-card: #ffffff;
-  --bg-card-hover: #edf2f9;
-  --border: #e4e9f1;
-  --border-light: #d0d9e5;
-  --text: #1e293b;
-  --text-secondary: #475569;
-  --text-muted: #718096;
-  --primary: #4d6bfe;
-  --primary-glow: rgba(77,107,254,0.18);
-  --accent: #2563eb;
-  --accent-glow: rgba(59,130,246,0.16);
-  --success: #16a34a;
-  --warning: #d97706;
-  --danger: #dc2626;
-  --purple: #7c3aed;
-  --cyan: #0891b2;
-  --radius: 14px;
-  --radius-sm: 10px;
+  --bg: #0a0e17;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2332;
+  --border: #1e293b;
+  --border-light: #273549;
+  --text: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --primary: #ef4444;
+  --primary-glow: rgba(239,68,68,0.3);
+  --accent: #3b82f6;
+  --accent-glow: rgba(59,130,246,0.3);
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --purple: #8b5cf6;
+  --cyan: #06b6d4;
+  --radius: 12px;
+  --radius-sm: 8px;
   --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  color-scheme: light;
 }
 html { scroll-behavior: smooth; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'HarmonyOS Sans SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   background-image:
-    radial-gradient(ellipse at 15% 0%, rgba(77,107,254,0.06) 0%, transparent 55%),
-    radial-gradient(ellipse at 85% 100%, rgba(124,58,237,0.04) 0%, transparent 55%);
+    radial-gradient(ellipse at 20% 0%, rgba(59,130,246,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(239,68,68,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.03) 0%, transparent 50%);
 }
 
 /* ===== 顶栏 ===== */
 .topbar {
-  background: rgba(255,255,255,0.9);
+  background: rgba(17,24,39,0.85);
   border-bottom: 1px solid var(--border);
   padding: 0 32px; height: 64px;
   display: flex; align-items: center; justify-content: space-between;
   position: sticky; top: 0; z-index: 100;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 1px 8px rgba(15,23,42,0.06);
 }
 .topbar .logo { display: flex; align-items: center; gap: 14px; }
 .topbar .logo-icon {
   width: 40px; height: 40px;
-  background: linear-gradient(135deg, #4d6bfe, #7c3aed);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   border-radius: 10px; display: flex; align-items: center; justify-content: center;
   font-size: 20px; color: #fff;
-  box-shadow: 0 0 20px rgba(77,107,254,0.35);
+  box-shadow: 0 0 20px var(--primary-glow);
 }
 .topbar .logo-text h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
 .topbar .logo-text p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 .topbar .top-actions { display: flex; align-items: center; gap: 14px; }
 .topbar .weather-badge {
   display: flex; align-items: center; gap: 10px;
-  background: rgba(37,99,235,0.06); padding: 8px 18px; border-radius: 24px;
-  font-size: 13px; color: var(--text-secondary); border: 1px solid rgba(37,99,235,0.14);
+  background: rgba(30,41,59,0.8); padding: 8px 18px; border-radius: 24px;
+  font-size: 13px; color: var(--text-secondary); border: 1px solid var(--border);
 }
 .topbar .weather-badge .wt { font-size: 22px; }
 .topbar .weather-badge .wtemp { font-weight: 700; color: var(--text); font-size: 15px; }
@@ -82,11 +77,11 @@ body {
 }
 .topbar .btn:hover { background: var(--bg-card-hover); border-color: var(--border-light); color: var(--text); }
 .topbar .btn-primary {
-  background: linear-gradient(135deg, #4d6bfe, #6a5ae0);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: #fff; border-color: transparent;
   box-shadow: 0 0 20px var(--primary-glow);
 }
-.topbar .btn-primary:hover { box-shadow: 0 0 30px rgba(77,107,254,0.5); transform: translateY(-1px); }
+.topbar .btn-primary:hover { box-shadow: 0 0 30px rgba(239,68,68,0.5); transform: translateY(-1px); }
 .topbar .time-display { font-size: 13px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
 
 /* ===== 主容器 ===== */
@@ -130,21 +125,15 @@ body {
 .sc-icon.orange { background: rgba(245,158,11,0.12); color: #f59e0b; }
 .sc-icon.purple { background: rgba(139,92,246,0.12); color: #8b5cf6; }
 .sc-icon.cyan { background: rgba(6,182,212,0.12); color: #06b6d4; }
-.stat-card .sc-num { font-size: 36px; font-weight: 800; color: var(--text); line-height: 1.1; font-variant-numeric: tabular-nums; font-family: 'Bahnschrift', 'DIN Alternate', 'Segoe UI', sans-serif; letter-spacing: -0.5px; }
+.stat-card .sc-num { font-size: 36px; font-weight: 800; color: var(--text); line-height: 1.1; }
 .stat-card .sc-num .sc-unit { font-size: 16px; font-weight: 500; color: var(--text-muted); margin-left: 4px; }
 .stat-card .sc-label { font-size: 13px; color: var(--text-muted); margin-top: 4px; font-weight: 500; }
 .stat-card .sc-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; opacity: 0.7; }
-.stat-card:nth-child(1) .sc-num { color: #dc2626; }
-.stat-card:nth-child(2) .sc-num { color: #d97706; }
-.stat-card:nth-child(3) .sc-num { color: #16a34a; }
-.stat-card:nth-child(4) .sc-num { color: #2563eb; }
-.stat-card:nth-child(5) .sc-num { color: #7c3aed; }
-.stat-card:nth-child(6) .sc-num { color: #0891b2; }
 .stat-card .sc-glow {
   position: absolute; top: -20px; right: -20px; width: 80px; height: 80px;
   border-radius: 50%; opacity: 0.06; pointer-events: none;
 }
-.stat-card:nth-child(1) .sc-glow { background: #4d6bfe; }
+.stat-card:nth-child(1) .sc-glow { background: #ef4444; }
 .stat-card:nth-child(2) .sc-glow { background: #f59e0b; }
 .stat-card:nth-child(3) .sc-glow { background: #22c55e; }
 .stat-card:nth-child(4) .sc-glow { background: #3b82f6; }
@@ -161,7 +150,7 @@ body {
   display: flex; align-items: center; gap: 10px;
 }
 .section-title .st-dot { width: 4px; height: 20px; border-radius: 2px; }
-.section-title .st-dot.red { background: #4d6bfe; }
+.section-title .st-dot.red { background: #ef4444; }
 .section-title .st-dot.blue { background: #3b82f6; }
 .section-title .st-dot.green { background: #22c55e; }
 .section-title .st-dot.purple { background: #8b5cf6; }
@@ -174,7 +163,7 @@ body {
   border: 1px solid var(--border); cursor: pointer; transition: var(--transition);
   position: relative; overflow: hidden;
 }
-.village-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 28px rgba(37,99,235,0.14); }
+.village-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
 .village-card:active { transform: scale(0.98); }
 .village-card .vc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .village-card .vc-name { font-size: 16px; font-weight: 700; color: var(--text); }
@@ -219,24 +208,14 @@ body {
 .contact-card .cc-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 .contact-card .cc-item {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 13px;
+  padding: 10px 0; border-bottom: 1px solid rgba(30,41,59,0.5); font-size: 13px;
   transition: background 0.15s;
 }
-.contact-card .cc-item:hover { background: rgba(37,99,235,0.03); }
+.contact-card .cc-item:hover { background: rgba(255,255,255,0.02); }
 .contact-card .cc-item:last-child { border-bottom: none; }
 .contact-card .cc-name { color: var(--text); font-weight: 600; min-width: 80px; }
 .contact-card .cc-role { color: var(--text-secondary); font-size: 12px; flex: 1; margin: 0 12px; }
-.contact-card .cc-phone { color: var(--accent); font-size: 12px; font-weight: 500; white-space: nowrap; flex-shrink: 0; margin-right: 8px; }
-
-/* 拨打按钮（电话旁） */
-.call-btn {
-  display: inline-flex; align-items: center; gap: 3px;
-  padding: 3px 10px; border-radius: 13px; text-decoration: none;
-  background: rgba(22,163,74,0.1); border: 1px solid rgba(22,163,74,0.3);
-  color: #16a34a; font-size: 11px; cursor: pointer; transition: all 0.2s;
-  white-space: nowrap; flex-shrink: 0;
-}
-.call-btn:hover { background: rgba(22,163,74,0.18); color: #15803d; }
+.contact-card .cc-phone { color: var(--accent); font-size: 12px; font-weight: 500; white-space: nowrap; }
 
 /* ===== 雨量监测站 ===== */
 .rain-card {
@@ -246,12 +225,11 @@ body {
 .rain-card .rc-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .rain-card .rc-item {
   display: flex; align-items: center; gap: 10px; padding: 10px 12px;
-  background: rgba(37,99,235,0.05); border: 1px solid rgba(37,99,235,0.08);
-  border-radius: var(--radius-sm); font-size: 13px;
+  background: rgba(30,41,59,0.5); border-radius: var(--radius-sm); font-size: 13px;
 }
 .rain-card .rc-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .rain-card .rc-dot.online { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.5); }
-.rain-card .rc-dot.offline { background: #94a3b8; }
+.rain-card .rc-dot.offline { background: #64748b; }
 .rain-card .rc-name { color: var(--text); flex: 0 0 auto; min-width: 72px; font-weight: 600; }
 .rain-card .rc-value { color: var(--text-secondary); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -268,7 +246,7 @@ body {
 .warn-list { display: flex; flex-direction: column; gap: 10px; max-height: 420px; overflow-y: auto; }
 .warn-item {
   display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-  background: rgba(37,99,235,0.04); border-radius: var(--radius-sm); font-size: 13px;
+  background: rgba(30,41,59,0.5); border-radius: var(--radius-sm); font-size: 13px;
   border-left: 3px solid var(--warn-color, #f59e0b);
 }
 .warn-level {
@@ -284,13 +262,13 @@ body {
 .map-entry { text-align: center; margin: 36px 0 16px; }
 .map-entry a {
   display: inline-flex; align-items: center; gap: 12px;
-  background: linear-gradient(135deg, #4d6bfe, #6a5ae0);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: #fff; padding: 18px 52px; border-radius: 12px;
   font-size: 17px; font-weight: 700; text-decoration: none;
   box-shadow: 0 0 30px var(--primary-glow);
   transition: var(--transition);
 }
-.map-entry a:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(77,107,254,0.5); }
+.map-entry a:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(239,68,68,0.5); }
 
 /* ===== 页脚 ===== */
 .footer { text-align: center; padding: 32px; color: var(--text-muted); font-size: 12px; opacity: 0.5; }
@@ -305,7 +283,7 @@ body {
 .edit-mode-btn.active { background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 0 16px rgba(34,197,94,0.3); }
 
 .edit-input {
-  background: rgba(37,99,235,0.05); border: 1px solid rgba(245,158,11,0.3);
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(245,158,11,0.3);
   color: var(--text); padding: 4px 8px; border-radius: 6px;
   font-size: 12px; font-family: inherit; outline: none;
   transition: border-color 0.2s; width: 100%;
@@ -334,51 +312,7 @@ body {
 @keyframes savePop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 @keyframes saveFade { to { opacity: 0; transform: translateY(-10px); } }
 
-/* ===== PC/手机切换按钮 ===== */
-#mode-toggle {
-  background: rgba(37,99,235,0.06); border: 1px solid rgba(37,99,235,0.16);
-  color: #475569; padding: 6px 10px; border-radius: 6px; font-size: 14px; cursor: pointer;
-  transition: all 0.2s; display: flex; align-items: center; gap: 4px; white-space: nowrap;
-}
-#mode-toggle:hover { background: rgba(37,99,235,0.12); color: #1e293b; }
-#mode-toggle.mobile-active { background: rgba(37,99,235,0.1); color: #2563eb; border-color: rgba(37,99,235,0.3); }
-
-/* ===== 手机端适配（手动切换） ===== */
-body.mobile-mode .container { padding: 12px; }
-body.mobile-mode .stats-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-body.mobile-mode .stat-card { padding: 12px 10px; }
-body.mobile-mode .stat-card .sc-num { font-size: 24px; }
-body.mobile-mode .stat-card .sc-label { font-size: 11px; }
-body.mobile-mode .stat-card .sc-sub { font-size: 10px; }
-body.mobile-mode .stat-card .sc-icon { width: 32px; height: 32px; font-size: 16px; margin-bottom: 8px; }
-body.mobile-mode .village-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
-body.mobile-mode .village-card { padding: 14px 12px; }
-body.mobile-mode .village-card .vc-name { font-size: 14px; }
-body.mobile-mode .village-card .vc-stats { gap: 10px; }
-body.mobile-mode .village-card .vc-stat .vcs-num { font-size: 18px; }
-body.mobile-mode .two-col { grid-template-columns: 1fr; }
-body.mobile-mode .topbar { padding: 0 10px; height: 52px; }
-body.mobile-mode .topbar .logo { gap: 8px; min-width: 0; }
-body.mobile-mode .topbar .logo-text { min-width: 0; }
-body.mobile-mode .topbar .logo-icon { width: 32px; height: 32px; font-size: 16px; flex-shrink: 0; }
-body.mobile-mode .topbar .logo-text h1 { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 30vw; }
-body.mobile-mode .topbar .logo-text p { display: none; }
-body.mobile-mode .topbar .weather-badge { display: none; }
-body.mobile-mode .topbar .time-display { display: none; }
-body.mobile-mode .topbar .top-actions { gap: 6px; }
-body.mobile-mode .topbar .btn { padding: 5px 9px; font-size: 11px; white-space: nowrap; flex-shrink: 0; }
-body.mobile-mode #userRoleBadge { display: none !important; }
-body.mobile-mode #editModeBtn { display: none !important; }
-body.mobile-mode .admin-txt { display: none; }
-body.mobile-mode .section-title { font-size: 15px; }
-body.mobile-mode .contact-card .cc-item { font-size: 12px; padding: 8px 0; }
-body.mobile-mode .rain-card .rc-list { grid-template-columns: 1fr; }
-body.mobile-mode .rain-card .rc-item { font-size: 12px; }
-body.mobile-mode .warn-item { font-size: 12px; padding: 10px; }
-body.mobile-mode .map-entry a { padding: 14px 36px; font-size: 15px; }
-body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
-
-/* ===== 响应式（自动降级） ===== */
+/* ===== 响应式 ===== */
 @media (max-width: 1400px) {
   .stats-row { grid-template-columns: repeat(3, 1fr); }
   .village-grid { grid-template-columns: repeat(3, 1fr); }
@@ -394,62 +328,11 @@ body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
   .village-grid { grid-template-columns: 1fr; }
   .stat-card { padding: 14px; }
   .stat-card .sc-num { font-size: 28px; }
-  .topbar { padding: 0 10px; height: 52px; }
-  .topbar h1 { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .topbar .btn { white-space: nowrap; }
+  .topbar { padding: 0 14px; height: 52px; }
+  .topbar h1 { font-size: 14px; }
   .topbar .weather-badge { display: none; }
   .topbar .time-display { display: none; }
-  #userRoleBadge { display: none !important; }
-  #editModeBtn { display: none !important; }
-  .admin-txt { display: none; }
 }
-/* ===== 系统管理面板 ===== */
-.admin-overlay {
-  position: fixed; inset: 0; z-index: 1000;
-  background: rgba(2,6,23,0.7); backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center; padding: 20px;
-}
-.admin-panel {
-  width: 860px; max-width: 96vw; max-height: 88vh; display: flex; flex-direction: column;
-  background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.6); overflow: hidden;
-}
-.admin-head {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 16px 20px; border-bottom: 1px solid var(--border);
-}
-.admin-head h3 { font-size: 16px; color: var(--text); }
-.admin-head button {
-  background: transparent; border: 1px solid var(--border); color: var(--text-muted);
-  width: 30px; height: 30px; border-radius: 8px; cursor: pointer; font-size: 14px;
-}
-.admin-tabs { display: flex; gap: 6px; padding: 10px 20px; border-bottom: 1px solid var(--border); }
-.admin-tabs .at-tab {
-  padding: 7px 16px; border-radius: 8px; border: 1px solid var(--border);
-  background: transparent; color: var(--text-muted); font-size: 13px; cursor: pointer;
-}
-.admin-tabs .at-tab.active { background: rgba(77,107,254,0.15); color: var(--accent); border-color: rgba(77,107,254,0.4); }
-.admin-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
-.admin-body .ak-loading { color: var(--text-muted); text-align: center; padding: 40px 0; }
-.admin-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.admin-table th, .admin-table td {
-  padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
-  color: var(--text); vertical-align: middle;
-}
-.admin-table th { color: var(--text-muted); font-weight: 600; white-space: nowrap; }
-.admin-table .ak-key { font-family: monospace; color: var(--accent); font-size: 12px; }
-.admin-table .ak-tag { font-weight: 600; }
-.admin-table .ak-off { color: #dc2626; }
-.admin-table .ak-on { color: #16a34a; }
-.ak-btn {
-  padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
-  background: rgba(37,99,235,0.05); color: var(--text); font-size: 11px; cursor: pointer; margin: 0 2px;
-}
-.ak-btn:hover { border-color: var(--accent); color: var(--accent); }
-.ak-btn.danger { color: #dc2626; }
-.ak-btn.danger:hover { border-color: #dc2626; }
-.admin-body .ak-sec { font-size: 13px; font-weight: 700; color: var(--text); margin: 14px 0 8px; }
-.admin-body .ak-empty { color: var(--text-muted); text-align: center; padding: 30px 0; font-size: 13px; }
 </style>
 </head>
 <body>
@@ -470,12 +353,9 @@ body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
       <span id="weatherDesc" style="color:var(--text-muted);font-size:12px;">加载中</span>
     </div>
     <div class="time-display" id="timeDisplay"></div>
-    <span id="userRoleBadge" style="display:none;font-size:12px;color:var(--accent);background:rgba(77,107,254,0.12);border:1px solid rgba(77,107,254,0.25);padding:4px 10px;border-radius:12px;white-space:nowrap;"></span>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
-    <button class="btn" id="adminBtn" style="display:none" onclick="openAdminPanel()"><span>&#x2699;</span><span class="admin-txt"> 系统管理</span></button>
-    <button id="mode-toggle" title="切换PC/手机版" onclick="toggleMode()">&#x1F4F1;</button>
-    <a href="guide.html?v=v20260806-07" class="btn">&#x1F6A8; 防汛指南</a>
-    <a href="map.html?v=v20260806-07" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="vuln.html" class="btn btn-primary">&#x1F3D4; 易发性分析</a>
+    <a href="map.html" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
   </div>
 </div>
@@ -582,9 +462,9 @@ body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
   </div>
 </div>
 
-<div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024 · 系统版本 v20260806-07</div>
+<div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="feishu_config.js"></script>
+<script src="keys.js"></script>
 <script src="js_data/village_centers.js"></script>
 <script src="js_data/village_info.js"></script>
 <script src="js_data/village_plans.js"></script>
@@ -597,26 +477,6 @@ body.mobile-mode #mode-toggle { font-size: 12px; padding: 5px 8px; }
 <script src="js_data/rain_stations.js"></script>
 
 <script>
-// ========== 自动版本检测：发现版本更新强制刷新，避免浏览器缓存旧页面（无需手动清缓存） ==========
-(function() {
-  try {
-    fetch('version.txt?t=' + Date.now(), { cache: 'no-store' })
-      .then(function(r) { return r.text(); })
-      .then(function(v) {
-        v = (v || '').trim();
-        if (!v) return;
-        var cur = sessionStorage.getItem('xyc_app_version');
-        if (cur && cur !== v) {
-          sessionStorage.setItem('xyc_app_version', v);
-          location.reload(true);
-        } else {
-          sessionStorage.setItem('xyc_app_version', v);
-        }
-      })
-      .catch(function() {});
-  } catch(e) {}
-})();
-
 // 权限验证
 if (sessionStorage.getItem('xyc_auth') !== '1') {
   window.location.replace('index.html');
@@ -792,47 +652,22 @@ setInterval(loadWarnings, 5 * 60 * 1000); // 每5分钟自动刷新预警
 // ========== 统计数据 ==========
 var VILLAGE_ORDER = ['上塬村', '东塬村', '刘家湾社区', '孟塬村', '常家坪村', '新塬村', '杨坪村', '杨家河坝村', '甘岔村', '老庄村'];
 
-// SHP村名映射（SHP名 → 完整名；SHP数据用简称）
-var SHP_VILLAGE_MAP = {
-  '常坪村': '常家坪村',
-  '河坝村': '杨家河坝村'
-};
-var REVERSE_SHP_MAP = {};
-Object.keys(SHP_VILLAGE_MAP).forEach(function(k) { REVERSE_SHP_MAP[SHP_VILLAGE_MAP[k]] = k; });
-
-// 各村切坡建房户数（按 SHP 隐患点位统计：每户一个点，与地图红点一一对应）
-// 隐患点数量 / 受威胁人口（来源：《新塬镇一页纸数据》Excel）
-function getShpHouseholds(vname) {
-  var shpName = REVERSE_SHP_MAP[vname] || vname;
-  var count = 0;
-  if (typeof DATA_HAZARD_POINTS === 'undefined' || !DATA_HAZARD_POINTS.features) return 0;
-  DATA_HAZARD_POINTS.features.forEach(function(f) {
-    var p = f.properties || {};
-    if (p.source === 'vector_data') return; // 全镇7个地质灾害点不算切坡建房户
-    if ((p.CZ || '') === shpName) count++;
-  });
-  return count;
-}
-
+// 各村切坡建房户数 / 隐患点数量（来源：《新塬镇一页纸数据》Excel，非矢量点位）
 function getVillagePlanStats(vname) {
-  var stats = { hazards: 0, households: 0, people: 0 };
+  var stats = { hazards: 0, households: 0 };
   if (typeof VILLAGE_PLANS === 'undefined' || !VILLAGE_PLANS[vname]) return stats;
   var hazards = VILLAGE_PLANS[vname].hazards || [];
   stats.hazards = hazards.length;
-  // 切坡建房户数改为按 SHP 隐患点位统计（非一页纸威胁户数），与地图红点一致
-  stats.households = getShpHouseholds(vname);
   hazards.forEach(function(h) {
-    var m = (h.scope || '').match(/(\d+)\s*户(?:\s*(\d+)\s*人)?/);
-    if (m) {
-      if (m[2]) stats.people += parseInt(m[2], 10);
-    }
+    var m = (h.scope || '').match(/(\d+)\s*户/);
+    if (m) stats.households += parseInt(m[1], 10);
   });
   return stats;
 }
 
 // 统计值
 var hazardCount = 0;          // 全镇隐患点数（一页纸数据）
-var householdCount = 0;       // 全镇切坡建房户数（按 SHP 隐患点位统计，与地图红点一致）
+var householdCount = 0;       // 全镇切坡建房户数（一页纸数据）
 VILLAGE_ORDER.forEach(function(vname) {
   var s = getVillagePlanStats(vname);
   hazardCount += s.hazards;
@@ -843,11 +678,17 @@ var siteCount = (typeof DATA_EVACUATION_SITES !== 'undefined' ? DATA_EVACUATION_
                 (typeof DATA_BACKUP_SITES !== 'undefined' ? DATA_BACKUP_SITES.features.length : 0);
 var routeCount = (typeof DATA_EVACUATION_ROUTES !== 'undefined') ? DATA_EVACUATION_ROUTES.features.length : 0;
 
-// 计算受威胁人口（与地图页一致，来源：《新塬镇一页纸数据》，各村切坡建房隐患点人口合计）
+// 计算受威胁人口
 var totalPopulation = 0;
-if (typeof VILLAGE_PLANS !== 'undefined') {
+if (typeof VILLAGE_INFO !== 'undefined') {
   VILLAGE_ORDER.forEach(function(vname) {
-    totalPopulation += getVillagePlanStats(vname).people;
+    var info = VILLAGE_INFO[vname];
+    if (info && info.households) {
+      info.households.forEach(function(hh) {
+        var p = parseInt(hh.p);
+        if (!isNaN(p)) totalPopulation += p;
+      });
+    }
   });
 }
 
@@ -871,12 +712,6 @@ var townList = document.getElementById('townContactList');
 
 // 使用统一的渲染函数（支持 localStorage 优先）
 refreshContactLists();
-
-// ========== 从飞书云端加载编辑数据（多账号同步） ==========
-loadCloudEditData(function() {
-  refreshVillageGrid();
-  refreshContactLists();
-});
 
 // ========== 各村天气 ==========
 var weatherData = null; // 全局存储天气数据
@@ -906,81 +741,18 @@ function doLogout() {
   sessionStorage.removeItem('xyc_key');
   sessionStorage.removeItem('xyc_admin');
   sessionStorage.removeItem('xyc_village');
-  sessionStorage.removeItem('xyc_role');
-  sessionStorage.removeItem('xyc_label');
-  sessionStorage.removeItem('xyc_device');
   window.location.replace('index.html');
 }
 
-// ========== PC/手机端切换 ==========
-var isMobileMode = false;
-
-function initMode() {
-  var saved = localStorage.getItem('xyc_mode');
-  if (saved === 'mobile') {
-    isMobileMode = true;
-  } else if (saved === 'pc') {
-    isMobileMode = false;
-  } else {
-    isMobileMode = window.innerWidth <= 768;
-  }
-  applyMode();
-}
-
-function toggleMode() {
-  isMobileMode = !isMobileMode;
-  localStorage.setItem('xyc_mode', isMobileMode ? 'mobile' : 'pc');
-  applyMode();
-}
-
-function applyMode() {
-  var btn = document.getElementById('mode-toggle');
-  if (isMobileMode) {
-    document.body.classList.add('mobile-mode');
-    if (btn) {
-      btn.innerHTML = '&#x1F5A5;';
-      btn.classList.add('mobile-active');
-      btn.title = '切换为PC版';
-    }
-  } else {
-    document.body.classList.remove('mobile-mode');
-    if (btn) {
-      btn.innerHTML = '&#x1F4F1;';
-      btn.classList.remove('mobile-active');
-      btn.title = '切换为手机版';
-    }
-  }
-}
-
-// 页面加载时初始化模式
-initMode();
-
 // ========== 编辑模式 ==========
 var isEditMode = false;
-var myRole = sessionStorage.getItem('xyc_role') || '';
-var myVillage = sessionStorage.getItem('xyc_village') || '';
-var myLabel = sessionStorage.getItem('xyc_label') || '';
-var isAdmin = myRole === '管理员';
+var isAdmin = sessionStorage.getItem('xyc_admin') === '1';
 var EDIT_STORAGE_KEY = 'xyc_village_edit_data';
-
-// 显示角色徽章
-(function() {
-  var badge = document.getElementById('userRoleBadge');
-  if (badge) {
-    var txt = myLabel || (myVillage ? myVillage : '');
-    if (myRole) txt = txt + ' · ' + myRole;
-    badge.textContent = txt || '';
-    badge.style.display = txt ? 'inline-block' : 'none';
-  }
-})();
 
 // 显示管理员按钮
 if (isAdmin) {
   document.getElementById('editModeBtn').style.display = 'flex';
-  document.getElementById('adminBtn').style.display = 'inline-flex';
 }
-
-// ===== 村庄编辑数据：飞书云端同步 =====
 
 // 从 localStorage 读取编辑数据
 function getEditData() {
@@ -992,97 +764,14 @@ function getEditData() {
   }
 }
 
-// 保存编辑数据到 localStorage，并异步同步到飞书云端
+// 保存编辑数据到 localStorage
 function saveEditData(data) {
   try {
     localStorage.setItem(EDIT_STORAGE_KEY, JSON.stringify(data));
   } catch(e) {}
-  syncEditDataToCloud(data);
 }
 
-// 将编辑数据逐项同步到飞书"村庄数据"表（串行 upsert）
-function syncEditDataToCloud(data) {
-  if (typeof FEISHU_CONFIG === 'undefined') return;
-  var tasks = [];
-  for (var vname in data) {
-    for (var field in data[vname]) {
-      if (typeof data[vname][field] === 'string') {
-        tasks.push({ vname: vname, field: field, value: data[vname][field] });
-      }
-    }
-  }
-  var idx = 0;
-  function next() {
-    if (idx >= tasks.length) return;
-    var t = tasks[idx++];
-    upsertCloudVillageField(t.vname, t.field, t.value, next);
-  }
-  next();
-}
-
-// upsert 单个村庄字段到飞书
-function upsertCloudVillageField(vname, field, value, callback) {
-  // 先查该村该字段的已有记录（飞书列出记录接口的 JSON filter 格式）
-  var filter = JSON.stringify({
-    logic: 'and',
-    conditions: [['村名', '==', vname], ['字段名', '==', field]]
-  });
-  var base = '/open-apis/base/v3/bases/' + FEISHU_CONFIG.baseToken +
-    '/tables/' + FEISHU_CONFIG.tables.villageData;
-  feishuRequest('GET', base + '/records?page_size=10&filter=' + encodeURIComponent(filter), null, function(data, err) {
-    var now = new Date();
-    var timeStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' +
-      String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' +
-      String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
-    var fields = {
-      '村名': vname,
-      '字段名': field,
-      '字段值': value,
-      '更新时间': timeStr
-    };
-    var items = feishuRowsToObjects(data);
-    if (!err && data && data.code === 0 && items.length > 0) {
-      var rid = items[0].record_id;
-      feishuRequest('PATCH', base + '/records/' + encodeURIComponent(rid), fields, function() {
-        if (callback) callback();
-      });
-    } else {
-      feishuRequest('POST', base + '/records', fields, function() {
-        if (callback) callback();
-      });
-    }
-  });
-}
-
-// 从飞书拉取全部村庄编辑数据，合并到本地并刷新界面
-function loadCloudEditData(callback) {
-  if (typeof FEISHU_CONFIG === 'undefined') { if (callback) callback(); return; }
-  var path = '/open-apis/base/v3/bases/' + FEISHU_CONFIG.baseToken +
-    '/tables/' + FEISHU_CONFIG.tables.villageData + '/records?page_size=200';
-  feishuRequest('GET', path, null, function(data, err) {
-    if (err || !data || data.code !== 0) { if (callback) callback(); return; }
-    var items = feishuRowsToObjects(data);
-    var cloud = {};
-    items.forEach(function(it) {
-      var f = it.fields || {};
-      var vname = f['村名'], field = f['字段名'], value = f['字段值'];
-      if (vname && field && value != null) {
-        if (!cloud[vname]) cloud[vname] = {};
-        cloud[vname][field] = String(value);
-      }
-    });
-    // 与本地合并：云端优先（多账号共享最新数据）
-    var local = getEditData();
-    for (var v in cloud) {
-      if (!local[v]) local[v] = {};
-      for (var fld in cloud[v]) local[v][fld] = cloud[v][fld];
-    }
-    try { localStorage.setItem(EDIT_STORAGE_KEY, JSON.stringify(local)); } catch(e) {}
-    if (callback) callback();
-  });
-}
-
-// 获取村庄数据（优先 localStorage，云端已合并入）
+// 获取村庄数据（优先 localStorage）
 function getVillageData(vname) {
   var editData = getEditData();
   if (editData[vname]) {
@@ -1242,8 +931,7 @@ function refreshContactLists() {
       } else {
         div.innerHTML = '<span class="cc-name">' + vname + '</span>' +
           '<span class="cc-role">' + namePart + '</span>' +
-          '<span class="cc-phone">' + phoneVal + '</span>' +
-          (phoneVal ? '<a class="call-btn" href="tel:' + phoneVal + '">&#x1F4DE; 拨打</a>' : '');
+          '<span class="cc-phone">' + phoneVal + '</span>';
       }
     } else {
       if (isEditMode) {
@@ -1274,8 +962,7 @@ function refreshContactLists() {
       } else {
         tdiv.innerHTML = '<span class="cc-name">' + vname + '</span>' +
           '<span class="cc-role">' + tnamePart + '</span>' +
-          '<span class="cc-phone">' + tphoneVal + '</span>' +
-          (tphoneVal ? '<a class="call-btn" href="tel:' + tphoneVal + '">&#x1F4DE; 拨打</a>' : '');
+          '<span class="cc-phone">' + tphoneVal + '</span>';
       }
     } else {
       if (isEditMode) {
@@ -1332,120 +1019,6 @@ function onContactPhoneChange(input) {
   }
   saveEditData(editData);
   showSaveIndicator();
-}
-</script>
-<!-- ===== 系统管理面板（仅管理员） ===== -->
-<div class="admin-overlay" id="adminOverlay" style="display:none" onclick="if(event.target===this)closeAdminPanel()">
-  <div class="admin-panel">
-    <div class="admin-head">
-      <h3>&#x2699; 系统管理</h3>
-      <button onclick="closeAdminPanel()">&#x2716;</button>
-    </div>
-    <div class="admin-tabs">
-      <button class="at-tab active" id="at-keys" onclick="switchAdminTab('keys')">密钥管理</button>
-      <button class="at-tab" id="at-logs" onclick="switchAdminTab('logs')">登录记录</button>
-    </div>
-    <div class="admin-body" id="adminBody"><div class="ak-loading">加载中...</div></div>
-  </div>
-</div>
-
-<script>
-// ========== 系统管理（仅管理员） ==========
-function openAdminPanel() {
-  document.getElementById('adminOverlay').style.display = 'flex';
-  switchAdminTab('keys');
-}
-function closeAdminPanel() {
-  document.getElementById('adminOverlay').style.display = 'none';
-}
-// 支持 #admin 锚点：从地图页"系统管理"入口跳转过来时自动打开管理面板
-if (isAdmin && window.location.hash === '#admin') {
-  openAdminPanel();
-  window.location.hash = '';
-}
-function switchAdminTab(tab) {
-  document.getElementById('at-keys').classList.toggle('active', tab === 'keys');
-  document.getElementById('at-logs').classList.toggle('active', tab === 'logs');
-  if (tab === 'keys') loadAdminKeys();
-  else loadAdminLogs();
-}
-function escAttr(s) {
-  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-function adminBodyHtml(inner) {
-  document.getElementById('adminBody').innerHTML = inner;
-}
-
-function loadAdminKeys() {
-  adminBodyHtml('<div class="ak-loading">加载密钥列表...</div>');
-  adminRequest('keys', {}, function(data, err) {
-    if (err || !data) { adminBodyHtml('<div class="ak-empty">加载失败：' + (err || '未知错误') + '</div>'); return; }
-    var keys = data.data || [];
-    if (!keys.length) {
-      adminBodyHtml('<div class="ak-empty">未查询到任何密钥记录（服务端返回：' + JSON.stringify(data).substring(0, 300) + '）</div>');
-      return;
-    }
-    var h = '<table class="admin-table"><tr><th>标签</th><th>角色</th><th>所属村</th><th>状态</th><th>绑定设备</th><th>操作</th></tr>';
-    keys.forEach(function(k) {
-      var devs = (k['绑定设备'] || '').split(/[,，\n]/).filter(function(x){return x.trim();});
-      var enabled = k['状态'] === '禁用';
-      h += '<tr>';
-      h += '<td class="ak-tag">' + escAttr(k['标签'] || '') + '</td>';
-      h += '<td>' + escAttr(k['角色'] || '') + '</td>';
-      h += '<td>' + escAttr(k['所属村'] || '') + '</td>';
-      h += '<td class="' + (enabled ? 'ak-off' : 'ak-on') + '">' + (enabled ? '已禁用' : '启用') + '</td>';
-      h += '<td>' + (devs.length ? devs.length + ' 台' : '0 台') + '</td>';
-      h += '<td>';
-      h += '<button class="ak-btn" onclick="resetAdminKey(\'' + escAttr(k['标签']) + '\')">重置</button>';
-      h += '<button class="ak-btn" onclick="unbindAdminKey(\'' + escAttr(k['标签']) + '\')">解绑</button>';
-      h += '<button class="ak-btn ' + (enabled ? '' : 'danger') + '" onclick="toggleAdminKey(\'' + escAttr(k['标签']) + '\',' + (enabled ? 'true' : 'false') + ')">' + (enabled ? '启用' : '禁用') + '</button>';
-      h += '</td></tr>';
-    });
-    h += '</table>';
-    adminBodyHtml(h);
-  });
-}
-
-function resetAdminKey(label) {
-  if (!confirm('确定重置密钥「' + label + '」？重置后旧密钥立即失效，该密钥已绑定的设备需重新登录。')) return;
-  adminRequest('reset_key', { label: label }, function(data, err) {
-    if (err || !data) { alert('重置失败：' + (err || '未知错误')); return; }
-    alert('已生成新密钥：\n' + data.data.new_key + '\n\n请妥善保管，原密钥已失效，绑定设备已清空。');
-    loadAdminKeys();
-  });
-}
-function unbindAdminKey(label) {
-  if (!confirm('确定解绑密钥「' + label + '」的全部设备？解绑后需在新设备上重新登录。')) return;
-  adminRequest('unbind', { label: label }, function(data, err) {
-    if (err) { alert('解绑失败：' + err); return; }
-    alert('已解绑「' + label + '」的全部设备');
-    loadAdminKeys();
-  });
-}
-function toggleAdminKey(label, enable) {
-  if (!confirm('确定' + (enable ? '启用' : '禁用') + '密钥「' + label + '」？')) return;
-  adminRequest('toggle', { label: label, enabled: enable }, function(data, err) {
-    if (err) { alert('操作失败：' + err); return; }
-    alert('已' + (enable ? '启用' : '禁用') + '「' + label + '」');
-    loadAdminKeys();
-  });
-}
-
-function loadAdminLogs() {
-  adminBodyHtml('<div class="ak-loading">加载登录记录...</div>');
-  adminRequest('logs', {}, function(data, err) {
-    if (err || !data) { adminBodyHtml('<div class="ak-empty">加载失败：' + (err || '未知错误') + '</div>'); return; }
-    var logs = data.data || [];
-    if (!logs.length) { adminBodyHtml('<div class="ak-empty">暂无登录记录</div>'); return; }
-    var h = '<table class="admin-table"><tr><th>时间</th><th>密钥标签</th><th>角色</th><th>IP</th><th>设备</th><th>结果</th></tr>';
-    logs.forEach(function(l) {
-      h += '<tr><td>' + escAttr(l['时间'] || '') + '</td><td class="ak-tag">' + escAttr(l['密钥标签'] || '') + '</td>' +
-        '<td>' + escAttr(l['角色'] || '') + '</td><td>' + escAttr(l['IP'] || '') + '</td>' +
-        '<td>' + escAttr(l['设备'] || '') + '</td><td>' + escAttr(l['结果'] || '') + '</td></tr>';
-    });
-    h += '</table>';
-    adminBodyHtml(h);
-  });
 }
 </script>
 </body>
