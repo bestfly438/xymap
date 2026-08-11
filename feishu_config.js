@@ -93,16 +93,33 @@ function adminRequest(sub, payload, callback) {
 }
 
 // ========== 敏感数据取数（数据私有化：登录后从云函数 /api/data 读取，注入为全局变量） ==========
-var SECURE_DATA_LOADED = {};   // 防重复加载
+var SECURE_DATA_LOADED = {};   // 页内防重复加载
+// 会话级内容缓存（sessionStorage）：看板/地图/分析页整页跳转后不再重复请求云函数，秒开
 function loadSecureData(files, callback) {
   var key = sessionStorage.getItem('xyc_key') || '';
   var device = sessionStorage.getItem('xyc_device') || '';
   if (!key || !device) { window.location.replace('index.html'); return; }
-  var idx = 0;
+  var idx = 0, retried = {};
+  // 注入并执行取到的 JS 内容，返回是否成功
+  function inject(code, f) {
+    try {
+      var s = document.createElement('script');
+      s.textContent = code;          // 注入执行，文件内的 var 声明成为全局变量
+      document.head.appendChild(s);
+      SECURE_DATA_LOADED[f] = true;
+      try { sessionStorage.setItem('xyc_data_' + f, code); } catch(e) {}
+      return true;
+    } catch(e) { return false; }
+  }
   function next() {
     if (idx >= files.length) { if (callback) callback(); return; }
     var f = files[idx++];
     if (SECURE_DATA_LOADED[f]) { next(); return; }
+    // 1) 命中会话缓存：直接注入，不再请求云函数
+    var cached = null;
+    try { cached = sessionStorage.getItem('xyc_data_' + f); } catch(e) {}
+    if (cached && inject(cached, f)) { next(); return; }
+    // 2) 请求云函数取数
     fetch(FEISHU_CONFIG.apiBase + '/api/data', {
       method: 'POST',
       headers: {
@@ -115,19 +132,20 @@ function loadSecureData(files, callback) {
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (d && d.code === 0 && d.data) {
-        var s = document.createElement('script');
-        s.textContent = d.data;          // 注入执行，文件内的 var 声明成为全局变量
-        document.head.appendChild(s);
-        SECURE_DATA_LOADED[f] = true;
-        next();
+        if (inject(d.data, f)) { next(); return; }
+        if (inject(d.data, f)) { next(); return; }   // 注入失败重试一次
+        next();                                       // 仍失败则跳过该文件，不阻塞整页
       } else if (d && d.code === 401) {
         try { sessionStorage.clear(); } catch(e) {}
         window.location.replace('index.html');
       } else {
-        alert('数据加载失败' + (d && d.msg ? '：' + d.msg : '，请重试'));
+        // 服务异常/无权限：重试一次，仍失败则跳过继续（避免单文件失败卡死整页）
+        if (!retried[f]) { retried[f] = 1; idx--; next(); } else { next(); }
       }
     })
-    .catch(function() { alert('网络错误，数据加载失败，请重试'); });
+    .catch(function() {
+      if (!retried[f]) { retried[f] = 1; idx--; next(); } else { next(); }
+    });
   }
   next();
 }
