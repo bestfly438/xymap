@@ -235,6 +235,36 @@ body {
 .rain-card .rc-dot.offline { background: #64748b; }
 .rain-card .rc-name { color: var(--text); flex: 0 0 auto; min-width: 72px; font-weight: 600; }
 .rain-card .rc-value { color: var(--text-secondary); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rain-card .rc-item.rain { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35); }
+.rain-card .rc-item.rain .rc-name { color: #fbbf24; }
+.rain-card .rc-item.rain .rc-value { color: #fcd34d; }
+
+/* ===== 天气调度（管理员降雨定时刷新） ===== */
+.wx-sched {
+  margin-top: 14px; padding: 12px 14px; border-radius: var(--radius-sm);
+  background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3);
+}
+.wx-sched .ws-title { font-size: 13px; font-weight: 700; color: #fbbf24; margin-bottom: 8px; }
+.wx-sched .ws-status { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.5; }
+.wx-sched .ws-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.wx-sched .ws-row label { font-size: 12px; color: var(--text-secondary); }
+.wx-sched select {
+  background: var(--bg-card); color: var(--text); border: 1px solid var(--border-light);
+  border-radius: 6px; padding: 6px 8px; font-size: 12px;
+}
+.wx-sched .ws-mins { display: flex; gap: 6px; }
+.wx-sched .ws-mins label {
+  display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-secondary);
+  background: rgba(30,41,59,0.6); padding: 5px 10px; border-radius: 6px; cursor: pointer;
+}
+.wx-sched .ws-mins label.on { color: #fbbf24; border: 1px solid rgba(245,158,11,0.5); }
+.wx-sched .ws-mins input { accent-color: #f59e0b; }
+.wx-sched .ws-btn {
+  padding: 7px 16px; border-radius: 6px; border: none; font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.wx-sched .ws-btn.start { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+.wx-sched .ws-btn.stop { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
+.wx-sched .ws-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ===== 气象预警信息 ===== */
 .warn-card {
@@ -443,9 +473,9 @@ body {
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button class="btn" id="adminBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-    <a href="analysis.html?v=v20260811-01" class="btn btn-primary">&#x1F4CA; 专业分析</a>
-    <a href="guide.html?v=v20260811-01" class="btn">&#x1F4D6; 防汛应急指南</a>
-    <a href="map.html?v=v20260811-01" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="analysis.html?v=v20260811-02" class="btn btn-primary">&#x1F4CA; 专业分析</a>
+    <a href="guide.html?v=v20260811-02" class="btn">&#x1F4D6; 防汛应急指南</a>
+    <a href="map.html?v=v20260811-02" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
     <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
@@ -453,9 +483,9 @@ body {
 
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
-  <a href="map.html?v=v20260811-01" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260811-01" class="mm-item">&#x1F4CA; 专业分析</a>
-  <a href="guide.html?v=v20260811-01" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+  <a href="map.html?v=v20260811-02" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="analysis.html?v=v20260811-02" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="guide.html?v=v20260811-02" class="mm-item">&#x1F4D6; 防汛应急指南</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
   <button class="mm-item" id="adminBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录）</button>
   <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
@@ -535,8 +565,28 @@ body {
       <div class="cc-list" id="leaderList"></div>
     </div>
     <div class="rain-card">
-      <div class="cc-header">&#x2600; 各村天气实况</div>
+      <div class="cc-header">&#x2600; 各村天气实况 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">（和风天气 · 逐村）</span></div>
       <div class="rc-list" id="rainList"></div>
+      <div class="wx-sched" id="wxScheduleWrap" style="display:none">
+        <div class="ws-title">&#x26A0; 降雨天气调度</div>
+        <div class="ws-status" id="wxSchedStatus">检测到降雨，可选择村庄设置定时刷新</div>
+        <div class="ws-row">
+          <label>村庄</label>
+          <select id="wxSchedVillage"></select>
+        </div>
+        <div class="ws-row">
+          <label>刷新间隔</label>
+          <div class="ws-mins">
+            <label class="on"><input type="radio" name="wxSchedMin" value="10" checked> 10分钟</label>
+            <label><input type="radio" name="wxSchedMin" value="15"> 15分钟</label>
+            <label><input type="radio" name="wxSchedMin" value="20"> 20分钟</label>
+          </div>
+        </div>
+        <div class="ws-row">
+          <button class="ws-btn start" id="wxSchedStart" onclick="wxStartSchedule()">&#x23F3; 开始调度</button>
+          <button class="ws-btn stop" id="wxSchedStop" onclick="wxStopSchedule()">&#x23F9; 停止</button>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -559,18 +609,19 @@ body {
 
   <!-- 进入地图 -->
   <div class="map-entry">
-    <a href="map.html?v=v20260811-01">&#x1F5FA; 进入应急避险地图</a>
+    <a href="map.html?v=v20260811-02">&#x1F5FA; 进入应急避险地图</a>
   </div>
 </div>
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="keys.js?v=v20260811-01"></script>
-<script src="feishu_config.js?v=v20260811-01"></script>
-<script src="js_data/village_centers.js?v=v20260811-01"></script>
-<script src="js_data/hazard_areas.js?v=v20260811-01"></script>
-<script src="js_data/evacuation_routes.js?v=v20260811-01"></script>
-<script src="js_data/rain_stations.js?v=v20260811-01"></script>
+<script src="keys.js?v=v20260811-02"></script>
+<script src="feishu_config.js?v=v20260811-02"></script>
+<script src="weather.js?v=v20260811-02"></script>
+<script src="js_data/village_centers.js?v=v20260811-02"></script>
+<script src="js_data/hazard_areas.js?v=v20260811-02"></script>
+<script src="js_data/evacuation_routes.js?v=v20260811-02"></script>
+<script src="js_data/rain_stations.js?v=v20260811-02"></script>
 
 <script>
 // 权限验证
@@ -593,157 +644,12 @@ function updateTime() {
 updateTime();
 setInterval(updateTime, 1000);
 
-// ========== 天气 API（Open-Meteo，免费无需Key） ==========
-// WMO 天气代码 → 中文描述/图标
-var WMO_MAP = {
-  0: ['晴', '&#x2600;'], 1: ['晴间多云', '&#x26C5;'], 2: ['多云', '&#x26C5;'], 3: ['阴', '&#x2601;'],
-  45: ['雾', '&#x1F32B;'], 48: ['雾凇', '&#x1F32B;'],
-  51: ['毛毛雨', '&#x1F327;'], 53: ['毛毛雨', '&#x1F327;'], 55: ['毛毛雨', '&#x1F327;'],
-  56: ['冻雨', '&#x1F327;'], 57: ['冻雨', '&#x1F327;'],
-  61: ['小雨', '&#x1F327;'], 63: ['中雨', '&#x1F327;'], 65: ['大雨', '&#x1F327;'],
-  66: ['冻雨', '&#x1F327;'], 67: ['冻雨', '&#x1F327;'],
-  71: ['小雪', '&#x1F328;'], 73: ['中雪', '&#x1F328;'], 75: ['大雪', '&#x1F328;'],
-  77: ['雪粒', '&#x1F328;'],
-  80: ['阵雨', '&#x1F327;'], 81: ['阵雨', '&#x1F327;'], 82: ['强阵雨', '&#x1F327;'],
-  85: ['阵雪', '&#x1F328;'], 86: ['阵雪', '&#x1F328;'],
-  95: ['雷阵雨', '&#x26A1;'], 96: ['雷雨伴冰雹', '&#x26A1;'], 99: ['雷雨伴冰雹', '&#x26A1;']
-};
-function wmoInfo(code) { return WMO_MAP[code] || ['未知', '&#x2600;']; }
-function isRainy(code) { return (code >= 51 && code <= 67) || (code >= 80 && code <= 82) || code >= 95; }
+// ========== 天气（和风天气，经云函数转发，见 weather.js） ==========
+// 天气逻辑已抽到 weather.js：各村差异化天气 + 8/10/12/15/18/20 点定时刷新 +
+// 降雨检测 + 管理员降雨调度。此处不再保留 Open-Meteo 旧逻辑。
 
-function loadWeather() {
-  fetchWeather(105.05, 35.69);
-}
-
-function fetchWeather(lng, lat) {
-  var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lng +
-    '&current=temperature_2m,weathercode,wind_speed_10m,is_day&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FShanghai';
-  fetch(url)
-    .then(function(r) { return r.json(); })
-    .then(function(data) {
-      if (data && data.current) {
-        renderWeather(data);
-      } else {
-        showWeatherError();
-      }
-    })
-    .catch(function() {
-      showWeatherError();
-    });
-}
-
-function renderWeather(data) {
-  weatherData = data; // 保存全局天气数据
-  var cur = data.current;
-  var info = wmoInfo(cur.weathercode);
-  var windDir = Math.round(cur.wind_direction_10m || 0);
-  var windStr = '风向' + windDir + '° ' + Math.round(cur.wind_speed_10m || 0) + 'km/h';
-
-  document.getElementById('weatherBadge').innerHTML =
-    '<span class="wt">' + info[1] + '</span>' +
-    '<span>新塬镇</span>' +
-    '<span class="wtemp">' + Math.round(cur.temperature_2m) + '°C</span>' +
-    '<span style="color:var(--text-muted);font-size:12px;">' + info[0] + ' ' + windStr + '</span>';
-
-  // 渲染各村天气
-  renderVillageWeather();
-
-  // 预警横幅：检查未来 3 天是否有雨/雪/极端天气
-  var casts = data.daily;
-  for (var i = 0; i < casts.time.length && i < 3; i++) {
-    var c = casts.weathercode[i];
-    if (isRainy(c)) {
-      var banner = document.getElementById('alertBanner');
-      banner.style.display = 'flex';
-      if (c >= 95 || c === 65 || c === 82) {
-        banner.className = 'alert-banner danger';
-        document.getElementById('alertTitle').textContent = '极端天气预警';
-      } else {
-        banner.className = 'alert-banner warning';
-        document.getElementById('alertTitle').textContent = '天气提醒';
-      }
-      var wInfo = wmoInfo(c);
-      document.getElementById('alertDesc').textContent =
-        '新塬镇预计' + casts.time[i] + '：' + wInfo[0] + '，气温' + casts.temperature_2m_min[i] + '~' + casts.temperature_2m_max[i] +
-        '°C，降水概率' + (casts.precipitation_probability_max[i] || '--') + '%。请密切关注天气变化，做好应急准备。';
-      break;
-    }
-  }
-}
-
-function showWeatherError() {
-  document.getElementById('weatherBadge').innerHTML =
-    '<span class="wt">&#x2600;</span>' +
-    '<span>新塬镇</span>' +
-    '<span class="wtemp">--°C</span>' +
-    '<span style="color:var(--text-muted);font-size:12px;">天气获取失败</span>';
-  var rainList = document.getElementById('rainList');
-  rainList.innerHTML = '<div style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:20px;">天气数据获取失败，请检查网络连接后刷新重试</div>';
-}
-
-// ========== 气象预警信息（中央气象台/国家预警发布） ==========
+// ========== 气象预警信息（和风实时预警，见 weather.js renderWarnings） ==========
 var WARN_LEVEL_COLORS = { '蓝色': '#3b82f6', '黄色': '#f59e0b', '橙色': '#f97316', '红色': '#ef4444' };
-
-function loadWarnings() {
-  var url = 'https://www.nmc.cn/rest/findAlarm?pageNo=1&pageSize=20&signaltype=&signallevel=&province=' +
-    encodeURIComponent('甘肃省') + '&city=' + encodeURIComponent('白银市') + '&county=' + encodeURIComponent('会宁县');
-  fetch(url)
-    .then(function(r) { return r.json(); })
-    .then(function(d) {
-      var list = (d && d.data && d.data.page && d.data.page.list) || [];
-      // 优先本县预警，其次白银市，最后甘肃省
-      var rows = list.filter(function(a) { return a.title.indexOf('会宁县') >= 0; });
-      var scope = '会宁县';
-      if (!rows.length) {
-        rows = list.filter(function(a) { return a.title.indexOf('白银市') >= 0; });
-        scope = '白银市';
-      }
-      if (!rows.length) {
-        rows = list.slice(0, 5);
-        scope = '甘肃省';
-      }
-      renderWarnings(rows, scope, true);
-    })
-    .catch(function() {
-      renderWarnings([], '会宁县', false);
-    });
-}
-
-function renderWarnings(rows, scope, online) {
-  document.getElementById('warnScope').textContent = scope;
-  document.getElementById('warnUpdateTime').textContent = formatWarnTime(new Date());
-  var el = document.getElementById('warnList');
-  if (!online) {
-    el.innerHTML = '<div class="warn-empty">预警信息获取失败，请检查网络连接后重试</div>';
-    return;
-  }
-  if (!rows || !rows.length) {
-    el.innerHTML = '<div class="warn-ok">&#x2705; 当前无有效预警信息（自动检查：会宁县 / 白银市 / 甘肃省）</div>';
-    return;
-  }
-  var html = '';
-  rows.forEach(function(a) {
-    var level = '黄色';
-    var m = (a.title || '').match(/(蓝|黄|橙|红)色预警/);
-    if (m) level = m[1] + '色';
-    var color = WARN_LEVEL_COLORS[level] || '#f59e0b';
-    html += '<div class="warn-item" style="--warn-color:' + color + '">' +
-      '<span class="warn-level" style="background:' + color + '">' + level + '</span>' +
-      '<span class="warn-title">' + (a.title || '') + '</span>' +
-      '<span class="warn-time">' + (a.issuetime || '') + '</span>' +
-      '</div>';
-  });
-  el.innerHTML = html;
-}
-
-function formatWarnTime(d) {
-  function p(n) { return n < 10 ? '0' + n : '' + n; }
-  return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
-}
-
-loadWeather();
-loadWarnings();
-setInterval(loadWarnings, 5 * 60 * 1000); // 每5分钟自动刷新预警
 
 // ========== 敏感数据取数（数据私有化：隐患点名册/村情/预案等登录后从云函数读取） ==========
 loadSecureData(['village_info.js', 'village_plans.js', 'hazard_points.js',
@@ -832,27 +738,7 @@ var grid = document.getElementById('villageGrid');
 var leaderList = document.getElementById('leaderList');
 var townList = document.getElementById('townContactList');
 
-// ========== 各村天气 ==========
-var weatherData = null; // 全局存储天气数据
-
-function renderVillageWeather() {
-  var rainList = document.getElementById('rainList');
-  if (!weatherData) {
-    rainList.innerHTML = '<div style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:20px;">天气数据加载中...</div>';
-    return;
-  }
-  var today = weatherData.current;
-  var info = wmoInfo(today.weathercode);
-  var weatherDesc = info[0] + ' ' + Math.round(today.temperature_2m) + '°C';
-
-  VILLAGE_ORDER.forEach(function(vname) {
-    var div = document.createElement('div');
-    div.className = 'rc-item';
-    div.innerHTML = '<span class="rc-name">' + vname + '</span>' +
-      '<span class="rc-value">' + weatherDesc + '</span>';
-    rainList.appendChild(div);
-  });
-}
+// （各村天气渲染见 weather.js：renderVillageWeather / renderAllWeather）
 
 // ========== 退出 ==========
 function doLogout() {
@@ -1019,7 +905,7 @@ function refreshVillageGrid() {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260811-01';
+      window.location.href = 'map.html?v=v20260811-02';
     };
 
     var html = '';
@@ -1169,6 +1055,10 @@ function onContactPhoneChange(input) {
   saveEditData(editData);
   showSaveIndicator();
 }
+
+// ========== 天气初始化（和风 weather.js：各村差异化 + 定时刷新 + 降雨调度） ==========
+// 注意：必须在 VILLAGE_ORDER 定义之后调用（weatherInit 用 VILLAGE_ORDER 作为村顺序）
+weatherInit();
 </script>
 
 <!-- ===== 系统管理面板（仅管理员） ===== -->

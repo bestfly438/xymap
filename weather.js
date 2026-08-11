@@ -1,0 +1,287 @@
+/**
+ * 天气模块 v2（和风天气，经云函数 /api/weather 转发）
+ * ============================================================
+ * 功能：
+ *   1. 各村差异化天气（按村坐标逐村调用，实时+3天预报+预警）
+ *   2. 日常定时刷新：8/10/12/15/18/20 点各刷一次（页面打开先拉一次）
+ *   3. 降雨检测：任一村有雨（实况含雨 / 今日预报有雨 / 降雨类预警）→ 标记降雨状态
+ *   4. 管理员降雨调度：检测到降雨后，管理员可按 10/15/20 分钟定时刷新某村
+ * 说明：key 存在云函数环境变量，前端只带会话调用，key 不落地。
+ */
+var WEATHER = {
+  cache: {},            // 村名 → {now, daily, warnings, rain, rainNote, updateTime}
+  order: [],            // 村顺序（全名）
+  refreshHours: [8, 10, 12, 15, 18, 20],  // 日常定时刷新整点
+  lastRefreshed: {},    // 'YYYY-MM-DD hh' → true（防同小时重复刷）
+  schedule: null,       // 管理员调度：{village, intervalMin, timer}
+  loaded: false,
+};
+
+// 村名映射：看板全名 → 坐标表短名
+var WX_FULL2SHORT = { '常家坪村': '常坪村', '杨家河坝村': '河坝村' };
+function wxShort(vname) { return WX_FULL2SHORT[vname] || vname; }
+function wxCenter(vname) {
+  var s = wxShort(vname);
+  var c = (typeof VILLAGE_CENTERS !== 'undefined') ? VILLAGE_CENTERS[s] : null;
+  return c;
+}
+
+// 调用云函数天气接口（带会话，key 在服务端）
+function wxApi(lng, lat, type, cb) {
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  if (!key || !device) { cb(null, '未登录或会话失效'); return; }
+  fetch(FEISHU_CONFIG.apiBase + '/api/weather', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-xyc-key': key,
+      'x-xyc-device': device
+    },
+    body: JSON.stringify({ lng: lng, lat: lat, type: type || 'all' })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d && d.code === 401) { try { sessionStorage.clear(); } catch(e) {} window.location.replace('index.html'); return; }
+    if (d && d.code === 0) cb(d.data, null);
+    else cb(null, (d && d.msg) || '天气获取失败');
+  })
+  .catch(function(e) { cb(null, '网络错误: ' + e.message); });
+}
+
+// 天气图标映射（和风 text → emoji）
+var WX_ICON = {
+  '晴': '&#x2600;', '多云': '&#x26C5;', '晴间多云': '&#x26C5;', '阴': '&#x2601;',
+  '雾': '&#x1F32B;', '霾': '&#x1F32B;', '浮尘': '&#x1F32B;', '扬沙': '&#x1F32B;', '沙尘暴': '&#x1F32B;',
+  '小雨': '&#x1F327;', '中雨': '&#x1F327;', '大雨': '&#x1F327;', '暴雨': '&#x1F327;',
+  '阵雨': '&#x1F327;', '雷阵雨': '&#x26A1;', '冻雨': '&#x1F327;',
+  '小雪': '&#x1F328;', '中雪': '&#x1F328;', '大雪': '&#x1F328;', '阵雪': '&#x1F328;',
+  '雨夹雪': '&#x1F327;', '冰雹': '&#x1F327;',
+};
+function wxIcon(text) {
+  var t = text || '';
+  for (var k in WX_ICON) { if (t.indexOf(k) >= 0) return WX_ICON[k]; }
+  return '&#x2600;';
+}
+
+// 刷新单个村天气并缓存
+function refreshVillageWeather(vname, cb) {
+  var c = wxCenter(vname);
+  if (!c) { if (cb) cb(null, '无坐标'); return; }
+  wxApi(c.lng, c.lat, 'all', function(data, err) {
+    if (err || !data) {
+      if (cb) cb(null, err || '失败');
+      return;
+    }
+    WEATHER.cache[vname] = data;
+    if (cb) cb(data, null);
+  });
+}
+
+// 并行刷新所有村
+function refreshAllVillages(cb) {
+  if (!WEATHER.order.length) {
+    if (typeof VILLAGE_ORDER !== 'undefined') WEATHER.order = VILLAGE_ORDER;
+    else WEATHER.order = Object.keys(VILLAGE_CENTERS || {});
+  }
+  var done = 0, total = WEATHER.order.length;
+  WEATHER.order.forEach(function(v) {
+    refreshVillageWeather(v, function() {
+      done++;
+      if (done >= total) { WEATHER.loaded = true; renderAllWeather(); if (cb) cb(); }
+    });
+  });
+}
+
+// 顶栏徽章：显示全镇代表天气（任一村，有雨时强调）
+function renderTopBadge() {
+  var el = document.getElementById('weatherBadge');
+  if (!el) return;
+  var first = WEATHER.order[0];
+  var d = first ? WEATHER.cache[first] : null;
+  var hasRain = false, rainV = 0, note = '';
+  WEATHER.order.forEach(function(v) {
+    var x = WEATHER.cache[v];
+    if (x && x.rain) { hasRain = true; rainV++; if (!note) note = x.rainNote; }
+  });
+  if (!d) {
+    el.innerHTML = '<span class="wt">&#x2600;</span><span>新塬镇</span><span class="wtemp">--°C</span>' +
+      '<span style="color:var(--text-muted);font-size:12px;">加载中</span>';
+    return;
+  }
+  var now = d.now || {};
+  var icon = hasRain ? '&#x1F327;' : wxIcon(now.text);
+  var temp = now.temp ? Math.round(now.temp) + '°C' : '--°C';
+  var desc = hasRain ? (rainV + '个村降雨' + (note ? '（' + note + '）' : '')) : ((now.text || '') + ' · 更新 ' + (d.updateTime ? d.updateTime.slice(11, 16) : ''));
+  el.innerHTML = '<span class="wt">' + icon + '</span><span>新塬镇</span>' +
+    '<span class="wtemp">' + temp + '</span>' +
+    '<span style="color:' + (hasRain ? '#f59e0b' : 'var(--text-muted)') + ';font-size:12px;">' + desc + '</span>';
+}
+
+// 各村天气卡片
+function renderVillageWeather() {
+  var list = document.getElementById('rainList');
+  if (!list) return;
+  list.innerHTML = '';
+  if (!WEATHER.order.length) {
+    list.innerHTML = '<div style="color:var(--text-muted);grid-column:1/-1;text-align:center;padding:20px;">天气加载中...</div>';
+    return;
+  }
+  WEATHER.order.forEach(function(v) {
+    var d = WEATHER.cache[v];
+    var div = document.createElement('div');
+    if (!d) {
+      div.className = 'rc-item';
+      div.innerHTML = '<span class="rc-name">' + v + '</span><span class="rc-value" style="color:var(--text-muted)">--</span>';
+      list.appendChild(div);
+      return;
+    }
+    var now = d.now || {};
+    var icon = d.rain ? '&#x1F327;' : wxIcon(now.text);
+    var temp = now.temp ? Math.round(now.temp) + '°' : '--°';
+    var txt = d.rain ? (d.rainNote || '降雨') : (now.text || '');
+    div.className = 'rc-item' + (d.rain ? ' rain' : '');
+    div.innerHTML = '<span class="rc-name">' + v + '</span>' +
+      '<span class="rc-value"><span style="font-size:15px;">' + icon + '</span> ' + txt + ' ' + temp + '</span>';
+    list.appendChild(div);
+  });
+}
+
+// 预警横幅 + 预警列表（来自和风实时预警）
+function renderWarnings() {
+  var any = false;
+  var allW = [];
+  WEATHER.order.forEach(function(v) {
+    var d = WEATHER.cache[v];
+    if (d && d.warnings && d.warnings.length) {
+      d.warnings.forEach(function(w) { allW.push({ v: v, w: w }); });
+    }
+  });
+  var banner = document.getElementById('alertBanner');
+  if (banner) {
+    if (allW.length) {
+      banner.style.display = 'flex';
+      banner.className = 'alert-banner danger';
+      document.getElementById('alertTitle').textContent = '气象预警';
+      document.getElementById('alertDesc').textContent = allW.map(function(x) {
+        return x.v + '：' + (x.w.headline || x.w.name);
+      }).slice(0, 3).join('；');
+      any = true;
+    } else {
+      banner.style.display = 'none';
+    }
+  }
+  // 预警列表
+  var el = document.getElementById('warnList');
+  if (el) {
+    if (!allW.length) {
+      el.innerHTML = '<div class="warn-ok">&#x2705; 当前无有效气象预警</div>';
+    } else {
+      var html = '';
+      allW.forEach(function(x) {
+        var color = WARN_LEVEL_COLORS[x.w.color === 'red' ? '红色' : (x.w.color === 'orange' ? '橙色' : (x.w.color === 'yellow' ? '黄色' : (x.w.color === 'blue' ? '蓝色' : '黄色')))] || '#f59e0b';
+        html += '<div class="warn-item" style="--warn-color:' + color + '">' +
+          '<span class="warn-level" style="background:' + color + '">' + (x.w.color || '黄') + '</span>' +
+          '<span class="warn-title">' + x.v + ' · ' + (x.w.headline || x.w.name) + '</span>' +
+          '</div>';
+      });
+      el.innerHTML = html;
+    }
+  }
+  if (any) any = false;
+}
+
+// 一键渲染全部天气 UI
+function renderAllWeather() {
+  renderTopBadge();
+  renderVillageWeather();
+  renderWarnings();
+  updateSchedulePanel();
+  document.getElementById('warnScope') && (document.getElementById('warnScope').textContent = '新塬镇（和风天气）');
+  document.getElementById('warnUpdateTime') && (document.getElementById('warnUpdateTime').textContent = new Date().toLocaleString('zh-CN', { hour12: false }));
+}
+
+// ========== 日常定时刷新（8/10/12/15/18/20 点） ==========
+function weatherTick() {
+  var now = new Date();
+  var h = now.getHours();
+  var key = now.toLocaleDateString('sv') + ' ' + h;
+  if (WEATHER.refreshHours.indexOf(h) >= 0 && !WEATHER.lastRefreshed[key]) {
+    WEATHER.lastRefreshed[key] = true;
+    refreshAllVillages();
+  }
+}
+
+// ========== 管理员降雨调度 ==========
+function isAdminUser() {
+  return sessionStorage.getItem('xyc_admin') === '1' || sessionStorage.getItem('xyc_role') === '管理员';
+}
+function anyRain() {
+  for (var v in WEATHER.cache) { if (WEATHER.cache[v].rain) return true; }
+  return false;
+}
+function updateSchedulePanel() {
+  var wrap = document.getElementById('wxScheduleWrap');
+  if (!wrap) return;
+  if (!isAdminUser()) { wrap.style.display = 'none'; return; }
+  if (anyRain() || WEATHER.schedule) { wrap.style.display = 'block'; }
+  else { wrap.style.display = 'none'; return; }
+  // 下拉村列表（只初始化一次，选项固定为全部村）
+  var sel = document.getElementById('wxSchedVillage');
+  var firstInit = sel && !sel.options.length;
+  if (firstInit) {
+    WEATHER.order.forEach(function(v) {
+      var o = document.createElement('option');
+      o.value = v; o.textContent = v;
+      sel.appendChild(o);
+    });
+  }
+  // 默认选中：调度中的村 > 第一个降雨村 > 第一个村（首次初始化时或未选过时）
+  if (sel && (firstInit || !sel.value)) {
+    if (WEATHER.schedule) sel.value = WEATHER.schedule.village;
+    else {
+      var rainV = WEATHER.order.filter(function(v) { return WEATHER.cache[v] && WEATHER.cache[v].rain; });
+      sel.value = rainV.length ? rainV[0] : (WEATHER.order[0] || '');
+    }
+  }
+  var st = document.getElementById('wxSchedStatus');
+  if (st) {
+    if (WEATHER.schedule) st.textContent = '调度中：' + WEATHER.schedule.village + ' 每 ' + WEATHER.schedule.intervalMin + ' 分钟刷新一次';
+    else st.textContent = '检测到降雨，可选择村庄设置定时刷新';
+  }
+}
+function wxStartSchedule() {
+  var village = document.getElementById('wxSchedVillage').value;
+  var mins = parseInt(document.querySelector('input[name=wxSchedMin]:checked').value, 10);
+  if (WEATHER.schedule) { clearInterval(WEATHER.schedule.timer); WEATHER.schedule = null; }
+  // 立即刷一次，再按间隔刷
+  refreshVillageWeather(village, renderAllWeather);
+  var timer = setInterval(function() {
+    refreshVillageWeather(village, renderAllWeather);
+  }, mins * 60 * 1000);
+  WEATHER.schedule = { village: village, intervalMin: mins, timer: timer };
+  updateSchedulePanel();
+}
+function wxStopSchedule() {
+  if (WEATHER.schedule) { clearInterval(WEATHER.schedule.timer); WEATHER.schedule = null; }
+  updateSchedulePanel();
+}
+
+// 调度间隔单选高亮（label.on）
+document.addEventListener('change', function(e) {
+  if (e.target && e.target.name === 'wxSchedMin') {
+    document.querySelectorAll('input[name=wxSchedMin]').forEach(function(rb) {
+      if (rb.parentElement) rb.parentElement.classList.toggle('on', rb.checked);
+    });
+  }
+});
+
+// ========== 初始化 ==========
+var _wxTickTimer = null;
+function weatherInit() {
+  if (typeof VILLAGE_ORDER !== 'undefined') WEATHER.order = VILLAGE_ORDER.slice();
+  else if (typeof VILLAGE_CENTERS !== 'undefined') WEATHER.order = Object.keys(VILLAGE_CENTERS);
+  // 立即拉一次，之后到点自动刷
+  refreshAllVillages();
+  if (!_wxTickTimer) _wxTickTimer = setInterval(weatherTick, 60 * 1000); // 每分钟检查是否到刷新整点
+}
