@@ -13,7 +13,7 @@ var WEATHER = {
   order: [],            // 村顺序（全名）
   refreshHours: [8, 10, 12, 15, 18, 20],  // 日常定时刷新整点
   lastRefreshed: {},    // 'YYYY-MM-DD hh' → true（防同小时重复刷）
-  schedule: null,       // 管理员调度：{village, intervalMin, timer}
+  schedule: null,       // 管理员调度：{villages:[], intervalMin, durHours, endTime, timer}
   loaded: false,
 };
 
@@ -212,7 +212,7 @@ function weatherTick() {
   }
 }
 
-// ========== 管理员降雨调度 ==========
+// ========== 管理员降雨调度（仅管理员；多村选择 + 间隔 + 时长到时自动停止） ==========
 function isAdminUser() {
   return sessionStorage.getItem('xyc_admin') === '1' || sessionStorage.getItem('xyc_role') === '管理员';
 }
@@ -220,57 +220,106 @@ function anyRain() {
   for (var v in WEATHER.cache) { if (WEATHER.cache[v].rain) return true; }
   return false;
 }
+// 渲染村庄多选 checkbox（只初始化一次，选项固定为全部村）
+function buildVillageCheckboxes() {
+  var wrap = document.getElementById('wxSchedVills');
+  if (!wrap) return;
+  if (wrap.dataset.built) return;
+  wrap.dataset.built = '1';
+  WEATHER.order.forEach(function(v) {
+    var label = document.createElement('label');
+    var cb = document.createElement('input');
+    cb.type = 'checkbox';
+    cb.value = v;
+    cb.name = 'wxSchedVill';
+    cb.checked = true;   // 默认全选
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(v));
+    wrap.appendChild(label);
+  });
+}
+function selectedScheduleVillages() {
+  var out = [];
+  document.querySelectorAll('#wxSchedVills input[name=wxSchedVill]:checked').forEach(function(cb) {
+    out.push(cb.value);
+  });
+  return out;
+}
+// 批量刷新指定村集合，全部完成后统一渲染一次
+function refreshVillagesOnce(villages) {
+  if (!villages.length) return;
+  var done = 0;
+  villages.forEach(function(v) {
+    refreshVillageWeather(v, function() {
+      if (++done >= villages.length) renderAllWeather();
+    });
+  });
+}
 function updateSchedulePanel() {
   var wrap = document.getElementById('wxScheduleWrap');
   if (!wrap) return;
   if (!isAdminUser()) { wrap.style.display = 'none'; return; }
   if (anyRain() || WEATHER.schedule) { wrap.style.display = 'block'; }
   else { wrap.style.display = 'none'; return; }
-  // 下拉村列表（只初始化一次，选项固定为全部村）
-  var sel = document.getElementById('wxSchedVillage');
-  var firstInit = sel && !sel.options.length;
-  if (firstInit) {
-    WEATHER.order.forEach(function(v) {
-      var o = document.createElement('option');
-      o.value = v; o.textContent = v;
-      sel.appendChild(o);
-    });
-  }
-  // 默认选中：调度中的村 > 第一个降雨村 > 第一个村（首次初始化时或未选过时）
-  if (sel && (firstInit || !sel.value)) {
-    if (WEATHER.schedule) sel.value = WEATHER.schedule.village;
-    else {
-      var rainV = WEATHER.order.filter(function(v) { return WEATHER.cache[v] && WEATHER.cache[v].rain; });
-      sel.value = rainV.length ? rainV[0] : (WEATHER.order[0] || '');
-    }
-  }
+  buildVillageCheckboxes();
+  // 调度时长/间隔与调度中状态保持
   var st = document.getElementById('wxSchedStatus');
   if (st) {
-    if (WEATHER.schedule) st.textContent = '调度中：' + WEATHER.schedule.village + ' 每 ' + WEATHER.schedule.intervalMin + ' 分钟刷新一次';
-    else st.textContent = '检测到降雨，可选择村庄设置定时刷新';
+    if (WEATHER.schedule) {
+      var remain = Math.max(0, Math.ceil((WEATHER.schedule.endTime - Date.now()) / 60000));
+      var vtext = WEATHER.schedule.villages.length === WEATHER.order.length ? '全镇' + WEATHER.order.length + '村' : '已选' + WEATHER.schedule.villages.length + '村';
+      st.textContent = '调度中：' + vtext + '，每 ' + WEATHER.schedule.intervalMin + ' 分钟刷新一次，剩余约 ' + remain + ' 分钟自动停止';
+    } else {
+      st.textContent = '检测到降雨，可多选村庄设置定时刷新（到时自动停止）';
+    }
   }
 }
 function wxStartSchedule() {
-  var village = document.getElementById('wxSchedVillage').value;
+  var villages = selectedScheduleVillages();
+  if (!villages.length) { alert('请至少选择一个村庄'); return; }
   var mins = parseInt(document.querySelector('input[name=wxSchedMin]:checked').value, 10);
-  if (WEATHER.schedule) { clearInterval(WEATHER.schedule.timer); WEATHER.schedule = null; }
-  // 立即刷一次，再按间隔刷
-  refreshVillageWeather(village, renderAllWeather);
+  var dur = parseInt(document.querySelector('input[name=wxSchedDur]:checked').value, 10);
+  if (WEATHER.schedule) {
+    clearInterval(WEATHER.schedule.timer);
+    clearTimeout(WEATHER.schedule.stopTimer);
+    WEATHER.schedule = null;
+  }
+  // 立即刷一次，再按间隔刷；时长结束自动停止
+  refreshVillagesOnce(villages);
   var timer = setInterval(function() {
-    refreshVillageWeather(village, renderAllWeather);
+    refreshVillagesOnce(villages);
   }, mins * 60 * 1000);
-  WEATHER.schedule = { village: village, intervalMin: mins, timer: timer };
+  var endTime = Date.now() + dur * 60 * 60 * 1000;
+  var stopTimer = setTimeout(function() {
+    wxStopSchedule();
+  }, dur * 60 * 60 * 1000);
+  WEATHER.schedule = { villages: villages, intervalMin: mins, durHours: dur, endTime: endTime, timer: timer, stopTimer: stopTimer };
   updateSchedulePanel();
 }
 function wxStopSchedule() {
-  if (WEATHER.schedule) { clearInterval(WEATHER.schedule.timer); WEATHER.schedule = null; }
+  if (WEATHER.schedule) {
+    clearInterval(WEATHER.schedule.timer);
+    clearTimeout(WEATHER.schedule.stopTimer);
+    WEATHER.schedule = null;
+  }
   updateSchedulePanel();
 }
+// 单次刷新全部村（仅管理员可见，按钮在调度面板内）
+function wxRefreshAllNow() {
+  var btn = document.getElementById('wxRefreshAllNow');
+  refreshAllVillages(function() {
+    if (btn) {
+      var old = btn.innerHTML;
+      btn.innerHTML = '&#x2705; 已刷新';
+      setTimeout(function() { btn.innerHTML = old; }, 1500);
+    }
+  });
+}
 
-// 调度间隔单选高亮（label.on）
+// 调度间隔/时长单选高亮（label.on）
 document.addEventListener('change', function(e) {
-  if (e.target && e.target.name === 'wxSchedMin') {
-    document.querySelectorAll('input[name=wxSchedMin]').forEach(function(rb) {
+  if (e.target && (e.target.name === 'wxSchedMin' || e.target.name === 'wxSchedDur')) {
+    document.querySelectorAll('input[name=' + e.target.name + ']').forEach(function(rb) {
       if (rb.parentElement) rb.parentElement.classList.toggle('on', rb.checked);
     });
   }
