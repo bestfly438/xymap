@@ -211,8 +211,8 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
     </div>
   </div>
   <div class="nav-links">
-    <a href="map.html?v=v20260810-18" class="back-link">&#x1F5FA; 返回地图</a>
-    <a href="dashboard.html?v=v20260810-18" class="back-link">&#x2190; 返回看板</a>
+    <a href="map.html?v=v20260810-19" class="back-link">&#x1F5FA; 返回地图</a>
+    <a href="dashboard.html?v=v20260810-19" class="back-link">&#x2190; 返回看板</a>
   </div>
 </div>
 
@@ -241,7 +241,7 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   <button id="bb-sheet" onclick="toggleSheet()"><span class="bb-ico">&#x2699;</span>设置</button>
   <button id="bb-legend" onclick="toggleLegend()"><span class="bb-ico">&#x1F4D0;</span>图例</button>
   <button id="bb-list" onclick="toggleList()"><span class="bb-ico">&#x1F4CB;</span>列表</button>
-  <a class="bb-link" href="map.html?v=v20260810-18" title="返回地图">&#x1F5FA;<span>返回地图</span></a>
+  <a class="bb-link" href="map.html?v=v20260810-19" title="返回地图">&#x1F5FA;<span>返回地图</span></a>
 </div>
 
 <!-- 移动端设置弹出面板 -->
@@ -250,12 +250,12 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   <div id="sheet-body"></div>
 </div>
 
-<script src="feishu_config.js?v=v20260810-18"></script>
-<script src="leaflet/leaflet.js?v=v20260810-18"></script>
-<script src="js_data/village_centers.js?v=v20260810-18"></script>
-<script src="js_data/village_areas.js?v=v20260810-18"></script>
-<script src="js_data/rivers_town.js?v=v20260810-18"></script>
-<script src="js_data/rain_stations.js?v=v20260810-18"></script>
+<script src="feishu_config.js?v=v20260810-19"></script>
+<script src="leaflet/leaflet.js?v=v20260810-19"></script>
+<script src="js_data/village_centers.js?v=v20260810-19"></script>
+<script src="js_data/village_areas.js?v=v20260810-19"></script>
+<script src="js_data/rivers_town.js?v=v20260810-19"></script>
+<script src="js_data/rain_stations.js?v=v20260810-19"></script>
 <script>
 /* ================= 按需加载（首屏只加载必要数据，其余切 Tab 时再下载） ================= */
 var FLOOD_ZONES = null, VULN_FLOOD = null, VULN_MUD = null, FLOOD_DEPRESSION = null, DEPRESSION_META = null;
@@ -279,7 +279,7 @@ function _loadScript(src, cb){
 }
 function _loadSeq(arr, i, cb){
   if (i >= arr.length) { cb(); return; }
-  _loadScript(arr[i] + '?v=v20260810-18', function(){ _loadSeq(arr, i + 1, cb); });
+  _loadScript(arr[i] + '?v=v20260810-19', function(){ _loadSeq(arr, i + 1, cb); });
 }
 // 切换 Tab 前确保该 Tab 所需数据已加载
 function ensureTabData(tab, cb){
@@ -630,8 +630,25 @@ function renderList(){
       html += '<div class="zl-row" data-lng="' + v.lng + '" data-lat="' + v.lat + '"><b>' + v.name + '</b>（村中心位于洼地内，' + PRAIN + 'mm 下最深 ' + (R ? R.x : v.depth) + 'm）</div>';
     });
     html += '<div class="zl-row" style="color:#64748b">注：经坐标复核，全镇隐患点多位于坡面/崖边，不处于低洼蓄水区；低洼积水风险主要集中在村址与农田低地处。</div>';
+  } else if (TAB === 'grade') {
+    // 风险分级：隐患点列表（支持村庄筛选，高风险在前、同等级按评分降序）
+    var gl = PTS.slice();
+    if (VILLAGE_FILTER) gl = gl.filter(function(x){ return x.full === VILLAGE_FILTER; });
+    var gOrder = {'高': 0, '中': 1, '低': 2};
+    gl.sort(function(a, b){ return (gOrder[a.grade] !== undefined ? gOrder[a.grade] : 3) - (gOrder[b.grade] !== undefined ? gOrder[b.grade] : 3) || (b.score || 0) - (a.score || 0); });
+    html = '<div class="lp-title">\uD83D\uDD34 风险分级 · 隐患点（' + gl.length + ' 处' + (VILLAGE_FILTER ? ' · ' + VILLAGE_FILTER : '') + '，点击定位）</div>';
+    if (!gl.length) html += '<div class="zl-row">该条件下暂无隐患点</div>';
+    gl.forEach(function(p){
+      var c = GRADE_COLORS[p.grade] || '#64748b';
+      html += '<div class="zl-row" data-lng="' + p.lng + '" data-lat="' + p.lat + '">'
+        + '<b>' + p.name + '</b> · ' + p.full
+        + '<span class="z-tag" style="background:' + c + '">' + p.grade + '风险</span>'
+        + '<div>综合评分 ' + p.score + ' 分' + (p.evac ? ' · 避险点：' + p.evac : '') + '</div>'
+        + (p.phone ? '<div style="color:#64748b;font-size:11px;">\uD83D\uDCDE ' + p.phone + '</div>' : '')
+        + '</div>';
+    });
   } else {
-    html = '<div class="lp-title">' + (TAB==='grade' ? '\uD83D\uDD34 风险分级' : '\uD83D\uDCD0 易发性叠加') + '</div>'
+    html = '<div class="lp-title">\uD83D\uDCD0 易发性叠加</div>'
       + '<div class="zl-row">本视图暂无列表，点击地图上的隐患点查看详情。</div>';
   }
   lp.innerHTML = html;

@@ -95,11 +95,11 @@ function adminRequest(sub, payload, callback) {
 // ========== 敏感数据取数（数据私有化：登录后从云函数 /api/data 读取，注入为全局变量） ==========
 var SECURE_DATA_LOADED = {};   // 页内防重复加载
 // 会话级内容缓存（sessionStorage）：看板/地图/分析页整页跳转后不再重复请求云函数，秒开
+// 多文件并行请求（云函数可并发），单文件失败重试 1 次后跳过，避免单文件拖慢/卡死整页
 function loadSecureData(files, callback) {
   var key = sessionStorage.getItem('xyc_key') || '';
   var device = sessionStorage.getItem('xyc_device') || '';
   if (!key || !device) { window.location.replace('index.html'); return; }
-  var idx = 0, retried = {};
   // 注入并执行取到的 JS 内容，返回是否成功
   function inject(code, f) {
     try {
@@ -111,15 +111,7 @@ function loadSecureData(files, callback) {
       return true;
     } catch(e) { return false; }
   }
-  function next() {
-    if (idx >= files.length) { if (callback) callback(); return; }
-    var f = files[idx++];
-    if (SECURE_DATA_LOADED[f]) { next(); return; }
-    // 1) 命中会话缓存：直接注入，不再请求云函数
-    var cached = null;
-    try { cached = sessionStorage.getItem('xyc_data_' + f); } catch(e) {}
-    if (cached && inject(cached, f)) { next(); return; }
-    // 2) 请求云函数取数
+  function loadOne(f, attempt, finish) {
     fetch(FEISHU_CONFIG.apiBase + '/api/data', {
       method: 'POST',
       headers: {
@@ -132,20 +124,30 @@ function loadSecureData(files, callback) {
     .then(function(r) { return r.json(); })
     .then(function(d) {
       if (d && d.code === 0 && d.data) {
-        if (inject(d.data, f)) { next(); return; }
-        if (inject(d.data, f)) { next(); return; }   // 注入失败重试一次
-        next();                                       // 仍失败则跳过该文件，不阻塞整页
-      } else if (d && d.code === 401) {
+        if (inject(d.data, f) || inject(d.data, f)) { finish(); return; }  // 注入失败重试一次
+        finish(); return;                                                    // 仍失败跳过，不阻塞
+      }
+      if (d && d.code === 401) {
         try { sessionStorage.clear(); } catch(e) {}
         window.location.replace('index.html');
-      } else {
-        // 服务异常/无权限：重试一次，仍失败则跳过继续（避免单文件失败卡死整页）
-        if (!retried[f]) { retried[f] = 1; idx--; next(); } else { next(); }
+        return;
       }
+      if (attempt < 1) { loadOne(f, attempt + 1, finish); return; }          // 服务异常重试一次
+      finish();
     })
     .catch(function() {
-      if (!retried[f]) { retried[f] = 1; idx--; next(); } else { next(); }
+      if (attempt < 1) { loadOne(f, attempt + 1, finish); return; }
+      finish();
     });
   }
-  next();
+  var done = 0;
+  function finish() { if (++done >= files.length && callback) callback(); }
+  files.forEach(function(f) {
+    if (SECURE_DATA_LOADED[f]) { finish(); return; }
+    // 命中会话缓存：直接注入，不再请求云函数
+    var cached = null;
+    try { cached = sessionStorage.getItem('xyc_data_' + f); } catch(e) {}
+    if (cached && inject(cached, f)) { finish(); return; }
+    loadOne(f, 0, finish);
+  });
 }
