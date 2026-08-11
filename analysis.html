@@ -250,13 +250,11 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   <div id="sheet-body"></div>
 </div>
 
-<script src="leaflet/leaflet.js?v=v20260810-16"></script>
-<script src="js_data/risk_grading.js?v=v20260810-16"></script>
-<script src="js_data/analysis_meta.js?v=v20260810-16"></script>
-<script src="js_data/village_centers.js?v=v20260810-16"></script>
-<script src="js_data/village_areas.js?v=v20260810-16"></script>
-<script src="js_data/rivers_town.js?v=v20260810-16"></script>
-<script src="js_data/rain_stations.js?v=v20260810-16"></script>
+<script src="leaflet/leaflet.js?v=v20260810-17"></script>
+<script src="js_data/village_centers.js?v=v20260810-17"></script>
+<script src="js_data/village_areas.js?v=v20260810-17"></script>
+<script src="js_data/rivers_town.js?v=v20260810-17"></script>
+<script src="js_data/rain_stations.js?v=v20260810-17"></script>
 <script>
 /* ================= 按需加载（首屏只加载必要数据，其余切 Tab 时再下载） ================= */
 var FLOOD_ZONES = null, VULN_FLOOD = null, VULN_MUD = null, FLOOD_DEPRESSION = null, DEPRESSION_META = null;
@@ -280,7 +278,7 @@ function _loadScript(src, cb){
 }
 function _loadSeq(arr, i, cb){
   if (i >= arr.length) { cb(); return; }
-  _loadScript(arr[i] + '?v=v20260810-16', function(){ _loadSeq(arr, i + 1, cb); });
+  _loadScript(arr[i] + '?v=v20260810-17', function(){ _loadSeq(arr, i + 1, cb); });
 }
 // 切换 Tab 前确保该 Tab 所需数据已加载
 function ensureTabData(tab, cb){
@@ -301,36 +299,42 @@ var TAB = 'rain';
 var MAP_CENTER = [36.152, 105.39];
 var MAP_BOUNDS = [[35.88, 104.9], [36.42, 105.9]];
 
-var FULL2SHORT = {'常家坪村': '常坪村', '杨家河坝村': '河坝村'};
-var SHORT2FULL = {'常坪村': '常家坪村', '河坝村': '杨家河坝村'};
-var VILLAGES = ANALYSIS_META.villages;                     // 10村响应汇总
-var VILLAGE_MAP = {}; VILLAGES.forEach(function(v){ VILLAGE_MAP[v.name] = v; });
-var CENTERS = VILLAGE_CENTERS;                              // 短名→坐标
-function centerOf(full){ var s = FULL2SHORT[full] || full; return CENTERS[s] || null; }
-
-var PTS = RISK_GRADING.features.map(function(f){
-  var p = f.properties, c = f.geometry.coordinates;
-  return {name:p.name, cz:p.cz, full:(SHORT2FULL[p.cz]||p.cz), lng:c[0], lat:c[1],
-          score:p.score, grade:p.grade, desc:p.desc, phone:p.phone, resp:p.resp, evac:p.evac,
-          flood:p.flood_grade||0, mud:p.mud_grade||0, z50:p.z50||0, z100:p.z100||0, dep:null};
-});
-var STATIONS = (DATA_RAIN_STATIONS && DATA_RAIN_STATIONS.features) || [];
-
-// 融合 DEM 积水洼地落区（dep: 洼地平均积水深度 / 0 不在洼地）
-var DEPPTS = (DEPRESSION_META && DEPRESSION_META.points) || [];
-var DEP_MAP = {};
-DEPPTS.forEach(function(d){ DEP_MAP[d.name + '|' + d.cz] = d; });
-PTS.forEach(function(p){
-  var d = DEP_MAP[p.name + '|' + p.cz] || DEP_MAP[p.name + '|' + SHORT2FULL[p.cz]];
-  if (d) { p.dep = d.depth || 0; }
-});
-var DEP_VILLAGES = (DEPRESSION_META && DEPRESSION_META.villages) || [];
-var DEP_STATS = (DEPRESSION_META && DEPRESSION_META.stats) || {};
-var POND_DEPRESSION = (typeof FLOOD_DEPRESSION !== 'undefined') ? FLOOD_DEPRESSION : null;
-var VILLAGE_AREAS_FC = (typeof VILLAGE_AREAS !== 'undefined') ? VILLAGE_AREAS : null;
-var RIVERS_TOWN_FC = (typeof RIVERS_TOWN !== 'undefined') ? RIVERS_TOWN : null;
-var AREA_NAMES = {};
-if (VILLAGE_AREAS_FC) VILLAGE_AREAS_FC.features.forEach(function(f){ AREA_NAMES[f.properties.name] = 1; });
+var FULL2SHORT = null, SHORT2FULL = null;
+var VILLAGES = [], VILLAGE_MAP = {}, CENTERS = null;
+function centerOf(full){ if (!FULL2SHORT) return null; var s = FULL2SHORT[full] || full; return CENTERS ? CENTERS[s] : null; }
+var PTS = [], STATIONS = [];
+var DEPPTS = [], DEP_MAP = {}, DEP_VILLAGES = [], DEP_STATS = {}, POND_DEPRESSION = null;
+var VILLAGE_AREAS_FC = null, RIVERS_TOWN_FC = null, AREA_NAMES = {};
+// 敏感数据就绪后调用（risk_grading/analysis_meta 经 /api/data 登录取数注入为全局变量）
+function buildBaseData() {
+  FULL2SHORT = {'常家坪村': '常坪村', '杨家河坝村': '河坝村'};
+  SHORT2FULL = {'常坪村': '常家坪村', '河坝村': '杨家河坝村'};
+  VILLAGES = ANALYSIS_META.villages;
+  VILLAGE_MAP = {}; VILLAGES.forEach(function(v){ VILLAGE_MAP[v.name] = v; });
+  CENTERS = VILLAGE_CENTERS;
+  PTS = RISK_GRADING.features.map(function(f){
+    var p = f.properties, c = f.geometry.coordinates;
+    return {name:p.name, cz:p.cz, full:(SHORT2FULL[p.cz]||p.cz), lng:c[0], lat:c[1],
+            score:p.score, grade:p.grade, desc:p.desc, phone:p.phone, resp:p.resp, evac:p.evac,
+            flood:p.flood_grade||0, mud:p.mud_grade||0, z50:p.z50||0, z100:p.z100||0, dep:null};
+  });
+  STATIONS = (DATA_RAIN_STATIONS && DATA_RAIN_STATIONS.features) || [];
+  // 融合 DEM 积水洼地落区（dep: 洼地平均积水深度 / 0 不在洼地）
+  DEPPTS = (DEPRESSION_META && DEPRESSION_META.points) || [];
+  DEP_MAP = {};
+  DEPPTS.forEach(function(d){ DEP_MAP[d.name + '|' + d.cz] = d; });
+  PTS.forEach(function(p){
+    var d = DEP_MAP[p.name + '|' + p.cz] || DEP_MAP[p.name + '|' + SHORT2FULL[p.cz]];
+    if (d) { p.dep = d.depth || 0; }
+  });
+  DEP_VILLAGES = (DEPRESSION_META && DEPRESSION_META.villages) || [];
+  DEP_STATS = (DEPRESSION_META && DEPRESSION_META.stats) || {};
+  POND_DEPRESSION = (typeof FLOOD_DEPRESSION !== 'undefined') ? FLOOD_DEPRESSION : null;
+  VILLAGE_AREAS_FC = (typeof VILLAGE_AREAS !== 'undefined') ? VILLAGE_AREAS : null;
+  RIVERS_TOWN_FC = (typeof RIVERS_TOWN !== 'undefined') ? RIVERS_TOWN : null;
+  AREA_NAMES = {};
+  if (VILLAGE_AREAS_FC) VILLAGE_AREAS_FC.features.forEach(function(f){ AREA_NAMES[f.properties.name] = 1; });
+}
 
 var CLASS_COLORS = ['#00cc66', '#ffdd00', '#ff8800', '#ff1a1a'];  // 1低2较低3较高4高
 var GRADE_COLORS = {高: '#dc2626', 中: '#f97316', 低: '#16a34a'};
@@ -902,7 +906,13 @@ fetch('version.txt?t=' + Date.now(), { cache: 'no-store' })
     localStorage.setItem('xyy_version', v);
   }).catch(function(){});
 
-window.onload = initMap;
+window.onload = function() {
+  // 敏感数据（隐患点名册/村情汇总）登录后从云函数取数，就绪后再初始化地图
+  loadSecureData(['risk_grading.js', 'analysis_meta.js'], function() {
+    buildBaseData();
+    initMap();
+  });
+};
 </script>
 </body>
 </html>

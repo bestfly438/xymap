@@ -578,7 +578,7 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
     <h1>新塬镇应急避险指挥系统</h1>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="analysis.html?v=v20260810-16" class="back-link">&#x1F4CA; 专业分析</a>
+    <a href="analysis.html?v=v20260810-17" class="back-link">&#x1F4CA; 专业分析</a>
      <a href="dashboard.html" class="back-link">&#x2190; 返回看板</a>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
@@ -669,20 +669,13 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
   <span class="plb-close">&#x2715;</span>
 </div>
 
-<script src="leaflet/leaflet.js?v=v20260810-16" defer></script>
-<script src="keys.js?v=v20260810-16" defer></script>
-<script src="feishu_config.js?v=v20260810-16" defer></script>
-<script src="js_data/village_centers.js?v=v20260810-16" defer></script>
-<script src="js_data/village_info.js?v=v20260810-16" defer></script>
-<script src="js_data/hazard_points.js?v=v20260810-16" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260810-16" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260810-16" defer></script>
-<script src="js_data/evacuation_sites.js?v=v20260810-16" defer></script>
-<script src="js_data/backup_sites.js?v=v20260810-16" defer></script>
-<script src="js_data/rain_stations.js?v=v20260810-16" defer></script>
-<script src="js_data/threatened_areas.js?v=v20260810-16" defer></script>
-<script src="js_data/village_hazard_summary.js?v=v20260810-16" defer></script>
-<script src="js_data/village_plans.js?v=v20260810-16" defer></script>
+<script src="leaflet/leaflet.js?v=v20260810-17" defer></script>
+<script src="keys.js?v=v20260810-17" defer></script>
+<script src="feishu_config.js?v=v20260810-17" defer></script>
+<script src="js_data/village_centers.js?v=v20260810-17" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260810-17" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260810-17" defer></script>
+<script src="js_data/rain_stations.js?v=v20260810-17" defer></script>
 
 <script>
 // ========== 权限验证 ==========
@@ -2069,24 +2062,29 @@ document.addEventListener('click', function(e) {
 
 // ========== 启动 ==========
 window.onload = function() {
-  initMap();
-  // 从看板点击村庄卡片跳转：自动选中目标村（一次性），不弹左上角信息窗（避免手机端拥挤）
-  var target = sessionStorage.getItem('xyc_map_village');
-  if (target) {
-    sessionStorage.removeItem('xyc_map_village');
-    setTimeout(function() {
-      selectVillage(target, target, true);
-    }, 800);
-  } else {
-    // 村级账号：自动定位到本村，巡查记录直接归本村
-    var myVillage = sessionStorage.getItem('xyc_village');
-    var role = sessionStorage.getItem('xyc_role') || '';
-    if (myVillage && role === '村级') {
+  // 敏感数据（隐患点名册/村情/预案/避险点等）登录后从云函数取数，就绪后再初始化地图
+  loadSecureData(['hazard_points.js', 'village_info.js', 'village_plans.js',
+                  'village_hazard_summary.js', 'threatened_areas.js',
+                  'evacuation_sites.js', 'backup_sites.js'], function() {
+    initMap();
+    // 从看板点击村庄卡片跳转：自动选中目标村（一次性），不弹左上角信息窗（避免手机端拥挤）
+    var target = sessionStorage.getItem('xyc_map_village');
+    if (target) {
+      sessionStorage.removeItem('xyc_map_village');
       setTimeout(function() {
-        selectVillage(myVillage, myVillage, true);
+        selectVillage(target, target, true);
       }, 800);
+    } else {
+      // 村级账号：自动定位到本村，巡查记录直接归本村
+      var myVillage = sessionStorage.getItem('xyc_village');
+      var role = sessionStorage.getItem('xyc_role') || '';
+      if (myVillage && role === '村级') {
+        setTimeout(function() {
+          selectVillage(myVillage, myVillage, true);
+        }, 800);
+      }
     }
-  }
+  });
 };
 </script>
 </body>

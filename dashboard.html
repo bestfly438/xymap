@@ -451,7 +451,7 @@ body {
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
   <a href="map.html" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260810-16" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="analysis.html?v=v20260810-17" class="mm-item">&#x1F4CA; 专业分析</a>
   <a href="guide.html" class="mm-item">&#x1F4D6; 防汛应急指南</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
   <button class="mm-item" id="adminBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录）</button>
@@ -562,18 +562,12 @@ body {
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="keys.js"></script>
-<script src="feishu_config.js"></script>
-<script src="js_data/village_centers.js"></script>
-<script src="js_data/village_info.js"></script>
-<script src="js_data/village_plans.js"></script>
-<script src="js_data/hazard_points.js"></script>
-<script src="js_data/hazard_areas.js"></script>
-<script src="js_data/evacuation_sites.js"></script>
-<script src="js_data/backup_sites.js"></script>
-<script src="js_data/evacuation_routes.js"></script>
-<script src="js_data/threatened_areas.js"></script>
-<script src="js_data/rain_stations.js"></script>
+<script src="keys.js?v=v20260810-17"></script>
+<script src="feishu_config.js?v=v20260810-17"></script>
+<script src="js_data/village_centers.js?v=v20260810-17"></script>
+<script src="js_data/hazard_areas.js?v=v20260810-17"></script>
+<script src="js_data/evacuation_routes.js?v=v20260810-17"></script>
+<script src="js_data/rain_stations.js?v=v20260810-17"></script>
 
 <script>
 // 权限验证
@@ -748,6 +742,14 @@ loadWeather();
 loadWarnings();
 setInterval(loadWarnings, 5 * 60 * 1000); // 每5分钟自动刷新预警
 
+// ========== 敏感数据取数（数据私有化：隐患点名册/村情/预案等登录后从云函数读取） ==========
+loadSecureData(['village_info.js', 'village_plans.js', 'hazard_points.js',
+                'threatened_areas.js', 'evacuation_sites.js', 'backup_sites.js'], function() {
+  initDashboardStats();
+  refreshVillageGrid();
+  refreshContactLists();
+});
+
 // ========== 统计数据 ==========
 var VILLAGE_ORDER = ['上塬村', '东塬村', '刘家湾社区', '孟塬村', '常家坪村', '新塬村', '杨坪村', '杨家河坝村', '甘岔村', '老庄村'];
 
@@ -783,53 +785,49 @@ function getVillagePlanStats(vname) {
   return stats;
 }
 
-// 统计值
-var hazardCount = 0;          // 全镇隐患点数（一页纸数据）
-var householdCount = 0;       // 全镇切坡建房户数（一页纸数据）
-VILLAGE_ORDER.forEach(function(vname) {
-  var s = getVillagePlanStats(vname);
-  hazardCount += s.hazards;
-  householdCount += s.households;
-});
-var areaCount = (typeof DATA_THREATENED_AREAS !== 'undefined') ? DATA_THREATENED_AREAS.features.length : 0;
-var siteCount = (typeof DATA_EVACUATION_SITES !== 'undefined' ? DATA_EVACUATION_SITES.features.length : 0) +
-                (typeof DATA_BACKUP_SITES !== 'undefined' ? DATA_BACKUP_SITES.features.length : 0);
-var routeCount = (typeof DATA_EVACUATION_ROUTES !== 'undefined') ? DATA_EVACUATION_ROUTES.features.length : 0;
-
-// 计算受威胁人口
-var totalPopulation = 0;
-if (typeof VILLAGE_INFO !== 'undefined') {
+// 统计值（敏感数据就绪后调用：隐患点名册/村情/预案经 /api/data 登录取数）
+function initDashboardStats() {
+  var hazardCount = 0;          // 全镇隐患点数（一页纸数据）
+  var householdCount = 0;       // 全镇切坡建房户数（一页纸数据）
   VILLAGE_ORDER.forEach(function(vname) {
-    var info = VILLAGE_INFO[vname];
-    if (info && info.households) {
-      info.households.forEach(function(hh) {
-        var p = parseInt(hh.p);
-        if (!isNaN(p)) totalPopulation += p;
-      });
-    }
+    var s = getVillagePlanStats(vname);
+    hazardCount += s.hazards;
+    householdCount += s.households;
   });
-}
+  var areaCount = (typeof DATA_THREATENED_AREAS !== 'undefined') ? DATA_THREATENED_AREAS.features.length : 0;
+  var siteCount = (typeof DATA_EVACUATION_SITES !== 'undefined' ? DATA_EVACUATION_SITES.features.length : 0) +
+                  (typeof DATA_BACKUP_SITES !== 'undefined' ? DATA_BACKUP_SITES.features.length : 0);
+  var routeCount = (typeof DATA_EVACUATION_ROUTES !== 'undefined') ? DATA_EVACUATION_ROUTES.features.length : 0;
 
-document.getElementById('stat-hazards').textContent = hazardCount;
-document.getElementById('stat-hazards-sub').textContent = '切坡建房' + householdCount + '户 · 隐患点' + hazardCount + '处';
-document.getElementById('stat-areas').textContent = areaCount;
-document.getElementById('stat-shelters').textContent = siteCount;
-document.getElementById('stat-routes').textContent = routeCount;
-document.getElementById('stat-villages').textContent = VILLAGE_ORDER.length;
-document.getElementById('stat-population').textContent = totalPopulation || '--';
+  // 计算受威胁人口
+  var totalPopulation = 0;
+  if (typeof VILLAGE_INFO !== 'undefined') {
+    VILLAGE_ORDER.forEach(function(vname) {
+      var info = VILLAGE_INFO[vname];
+      if (info && info.households) {
+        info.households.forEach(function(hh) {
+          var p = parseInt(hh.p);
+          if (!isNaN(p)) totalPopulation += p;
+        });
+      }
+    });
+  }
+
+  document.getElementById('stat-hazards').textContent = hazardCount;
+  document.getElementById('stat-hazards-sub').textContent = '切坡建房' + householdCount + '户 · 隐患点' + hazardCount + '处';
+  document.getElementById('stat-areas').textContent = areaCount;
+  document.getElementById('stat-shelters').textContent = siteCount;
+  document.getElementById('stat-routes').textContent = routeCount;
+  document.getElementById('stat-villages').textContent = VILLAGE_ORDER.length;
+  document.getElementById('stat-population').textContent = totalPopulation || '--';
+}
 
 // ========== 村庄卡片 ==========
 var grid = document.getElementById('villageGrid');
 
-// 使用统一的渲染函数（支持 localStorage 优先）
-refreshVillageGrid();
-
 // ========== 联系人列表 ==========
 var leaderList = document.getElementById('leaderList');
 var townList = document.getElementById('townContactList');
-
-// 使用统一的渲染函数（支持 localStorage 优先）
-refreshContactLists();
 
 // ========== 各村天气 ==========
 var weatherData = null; // 全局存储天气数据

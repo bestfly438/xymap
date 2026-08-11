@@ -91,3 +91,43 @@ function adminRequest(sub, payload, callback) {
   })
   .catch(function(e) { callback(null, '网络错误: ' + e.message); });
 }
+
+// ========== 敏感数据取数（数据私有化：登录后从云函数 /api/data 读取，注入为全局变量） ==========
+var SECURE_DATA_LOADED = {};   // 防重复加载
+function loadSecureData(files, callback) {
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  if (!key || !device) { window.location.replace('index.html'); return; }
+  var idx = 0;
+  function next() {
+    if (idx >= files.length) { if (callback) callback(); return; }
+    var f = files[idx++];
+    if (SECURE_DATA_LOADED[f]) { next(); return; }
+    fetch(FEISHU_CONFIG.apiBase + '/api/data', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'x-xyc-key': key,
+        'x-xyc-device': device
+      },
+      body: JSON.stringify({ file: f })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(d) {
+      if (d && d.code === 0 && d.data) {
+        var s = document.createElement('script');
+        s.textContent = d.data;          // 注入执行，文件内的 var 声明成为全局变量
+        document.head.appendChild(s);
+        SECURE_DATA_LOADED[f] = true;
+        next();
+      } else if (d && d.code === 401) {
+        try { sessionStorage.clear(); } catch(e) {}
+        window.location.replace('index.html');
+      } else {
+        alert('数据加载失败' + (d && d.msg ? '：' + d.msg : '，请重试'));
+      }
+    })
+    .catch(function() { alert('网络错误，数据加载失败，请重试'); });
+  }
+  next();
+}
