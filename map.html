@@ -180,6 +180,9 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
 .popup-content .pop-badge.warn { background: rgba(255,152,0,0.2); color: #ffb74d; }
 .popup-content .pop-badge.info { background: rgba(33,150,243,0.2); color: #64b5f6; }
 .popup-content .pop-desc { margin-top: 8px; padding: 8px 10px; background: rgba(255,255,255,0.03); border-radius: 6px; color: #aaa; font-size: 12px; line-height: 1.7; border-left: 2px solid rgba(211,47,47,0.3); }
+.pop-photos { margin-top: 8px; }
+.pop-photos .pop-photo-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 6px; margin-top: 6px; cursor: zoom-in; display: block; }
+.pop-photos .ph-muted { color: #888; font-size: 12px; }
 
 /* ===== 状态栏 ===== */
 #status {
@@ -581,8 +584,8 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
     <h1>新塬镇应急避险指挥系统</h1>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="analysis.html?v=v20260811-05" class="back-link">&#x1F4CA; 专业分析</a>
-     <a href="dashboard.html?v=v20260811-05" class="back-link">&#x2190; 返回看板</a>
+    <a href="analysis.html?v=v20260811-06" class="back-link">&#x1F4CA; 专业分析</a>
+    <a href="dashboard.html?v=v20260811-06" class="back-link">&#x2190; 返回看板</a>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
       <span class="arrow">&#x25BC;</span>
@@ -672,13 +675,14 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
   <span class="plb-close">&#x2715;</span>
 </div>
 
-<script src="leaflet/leaflet.js?v=v20260811-05" defer></script>
-<script src="keys.js?v=v20260811-05" defer></script>
-<script src="feishu_config.js?v=v20260811-05" defer></script>
-<script src="js_data/village_centers.js?v=v20260811-05" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260811-05" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260811-05" defer></script>
-<script src="js_data/rain_stations.js?v=v20260811-05" defer></script>
+<script src="leaflet/leaflet.js?v=v20260811-06" defer></script>
+<script src="keys.js?v=v20260811-06" defer></script>
+<script src="feishu_config.js?v=v20260811-06" defer></script>
+<script src="photo.js?v=v20260811-06" defer></script>
+<script src="js_data/village_centers.js?v=v20260811-06" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260811-06" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260811-06" defer></script>
+<script src="js_data/rain_stations.js?v=v20260811-06" defer></script>
 
 <script>
 // ========== 权限验证 ==========
@@ -944,8 +948,25 @@ function loadHazardPoints() {
         html += '<div class="pop-desc">' + desc + '</div>';
       }
 
+      // 切坡建房照片（登录后拉取，点击可放大）
+      var popVillage = shpToFullName(p.CZ) || p.CZ || '';
+      var popOwner = p.HZXM || '';
+      if (popVillage && popOwner) {
+        html += '<div class="pop-photos" data-v="' + popVillage + '" data-o="' + popOwner + '"><span class="ph-muted">照片加载中...</span></div>';
+      }
+
       html += '</div>';
       layer.bindPopup(html, { maxWidth: 400, className: 'custom-popup' });
+      if (popVillage && popOwner) {
+        layer.on('popupopen', function() {
+          var el = layer.getPopup().getElement();
+          var holder = el.querySelector('.pop-photos');
+          if (holder && !holder.dataset.done) {
+            holder.dataset.done = '1';
+            photoFillPopup(holder, popVillage, popOwner);
+          }
+        });
+      }
     }
   });
   layers.hazards.addLayer(geojson);

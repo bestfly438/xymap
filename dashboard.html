@@ -494,6 +494,52 @@ body {
   .admin-body { padding: 10px 12px; }
   .admin-table th, .admin-table td { padding: 6px 8px; font-size: 11px; white-space: nowrap; }
 }
+
+/* ===== 切坡建房农户照片 ===== */
+.photo-card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+  border: 1px solid var(--border);
+}
+.photo-card .cc-header { font-size: 14px; font-weight: 700; margin-bottom: 14px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.photo-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.photo-toolbar select {
+  background: var(--bg-card); color: var(--text); border: 1px solid var(--border-light);
+  border-radius: 6px; padding: 7px 10px; font-size: 13px; max-width: 220px;
+}
+.photo-toolbar select:disabled { opacity: 0.6; }
+.photo-tip { font-size: 12px; color: #fbbf24; font-weight: 600; }
+.ph-hint { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
+.ph-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+.ph-slot { border: 1px dashed var(--border-light); border-radius: var(--radius-sm); padding: 12px; }
+.ph-slot-title { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+.ph-slot-body { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.ph-slot-img { width: 100%; }
+.ph-slot-img img { width: 100%; max-height: 260px; object-fit: cover; border-radius: 8px; cursor: zoom-in; }
+.ph-del { align-self: flex-start; }
+.ph-list-head { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; font-weight: 600; }
+.ph-list { display: flex; flex-direction: column; gap: 6px; max-height: 420px; overflow-y: auto; }
+.ph-list::-webkit-scrollbar { width: 4px; }
+.ph-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.ph-row {
+  display: flex; align-items: center; gap: 10px; padding: 8px 12px;
+  background: rgba(30,41,59,0.4); border-radius: 8px; font-size: 13px;
+}
+.ph-row-name { color: var(--text); font-weight: 600; min-width: 90px; }
+.ph-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; white-space: nowrap; }
+.ph-badge.none { background: rgba(100,116,139,0.2); color: var(--text-muted); }
+.ph-badge.part { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.ph-badge.full { background: rgba(34,197,94,0.15); color: #4ade80; }
+.ph-row-imgs { display: flex; gap: 6px; flex-wrap: wrap; }
+.ph-thumb {
+  width: 64px; height: 48px; overflow: hidden; border-radius: 6px;
+  background: rgba(15,23,42,0.5); display: inline-flex; align-items: center;
+  justify-content: center; font-size: 11px; color: var(--text-muted);
+}
+.ph-thumb img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
+.ph-muted { color: var(--text-muted); font-size: 12px; }
+@media (max-width: 640px) {
+  .ph-slots { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
@@ -516,9 +562,9 @@ body {
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button class="btn" id="adminBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-    <a href="analysis.html?v=v20260811-05" class="btn btn-primary">&#x1F4CA; 专业分析</a>
-    <a href="guide.html?v=v20260811-05" class="btn">&#x1F4D6; 防汛应急指南</a>
-    <a href="map.html?v=v20260811-05" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="analysis.html?v=v20260811-06" class="btn btn-primary">&#x1F4CA; 专业分析</a>
+    <a href="guide.html?v=v20260811-06" class="btn">&#x1F4D6; 防汛应急指南</a>
+    <a href="map.html?v=v20260811-06" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
     <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
@@ -526,9 +572,9 @@ body {
 
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
-  <a href="map.html?v=v20260811-05" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260811-05" class="mm-item">&#x1F4CA; 专业分析</a>
-  <a href="guide.html?v=v20260811-05" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+  <a href="map.html?v=v20260811-06" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="analysis.html?v=v20260811-06" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="guide.html?v=v20260811-06" class="mm-item">&#x1F4D6; 防汛应急指南</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
   <button class="mm-item" id="adminBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录）</button>
   <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
@@ -667,21 +713,35 @@ body {
     </div>
   </div>
 
+  <!-- 切坡建房农户照片 -->
+  <div class="photo-card" id="photoWrap" style="margin-bottom:28px;">
+    <div class="cc-header">&#x1F4F7; 切坡建房农户照片 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">（每户最多2张 · 村级上传后不可修改，仅管理员可调整 · 支持现场拍照或从相册选取）</span></div>
+    <div class="photo-toolbar">
+      <select id="photoVillage"></select>
+      <select id="photoOwner"></select>
+      <span class="photo-tip" id="photoTip"></span>
+    </div>
+    <div id="photoSlots"></div>
+    <div id="photoList"></div>
+    <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="photoOnFile(this.files[0])">
+  </div>
+
   <!-- 进入地图 -->
   <div class="map-entry">
-    <a href="map.html?v=v20260811-05">&#x1F5FA; 进入应急避险地图</a>
+    <a href="map.html?v=v20260811-06">&#x1F5FA; 进入应急避险地图</a>
   </div>
 </div>
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="keys.js?v=v20260811-05"></script>
-<script src="feishu_config.js?v=v20260811-05"></script>
-<script src="weather.js?v=v20260811-05"></script>
-<script src="js_data/village_centers.js?v=v20260811-05"></script>
-<script src="js_data/hazard_areas.js?v=v20260811-05"></script>
-<script src="js_data/evacuation_routes.js?v=v20260811-05"></script>
-<script src="js_data/rain_stations.js?v=v20260811-05"></script>
+<script src="keys.js?v=v20260811-06"></script>
+<script src="feishu_config.js?v=v20260811-06"></script>
+<script src="weather.js?v=v20260811-06"></script>
+<script src="photo.js?v=v20260811-06"></script>
+<script src="js_data/village_centers.js?v=v20260811-06"></script>
+<script src="js_data/hazard_areas.js?v=v20260811-06"></script>
+<script src="js_data/evacuation_routes.js?v=v20260811-06"></script>
+<script src="js_data/rain_stations.js?v=v20260811-06"></script>
 
 <script>
 // 权限验证
@@ -718,6 +778,7 @@ loadSecureData(['village_info.js', 'village_plans.js', 'hazard_points.js',
   refreshVillageGrid();
   refreshContactLists();
   renderTeams();
+  photoInit();
 });
 
 // ========== 统计数据 ==========
@@ -966,7 +1027,7 @@ function refreshVillageGrid() {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260811-05';
+      window.location.href = 'map.html?v=v20260811-06';
     };
 
     var html = '';
