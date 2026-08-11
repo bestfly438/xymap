@@ -82,9 +82,23 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
 .cp-select { width: 100%; padding: 7px 8px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; color: #334155; background: #fff; }
 .cp-chk { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
 .cp-chk label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
-.cp-chk input[type=checkbox], .cp-chk input[type=radio] { width: 16px; height: 16px; accent-color: #d32f2f; }
-.cp-chk label.on { color: #b71c1c; font-weight: 700; }
-.cp-chk label.on input[type=radio] { box-shadow: 0 0 0 3px rgba(211,47,47,.22); border-radius: 50%; }
+.cp-chk input[type=checkbox] { width: 16px; height: 16px; accent-color: #d32f2f; }
+/* 自定义圆形单选：点中后圆圈本体填充对应颜色（20蓝/50橙/80红） */
+.cp-chk input[type=radio] {
+  -webkit-appearance: none; appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid #cbd5e1; background: #fff; cursor: pointer;
+  display: inline-block; position: relative; flex-shrink: 0;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+}
+.cp-chk input[type=radio]:checked {
+  border-color: var(--rc, #d32f2f); background: var(--rc, #d32f2f);
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+}
+.cp-chk input[type=radio]:checked::after {
+  content: ''; position: absolute; inset: 5px; border-radius: 50%; background: #fff;
+}
+.cp-chk label.on { color: var(--rc, #b71c1c); font-weight: 700; }
 
 /* 图例(PC) */
 #legend {
@@ -96,6 +110,8 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
 }
 #legend .lg-title { font-weight: 700; color: #555; }
 #legend .l-item { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+#legend .l-item.l-on { font-weight: 700; color: #1e293b; }
+#legend .l-item.l-on .l-dot { box-shadow: 0 0 0 2px rgba(30,41,59,.35); }
 #legend .l-dot { width: 12px; height: 12px; border-radius: 3px; border: 1px solid rgba(0,0,0,.25); flex-shrink: 0; }
 #legend .l-dot.circle { border-radius: 50%; }
 
@@ -211,8 +227,8 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
     </div>
   </div>
   <div class="nav-links">
-    <a href="map.html?v=v20260810-20" class="back-link">&#x1F5FA; 返回地图</a>
-    <a href="dashboard.html?v=v20260810-20" class="back-link">&#x2190; 返回看板</a>
+    <a href="map.html?v=v20260811-01" class="back-link">&#x1F5FA; 返回地图</a>
+    <a href="dashboard.html?v=v20260811-01" class="back-link">&#x2190; 返回看板</a>
   </div>
 </div>
 
@@ -241,7 +257,7 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   <button id="bb-sheet" onclick="toggleSheet()"><span class="bb-ico">&#x2699;</span>设置</button>
   <button id="bb-legend" onclick="toggleLegend()"><span class="bb-ico">&#x1F4D0;</span>图例</button>
   <button id="bb-list" onclick="toggleList()"><span class="bb-ico">&#x1F4CB;</span>列表</button>
-  <a class="bb-link" href="map.html?v=v20260810-20" title="返回地图">&#x1F5FA;<span>返回地图</span></a>
+  <a class="bb-link" href="map.html?v=v20260811-01" title="返回地图">&#x1F5FA;<span>返回地图</span></a>
 </div>
 
 <!-- 移动端设置弹出面板 -->
@@ -250,12 +266,12 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   <div id="sheet-body"></div>
 </div>
 
-<script src="feishu_config.js?v=v20260810-20"></script>
-<script src="leaflet/leaflet.js?v=v20260810-20"></script>
-<script src="js_data/village_centers.js?v=v20260810-20"></script>
-<script src="js_data/village_areas.js?v=v20260810-20"></script>
-<script src="js_data/rivers_town.js?v=v20260810-20"></script>
-<script src="js_data/rain_stations.js?v=v20260810-20"></script>
+<script src="feishu_config.js?v=v20260811-01"></script>
+<script src="leaflet/leaflet.js?v=v20260811-01"></script>
+<script src="js_data/village_centers.js?v=v20260811-01"></script>
+<script src="js_data/village_areas.js?v=v20260811-01"></script>
+<script src="js_data/rivers_town.js?v=v20260811-01"></script>
+<script src="js_data/rain_stations.js?v=v20260811-01"></script>
 <script>
 /* ================= 按需加载（首屏只加载必要数据，其余切 Tab 时再下载） ================= */
 var FLOOD_ZONES = null, VULN_FLOOD = null, VULN_MUD = null, FLOOD_DEPRESSION = null, DEPRESSION_META = null;
@@ -279,7 +295,7 @@ function _loadScript(src, cb){
 }
 function _loadSeq(arr, i, cb){
   if (i >= arr.length) { cb(); return; }
-  _loadScript(arr[i] + '?v=v20260810-20', function(){ _loadSeq(arr, i + 1, cb); });
+  _loadScript(arr[i] + '?v=v20260811-01', function(){ _loadSeq(arr, i + 1, cb); });
 }
 // 切换 Tab 前确保该 Tab 所需数据已加载
 function ensureTabData(tab, cb){
@@ -441,12 +457,16 @@ function renderAll(){
 function ctrlHTML(tab){
   if (tab === 'rain') {
     var lv = LEVELS[RAIN_IDX];
+    var rHint = RAIN_IDX === 0 ? '全镇值班值守，密切关注雨情，各村责任人电话待命。'
+      : (RAIN_IDX === 1 ? '已叫应全镇 ' + VILLAGES.length + ' 个村责任人，提醒威胁户注意防范。'
+      : (RAIN_IDX === 2 ? '洪水影响带与山洪易发区内隐患点重点巡查、逐户叫应，提前组织转移。'
+      : '威胁户全部转移避险，洪水影响带与山洪易发区内隐患点重点巡查、逐户叫应，确保不漏一人。'));
     return '<div class="cp-title">降雨量响应</div>'
       + '<div class="cp-row"><div class="cp-name">降水量（mm）</div>'
       + '<div class="cp-slider"><input type="range" data-rain min="0" max="3" step="1" value="' + RAIN_IDX + '"><span class="rain-val">' + lv.mm + 'mm</span></div>'
       + '<div class="rain-level" style="color:' + lv.color + '"><span class="mm">' + lv.mm + 'mm</span> · ' + lv.name + ' · ' + lv.act + '</div></div>'
-      + '<div class="cp-hint"><b>分级参考：</b>10mm 蓝 / 20mm 黄 / 50mm 橙 / 80mm 红。<br>'
-      + '<b>80mm 红色预警</b>：威胁户全部转移避险，洪水影响带与山洪易发区内隐患点重点巡查、逐户叫应。<br>'
+      + '<div class="cp-hint rain-hint"><b>分级参考：</b>10mm 蓝 / 20mm 黄 / 50mm 橙 / 80mm 红。<br>'
+      + '<b style="color:' + lv.color + '">' + lv.mm + 'mm ' + lv.name + '</b>：' + rHint + '<br>'
       + '（是否积水受地形高程影响，图中以<u>洪水影响带 + 山洪易发区</u>近似指示高风险积水区域）</div>';
   }
   if (tab === 'grade') {
@@ -461,18 +481,26 @@ function ctrlHTML(tab){
     return '<div class="cp-title">洪水影响带</div>'
       + '<div class="cp-row"><div class="cp-name">显示图层</div><div class="cp-chk">'
       + ck('z50', '50m 影响带') + ck('z100', '100m 影响带') + ck('pts', '带内隐患点') + '</div></div>'
-      + '<div class="cp-hint">以全镇河道为中心线生成的 <b>50m / 100m 缓冲带</b>，近似指示强降雨（如 80mm）下的洪水漫溢与积水高风险范围。红色圆点为带内隐患户，灰点为带外对照。</div>';
+      + '<div class="cp-hint">以全镇河道为中心线生成的 <b>50m / 100m 缓冲带</b>，近似指示强降雨（暴雨）下的洪水漫溢与积水高风险范围。红色圆点为带内隐患户，灰点为带外对照。</div>';
   }
   if (tab === 'pond') {
     var pk = function(k, t){ return '<label><input type="checkbox" data-pcb="' + k + '"' + (PONDSTATE[k]?' checked':'') + '> ' + t + '</label>'; };
-    var prk = function(mm){ return '<label class="' + (PRAIN===mm?'on':'') + '"><input type="radio" name="prain" data-prain="' + mm + '" value="' + mm + '"' + (PRAIN===mm?' checked':'') + '> ' + mm + 'mm</label>'; };
+    var prk = function(mm){
+      var c = mm === 20 ? '#3b82f6' : (mm === 50 ? '#f97316' : '#dc2626');
+      return '<label style="--rc:' + c + '" class="' + (PRAIN===mm?'on':'') + '"><input type="radio" name="prain" data-prain="' + mm + '" value="' + mm + '"' + (PRAIN===mm?' checked':'') + '> ' + mm + 'mm</label>';
+    };
+    var pdHint = PRAIN === 20 ? '20mm 中雨：汇入低洼区的雨量较少，仅最低处洼地出现浅积水，重点提醒村址低洼住户。'
+      : (PRAIN === 50 ? '50mm 暴雨：洼地蓄水量增大，孟塬村等村址洼地平均水深明显抬升，需提前防范内涝。'
+      : '80mm 大暴雨：各洼地接近蓄满，村址洼地积水最深，威胁户按预案提前转移避险。');
     return '<div class="cp-title">积水分析（12.5m DEM）</div>'
       + '<div class="cp-row"><div class="cp-name">模拟降雨</div><div class="cp-chk">'
       + prk(20) + prk(50) + prk(80) + '</div></div>'
       + '<div class="cp-row"><div class="cp-name">显示图层</div><div class="cp-chk">'
       + pk('heavy', '重度积水区（平均水深&gt;2.5m）') + pk('mid', '中度积水区（1~2.5m）')
       + pk('light', '轻度积水区（&lt;1m）') + pk('pts', '隐患点对照') + '</div></div>'
-      + '<div class="cp-hint">基于 <b>CGCS2000 高斯克吕格 12.5m 高程数据</b>做降雨汇流模拟（D8 汇水 + 地形填洼，径流系数 0.5）：降雨沿坡面汇入低洼区，洼地颜色越深积水越深，切换降雨量可对比 20/50/80mm 的积水范围差异。经坐标复核，全镇隐患点多位于坡面崖边、不处于低洼蓄水区；洼地积水风险主要影响低处农田与孟塬村等村址（红点警示）。</div>';
+      + '<div class="cp-hint pond-hint">基于 <b>CGCS2000 高斯克吕格 12.5m 高程数据</b>做降雨汇流模拟（D8 汇水 + 地形填洼，径流系数 0.5）：降雨沿坡面汇入低洼区，洼地颜色越深积水越深。<br>'
+      + '<b style="color:#b91c1c">' + pdHint + '</b><br>'
+      + '切换降雨量，地图、汇总、图例与列表将同步显示对应 mm 的积水范围。经坐标复核，全镇隐患点多位于坡面崖边、不处于低洼蓄水区；洼地积水风险主要影响低处农田与孟塬村等村址（红点警示）。</div>';
   }
   /* vuln */
   return '<div class="cp-title">易发性叠加</div>'
@@ -515,9 +543,12 @@ function bboxCenter(ring){
 
 function legendHTML(tab){
   var it = function(color, txt, circle){ return '<span class="l-item"><span class="l-dot' + (circle?' circle':'') + '" style="background:' + color + '"></span>' + txt + '</span>'; };
+  var itOn = function(color, txt){ return '<span class="l-item l-on"><span class="l-dot" style="background:' + color + '"></span>' + txt + '</span>'; };
   if (tab === 'rain') {
     var l = '<span class="lg-title">响应等级</span>';
-    LEVELS.forEach(function(x){ l += it(x.color, x.mm + 'mm'); });
+    LEVELS.forEach(function(x, i){
+      l += (i === RAIN_IDX) ? itOn(x.color, x.mm + 'mm') : it(x.color, x.mm + 'mm');
+    });
     return l + '<span class="lg-title" style="margin-left:6px">隐患点</span>' + it('#dc2626','高',1) + it('#f97316','中',1) + it('#16a34a','低',1) + it('#06b6d4','影响带内',1) + '<span class="lg-title" style="margin-left:6px">其他</span>' + it('#0284c7','河流');
   }
   if (tab === 'grade') {
@@ -869,6 +900,19 @@ document.addEventListener('input', function(e){
       s.innerHTML = '<span class="mm">' + lv.mm + 'mm</span> · ' + lv.name + ' · ' + lv.act;
       s.style.color = lv.color;
     });
+    var rH = RAIN_IDX === 0 ? '全镇值班值守，密切关注雨情，各村责任人电话待命。'
+      : (RAIN_IDX === 1 ? '已叫应全镇 ' + VILLAGES.length + ' 个村责任人，提醒威胁户注意防范。'
+      : (RAIN_IDX === 2 ? '洪水影响带与山洪易发区内隐患点重点巡查、逐户叫应，提前组织转移。'
+      : '威胁户全部转移避险，洪水影响带与山洪易发区内隐患点重点巡查、逐户叫应，确保不漏一人。'));
+    document.querySelectorAll('.rain-hint').forEach(function(h){
+      h.innerHTML = '<b>分级参考：</b>10mm 蓝 / 20mm 黄 / 50mm 橙 / 80mm 红。<br>'
+        + '<b style="color:' + lv.color + '">' + lv.mm + 'mm ' + lv.name + '</b>：' + rH + '<br>'
+        + '（是否积水受地形高程影响，图中以<u>洪水影响带 + 山洪易发区</u>近似指示高风险积水区域）';
+    });
+    var lg = document.getElementById('legend');
+    if (lg) lg.innerHTML = legendHTML('rain');
+    var slg = document.querySelector('#sheet-body .sheet-legend');
+    if (slg) slg.innerHTML = legendHTML('rain');
     document.getElementById('summary').innerHTML = summaryHTML('rain');
     renderList();
     refreshMap();
@@ -896,6 +940,17 @@ document.addEventListener('change', function(e){
       rb.checked = sel;
       if (rb.parentElement) rb.parentElement.classList.toggle('on', sel);
     });
+    var pdH = PRAIN === 20 ? '20mm 中雨：汇入低洼区的雨量较少，仅最低处洼地出现浅积水，重点提醒村址低洼住户。'
+      : (PRAIN === 50 ? '50mm 暴雨：洼地蓄水量增大，孟塬村等村址洼地平均水深明显抬升，需提前防范内涝。'
+      : '80mm 大暴雨：各洼地接近蓄满，村址洼地积水最深，威胁户按预案提前转移避险。');
+    document.querySelectorAll('.pond-hint').forEach(function(h){
+      var b = h.querySelector('b[style*="b91c1c"]');
+      if (b) b.textContent = pdH;
+    });
+    var lg2 = document.getElementById('legend');
+    if (lg2) lg2.innerHTML = legendHTML('pond');
+    var slg2 = document.querySelector('#sheet-body .sheet-legend');
+    if (slg2) slg2.innerHTML = legendHTML('pond');
     document.getElementById('summary').innerHTML = summaryHTML('pond');
     renderList();
     refreshMap();
