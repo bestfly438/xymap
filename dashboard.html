@@ -516,9 +516,9 @@ body {
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button class="btn" id="adminBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-    <a href="analysis.html?v=v20260811-04" class="btn btn-primary">&#x1F4CA; 专业分析</a>
-    <a href="guide.html?v=v20260811-04" class="btn">&#x1F4D6; 防汛应急指南</a>
-    <a href="map.html?v=v20260811-04" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="analysis.html?v=v20260811-05" class="btn btn-primary">&#x1F4CA; 专业分析</a>
+    <a href="guide.html?v=v20260811-05" class="btn">&#x1F4D6; 防汛应急指南</a>
+    <a href="map.html?v=v20260811-05" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
     <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
@@ -526,9 +526,9 @@ body {
 
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
-  <a href="map.html?v=v20260811-04" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260811-04" class="mm-item">&#x1F4CA; 专业分析</a>
-  <a href="guide.html?v=v20260811-04" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+  <a href="map.html?v=v20260811-05" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="analysis.html?v=v20260811-05" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="guide.html?v=v20260811-05" class="mm-item">&#x1F4D6; 防汛应急指南</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
   <button class="mm-item" id="adminBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录）</button>
   <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
@@ -654,34 +654,34 @@ body {
     </div>
   </div>
 
-  <!-- 乡镇包抓责任人 -->
-  <div class="contact-card" style="margin-bottom:28px;">
-    <div class="cc-header">&#x1F3E2; 乡镇包抓责任人</div>
-    <div class="cc-list" id="townContactList" style="max-height:420px;"></div>
-  </div>
-
-  <!-- 各村防汛应急队伍 -->
-  <div class="team-card" style="margin-bottom:28px;">
-    <div class="cc-header">&#x1F91D; 各村防汛应急队伍 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">（村社级 · 点击展开查看成员）</span></div>
-    <div class="team-summary" id="teamSummary"></div>
-    <div class="team-list" id="teamList"></div>
+  <!-- 乡镇包抓责任人 + 各村防汛应急队伍（并排两列，缩短页面） -->
+  <div class="two-col" style="margin-bottom:28px;">
+    <div class="contact-card">
+      <div class="cc-header">&#x1F3E2; 乡镇包抓责任人</div>
+      <div class="cc-list" id="townContactList" style="max-height:420px;"></div>
+    </div>
+    <div class="team-card">
+      <div class="cc-header">&#x1F91D; 各村防汛应急队伍 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">（村社级 · 点击展开查看成员）</span></div>
+      <div class="team-summary" id="teamSummary"></div>
+      <div class="team-list" id="teamList" style="max-height:420px;overflow-y:auto;"></div>
+    </div>
   </div>
 
   <!-- 进入地图 -->
   <div class="map-entry">
-    <a href="map.html?v=v20260811-04">&#x1F5FA; 进入应急避险地图</a>
+    <a href="map.html?v=v20260811-05">&#x1F5FA; 进入应急避险地图</a>
   </div>
 </div>
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="keys.js?v=v20260811-04"></script>
-<script src="feishu_config.js?v=v20260811-04"></script>
-<script src="weather.js?v=v20260811-04"></script>
-<script src="js_data/village_centers.js?v=v20260811-04"></script>
-<script src="js_data/hazard_areas.js?v=v20260811-04"></script>
-<script src="js_data/evacuation_routes.js?v=v20260811-04"></script>
-<script src="js_data/rain_stations.js?v=v20260811-04"></script>
+<script src="keys.js?v=v20260811-05"></script>
+<script src="feishu_config.js?v=v20260811-05"></script>
+<script src="weather.js?v=v20260811-05"></script>
+<script src="js_data/village_centers.js?v=v20260811-05"></script>
+<script src="js_data/hazard_areas.js?v=v20260811-05"></script>
+<script src="js_data/evacuation_routes.js?v=v20260811-05"></script>
+<script src="js_data/rain_stations.js?v=v20260811-05"></script>
 
 <script>
 // 权限验证
@@ -966,7 +966,7 @@ function refreshVillageGrid() {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260811-04';
+      window.location.href = 'map.html?v=v20260811-05';
     };
 
     var html = '';

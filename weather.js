@@ -147,9 +147,13 @@ function renderVillageWeather() {
   });
 }
 
+// 预警等级色码 → 中文（和风 color.code: red/orange/yellow/blue）
+var WX_LEVEL_ZH = { 'red': '红色', 'orange': '橙色', 'yellow': '黄色', 'blue': '蓝色' };
+
 // 预警横幅 + 预警列表（来自和风实时预警）
+// 过滤：只保留明确涉及会宁县/新塬镇的预警（和风返回的是省级预警，须按描述匹配本地）
+// 聚合：同一预警多村命中时，横幅/列表按"新塬镇"汇总展示，不逐村罗列
 function renderWarnings() {
-  var any = false;
   var allW = [];
   WEATHER.order.forEach(function(v) {
     var d = WEATHER.cache[v];
@@ -157,16 +161,30 @@ function renderWarnings() {
       d.warnings.forEach(function(w) { allW.push({ v: v, w: w }); });
     }
   });
+  // 按预警名+等级聚合，同时过滤外地预警
+  var groups = {};
+  allW.forEach(function(x) {
+    var txt = ((x.w.headline || '') + ' ' + (x.w.description || '')).replace(/\s+/g, '');
+    if (txt.indexOf('会宁') < 0 && txt.indexOf('新塬') < 0) return;  // 不涉及本地，丢弃
+    var key = (x.w.name || '') + '|' + (x.w.color || '');
+    if (!groups[key]) groups[key] = { w: x.w, villages: [] };
+    if (groups[key].villages.indexOf(x.v) < 0) groups[key].villages.push(x.v);
+  });
+  var agg = Object.keys(groups).map(function(k) { return groups[k]; });
+  agg.sort(function(a, b) {
+    return WX_LEVEL_ZH[b.w.color] && WX_LEVEL_ZH[a.w.color] ? WX_LEVEL_ZH[b.w.color].localeCompare(WX_LEVEL_ZH[a.w.color], 'zh') : 0;
+  });
+  // 横幅：覆盖多村写"新塬镇"，单村写村名
   var banner = document.getElementById('alertBanner');
   if (banner) {
-    if (allW.length) {
+    if (agg.length) {
       banner.style.display = 'flex';
       banner.className = 'alert-banner danger';
       document.getElementById('alertTitle').textContent = '气象预警';
-      document.getElementById('alertDesc').textContent = allW.map(function(x) {
-        return x.v + '：' + (x.w.headline || x.w.name);
-      }).slice(0, 3).join('；');
-      any = true;
+      document.getElementById('alertDesc').textContent = agg.slice(0, 3).map(function(g) {
+        var scope = g.villages.length >= 2 ? '新塬镇' : g.villages[0];
+        return scope + '：' + (g.w.headline || g.w.name);
+      }).join('；');
     } else {
       banner.style.display = 'none';
     }
@@ -174,21 +192,22 @@ function renderWarnings() {
   // 预警列表
   var el = document.getElementById('warnList');
   if (el) {
-    if (!allW.length) {
-      el.innerHTML = '<div class="warn-ok">&#x2705; 当前无有效气象预警</div>';
+    if (!agg.length) {
+      el.innerHTML = '<div class="warn-ok">&#x2705; 当前无涉及本地的气象预警</div>';
     } else {
       var html = '';
-      allW.forEach(function(x) {
-        var color = WARN_LEVEL_COLORS[x.w.color === 'red' ? '红色' : (x.w.color === 'orange' ? '橙色' : (x.w.color === 'yellow' ? '黄色' : (x.w.color === 'blue' ? '蓝色' : '黄色')))] || '#f59e0b';
+      agg.forEach(function(g) {
+        var zh = WX_LEVEL_ZH[g.w.color] || '黄色';
+        var color = WARN_LEVEL_COLORS[zh] || '#f59e0b';
+        var scope = g.villages.length >= 2 ? ('新塬镇 ' + g.villages.length + ' 村') : g.villages[0];
         html += '<div class="warn-item" style="--warn-color:' + color + '">' +
-          '<span class="warn-level" style="background:' + color + '">' + (x.w.color || '黄') + '</span>' +
-          '<span class="warn-title">' + x.v + ' · ' + (x.w.headline || x.w.name) + '</span>' +
+          '<span class="warn-level" style="background:' + color + '">' + zh + '</span>' +
+          '<span class="warn-title">' + scope + ' · ' + (g.w.headline || g.w.name) + '</span>' +
           '</div>';
       });
       el.innerHTML = html;
     }
   }
-  if (any) any = false;
 }
 
 // 一键渲染全部天气 UI
