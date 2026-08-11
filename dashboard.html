@@ -293,6 +293,47 @@ body {
 .warn-empty { text-align: center; color: var(--text-muted); padding: 18px 0; font-size: 13px; }
 .warn-ok { text-align: center; color: #22c55e; padding: 16px 0; font-size: 14px; font-weight: 600; }
 
+/* ===== 各村防汛应急队伍 ===== */
+.team-card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+  border: 1px solid var(--border);
+}
+.team-summary {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;
+  font-size: 12px; color: var(--text-secondary);
+}
+.team-summary .ts-chip {
+  background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3);
+  color: #60a5fa; padding: 4px 12px; border-radius: 999px; font-weight: 600;
+}
+.team-list { display: flex; flex-direction: column; gap: 10px; }
+.team-vill {
+  border: 1px solid var(--border-light); border-radius: var(--radius-sm);
+  background: rgba(30,41,59,0.4); overflow: hidden;
+}
+.team-vill-head {
+  display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+  cursor: pointer; font-size: 14px; color: var(--text); font-weight: 600;
+  user-select: none;
+}
+.team-vill-head .tv-arrow { margin-left: auto; color: var(--text-muted); transition: transform 0.2s; }
+.team-vill.open .team-vill-head .tv-arrow { transform: rotate(90deg); }
+.team-vill-head .tv-meta { font-size: 11px; font-weight: 400; color: var(--text-muted); }
+.team-vill-body { display: none; padding: 4px 14px 14px; flex-direction: column; gap: 8px; }
+.team-vill.open .team-vill-body { display: flex; }
+.team-row {
+  display: grid; grid-template-columns: 88px 1fr auto; gap: 8px; align-items: center;
+  background: rgba(15,23,42,0.4); border-radius: 8px; padding: 9px 12px; font-size: 13px;
+}
+.team-row .tr-group { color: var(--text-secondary); font-size: 12px; }
+.team-row .tr-leader { color: var(--text); line-height: 1.5; }
+.team-row .tr-leader .tr-name { font-weight: 600; }
+.team-row .tr-leader .tr-members { color: var(--text-muted); font-size: 12px; }
+.team-row .tr-phone {
+  color: #fbbf24; font-weight: 700; font-size: 12px; white-space: nowrap;
+  background: rgba(245,158,11,0.1); padding: 3px 8px; border-radius: 6px;
+}
+
 /* ===== 进入地图 ===== */
 .map-entry { text-align: center; margin: 36px 0 16px; }
 .map-entry a {
@@ -475,9 +516,9 @@ body {
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button class="btn" id="adminBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-    <a href="analysis.html?v=v20260811-03" class="btn btn-primary">&#x1F4CA; 专业分析</a>
-    <a href="guide.html?v=v20260811-03" class="btn">&#x1F4D6; 防汛应急指南</a>
-    <a href="map.html?v=v20260811-03" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="analysis.html?v=v20260811-04" class="btn btn-primary">&#x1F4CA; 专业分析</a>
+    <a href="guide.html?v=v20260811-04" class="btn">&#x1F4D6; 防汛应急指南</a>
+    <a href="map.html?v=v20260811-04" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
     <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
@@ -485,9 +526,9 @@ body {
 
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
-  <a href="map.html?v=v20260811-03" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260811-03" class="mm-item">&#x1F4CA; 专业分析</a>
-  <a href="guide.html?v=v20260811-03" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+  <a href="map.html?v=v20260811-04" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="analysis.html?v=v20260811-04" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="guide.html?v=v20260811-04" class="mm-item">&#x1F4D6; 防汛应急指南</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
   <button class="mm-item" id="adminBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录）</button>
   <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
@@ -619,21 +660,28 @@ body {
     <div class="cc-list" id="townContactList" style="max-height:420px;"></div>
   </div>
 
+  <!-- 各村防汛应急队伍 -->
+  <div class="team-card" style="margin-bottom:28px;">
+    <div class="cc-header">&#x1F91D; 各村防汛应急队伍 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">（村社级 · 点击展开查看成员）</span></div>
+    <div class="team-summary" id="teamSummary"></div>
+    <div class="team-list" id="teamList"></div>
+  </div>
+
   <!-- 进入地图 -->
   <div class="map-entry">
-    <a href="map.html?v=v20260811-03">&#x1F5FA; 进入应急避险地图</a>
+    <a href="map.html?v=v20260811-04">&#x1F5FA; 进入应急避险地图</a>
   </div>
 </div>
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="keys.js?v=v20260811-03"></script>
-<script src="feishu_config.js?v=v20260811-03"></script>
-<script src="weather.js?v=v20260811-03"></script>
-<script src="js_data/village_centers.js?v=v20260811-03"></script>
-<script src="js_data/hazard_areas.js?v=v20260811-03"></script>
-<script src="js_data/evacuation_routes.js?v=v20260811-03"></script>
-<script src="js_data/rain_stations.js?v=v20260811-03"></script>
+<script src="keys.js?v=v20260811-04"></script>
+<script src="feishu_config.js?v=v20260811-04"></script>
+<script src="weather.js?v=v20260811-04"></script>
+<script src="js_data/village_centers.js?v=v20260811-04"></script>
+<script src="js_data/hazard_areas.js?v=v20260811-04"></script>
+<script src="js_data/evacuation_routes.js?v=v20260811-04"></script>
+<script src="js_data/rain_stations.js?v=v20260811-04"></script>
 
 <script>
 // 权限验证
@@ -665,10 +713,11 @@ var WARN_LEVEL_COLORS = { '蓝色': '#3b82f6', '黄色': '#f59e0b', '橙色': '#
 
 // ========== 敏感数据取数（数据私有化：隐患点名册/村情/预案等登录后从云函数读取） ==========
 loadSecureData(['village_info.js', 'village_plans.js', 'hazard_points.js',
-                'threatened_areas.js', 'evacuation_sites.js', 'backup_sites.js'], function() {
+                'threatened_areas.js', 'evacuation_sites.js', 'backup_sites.js', 'village_teams.js'], function() {
   initDashboardStats();
   refreshVillageGrid();
   refreshContactLists();
+  renderTeams();
 });
 
 // ========== 统计数据 ==========
@@ -917,7 +966,7 @@ function refreshVillageGrid() {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260811-03';
+      window.location.href = 'map.html?v=v20260811-04';
     };
 
     var html = '';
@@ -1024,6 +1073,64 @@ function refreshContactLists() {
     }
     townList.appendChild(tdiv);
   });
+}
+
+// ========== 各村防汛应急队伍（village_teams.js，登录后取数注入） ==========
+function renderTeams() {
+  if (typeof VILLAGE_TEAMS === 'undefined' || !VILLAGE_TEAMS) {
+    document.getElementById('teamList').innerHTML =
+      '<div class="warn-empty">队伍数据加载中...</div>';
+    return;
+  }
+  var summary = document.getElementById('teamSummary');
+  var list = document.getElementById('teamList');
+  var totalTeams = 0, totalPeople = 0;
+  var chips = '';
+  VILLAGE_ORDER.forEach(function(v) {
+    var arr = VILLAGE_TEAMS[v];
+    if (!arr || !arr.length) return;
+    totalTeams += arr.length;
+    arr.forEach(function(t) { totalPeople += (t.count || 0); });
+  });
+  chips += '<span class="ts-chip">' + totalTeams + ' 支队伍</span>';
+  chips += '<span class="ts-chip">' + totalPeople + ' 人</span>';
+  summary.innerHTML = chips;
+
+  list.innerHTML = '';
+  VILLAGE_ORDER.forEach(function(v) {
+    var arr = VILLAGE_TEAMS[v];
+    if (!arr || !arr.length) return;
+    var people = 0;
+    arr.forEach(function(t) { people += (t.count || 0); });
+    var div = document.createElement('div');
+    div.className = 'team-vill';
+    div.innerHTML =
+      '<div class="team-vill-head" onclick="this.parentElement.classList.toggle(\'open\')">' +
+        '<span>' + v + '</span>' +
+        '<span class="tv-meta">' + arr.length + ' 支队伍 · ' + people + ' 人</span>' +
+        '<span class="tv-arrow">&#x25B6;</span>' +
+      '</div>' +
+      '<div class="team-vill-body">' + buildTeamRows(arr) + '</div>';
+    list.appendChild(div);
+  });
+}
+function buildTeamRows(arr) {
+  var html = '';
+  arr.forEach(function(t) {
+    var name = t.team || (t.group || '');
+    var members = t.members || '';
+    if (members.length > 40) members = members.substring(0, 40) + '…';
+    html += '<div class="team-row">' +
+      '<div class="tr-group">' + (t.group || '') + '</div>' +
+      '<div class="tr-leader">' +
+        '<span class="tr-name">' + name + '</span>' +
+        (members ? '<div class="tr-members">成员：' + members + '</div>' : '') +
+        '<div class="tr-members">负责人：' + (t.leader || '-') + '</div>' +
+      '</div>' +
+      (t.phone ? '<a class="tr-phone" href="tel:' + t.phone + '">' + t.phone + '</a>' : '') +
+    '</div>';
+  });
+  return html;
 }
 
 // 联系人姓名变更
