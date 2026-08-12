@@ -113,7 +113,7 @@ body {
       <p>近期更新说明</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260812-08" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260812-09" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container">
@@ -122,18 +122,20 @@ body {
     <div class="ph-sub">本次集中升级涵盖天气、预警、应急队伍、照片采集等功能，均为本次防汛备汛新增，各村可直接使用。</div>
   </div>
 
-  <!-- v20260812-08 -->
+  <!-- v20260812-09 -->
   <div class="ver-card">
     <div class="ver-head">
-      <span class="ver-badge">v12-08</span>
-      <span class="ver-title">修复：返回看板数据消失</span>
+      <span class="ver-badge">v12-09</span>
+      <span class="ver-title">修复：手机端返回看板数据仍不加载</span>
       <span class="ver-date">2026年8月12日</span>
     </div>
     <ul class="ver-list">
-      <li>修复<b>从雷达预报/防汛指南等页面返回看板时，统计数据、天气、预警等全部消失且刷新不加载</b>的问题；</li>
-      <li>原因：浏览器"往返缓存"（bfcache）会在返回时直接恢复跳转前的页面快照，此时页面脚本<b>不会重新执行</b>，异步加载的数据停留在空状态；</li>
-      <li>处理：看板、地图、雷达、转移流程、专业分析等页面已加自动检测，从缓存恢复时<b>强制整页重新加载</b>，保证数据完整显示；</li>
-      <li>手机端与电脑端均生效。</li>
+      <li>修复<b>手机浏览器从雷达/指南等页面返回看板后数据仍不加载</b>的问题（上一版 v12-08 在部分手机上仍复发）；</li>
+      <li>原因：部分手机浏览器（微信/QQ 内置浏览器等）返回时 <b>bfcache 恢复标记不生效</b>，且 <code>reload()</code> 仍命中本地缓存，导致旧修复不触发；</li>
+      <li>处理①：返回导航检测增加 <b>performance API back_forward 判定</b>，覆盖 persisted 标记不生效的手机浏览器；</li>
+      <li>处理②：检测到返回时改用<b>带时间戳的 URL 强制加载</b>（<code>location.replace</code>），彻底绕过手机浏览器缓存；</li>
+      <li>处理③：所有页面的"返回看板"链接<b>自动附加时间戳</b>，前向跳转也强制加载最新页面；</li>
+      <li>覆盖页面：看板、地图、雷达、转移流程、专业分析，手机端与电脑端均生效。</li>
     </ul>
   </div>
 
@@ -320,6 +322,10 @@ body {
 if (sessionStorage.getItem('xyc_auth') !== '1') {
   window.location.replace('index.html');
 }
+</script>
+<script>
+// 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
+(function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
 </script>
 </body>
 </html>
