@@ -104,6 +104,7 @@ function renderTopBadge() {
     var x = WEATHER.cache[v];
     if (x && x.rain) { hasRain = true; rainV++; if (!note) note = x.rainNote; }
   });
+  if (note && String(note).indexOf('undefined') >= 0) note = '';
   if (!d) {
     el.innerHTML = '<span class="wt">&#x2600;</span><span>新塬镇</span><span class="wtemp">--°C</span>' +
       '<span style="color:var(--text-muted);font-size:12px;">加载中</span>';
@@ -140,6 +141,8 @@ function renderVillageWeather() {
     var icon = d.rain ? '&#x1F327;' : wxIcon(now.text);
     var temp = now.temp ? Math.round(now.temp) + '°' : '--°';
     var txt = d.rain ? (d.rainNote || '降雨') : (now.text || '');
+    // 防御：字段缺失时兜底，禁止把 undefined 显示给用户
+    txt = String(txt).indexOf('undefined') >= 0 ? '降雨' : txt;
     div.className = 'rc-item' + (d.rain ? ' rain' : '');
     div.innerHTML = '<span class="rc-name">' + v + '</span>' +
       '<span class="rc-value"><span style="font-size:15px;">' + icon + '</span> ' + txt + ' ' + temp + '</span>';
