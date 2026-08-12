@@ -117,7 +117,22 @@ function photoDelete(village, owner, idx, cb) {
     cb(data, null);
   });
 }
+// 页内放大查看照片（点击照片不新开窗口，点遮罩或再点图片关闭）
+function photoView(src) {
+  var ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:9999;'
+    + 'display:flex;align-items:center;justify-content:center;cursor:zoom-out;';
+  var img = document.createElement('img');
+  img.src = src;
+  img.style.cssText = 'max-width:94vw;max-height:94vh;border-radius:8px;box-shadow:0 8px 40px rgba(0,0,0,.5);';
+  img.onclick = function() { ov.click(); };
+  ov.appendChild(img);
+  ov.onclick = function() { document.body.removeChild(ov); };
+  document.body.appendChild(ov);
+}
+
 // 取照片 blob URL（登录可见；key 走 POST body —— 云函数 URL 网关不转发 query 参数）
+// 服务端返回 JSON base64（网关二进制通道不可靠），前端解码为 blob
 function photoURL(key, cb) {
   if (PHOTO.blobs[key]) { cb(PHOTO.blobs[key]); return; }
   fetch(FEISHU_CONFIG.apiBase + '/api/photo/raw', {
@@ -125,15 +140,14 @@ function photoURL(key, cb) {
     headers: photoAuth(),
     body: JSON.stringify({ key: key })
   })
-  .then(function(r) {
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    var ct = (r.headers.get('Content-Type') || '');
-    if (ct.indexOf('image/') < 0) throw new Error('非图片响应');
-    return r.blob();
-  })
-  .then(function(b) {
-    if (!b || !b.size) { cb(null); return; }
-    var url = URL.createObjectURL(b);
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (!d || d.code !== 0 || !d.data || !d.data.img) { cb(null); return; }
+    var bin;
+    try { bin = atob(d.data.img); } catch (e) { cb(null); return; }
+    var arr = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    var url = URL.createObjectURL(new Blob([arr], { type: 'image/jpeg' }));
     PHOTO.blobs[key] = url;
     cb(url);
   })
@@ -151,7 +165,7 @@ function photoFillPopup(holder, village, owner) {
     var remaining = arr.length;
     arr.forEach(function(item) {
       photoURL(item.key, function(url) {
-        html += '<img src="' + url + '" class="pop-photo-img" alt="照片' + item.idx + '" onclick="window.open(this.src)">';
+        html += '<img src="' + url + '" class="pop-photo-img" alt="照片' + item.idx + '" onclick="photoView(this.src)">';
         if (--remaining <= 0) holder.innerHTML = html;
       });
     });
@@ -271,7 +285,7 @@ function photoRenderSlots() {
       (function(idx, key) {
         photoURL(key, function(url) {
           var el = document.getElementById('phImg' + idx);
-          if (el && url) el.innerHTML = '<img src="' + url + '" onclick="window.open(this.src)">';
+          if (el && url) el.innerHTML = '<img src="' + url + '" onclick="photoView(this.src)">';
           else if (el) el.textContent = '加载失败';
         });
       })(i, item.key);
@@ -364,7 +378,7 @@ function photoRenderList() {
         photoURL(item.key, function(url) {
           var host = document.getElementById(rid);
           var thumb = host ? host.querySelector('.ph-thumb[data-key="' + item.key + '"]') : null;
-          if (thumb && url) thumb.innerHTML = '<img src="' + url + '" onclick="window.open(this.src)">';
+          if (thumb && url) thumb.innerHTML = '<img src="' + url + '" onclick="photoView(this.src)">';
           else if (thumb) thumb.textContent = 'X';
           if (--remaining <= 0) done++;
         });
