@@ -140,7 +140,7 @@ body {
 (function() {
   // 如果已经登录，直接跳转（带版本参数绕过缓存）
   if (sessionStorage.getItem('xyc_auth') === '1') {
-    window.location.replace('dashboard.html?v=v20260811-09');
+    window.location.replace('dashboard.html?v=v20260811-10');
   }
 })();
 
@@ -197,7 +197,7 @@ function doLogin() {
       btn.textContent = '验证通过，正在进入...';
       setTimeout(function() {
         // 带版本参数跳转：绕过浏览器缓存，确保每次都加载最新版看板页面
-        window.location.replace('dashboard.html?v=v20260811-09');
+        window.location.replace('dashboard.html?v=v20260811-10');
       }, 500);
     } else {
       btn.textContent = '进入系统';
