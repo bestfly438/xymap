@@ -281,8 +281,8 @@ function updateSchedulePanel() {
   var wrap = document.getElementById('wxScheduleWrap');
   if (!wrap) return;
   if (!isAdminUser()) { wrap.style.display = 'none'; return; }
-  if (anyRain() || WEATHER.schedule) { wrap.style.display = 'block'; }
-  else { wrap.style.display = 'none'; return; }
+  // 管理员登录即显示调度面板（不再依赖是否有降雨，避免按钮"消失"的困惑）
+  wrap.style.display = 'block';
   buildVillageCheckboxes();
   // 调度时长/间隔与调度中状态保持
   var st = document.getElementById('wxSchedStatus');
@@ -291,8 +291,10 @@ function updateSchedulePanel() {
       var remain = Math.max(0, Math.ceil((WEATHER.schedule.endTime - Date.now()) / 60000));
       var vtext = WEATHER.schedule.villages.length === WEATHER.order.length ? '全镇' + WEATHER.order.length + '村' : '已选' + WEATHER.schedule.villages.length + '村';
       st.textContent = '调度中：' + vtext + '，每 ' + WEATHER.schedule.intervalMin + ' 分钟刷新一次，剩余约 ' + remain + ' 分钟自动停止';
-    } else {
+    } else if (anyRain()) {
       st.textContent = '检测到降雨，可多选村庄设置定时刷新（到时自动停止）';
+    } else {
+      st.textContent = '当前无降雨，可预先设置降雨定时刷新';
     }
   }
 }

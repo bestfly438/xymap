@@ -443,42 +443,42 @@ body {
   .more-menu { top: 60px; }
 }
 /* ===== 系统管理面板（仅管理员） ===== */
-.admin-overlay {
+.ak-sys-overlay {
   position: fixed; inset: 0; z-index: 1000;
   background: rgba(2,6,23,0.7); backdrop-filter: blur(4px);
   display: flex; align-items: center; justify-content: center; padding: 20px;
 }
-.admin-panel {
+.ak-sys-panel {
   width: 860px; max-width: 96vw; max-height: 88vh; display: flex; flex-direction: column;
   background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
   box-shadow: 0 24px 80px rgba(0,0,0,0.6); overflow: hidden;
 }
-.admin-head {
+.ak-sys-head {
   display: flex; justify-content: space-between; align-items: center;
   padding: 16px 20px; border-bottom: 1px solid var(--border);
 }
-.admin-head h3 { font-size: 16px; color: var(--text); }
-.admin-head button {
+.ak-sys-head h3 { font-size: 16px; color: var(--text); }
+.ak-sys-head button {
   background: transparent; border: 1px solid var(--border); color: var(--text-muted);
   width: 30px; height: 30px; border-radius: 8px; cursor: pointer; font-size: 14px;
 }
-.admin-tabs { display: flex; gap: 6px; padding: 10px 20px; border-bottom: 1px solid var(--border); }
-.admin-tabs .at-tab {
+.ak-sys-tabs { display: flex; gap: 6px; padding: 10px 20px; border-bottom: 1px solid var(--border); }
+.ak-sys-tabs .at-tab {
   padding: 7px 16px; border-radius: 8px; border: 1px solid var(--border);
   background: transparent; color: var(--text-muted); font-size: 13px; cursor: pointer;
 }
-.admin-tabs .at-tab.active { background: rgba(59,130,246,0.15); color: var(--accent); border-color: rgba(59,130,246,0.4); }
-.admin-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
-.admin-body .ak-loading { color: var(--text-muted); text-align: center; padding: 40px 0; }
-.admin-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.admin-table th, .admin-table td {
+.ak-sys-tabs .at-tab.active { background: rgba(59,130,246,0.15); color: var(--accent); border-color: rgba(59,130,246,0.4); }
+.ak-sys-body { flex: 1; overflow-y: auto; padding: 16px 20px; }
+.ak-sys-body .ak-loading { color: var(--text-muted); text-align: center; padding: 40px 0; }
+.ak-sys-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.ak-sys-table th, .ak-sys-table td {
   padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border);
   color: var(--text); vertical-align: middle;
 }
-.admin-table th { color: var(--text-muted); font-weight: 600; white-space: nowrap; }
-.admin-table .ak-tag { font-weight: 600; }
-.admin-table .ak-off { color: #dc2626; }
-.admin-table .ak-on { color: #16a34a; }
+.ak-sys-table th { color: var(--text-muted); font-weight: 600; white-space: nowrap; }
+.ak-sys-table .ak-tag { font-weight: 600; }
+.ak-sys-table .ak-off { color: #dc2626; }
+.ak-sys-table .ak-on { color: #16a34a; }
 .ak-btn {
   padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border);
   background: rgba(37,99,235,0.08); color: var(--text); font-size: 11px; cursor: pointer; margin: 0 2px;
@@ -486,13 +486,13 @@ body {
 .ak-btn:hover { border-color: var(--accent); color: var(--accent); }
 .ak-btn.danger { color: #dc2626; }
 .ak-btn.danger:hover { border-color: #dc2626; }
-.admin-body .ak-sec { font-size: 13px; font-weight: 700; color: var(--text); margin: 14px 0 8px; }
-.admin-body .ak-empty { color: var(--text-muted); text-align: center; padding: 30px 0; font-size: 13px; }
+.ak-sys-body .ak-sec { font-size: 13px; font-weight: 700; color: var(--text); margin: 14px 0 8px; }
+.ak-sys-body .ak-empty { color: var(--text-muted); text-align: center; padding: 30px 0; font-size: 13px; }
 /* 手机端：系统管理入口收进"更多"抽屉（表头不直接显示），面板表格可横向滚动 */
 @media (max-width: 640px) {
-  #adminBtn { display: none !important; }
-  .admin-body { padding: 10px 12px; }
-  .admin-table th, .admin-table td { padding: 6px 8px; font-size: 11px; white-space: nowrap; }
+  #akSysBtn { display: none !important; }
+  .ak-sys-body { padding: 10px 12px; }
+  .ak-sys-table th, .ak-sys-table td { padding: 6px 8px; font-size: 11px; white-space: nowrap; }
 }
 
 /* ===== 切坡建房农户照片 ===== */
@@ -561,12 +561,12 @@ body {
     </div>
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
-    <button class="btn" id="adminBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-    <a href="analysis.html?v=v20260812-02" class="btn btn-primary">&#x1F4CA; 专业分析</a>
-    <a href="transfer.html?v=v20260812-02" class="btn">&#x1F500; 转移流程</a>
-    <a href="guide.html?v=v20260812-02" class="btn">&#x1F4D6; 防汛应急指南</a>
-    <a href="updates.html?v=v20260812-02" class="btn">&#x1F4C4; 近期更新</a>
-    <a href="map.html?v=v20260812-02" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <button class="btn" id="akSysBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
+    <a href="analysis.html?v=v20260812-03" class="btn btn-primary">&#x1F4CA; 专业分析</a>
+    <a href="transfer.html?v=v20260812-03" class="btn">&#x1F500; 转移流程</a>
+    <a href="guide.html?v=v20260812-03" class="btn">&#x1F4D6; 防汛应急指南</a>
+    <a href="updates.html?v=v20260812-03" class="btn">&#x1F4C4; 近期更新</a>
+    <a href="map.html?v=v20260812-03" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
     <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
@@ -574,13 +574,13 @@ body {
 
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
-  <a href="map.html?v=v20260812-02" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260812-02" class="mm-item">&#x1F4CA; 专业分析</a>
-  <a href="transfer.html?v=v20260812-02" class="mm-item">&#x1F500; 转移流程</a>
-  <a href="guide.html?v=v20260812-02" class="mm-item">&#x1F4D6; 防汛应急指南</a>
-  <a href="updates.html?v=v20260812-02" class="mm-item">&#x1F4C4; 近期更新</a>
+  <a href="map.html?v=v20260812-03" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="analysis.html?v=v20260812-03" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="transfer.html?v=v20260812-03" class="mm-item">&#x1F500; 转移流程</a>
+  <a href="guide.html?v=v20260812-03" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+  <a href="updates.html?v=v20260812-03" class="mm-item">&#x1F4C4; 近期更新</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
-  <button class="mm-item" id="adminBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录）</button>
+  <button class="mm-item" id="akSysBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录）</button>
   <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
 </div>
 
@@ -732,20 +732,20 @@ body {
 
   <!-- 进入地图 -->
   <div class="map-entry">
-    <a href="map.html?v=v20260812-02">&#x1F5FA; 进入应急避险地图</a>
+    <a href="map.html?v=v20260812-03">&#x1F5FA; 进入应急避险地图</a>
   </div>
 </div>
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="keys.js?v=v20260812-02"></script>
-<script src="feishu_config.js?v=v20260812-02"></script>
-<script src="weather.js?v=v20260812-02"></script>
-<script src="photo.js?v=v20260812-02"></script>
-<script src="js_data/village_centers.js?v=v20260812-02"></script>
-<script src="js_data/hazard_areas.js?v=v20260812-02"></script>
-<script src="js_data/evacuation_routes.js?v=v20260812-02"></script>
-<script src="js_data/rain_stations.js?v=v20260812-02"></script>
+<script src="keys.js?v=v20260812-03"></script>
+<script src="feishu_config.js?v=v20260812-03"></script>
+<script src="weather.js?v=v20260812-03"></script>
+<script src="photo.js?v=v20260812-03"></script>
+<script src="js_data/village_centers.js?v=v20260812-03"></script>
+<script src="js_data/hazard_areas.js?v=v20260812-03"></script>
+<script src="js_data/evacuation_routes.js?v=v20260812-03"></script>
+<script src="js_data/rain_stations.js?v=v20260812-03"></script>
 
 <script>
 // 权限验证
@@ -909,9 +909,9 @@ if (isAdmin) {
   document.getElementById('editModeBtn').style.display = 'flex';
   var em2 = document.getElementById('editModeBtn2');
   if (em2) em2.style.display = 'flex';
-  var ab = document.getElementById('adminBtn');
+  var ab = document.getElementById('akSysBtn');
   if (ab) ab.style.display = 'flex';
-  var ab2 = document.getElementById('adminBtn2');
+  var ab2 = document.getElementById('akSysBtn2');
   if (ab2) ab2.style.display = 'flex';
 }
 
@@ -1031,7 +1031,7 @@ function refreshVillageGrid() {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260812-02';
+      window.location.href = 'map.html?v=v20260812-03';
     };
 
     var html = '';
@@ -1246,28 +1246,28 @@ weatherInit();
 </script>
 
 <!-- ===== 系统管理面板（仅管理员） ===== -->
-<div class="admin-overlay" id="adminOverlay" style="display:none" onclick="if(event.target===this)closeAdminPanel()">
-  <div class="admin-panel">
-    <div class="admin-head">
+<div class="ak-sys-overlay" id="akSysOverlay" style="display:none" onclick="if(event.target===this)closeAdminPanel()">
+  <div class="ak-sys-panel">
+    <div class="ak-sys-head">
       <h3>&#x2699; 系统管理</h3>
       <button onclick="closeAdminPanel()">&#x2716;</button>
     </div>
-    <div class="admin-tabs">
+    <div class="ak-sys-tabs">
       <button class="at-tab active" id="at-keys" onclick="switchAdminTab('keys')">密钥管理</button>
       <button class="at-tab" id="at-logs" onclick="switchAdminTab('logs')">登录记录</button>
     </div>
-    <div class="admin-body" id="adminBody"><div class="ak-loading">加载中...</div></div>
+    <div class="ak-sys-body" id="akSysBody"><div class="ak-loading">加载中...</div></div>
   </div>
 </div>
 
 <script>
 // ========== 系统管理（仅管理员） ==========
 function openAdminPanel() {
-  document.getElementById('adminOverlay').style.display = 'flex';
+  document.getElementById('akSysOverlay').style.display = 'flex';
   switchAdminTab('keys');
 }
 function closeAdminPanel() {
-  document.getElementById('adminOverlay').style.display = 'none';
+  document.getElementById('akSysOverlay').style.display = 'none';
 }
 // 支持 #admin 锚点：从其他页面"系统管理"入口跳转过来时自动打开管理面板
 if (isAdmin && window.location.hash === '#admin') {
@@ -1284,7 +1284,7 @@ function escAttr(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 function adminBodyHtml(inner) {
-  document.getElementById('adminBody').innerHTML = inner;
+  document.getElementById('akSysBody').innerHTML = inner;
 }
 
 function loadAdminKeys() {
@@ -1296,7 +1296,7 @@ function loadAdminKeys() {
       adminBodyHtml('<div class="ak-empty">未查询到任何密钥记录（服务端返回：' + JSON.stringify(data).substring(0, 300) + '）</div>');
       return;
     }
-    var h = '<div style="overflow-x:auto"><table class="admin-table"><tr><th>标签</th><th>角色</th><th>所属村</th><th>状态</th><th>绑定设备</th><th>操作</th></tr>';
+    var h = '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>标签</th><th>角色</th><th>所属村</th><th>状态</th><th>绑定设备</th><th>操作</th></tr>';
     keys.forEach(function(k) {
       var devs = (k['绑定设备'] || '').split(/[,，\n]/).filter(function(x){return x.trim();});
       var enabled = k['状态'] === '禁用';
@@ -1348,7 +1348,7 @@ function loadAdminLogs() {
     if (err || !data) { adminBodyHtml('<div class="ak-empty">加载失败：' + (err || '未知错误') + '</div>'); return; }
     var logs = data.data || [];
     if (!logs.length) { adminBodyHtml('<div class="ak-empty">暂无登录记录</div>'); return; }
-    var h = '<div style="overflow-x:auto"><table class="admin-table"><tr><th>时间</th><th>密钥标签</th><th>角色</th><th>IP</th><th>设备</th><th>结果</th></tr>';
+    var h = '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>时间</th><th>密钥标签</th><th>角色</th><th>IP</th><th>设备</th><th>结果</th></tr>';
     logs.forEach(function(l) {
       h += '<tr><td>' + escAttr(l['时间'] || '') + '</td><td class="ak-tag">' + escAttr(l['密钥标签'] || '') + '</td>' +
         '<td>' + escAttr(l['角色'] || '') + '</td><td>' + escAttr(l['IP'] || '') + '</td>' +
