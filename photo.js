@@ -117,16 +117,20 @@ function photoDelete(village, owner, idx, cb) {
     cb(data, null);
   });
 }
-// 取照片 blob URL（带会话，登录可见；缓存避免重复拉取）
+// 取照片 blob URL（登录可见；key 走 POST body —— 云函数 URL 网关不转发 query 参数）
 function photoURL(key, cb) {
   if (PHOTO.blobs[key]) { cb(PHOTO.blobs[key]); return; }
-  fetch(FEISHU_CONFIG.apiBase + '/api/photo/raw?key=' + encodeURIComponent(key), {
-    headers: {
-      'x-xyc-key': sessionStorage.getItem('xyc_key') || '',
-      'x-xyc-device': sessionStorage.getItem('xyc_device') || ''
-    }
+  fetch(FEISHU_CONFIG.apiBase + '/api/photo/raw', {
+    method: 'POST',
+    headers: photoAuth(),
+    body: JSON.stringify({ key: key })
   })
-  .then(function(r) { return r.blob(); })
+  .then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    var ct = (r.headers.get('Content-Type') || '');
+    if (ct.indexOf('image/') < 0) throw new Error('非图片响应');
+    return r.blob();
+  })
   .then(function(b) {
     if (!b || !b.size) { cb(null); return; }
     var url = URL.createObjectURL(b);

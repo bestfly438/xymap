@@ -227,8 +227,8 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
     </div>
   </div>
   <div class="nav-links">
-    <a href="map.html?v=v20260811-12" class="back-link">&#x1F5FA; 返回地图</a>
-    <a href="dashboard.html?v=v20260811-12" class="back-link">&#x2190; 返回看板</a>
+    <a href="map.html?v=v20260812-01" class="back-link">&#x1F5FA; 返回地图</a>
+    <a href="dashboard.html?v=v20260812-01" class="back-link">&#x2190; 返回看板</a>
   </div>
 </div>
 
@@ -257,7 +257,7 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   <button id="bb-sheet" onclick="toggleSheet()"><span class="bb-ico">&#x2699;</span>设置</button>
   <button id="bb-legend" onclick="toggleLegend()"><span class="bb-ico">&#x1F4D0;</span>图例</button>
   <button id="bb-list" onclick="toggleList()"><span class="bb-ico">&#x1F4CB;</span>列表</button>
-  <a class="bb-link" href="map.html?v=v20260811-12" title="返回地图">&#x1F5FA;<span>返回地图</span></a>
+  <a class="bb-link" href="map.html?v=v20260812-01" title="返回地图">&#x1F5FA;<span>返回地图</span></a>
 </div>
 
 <!-- 移动端设置弹出面板 -->
@@ -266,12 +266,12 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: -apple
   <div id="sheet-body"></div>
 </div>
 
-<script src="feishu_config.js?v=v20260811-12"></script>
-<script src="leaflet/leaflet.js?v=v20260811-12"></script>
-<script src="js_data/village_centers.js?v=v20260811-12"></script>
-<script src="js_data/village_areas.js?v=v20260811-12"></script>
-<script src="js_data/rivers_town.js?v=v20260811-12"></script>
-<script src="js_data/rain_stations.js?v=v20260811-12"></script>
+<script src="feishu_config.js?v=v20260812-01"></script>
+<script src="leaflet/leaflet.js?v=v20260812-01"></script>
+<script src="js_data/village_centers.js?v=v20260812-01"></script>
+<script src="js_data/village_areas.js?v=v20260812-01"></script>
+<script src="js_data/rivers_town.js?v=v20260812-01"></script>
+<script src="js_data/rain_stations.js?v=v20260812-01"></script>
 <script>
 /* ================= 按需加载（首屏只加载必要数据，其余切 Tab 时再下载） ================= */
 var FLOOD_ZONES = null, VULN_FLOOD = null, VULN_MUD = null, FLOOD_DEPRESSION = null, DEPRESSION_META = null;
@@ -295,7 +295,7 @@ function _loadScript(src, cb){
 }
 function _loadSeq(arr, i, cb){
   if (i >= arr.length) { cb(); return; }
-  _loadScript(arr[i] + '?v=v20260811-12', function(){ _loadSeq(arr, i + 1, cb); });
+  _loadScript(arr[i] + '?v=v20260812-01', function(){ _loadSeq(arr, i + 1, cb); });
 }
 // 切换 Tab 前确保该 Tab 所需数据已加载
 function ensureTabData(tab, cb){
