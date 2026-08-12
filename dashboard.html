@@ -335,16 +335,19 @@ body {
 .team-vill-head .tv-arrow { margin-left: auto; color: var(--text-muted); transition: transform 0.2s; }
 .team-vill.open .team-vill-head .tv-arrow { transform: rotate(90deg); }
 .team-vill-head .tv-meta { font-size: 11px; font-weight: 400; color: var(--text-muted); }
-.team-vill-body { display: none; padding: 4px 14px 14px; flex-direction: column; gap: 8px; }
+.team-vill-body { display: none; padding: 4px 14px 14px; flex-direction: column; gap: 8px; max-height: 60vh; overflow-y: auto; }
 .team-vill.open .team-vill-body { display: flex; }
+.team-vill-body::-webkit-scrollbar { width: 4px; }
+.team-vill-body::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
 .team-row {
-  display: grid; grid-template-columns: 88px 1fr auto; gap: 8px; align-items: center;
+  display: grid; grid-template-columns: 88px 1fr auto; gap: 8px; align-items: start;
   background: rgba(15,23,42,0.4); border-radius: 8px; padding: 9px 12px; font-size: 13px;
+  min-height: 0;
 }
-.team-row .tr-group { color: var(--text-secondary); font-size: 12px; }
-.team-row .tr-leader { color: var(--text); line-height: 1.5; }
+.team-row .tr-group { color: var(--text-secondary); font-size: 12px; word-break: break-all; }
+.team-row .tr-leader { color: var(--text); line-height: 1.6; min-width: 0; }
 .team-row .tr-leader .tr-name { font-weight: 600; }
-.team-row .tr-leader .tr-members { color: var(--text-muted); font-size: 12px; }
+.team-row .tr-leader .tr-members { color: var(--text-muted); font-size: 12px; word-break: break-all; line-height: 1.6; white-space: normal; overflow: visible; text-overflow: initial; max-height: none; }
 .team-row .tr-phone {
   color: #fbbf24; font-weight: 700; font-size: 12px; white-space: nowrap;
   background: rgba(245,158,11,0.1); padding: 3px 8px; border-radius: 6px;
@@ -439,7 +442,7 @@ body {
 @media (max-width: 640px) {
   .container { padding: 14px; }
   .stats-row { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .village-grid { grid-template-columns: 1fr; }
+  .village-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .stat-card { padding: 14px; }
   .stat-card .sc-num { font-size: 28px; }
   .topbar { padding: 0 14px; height: 52px; }
@@ -578,12 +581,12 @@ body {
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button class="btn" id="akSysBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-    <a href="analysis.html?v=v20260812-09" class="btn btn-primary">&#x1F4CA; 专业分析</a>
-    <a href="radar.html?v=v20260812-09" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
-    <a href="transfer.html?v=v20260812-09" class="btn">&#x1F500; 转移流程</a>
-    <a href="guide.html?v=v20260812-09" class="btn">&#x1F4D6; 防汛应急指南</a>
-    <a href="updates.html?v=v20260812-09" class="btn">&#x1F4C4; 近期更新</a>
-    <a href="map.html?v=v20260812-09" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="analysis.html?v=v20260812-10" class="btn btn-primary">&#x1F4CA; 专业分析</a>
+    <a href="radar.html?v=v20260812-10" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
+    <a href="transfer.html?v=v20260812-10" class="btn">&#x1F500; 转移流程</a>
+    <a href="guide.html?v=v20260812-10" class="btn">&#x1F4D6; 防汛应急指南</a>
+    <a href="updates.html?v=v20260812-10" class="btn">&#x1F4C4; 近期更新</a>
+    <a href="map.html?v=v20260812-10" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
     <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
@@ -591,12 +594,12 @@ body {
 
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
-  <a href="map.html?v=v20260812-09" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260812-09" class="mm-item">&#x1F4CA; 专业分析</a>
-  <a href="radar.html?v=v20260812-09" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
-  <a href="transfer.html?v=v20260812-09" class="mm-item">&#x1F500; 转移流程</a>
-  <a href="guide.html?v=v20260812-09" class="mm-item">&#x1F4D6; 防汛应急指南</a>
-  <a href="updates.html?v=v20260812-09" class="mm-item">&#x1F4C4; 近期更新</a>
+  <a href="map.html?v=v20260812-10" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="analysis.html?v=v20260812-10" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="radar.html?v=v20260812-10" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
+  <a href="transfer.html?v=v20260812-10" class="mm-item">&#x1F500; 转移流程</a>
+  <a href="guide.html?v=v20260812-10" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+  <a href="updates.html?v=v20260812-10" class="mm-item">&#x1F4C4; 近期更新</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
   <button class="mm-item" id="akSysBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录）</button>
   <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
@@ -760,20 +763,20 @@ body {
 
   <!-- 进入地图 -->
   <div class="map-entry">
-    <a href="map.html?v=v20260812-09">&#x1F5FA; 进入应急避险地图</a>
+    <a href="map.html?v=v20260812-10">&#x1F5FA; 进入应急避险地图</a>
   </div>
 </div>
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="keys.js?v=v20260812-09"></script>
-<script src="feishu_config.js?v=v20260812-09"></script>
-<script src="weather.js?v=v20260812-09"></script>
-<script src="photo.js?v=v20260812-09"></script>
-<script src="js_data/village_centers.js?v=v20260812-09"></script>
-<script src="js_data/hazard_areas.js?v=v20260812-09"></script>
-<script src="js_data/evacuation_routes.js?v=v20260812-09"></script>
-<script src="js_data/rain_stations.js?v=v20260812-09"></script>
+<script src="keys.js?v=v20260812-10"></script>
+<script src="feishu_config.js?v=v20260812-10"></script>
+<script src="weather.js?v=v20260812-10"></script>
+<script src="photo.js?v=v20260812-10"></script>
+<script src="js_data/village_centers.js?v=v20260812-10"></script>
+<script src="js_data/hazard_areas.js?v=v20260812-10"></script>
+<script src="js_data/evacuation_routes.js?v=v20260812-10"></script>
+<script src="js_data/rain_stations.js?v=v20260812-10"></script>
 
 <script>
 // 权限验证
@@ -933,6 +936,16 @@ document.addEventListener('click', function(e) {
   var menu = document.getElementById('moreMenu');
   var btn = document.getElementById('moreBtn');
   if (menu && menu.classList.contains('show')) {
+    // 以下交互区域不应触发更多菜单关闭（避免与展开/收起动作干涉）
+    var t = e.target;
+    var safe = false;
+    while (t && t !== document) {
+      var cls = (t.className && typeof t.className === 'string') ? t.className : '';
+      if (cls.indexOf('team-vill') >= 0 || cls.indexOf('village-card') >= 0 || cls.indexOf('cc-item') >= 0) { safe = true; break; }
+      if (t.id === 'akSysOverlay' || t.id === 'teamList' || t.id === 'villageGrid' || t.id === 'leaderList' || t.id === 'townContactList') { safe = true; break; }
+      t = t.parentElement;
+    }
+    if (safe) return;
     var isMenu = menu.contains(e.target);
     var isBtn = btn && btn.contains(e.target);
     if (!isMenu && !isBtn) {
@@ -1071,10 +1084,14 @@ function refreshVillageGrid() {
     card.className = 'village-card' + (isEditMode ? ' editable' : '');
     card.setAttribute('data-vname', vname);
     card.onclick = function(e) {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
+      var t = e.target;
+      while (t && t !== this) {
+        if (t.tagName === 'INPUT' || t.tagName === 'BUTTON' || t.tagName === 'A' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA') return;
+        t = t.parentElement;
+      }
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260812-09';
+      window.location.href = 'map.html?v=v20260812-10';
     };
 
     var html = '';
@@ -1213,7 +1230,7 @@ function renderTeams() {
     var div = document.createElement('div');
     div.className = 'team-vill';
     div.innerHTML =
-      '<div class="team-vill-head" onclick="this.parentElement.classList.toggle(\'open\')">' +
+      '<div class="team-vill-head" onclick="event.stopPropagation();this.parentElement.classList.toggle(\'open\')">' +
         '<span>' + v + '</span>' +
         '<span class="tv-meta">' + arr.length + ' 支队伍 · ' + people + ' 人</span>' +
         '<span class="tv-arrow">&#x25B6;</span>' +
@@ -1227,7 +1244,6 @@ function buildTeamRows(arr) {
   arr.forEach(function(t) {
     var name = t.team || (t.group || '');
     var members = t.members || '';
-    if (members.length > 40) members = members.substring(0, 40) + '…';
     html += '<div class="team-row">' +
       '<div class="tr-group">' + (t.group || '') + '</div>' +
       '<div class="tr-leader">' +
@@ -1290,7 +1306,7 @@ weatherInit();
 
 <!-- ===== 系统管理面板（仅管理员） ===== -->
 <div class="ak-sys-overlay" id="akSysOverlay" style="display:none" onclick="if(event.target===this)closeAdminPanel()">
-  <div class="ak-sys-panel">
+  <div class="ak-sys-panel" onclick="event.stopPropagation()">
     <div class="ak-sys-head">
       <h3>&#x2699; 系统管理</h3>
       <button onclick="closeAdminPanel()">&#x2716;</button>

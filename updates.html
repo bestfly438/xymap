@@ -113,7 +113,7 @@ body {
       <p>近期更新说明</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260812-09" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260812-10" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container">
@@ -122,7 +122,22 @@ body {
     <div class="ph-sub">本次集中升级涵盖天气、预警、应急队伍、照片采集等功能，均为本次防汛备汛新增，各村可直接使用。</div>
   </div>
 
-  <!-- v20260812-09 -->
+  <!-- v20260812-10 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v12-10</span>
+      <span class="ver-title">看板优化：手机两列、队伍滚动、按钮去干涉</span>
+      <span class="ver-date">2026年8月13日</span>
+    </div>
+    <ul class="ver-list">
+      <li>手机端看板<b>村庄卡片由 1 列改为 2 列</b>（640px 以下断点），页面长度缩短约一半，上下滑动更顺手；</li>
+      <li>修复<b>防汛应急队伍展开详情显示不全</b>：村社展开后的队伍详情区增加独立滚动条（最大 60vh 高度），去除成员 40 字截断限制，完整成员名单可滚动查看，负责人/成员文字自动换行；</li>
+      <li>修复 5 处按钮/点击干涉：①村庄卡片内的编辑框/保存按钮/电话 `<a>` 链接点击不会再误跳转地图；②队伍展开头的点击不会误触发手机端"更多"菜单关闭；③更多菜单点击关闭逻辑已白名单村庄卡/队伍/联系人区域，不再误关；④系统管理面板内点按钮/表格不再冒泡到遮罩误关面板；⑤村庄卡片点击链路递归校验所有祖先元素的 `tagName`，表单类元素一律拦截跳转地图；</li>
+      <li>电脑端保持不变，手机端/电脑端体验同步优化。</li>
+    </ul>
+  </div>
+
+  <!-- v20260812-10 -->
   <div class="ver-card">
     <div class="ver-head">
       <span class="ver-badge">v12-09</span>
