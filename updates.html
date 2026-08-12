@@ -113,13 +113,28 @@ body {
       <p>近期更新说明</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260812-07" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260812-08" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container">
   <div class="page-head">
     <h2>&#x1F4DD; 近期更新说明</h2>
     <div class="ph-sub">本次集中升级涵盖天气、预警、应急队伍、照片采集等功能，均为本次防汛备汛新增，各村可直接使用。</div>
+  </div>
+
+  <!-- v20260812-08 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v12-08</span>
+      <span class="ver-title">修复：返回看板数据消失</span>
+      <span class="ver-date">2026年8月12日</span>
+    </div>
+    <ul class="ver-list">
+      <li>修复<b>从雷达预报/防汛指南等页面返回看板时，统计数据、天气、预警等全部消失且刷新不加载</b>的问题；</li>
+      <li>原因：浏览器"往返缓存"（bfcache）会在返回时直接恢复跳转前的页面快照，此时页面脚本<b>不会重新执行</b>，异步加载的数据停留在空状态；</li>
+      <li>处理：看板、地图、雷达、转移流程、专业分析等页面已加自动检测，从缓存恢复时<b>强制整页重新加载</b>，保证数据完整显示；</li>
+      <li>手机端与电脑端均生效。</li>
+    </ul>
   </div>
 
   <!-- v20260812-07 -->

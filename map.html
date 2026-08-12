@@ -596,8 +596,8 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
     <h1>新塬镇应急避险指挥系统</h1>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="analysis.html?v=v20260812-07" class="back-link">&#x1F4CA; 专业分析</a>
-    <a href="dashboard.html?v=v20260812-07" class="back-link">&#x2190; 返回看板</a>
+    <a href="analysis.html?v=v20260812-08" class="back-link">&#x1F4CA; 专业分析</a>
+    <a href="dashboard.html?v=v20260812-08" class="back-link">&#x2190; 返回看板</a>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
       <span class="arrow">&#x25BC;</span>
@@ -687,20 +687,27 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
   <span class="plb-close">&#x2715;</span>
 </div>
 
-<script src="leaflet/leaflet.js?v=v20260812-07" defer></script>
-<script src="keys.js?v=v20260812-07" defer></script>
-<script src="feishu_config.js?v=v20260812-07" defer></script>
-<script src="photo.js?v=v20260812-07" defer></script>
-<script src="js_data/village_centers.js?v=v20260812-07" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260812-07" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260812-07" defer></script>
-<script src="js_data/rain_stations.js?v=v20260812-07" defer></script>
+<script src="leaflet/leaflet.js?v=v20260812-08" defer></script>
+<script src="keys.js?v=v20260812-08" defer></script>
+<script src="feishu_config.js?v=v20260812-08" defer></script>
+<script src="photo.js?v=v20260812-08" defer></script>
+<script src="js_data/village_centers.js?v=v20260812-08" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260812-08" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260812-08" defer></script>
+<script src="js_data/rain_stations.js?v=v20260812-08" defer></script>
 
 <script>
 // ========== 权限验证 ==========
 if (sessionStorage.getItem('xyc_auth') !== '1') {
   window.location.replace('index.html');
 }
+
+// ========== bfcache 往返缓存修复 ==========
+// 从看板/其他页面返回地图页时，浏览器可能直接从 bfcache 恢复页面快照（JS 不重新执行），
+// 导致地图图层/隐患点/天气数据停留在空状态。检测到从 bfcache 恢复时强制整页刷新。
+window.addEventListener('pageshow', function(e) {
+  if (e.persisted) window.location.reload();
+});
 
 // ========== 村庄配置 ==========
 // SHP数据中的村名映射（SHP名 → 完整名）
