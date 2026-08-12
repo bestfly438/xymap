@@ -218,9 +218,79 @@ function renderAllWeather() {
   renderTopBadge();
   renderVillageWeather();
   renderWarnings();
+  renderGeoHazard();
   updateSchedulePanel();
   document.getElementById('warnScope') && (document.getElementById('warnScope').textContent = '新塬镇（和风天气）');
   document.getElementById('warnUpdateTime') && (document.getElementById('warnUpdateTime').textContent = new Date().toLocaleString('zh-CN', { hour12: false }));
+}
+
+// ========== 地质灾害气象风险预警（自然资源部+中国气象局联合发布） ==========
+// 与上面和风的"气象灾害预警"（暴雨/大风等天气现象）不同：地灾预警专指滑坡/泥石流/崩塌风险，
+// 正对应本镇切坡建房隐患点。数据来自中央气象台页面，经云函数 /api/geohazard 解析。
+var GEO_HAZARD_COLORS = { '红色': '#dc2626', '橙色': '#ea580c', '黄色': '#eab308', '蓝色': '#3b82f6' };
+var geoHazardLoaded = false;
+
+function geoHazardApi(cb) {
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  if (!key || !device) { cb(null, '未登录或会话失效'); return; }
+  fetch(FEISHU_CONFIG.apiBase + '/api/geohazard', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-xyc-key': key,
+      'x-xyc-device': device
+    },
+    body: JSON.stringify({})
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d && d.code === 401) { try { sessionStorage.clear(); } catch(e) {} window.location.replace('index.html'); return; }
+    if (d && d.code === 0) cb(d.data, null);
+    else cb(null, (d && d.msg) || '获取失败');
+  })
+  .catch(function(e) { cb(null, '网络错误: ' + e.message); });
+}
+
+// 渲染地灾预警区块（看板预警卡内）
+function renderGeoHazard() {
+  if (geoHazardLoaded) return;   // 页面生命周期内只取一次（10分钟级数据）
+  geoHazardLoaded = true;
+  var block = document.getElementById('geoWarnBlock');
+  if (!block) return;
+  geoHazardApi(function(data, err) {
+    var badge = document.getElementById('geoWarnBadge');
+    var meta = document.getElementById('geoWarnMeta');
+    var body = document.getElementById('geoWarnBody');
+    var note = document.getElementById('geoWarnNote');
+    if (err || !data || !data.content) {
+      // 无数据/失败：不显示整块，避免误导（和风预警列表仍正常展示）
+      block.style.display = 'none';
+      return;
+    }
+    block.style.display = 'block';
+    var c = data.content;
+    // 判断是否涉及本地（甘肃/白银/会宁/新塬）
+    var isLocal = (c.indexOf('甘肃') >= 0) || (c.indexOf('白银') >= 0) ||
+                  (c.indexOf('会宁') >= 0) || (c.indexOf('新塬') >= 0);
+    var color = GEO_HAZARD_COLORS[data.level] || '#eab308';
+    badge.textContent = data.level + '预警';
+    badge.style.background = color;
+    badge.style.display = 'inline-block';
+    meta.textContent = data.publish ? (data.publish + ' 发布 · 中央气象台') : '中央气象台';
+    if (isLocal) {
+      block.style.borderColor = 'rgba(239,68,68,0.8)';
+      body.innerHTML = '<b style="color:#f87171;">&#x26A0; 涉及本镇区域！</b> ' +
+        '<span style="color:#fbbf24;">'+ c +'</span>';
+      note.textContent = '提示：地灾预警等级高时，切坡建房、临崖临河隐患点受威胁人员请按村组通知及时转移避险。';
+      note.className = 'geo-warn-note local';
+    } else {
+      block.style.borderColor = 'rgba(148,163,184,0.4)';
+      body.textContent = '全国：' + c;
+      note.textContent = '本次预警未涉及甘肃·白银·会宁（新塬镇）。如未来升级为涉及本地，此处将置顶显示。';
+      note.className = 'geo-warn-note';
+    }
+  });
 }
 
 // ========== 日常定时刷新（8/10/12/15/18/20 点） ==========

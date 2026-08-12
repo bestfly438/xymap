@@ -293,6 +293,22 @@ body {
 .warn-empty { text-align: center; color: var(--text-muted); padding: 18px 0; font-size: 13px; }
 .warn-ok { text-align: center; color: #22c55e; padding: 16px 0; font-size: 14px; font-weight: 600; }
 
+/* ===== 地质灾害气象风险预警（自然资源部+中国气象局联合发布） ===== */
+.geo-warn {
+  background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.35);
+  border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 14px;
+}
+.geo-warn-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.geo-warn-icon { font-size: 16px; }
+.geo-warn-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.geo-warn-badge {
+  padding: 3px 12px; border-radius: 4px; font-size: 11px; font-weight: 700; color: #fff;
+}
+.geo-warn-meta { margin-left: auto; font-size: 11px; color: var(--text-muted); }
+.geo-warn-body { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+.geo-warn-note { font-size: 12px; color: var(--text-muted); margin-top: 6px; line-height: 1.6; }
+.geo-warn .geo-warn-note.local { color: #f87171; font-weight: 600; }
+
 /* ===== 各村防汛应急队伍 ===== */
 .team-card {
   background: var(--bg-card); border-radius: var(--radius); padding: 20px;
@@ -562,12 +578,12 @@ body {
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button class="btn" id="akSysBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-    <a href="analysis.html?v=v20260812-06" class="btn btn-primary">&#x1F4CA; 专业分析</a>
-    <a href="radar.html?v=v20260812-06" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
-    <a href="transfer.html?v=v20260812-06" class="btn">&#x1F500; 转移流程</a>
-    <a href="guide.html?v=v20260812-06" class="btn">&#x1F4D6; 防汛应急指南</a>
-    <a href="updates.html?v=v20260812-06" class="btn">&#x1F4C4; 近期更新</a>
-    <a href="map.html?v=v20260812-06" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="analysis.html?v=v20260812-07" class="btn btn-primary">&#x1F4CA; 专业分析</a>
+    <a href="radar.html?v=v20260812-07" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
+    <a href="transfer.html?v=v20260812-07" class="btn">&#x1F500; 转移流程</a>
+    <a href="guide.html?v=v20260812-07" class="btn">&#x1F4D6; 防汛应急指南</a>
+    <a href="updates.html?v=v20260812-07" class="btn">&#x1F4C4; 近期更新</a>
+    <a href="map.html?v=v20260812-07" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
     <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
@@ -575,12 +591,12 @@ body {
 
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
-  <a href="map.html?v=v20260812-06" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260812-06" class="mm-item">&#x1F4CA; 专业分析</a>
-  <a href="radar.html?v=v20260812-06" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
-  <a href="transfer.html?v=v20260812-06" class="mm-item">&#x1F500; 转移流程</a>
-  <a href="guide.html?v=v20260812-06" class="mm-item">&#x1F4D6; 防汛应急指南</a>
-  <a href="updates.html?v=v20260812-06" class="mm-item">&#x1F4C4; 近期更新</a>
+  <a href="map.html?v=v20260812-07" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="analysis.html?v=v20260812-07" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="radar.html?v=v20260812-07" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
+  <a href="transfer.html?v=v20260812-07" class="mm-item">&#x1F500; 转移流程</a>
+  <a href="guide.html?v=v20260812-07" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+  <a href="updates.html?v=v20260812-07" class="mm-item">&#x1F4C4; 近期更新</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
   <button class="mm-item" id="akSysBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录）</button>
   <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
@@ -701,6 +717,16 @@ body {
       <span>&#x26A0;</span> 气象预警信息
       <span class="wc-meta">来源：中央气象台预警发布 · 范围：<span id="warnScope">会宁县</span> · 更新：<span id="warnUpdateTime">--</span></span>
     </div>
+    <div class="geo-warn" id="geoWarnBlock" style="display:none">
+      <div class="geo-warn-head">
+        <span class="geo-warn-icon">&#x26F0;&#xFE0F;</span>
+        <span class="geo-warn-title">地质灾害气象风险预警</span>
+        <span class="geo-warn-badge" id="geoWarnBadge" style="display:none"></span>
+        <span class="geo-warn-meta" id="geoWarnMeta"></span>
+      </div>
+      <div class="geo-warn-body" id="geoWarnBody"></div>
+      <div class="geo-warn-note" id="geoWarnNote"></div>
+    </div>
     <div class="warn-list" id="warnList">
       <div class="warn-empty">预警信息加载中...</div>
     </div>
@@ -734,20 +760,20 @@ body {
 
   <!-- 进入地图 -->
   <div class="map-entry">
-    <a href="map.html?v=v20260812-06">&#x1F5FA; 进入应急避险地图</a>
+    <a href="map.html?v=v20260812-07">&#x1F5FA; 进入应急避险地图</a>
   </div>
 </div>
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="keys.js?v=v20260812-06"></script>
-<script src="feishu_config.js?v=v20260812-06"></script>
-<script src="weather.js?v=v20260812-06"></script>
-<script src="photo.js?v=v20260812-06"></script>
-<script src="js_data/village_centers.js?v=v20260812-06"></script>
-<script src="js_data/hazard_areas.js?v=v20260812-06"></script>
-<script src="js_data/evacuation_routes.js?v=v20260812-06"></script>
-<script src="js_data/rain_stations.js?v=v20260812-06"></script>
+<script src="keys.js?v=v20260812-07"></script>
+<script src="feishu_config.js?v=v20260812-07"></script>
+<script src="weather.js?v=v20260812-07"></script>
+<script src="photo.js?v=v20260812-07"></script>
+<script src="js_data/village_centers.js?v=v20260812-07"></script>
+<script src="js_data/hazard_areas.js?v=v20260812-07"></script>
+<script src="js_data/evacuation_routes.js?v=v20260812-07"></script>
+<script src="js_data/rain_stations.js?v=v20260812-07"></script>
 
 <script>
 // 权限验证
@@ -1033,7 +1059,7 @@ function refreshVillageGrid() {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260812-06';
+      window.location.href = 'map.html?v=v20260812-07';
     };
 
     var html = '';
