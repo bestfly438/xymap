@@ -581,12 +581,14 @@ body {
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button class="btn" id="akSysBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-    <a href="analysis.html?v=v20260812-10" class="btn btn-primary">&#x1F4CA; 专业分析</a>
-    <a href="radar.html?v=v20260812-10" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
-    <a href="transfer.html?v=v20260812-10" class="btn">&#x1F500; 转移流程</a>
-    <a href="guide.html?v=v20260812-10" class="btn">&#x1F4D6; 防汛应急指南</a>
-    <a href="updates.html?v=v20260812-10" class="btn">&#x1F4C4; 近期更新</a>
-    <a href="map.html?v=v20260812-10" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="analysis.html?v=v20260813-11" class="btn btn-primary">&#x1F4CA; 专业分析</a>
+    <a href="radar.html?v=v20260813-11" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
+    <a href="transfer.html?v=v20260813-11" class="btn">&#x1F500; 转移流程</a>
+    <a href="guide.html?v=v20260813-11" class="btn">&#x1F4D6; 防汛应急指南</a>
+    <a href="manual.html?v=v20260813-11" class="btn">&#x1F4F1; 使用说明</a>
+    <a href="updates.html?v=v20260813-11" class="btn">&#x1F4C4; 近期更新</a>
+    <a href="health.html?v=v20260813-11" class="btn" id="akHealthBtn" style="display:none">&#x1F50D; 系统自检</a>
+    <a href="map.html?v=v20260813-11" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
     <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
@@ -594,14 +596,16 @@ body {
 
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
-  <a href="map.html?v=v20260812-10" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260812-10" class="mm-item">&#x1F4CA; 专业分析</a>
-  <a href="radar.html?v=v20260812-10" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
-  <a href="transfer.html?v=v20260812-10" class="mm-item">&#x1F500; 转移流程</a>
-  <a href="guide.html?v=v20260812-10" class="mm-item">&#x1F4D6; 防汛应急指南</a>
-  <a href="updates.html?v=v20260812-10" class="mm-item">&#x1F4C4; 近期更新</a>
+  <a href="map.html?v=v20260813-11" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="analysis.html?v=v20260813-11" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="radar.html?v=v20260813-11" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
+  <a href="transfer.html?v=v20260813-11" class="mm-item">&#x1F500; 转移流程</a>
+  <a href="guide.html?v=v20260813-11" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+  <a href="manual.html?v=v20260813-11" class="mm-item">&#x1F4F1; 手机使用说明</a>
+  <a href="updates.html?v=v20260813-11" class="mm-item">&#x1F4C4; 近期更新</a>
+  <a href="health.html?v=v20260813-11" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
-  <button class="mm-item" id="akSysBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录）</button>
+  <button class="mm-item" id="akSysBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录 / 数据保险箱）</button>
   <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
 </div>
 
@@ -763,20 +767,20 @@ body {
 
   <!-- 进入地图 -->
   <div class="map-entry">
-    <a href="map.html?v=v20260812-10">&#x1F5FA; 进入应急避险地图</a>
+    <a href="map.html?v=v20260813-11">&#x1F5FA; 进入应急避险地图</a>
   </div>
 </div>
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="keys.js?v=v20260812-10"></script>
-<script src="feishu_config.js?v=v20260812-10"></script>
-<script src="weather.js?v=v20260812-10"></script>
-<script src="photo.js?v=v20260812-10"></script>
-<script src="js_data/village_centers.js?v=v20260812-10"></script>
-<script src="js_data/hazard_areas.js?v=v20260812-10"></script>
-<script src="js_data/evacuation_routes.js?v=v20260812-10"></script>
-<script src="js_data/rain_stations.js?v=v20260812-10"></script>
+<script src="keys.js?v=v20260813-11"></script>
+<script src="feishu_config.js?v=v20260813-11"></script>
+<script src="weather.js?v=v20260813-11"></script>
+<script src="photo.js?v=v20260813-11"></script>
+<script src="js_data/village_centers.js?v=v20260813-11" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260813-11" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260813-11" defer></script>
+<script src="js_data/rain_stations.js?v=v20260813-11" defer></script>
 
 <script>
 // 权限验证
@@ -958,6 +962,7 @@ document.addEventListener('click', function(e) {
 // ========== 编辑模式 ==========
 var isEditMode = false;
 var isAdmin = sessionStorage.getItem('xyc_admin') === '1' || sessionStorage.getItem('xyc_role') === '管理员';
+var isStaff = isAdmin || sessionStorage.getItem('xyc_role') === '镇级';
 var EDIT_STORAGE_KEY = 'xyc_village_edit_data';
 
 // 显示管理员按钮
@@ -969,6 +974,13 @@ if (isAdmin) {
   if (ab) ab.style.display = 'flex';
   var ab2 = document.getElementById('akSysBtn2');
   if (ab2) ab2.style.display = 'flex';
+}
+// 系统自检入口：管理员 + 镇级可见
+if (isStaff) {
+  var hb = document.getElementById('akHealthBtn');
+  if (hb) hb.style.display = 'flex';
+  var hb2 = document.getElementById('akHealthBtn2');
+  if (hb2) hb2.style.display = 'flex';
 }
 
 // 从 localStorage 读取编辑数据
@@ -1091,7 +1103,7 @@ function refreshVillageGrid() {
       }
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260812-10';
+      window.location.href = 'map.html?v=v20260813-11';
     };
 
     var html = '';
@@ -1314,6 +1326,7 @@ weatherInit();
     <div class="ak-sys-tabs">
       <button class="at-tab active" id="at-keys" onclick="switchAdminTab('keys')">密钥管理</button>
       <button class="at-tab" id="at-logs" onclick="switchAdminTab('logs')">登录记录</button>
+      <button class="at-tab" id="at-backup" onclick="switchAdminTab('backup')">数据保险箱</button>
     </div>
     <div class="ak-sys-body" id="akSysBody"><div class="ak-loading">加载中...</div></div>
   </div>
@@ -1336,8 +1349,10 @@ if (isAdmin && window.location.hash === '#admin') {
 function switchAdminTab(tab) {
   document.getElementById('at-keys').classList.toggle('active', tab === 'keys');
   document.getElementById('at-logs').classList.toggle('active', tab === 'logs');
+  document.getElementById('at-backup').classList.toggle('active', tab === 'backup');
   if (tab === 'keys') loadAdminKeys();
-  else loadAdminLogs();
+  else if (tab === 'logs') loadAdminLogs();
+  else loadBackupPanel();
 }
 function escAttr(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -1414,6 +1429,99 @@ function loadAdminLogs() {
         '<td>' + escAttr(l['设备'] || '') + '</td><td>' + escAttr(l['结果'] || '') + '</td></tr>';
     });
     h += '</table></div>';
+    adminBodyHtml(h);
+  });
+}
+
+// ========== 数据保险箱（仅管理员） ==========
+var BACKUP_BUSY = false;
+function backupRequest(action, payload, callback) {
+  // 走 /api/backup（注意：adminRequest 固定拼 /api/admin/，故这里直接用原生 fetch）
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  fetch(FEISHU_CONFIG.apiBase + '/api/backup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'x-xyc-key': key, 'x-xyc-device': device },
+    body: JSON.stringify(Object.assign({ action: action }, payload || {}))
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data && data.code === 401) {
+      try { sessionStorage.clear(); } catch(e) {}
+      window.location.replace('index.html');
+      return;
+    }
+    if (data && data.code === 403) { callback(null, data.msg || '无权限'); return; }
+    if (data && data.code === 0) callback(data, null);
+    else callback(null, (data && data.msg) || '操作失败');
+  })
+  .catch(function(e) { callback(null, '网络错误: ' + e.message); });
+}
+
+function loadBackupPanel() {
+  adminBodyHtml('<div class="ak-loading">加载数据保险箱...</div>');
+  backupRequest('list', {}, function(data, err) {
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">加载失败：' + (err || '未知错误') + '</div>'); return; }
+    var d = data.data || {};
+    var backups = d.backups || [];
+    var h = '<div class="ak-sec">数据自动备份到腾讯云存储，保留最近 7 份，防止误删误改无法找回。可手动立即备份，或校验照片文件是否完整。</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 6px;">';
+    h += '<button class="btn btn-primary" onclick="doBackupNow()">&#x1F4BE; 立即备份</button>';
+    h += '<button class="btn" onclick="doBackupVerify()">&#x1F50D; 校验照片</button>';
+    h += '</div>';
+    h += '<div class="ak-sec">备份记录（' + backups.length + ' 份）</div>';
+    if (!backups.length) { h += '<div class="ak-empty">暂无备份记录，点击「立即备份」创建第一份</div>'; }
+    else {
+      h += '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>备份时间</th></tr>';
+      backups.forEach(function(b) {
+        h += '<tr><td>' + escAttr(b.replace(/^backup\//, '').replace(/\.json$/, '')) + '</td></tr>';
+      });
+      h += '</table></div>';
+    }
+    h += '<div class="ak-sec">照片统计</div>';
+    h += '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>照片总数</th><th>涉及村数</th></tr>';
+    h += '<tr><td>' + (d.photos_count || 0) + '</td><td>' + (d.villages ? Object.keys(d.villages).length : 0) + '</td></tr>';
+    h += '</table></div>';
+    adminBodyHtml(h);
+  });
+}
+
+function doBackupNow() {
+  if (BACKUP_BUSY) return;
+  BACKUP_BUSY = true;
+  adminBodyHtml('<div class="ak-loading">正在备份数据（飞书全部记录导出 + 上传云端）...</div>');
+  backupRequest('backup', {}, function(data, err) {
+    BACKUP_BUSY = false;
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">备份失败：' + (err || '未知错误') + '</div>'); return; }
+    var d = data.data || {};
+    var msg = '备份成功：' + (d.file || '').replace(/^backup\//, '').replace(/\.json$/, '');
+    if (d.deleted && d.deleted.length) msg += '，已自动清理旧备份 ' + d.deleted.length + ' 份';
+    adminBodyHtml('<div class="ak-empty" style="color:var(--success)">&#x2705; ' + msg + '</div>');
+    setTimeout(loadBackupPanel, 1200);
+  });
+}
+
+function doBackupVerify() {
+  if (BACKUP_BUSY) return;
+  BACKUP_BUSY = true;
+  adminBodyHtml('<div class="ak-loading">正在校验照片存储...</div>');
+  backupRequest('verify', {}, function(data, err) {
+    BACKUP_BUSY = false;
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">校验失败：' + (err || '未知错误') + '</div>'); return; }
+    var v = data.data || {};
+    var issues = v.issues || [];
+    var h = '<div class="ak-sec">照片完整性校验结果</div>';
+    h += '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>照片总数</th><th>涉及户数</th><th>异常项</th></tr>';
+    h += '<tr><td>' + (v.total || 0) + '</td><td>' + (v.houses || 0) + '</td><td class="' + (issues.length ? 'ak-off' : 'ak-on') + '">' + issues.length + '</td></tr>';
+    h += '</table></div>';
+    if (issues.length) {
+      h += '<div class="ak-sec">异常明细（需管理员处理）</div>';
+      h += '<div style="overflow-x:auto"><table class="ak-sys-table">';
+      issues.forEach(function(it) { h += '<tr><td class="ak-off">' + escAttr(it) + '</td></tr>'; });
+      h += '</table></div>';
+    } else {
+      h += '<div class="ak-empty" style="color:var(--success)">&#x2705; 所有照片文件命名规范、无缺失</div>';
+    }
     adminBodyHtml(h);
   });
 }
