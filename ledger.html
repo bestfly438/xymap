@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>应急台账 · 新塬镇应急避险指挥系统</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta name="color-scheme" content="light">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #0a0e17;
+  --bg-card: #111827;
+  --bg-card-hover: #1a2332;
+  --border: #1e293b;
+  --border-light: #273549;
+  --text: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --primary: #ef4444;
+  --accent: #3b82f6;
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --radius: 12px;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+.topbar {
+  background: rgba(17,24,39,0.85);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.topbar .logo { display: flex; align-items: center; gap: 14px; }
+.topbar .logo-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: #fff;
+  box-shadow: 0 0 20px rgba(239,68,68,0.3);
+}
+.topbar .logo-text h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+.topbar .logo-text p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: 0.25s; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-secondary); text-decoration: none;
+}
+.back-link:hover { background: var(--bg-card-hover); color: var(--text); border-color: var(--border-light); }
+.container { max-width: 1080px; margin: 0 auto; padding: 24px 20px 60px; }
+.page-head { margin-bottom: 18px; }
+.page-head h2 { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+.page-head .ph-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; line-height: 1.7; }
+
+/* Tab 栏 */
+.tabs {
+  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.tab-btn {
+  padding: 10px 18px; border-radius: 10px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-secondary);
+  font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.25s;
+}
+.tab-btn:hover { border-color: var(--border-light); color: var(--text); }
+.tab-btn.active {
+  background: rgba(239,68,68,0.15); color: #f87171;
+  border-color: rgba(239,68,68,0.4);
+}
+/* 筛选行 */
+.filter-row {
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 16px;
+}
+.filter-row select {
+  padding: 9px 14px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text); font-size: 14px;
+  max-width: 220px;
+}
+.filter-row .f-stat { font-size: 12.5px; color: var(--text-muted); }
+.filter-row input[type=search] {
+  padding: 9px 14px; border-radius: 8px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text); font-size: 14px; flex: 1; min-width: 160px; max-width: 320px;
+}
+/* 统计卡 */
+.stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.stat-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px 16px; text-align: center;
+}
+.stat-card .num { font-size: 24px; font-weight: 800; color: var(--primary); }
+.stat-card .lbl { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+/* 表格 */
+.tbl-wrap { overflow-x: auto; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); }
+table.ak-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 720px; }
+.ak-tbl th, .ak-tbl td {
+  padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border);
+  vertical-align: top; line-height: 1.6;
+}
+.ak-tbl th { color: var(--text-muted); font-weight: 600; white-space: nowrap; background: rgba(17,24,39,0.6); position: sticky; top: 0; }
+.ak-tbl tr:last-child td { border-bottom: none; }
+.ak-tbl tr:hover td { background: var(--bg-card-hover); }
+.ak-tbl .tag { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.ak-tbl .tag.red { background: rgba(239,68,68,0.15); color: #f87171; }
+.ak-tbl .tag.orange { background: rgba(249,115,22,0.15); color: #fb923c; }
+.ak-tbl .tag.yellow { background: rgba(245,158,11,0.15); color: #fbbf24; }
+.ak-tbl .tag.blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.ak-tbl .tag.green { background: rgba(34,197,94,0.15); color: #4ade80; }
+.ak-tbl .tag.gray { background: rgba(100,116,139,0.2); color: #94a3b8; }
+.ak-tbl a.tel { color: var(--accent); text-decoration: none; }
+.ak-tbl a.tel:hover { text-decoration: underline; }
+.empty { text-align: center; color: var(--text-muted); padding: 40px 0; font-size: 13px; }
+.loading { text-align: center; color: var(--text-muted); padding: 60px 0; font-size: 14px; }
+
+/* 防汛图网格 */
+.map-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+.map-card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden; cursor: pointer; transition: 0.25s;
+}
+.map-card:hover { border-color: var(--border-light); transform: translateY(-2px); }
+.map-card .mc-img { width: 100%; height: 320px; object-fit: cover; background: #1a2332; display: block; }
+.map-card .mc-name { padding: 10px 14px; font-size: 14px; font-weight: 700; }
+.map-card .mc-name span { color: var(--text-muted); font-weight: 400; font-size: 12px; margin-left: 6px; }
+/* 大图查看 */
+.lightbox {
+  position: fixed; inset: 0; z-index: 999; background: rgba(0,0,0,0.92);
+  display: none; align-items: center; justify-content: center; padding: 20px; cursor: zoom-out;
+}
+.lightbox.show { display: flex; }
+.lightbox img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; }
+.lightbox .lb-close {
+  position: absolute; top: 16px; right: 20px; width: 40px; height: 40px;
+  border-radius: 50%; background: rgba(255,255,255,0.1); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;
+}
+.lightbox .lb-title { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); font-size: 15px; font-weight: 700; }
+
+.footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; opacity: 0.6; }
+@media (max-width: 640px) {
+  .topbar { padding: 0 14px; height: 52px; }
+  .topbar .logo-text h1 { font-size: 14px; }
+  .topbar .logo-text p { display: none; }
+  .container { padding: 16px 12px 40px; }
+  .tab-btn { padding: 8px 13px; font-size: 13px; }
+  .map-card .mc-img { height: 220px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">&#x1F4CB;</div>
+    <div class="logo-text">
+      <h1>新塬镇应急避险指挥系统</h1>
+      <p>应急台账</p>
+    </div>
+  </div>
+  <a href="dashboard.html?v=v20260816-12" class="back-link">&#x2190; 返回看板</a>
+</div>
+
+<div class="container">
+  <div class="page-head">
+    <h2>&#x1F4CB; 应急台账</h2>
+    <div class="ph-sub">特殊群体、牧羊人、安置点物资、水利工程、三级网格责任与各村防汛图，全部以最新表册为准。数据仅供防汛内部使用。</div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" id="tb-special" onclick="switchTab('special')">&#x1F47E; 特殊群体</button>
+    <button class="tab-btn" id="tb-shepherd" onclick="switchTab('shepherd')">&#x1F40F; 牧羊人</button>
+    <button class="tab-btn" id="tb-shelter" onclick="switchTab('shelter')">&#x1F3D6; 安置点物资</button>
+    <button class="tab-btn" id="tb-water" onclick="switchTab('water')">&#x1F6B0; 水利工程</button>
+    <button class="tab-btn" id="tb-grid" onclick="switchTab('grid')">&#x1F5FA; 三级网格</button>
+    <button class="tab-btn" id="tb-maps" onclick="switchTab('maps')">&#x1F5BC; 各村防汛图</button>
+  </div>
+
+  <div class="filter-row" id="filterRow">
+    <select id="villageSel" onchange="renderCurrent()"></select>
+    <input type="search" id="searchBox" placeholder="搜索姓名 / 村组 / 电话..." oninput="renderCurrent()">
+    <span class="f-stat" id="fstat"></span>
+  </div>
+
+  <div id="tabContent"><div class="loading">数据加载中...</div></div>
+</div>
+
+<!-- 大图查看 -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lb-close" onclick="closeLightbox()">&#x2715;</div>
+  <img id="lbImg" src="" alt="">
+  <div class="lb-title" id="lbTitle"></div>
+</div>
+
+<div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
+
+<script src="feishu_config.js?v=v20260816-12"></script>
+<script>
+// 权限验证：未登录跳回登录页
+if (sessionStorage.getItem('xyc_auth') !== '1') {
+  window.location.replace('index.html');
+}
+
+var VILLAGE_ORDER = ['上塬村', '东塬村', '刘家湾社区', '孟塬村', '常家坪村', '新塬村', '杨坪村', '杨家河坝村', '甘岔村', '老庄村'];
+var CUR_TAB = 'special';
+var CUR_VILLAGE = '';   // '' = 全部
+var FILTER = '';
+
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+function tel(s) {
+  var t = String(s || '').trim();
+  if (!t) return '';
+  var parts = t.split(/[,\s，、/]+/).filter(function(x) { return x; });
+  return parts.map(function(p) {
+    if (/^\d{7,}$/.test(p)) return '<a class="tel" href="tel:' + p + '">' + p + '</a>';
+    return esc(p);
+  }).join(' / ');
+}
+
+function switchTab(tab) {
+  CUR_TAB = tab;
+  var ids = ['special', 'shepherd', 'shelter', 'water', 'grid', 'maps'];
+  ids.forEach(function(t) {
+    document.getElementById('tb-' + t).classList.toggle('active', t === tab);
+  });
+  if (tab === 'maps') {
+    document.getElementById('filterRow').style.display = 'none';
+  } else {
+    document.getElementById('filterRow').style.display = 'flex';
+  }
+  renderCurrent();
+}
+
+function renderCurrent() {
+  FILTER = document.getElementById('searchBox') ? document.getElementById('searchBox').value.trim() : '';
+  CUR_VILLAGE = document.getElementById('villageSel') ? document.getElementById('villageSel').value : '';
+  if (CUR_TAB === 'special') renderSpecial();
+  else if (CUR_TAB === 'shepherd') renderShepherd();
+  else if (CUR_TAB === 'shelter') renderShelter();
+  else if (CUR_TAB === 'water') renderWater();
+  else if (CUR_TAB === 'grid') renderGrid();
+  else if (CUR_TAB === 'maps') renderMaps();
+}
+
+function matchFilter(parts) {
+  if (!FILTER) return true;
+  var f = FILTER.toLowerCase();
+  for (var i = 0; i < parts.length; i++) {
+    if (String(parts[i] || '').toLowerCase().indexOf(f) >= 0) return true;
+  }
+  return false;
+}
+
+function renderStat(items, labels) {
+  var h = '';
+  for (var i = 0; i < labels.length; i++) {
+    h += '<div class="stat-card"><div class="num">' + items[i] + '</div><div class="lbl">' + labels[i] + '</div></div>';
+  }
+  return h;
+}
+
+// ========== 特殊群体 ==========
+function renderSpecial() {
+  if (typeof SPECIAL_GROUPS === 'undefined') { document.getElementById('tabContent').innerHTML = '<div class="empty">特殊群体数据未加载</div>'; return; }
+  var list = [];
+  VILLAGE_ORDER.forEach(function(v) {
+    (SPECIAL_GROUPS[v] || []).forEach(function(x) {
+      if (CUR_VILLAGE && x.group.indexOf(CUR_VILLAGE.replace('村', '')) < 0 && v !== CUR_VILLAGE) return;
+      if (CUR_VILLAGE && v !== CUR_VILLAGE) return;
+      if (!matchFilter([x.name, x.group, x.phone, x.guardian, x.contact])) return;
+      list.push({ v: v, x: x });
+    });
+  });
+  var allCount = 0;
+  VILLAGE_ORDER.forEach(function(v) { allCount += (SPECIAL_GROUPS[v] || []).length; });
+  var alone = list.filter(function(i) { return i.x.alone === '是'; }).length;
+  var out = '';
+  out += '<div class="stat-cards">' + renderStat([list.length, allCount, alone], ['筛选显示', '全镇总数', '独居']) + '</div>';
+  out += '<div class="tbl-wrap"><table class="ak-tbl"><tr><th>村</th><th>村组</th><th>姓名</th><th>类型</th><th>状态</th><th>独居</th><th>监护人</th><th>电话</th><th>一对一转接人</th></tr>';
+  list.forEach(function(i) {
+    var tag = i.x.type.indexOf('高龄') >= 0 || i.x.type.indexOf('老人') >= 0 ? 'orange' : (i.x.type.indexOf('残疾') >= 0 ? 'red' : 'blue');
+    out += '<tr><td>' + esc(i.v) + '</td><td>' + esc(i.x.group) + '</td><td><b>' + esc(i.x.name) + '</b></td>' +
+      '<td><span class="tag ' + tag + '">' + esc(i.x.type) + '</span></td>' +
+      '<td>' + esc(i.x.status) + '</td><td>' + esc(i.x.alone === '是' ? '&#x2714; 是' : '否') + '</td>' +
+      '<td>' + esc(i.x.guardian) + '</td><td>' + tel(i.x.phone) + '</td>' +
+      '<td>' + esc(i.x.contact) + (i.x.contact_phone ? '<br>' + tel(i.x.contact_phone) : '') + '</td></tr>';
+  });
+  if (!list.length) out += '<tr><td colspan="9" class="empty">无匹配数据</td></tr>';
+  out += '</table></div>';
+  document.getElementById('tabContent').innerHTML = out;
+}
+
+// ========== 牧羊人 ==========
+function renderShepherd() {
+  if (typeof SHEPHERDS === 'undefined') { document.getElementById('tabContent').innerHTML = '<div class="empty">牧羊人数据未加载</div>'; return; }
+  var list = [];
+  VILLAGE_ORDER.forEach(function(v) {
+    (SHEPHERDS[v] || []).forEach(function(x) {
+      if (CUR_VILLAGE && v !== CUR_VILLAGE) return;
+      if (!matchFilter([x.name, x.group, x.phone, x.contact])) return;
+      list.push({ v: v, x: x });
+    });
+  });
+  var allCount = 0;
+  VILLAGE_ORDER.forEach(function(v) { allCount += (SHEPHERDS[v] || []).length; });
+  var out = '';
+  out += '<div class="stat-cards">' + renderStat([list.length, allCount], ['筛选显示', '全镇牧羊人']) + '</div>';
+  out += '<div class="tbl-wrap"><table class="ak-tbl"><tr><th>村</th><th>村组</th><th>姓名</th><th>电话</th><th>叫醒叫应责任人</th></tr>';
+  list.forEach(function(i) {
+    out += '<tr><td>' + esc(i.v) + '</td><td>' + esc(i.x.group) + '</td><td><b>' + esc(i.x.name) + '</b></td>' +
+      '<td>' + tel(i.x.phone) + '</td><td>' + tel(i.x.contact) + '</td></tr>';
+  });
+  if (!list.length) out += '<tr><td colspan="5" class="empty">无匹配数据</td></tr>';
+  out += '</table></div>';
+  document.getElementById('tabContent').innerHTML = out;
+}
+
+// ========== 安置点物资 ==========
+function renderShelter() {
+  if (typeof RELIEF_SHELTERS === 'undefined') { document.getElementById('tabContent').innerHTML = '<div class="empty">安置点数据未加载</div>'; return; }
+  var list = RELIEF_SHELTERS.filter(function(x) {
+    if (CUR_VILLAGE && x.village !== CUR_VILLAGE) return false;
+    return matchFilter([x.village, x.group, x.shelter, x.leader]);
+  });
+  var capSum = 0;
+  list.forEach(function(x) {
+    var c = parseInt(String(x.capacity || '').replace(/[^0-9]/g, ''), 10);
+    if (!isNaN(c)) capSum += c;
+  });
+  var out = '';
+  out += '<div class="stat-cards">' + renderStat([list.length, capSum], ['安置点个数', '可安置人数']) + '</div>';
+  out += '<div class="tbl-wrap"><table class="ak-tbl"><tr><th>村</th><th>村组</th><th>安置点</th><th>容量</th><th>大型机械</th><th>物资/工具</th><th>负责人</th></tr>';
+  list.forEach(function(x) {
+    var mat = [];
+    if (x.supplies) mat.push('救生:' + x.supplies);
+    if (x.tools) mat.push('工具:' + x.tools);
+    if (x.comm) mat.push('照明通信:' + x.comm);
+    if (x.life) mat.push('生活:' + x.life);
+    var machine = x.machine ? esc(x.machine) + (x.machine_count ? ' ' + esc(x.machine_count) : '') + (x.machine_op ? '（' + esc(x.machine_op) + '）' : '') : '无';
+    out += '<tr><td>' + esc(x.village) + '</td><td>' + esc(x.group) + '</td><td><b>' + esc(x.shelter) + '</b></td>' +
+      '<td>' + esc(x.capacity) + '</td><td>' + machine + '</td>' +
+      '<td style="font-size:11.5px">' + esc(mat.join('；')) + '</td>' +
+      '<td>' + esc(x.leader) + (x.phone ? '<br>' + tel(x.phone) : '') + '</td></tr>';
+  });
+  if (!list.length) out += '<tr><td colspan="7" class="empty">无匹配数据</td></tr>';
+  out += '</table></div>';
+  document.getElementById('tabContent').innerHTML = out;
+}
+
+// ========== 水利工程 ==========
+function renderWater() {
+  if (typeof WATER_WORKS === 'undefined') { document.getElementById('tabContent').innerHTML = '<div class="empty">水利工程数据未加载</div>'; return; }
+  var list = [];
+  VILLAGE_ORDER.forEach(function(v) {
+    (WATER_WORKS[v] || []).forEach(function(x) {
+      if (CUR_VILLAGE && v !== CUR_VILLAGE) return;
+      if (!matchFilter([x.name, x.group, x.type, x.leader])) return;
+      list.push({ v: v, x: x });
+    });
+  });
+  var allCount = 0;
+  VILLAGE_ORDER.forEach(function(v) { allCount += (WATER_WORKS[v] || []).length; });
+  var out = '';
+  out += '<div class="stat-cards">' + renderStat([list.length, allCount], ['筛选显示', '全镇水利工程']) + '</div>';
+  out += '<div class="tbl-wrap"><table class="ak-tbl"><tr><th>村</th><th>工程名称</th><th>类型</th><th>建设内容</th><th>规模</th><th>状态</th><th>责任人</th></tr>';
+  list.forEach(function(i) {
+    out += '<tr><td>' + esc(i.v) + '</td><td><b>' + esc(i.x.name) + '</b></td><td>' + esc(i.x.type) + '</td>' +
+      '<td>' + esc(i.x.content) + '</td><td>' + esc(i.x.scale) + '</td>' +
+      '<td><span class="tag green">' + esc(i.x.status) + '</span></td>' +
+      '<td>' + esc(i.x.leader) + (i.x.phone ? '<br>' + tel(i.x.phone) : '') + '</td></tr>';
+  });
+  if (!list.length) out += '<tr><td colspan="7" class="empty">无匹配数据</td></tr>';
+  out += '</table></div>';
+  document.getElementById('tabContent').innerHTML = out;
+}
+
+// ========== 三级网格 ==========
+function renderGrid() {
+  if (typeof GRID_RESPONSIBILITY === 'undefined') { document.getElementById('tabContent').innerHTML = '<div class="empty">三级网格数据未加载</div>'; return; }
+  var list = GRID_RESPONSIBILITY.filter(function(g) {
+    if (CUR_VILLAGE && g.village !== CUR_VILLAGE) return false;
+    return matchFilter([g.village, g.hazard, g.households, g.village_resp, g.town_resp]);
+  });
+  var out = '';
+  out += '<div class="stat-cards">' + renderStat([list.length, GRID_RESPONSIBILITY.length], ['筛选显示', '全镇风险点']) + '</div>';
+  out += '<div class="tbl-wrap"><table class="ak-tbl"><tr><th>村</th><th>风险点</th><th>户数人数</th><th>村级叫醒叫应责任人</th><th>乡镇责任人</th></tr>';
+  list.forEach(function(g) {
+    out += '<tr><td>' + esc(g.village) + '</td><td><b>' + esc(g.hazard) + '</b></td>' +
+      '<td><span class="tag red">' + esc(g.households) + '</span></td>' +
+      '<td>' + tel(g.village_resp) + '</td><td>' + tel(g.town_resp) + '</td></tr>';
+  });
+  if (!list.length) out += '<tr><td colspan="5" class="empty">无匹配数据</td></tr>';
+  out += '</table></div>';
+  document.getElementById('tabContent').innerHTML = out;
+}
+
+// ========== 各村防汛图 ==========
+function renderMaps() {
+  var out = '<div class="map-grid">';
+  VILLAGE_ORDER.forEach(function(v) {
+    out += '<div class="map-card" onclick="openMap(\'' + v + '\')">' +
+      '<img class="mc-img" src="ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-12" loading="lazy" alt="' + esc(v) + '防汛图">' +
+      '<div class="mc-name">' + esc(v) + '<span>点击查看大图</span></div></div>';
+  });
+  out += '</div>';
+  document.getElementById('tabContent').innerHTML = out;
+}
+function openMap(v) {
+  document.getElementById('lbImg').src = 'ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-12';
+  document.getElementById('lbTitle').textContent = v + ' 防汛图';
+  document.getElementById('lightbox').classList.add('show');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('show'); }
+
+// ========== 数据加载 ==========
+function loadData() {
+  loadSecureData(['special_groups.js', 'shepherds.js', 'relief_shelters.js', 'water_works.js', 'grid_responsibility.js'], function() {
+    var sel = document.getElementById('villageSel');
+    var opts = '<option value="">全部村</option>';
+    VILLAGE_ORDER.forEach(function(v) {
+      opts += '<option value="' + v + '">' + v + '</option>';
+    });
+    sel.innerHTML = opts;
+    renderCurrent();
+  });
+}
+loadData();
+</script>
+<script>
+// 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
+(function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
+</script>
+</body>
+</html>
