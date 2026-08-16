@@ -147,6 +147,7 @@ function loadSecureData(files, callback, opts) {
       if (d && d.code === 401) {
         try { sessionStorage.clear(); } catch(e) {}
         window.location.replace('index.html');
+        finish();  // 确保回调计数到位，避免页面在跳转前因缺少本次 finish 而卡住
         return;
       }
       if (attempt < 2) { loadOne(f, attempt + 1, finish); return; }          // 服务异常重试 2 次

@@ -113,13 +113,27 @@ body {
       <p>近期更新说明</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260816-14" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260816-15" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container">
   <div class="page-head">
     <h2>&#x1F4DD; 近期更新说明</h2>
     <div class="ph-sub">本次集中升级涵盖天气、预警、应急队伍、照片采集等功能，均为本次防汛备汛新增，各村可直接使用。</div>
+  </div>
+
+  <!-- v20260816-15 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v16-15</span>
+      <span class="ver-title">彻底修复"返回看板后数据不加载"：数据自愈看门狗</span>
+      <span class="ver-date">2026年8月16日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>彻底根治"返回看板数据没了"</b>：之前靠浏览器"返回缓存"的检测在部分手机（微信/QQ 内置浏览器）里不可靠，导致从子菜单返回看板时数据仍然空白。本次改为<b>三层自动自愈</b>——页面一旦重新显示、或每隔 3 秒自动检查一次，只要发现数据缺失就立即重新加载，不再依赖浏览器返回判定，任何手机都能自动恢复数据；</li>
+      <li><b>修复一个隐藏隐患</b>：会话失效跳回登录页时，之前可能因少调用一次"完成"回调而导致页面卡住，现已补上；</li>
+      <li>本次为纯前端修复，不涉及表册数据改动，全镇数据仍为 234 户 594 人。</li>
+    </ul>
   </div>
 
   <!-- v20260816-14 -->
@@ -202,7 +216,7 @@ body {
     </ul>
   </div>
 
-  <!-- v20260816-14 -->
+  <!-- v20260816-15 -->
   <div class="ver-card">
     <div class="ver-head">
       <span class="ver-badge">v12-09</span>
