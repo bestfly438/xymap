@@ -596,8 +596,8 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
     <h1>新塬镇应急避险指挥系统</h1>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="analysis.html?v=v20260816-13" class="back-link">&#x1F4CA; 专业分析</a>
-    <a href="dashboard.html?v=v20260816-13" class="back-link">&#x2190; 返回看板</a>
+    <a href="analysis.html?v=v20260816-14" class="back-link">&#x1F4CA; 专业分析</a>
+    <a href="dashboard.html?v=v20260816-14" class="back-link">&#x2190; 返回看板</a>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
       <span class="arrow">&#x25BC;</span>
@@ -687,14 +687,14 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
   <span class="plb-close">&#x2715;</span>
 </div>
 
-<script src="leaflet/leaflet.js?v=v20260816-13" defer></script>
-<script src="keys.js?v=v20260816-13" defer></script>
-<script src="feishu_config.js?v=v20260816-13" defer></script>
-<script src="photo.js?v=v20260816-13" defer></script>
-<script src="js_data/village_centers.js?v=v20260816-13" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260816-13" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260816-13" defer></script>
-<script src="js_data/rain_stations.js?v=v20260816-13" defer></script>
+<script src="leaflet/leaflet.js?v=v20260816-14" defer></script>
+<script src="keys.js?v=v20260816-14" defer></script>
+<script src="feishu_config.js?v=v20260816-14" defer></script>
+<script src="photo.js?v=v20260816-14" defer></script>
+<script src="js_data/village_centers.js?v=v20260816-14" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260816-14" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260816-14" defer></script>
+<script src="js_data/rain_stations.js?v=v20260816-14" defer></script>
 
 <script>
 // ========== 权限验证 ==========
@@ -2247,29 +2247,47 @@ document.addEventListener('click', function(e) {
 // ========== 启动 ==========
 window.onload = function() {
   // 敏感数据（隐患点名册/村情/预案/避险点等）登录后从云函数取数，就绪后再初始化地图
-  loadSecureData(['hazard_points.js', 'village_info.js', 'village_plans.js',
+  var MAP_DATA_FILES = ['hazard_points.js', 'village_info.js', 'village_plans.js',
                   'village_hazard_summary.js', 'threatened_areas.js',
-                  'evacuation_sites.js', 'backup_sites.js'], function() {
-    buildVillages();          // defer 的 village_centers.js 此时已执行，可安全构建村庄列表
-    initMap();
-    // 从看板点击村庄卡片跳转：自动选中目标村（一次性），不弹左上角信息窗（避免手机端拥挤）
-    var target = sessionStorage.getItem('xyc_map_village');
-    if (target) {
-      sessionStorage.removeItem('xyc_map_village');
-      setTimeout(function() {
-        selectVillage(target, target, true);
-      }, 800);
-    } else {
-      // 村级账号：自动定位到本村，巡查记录直接归本村
-      var myVillage = sessionStorage.getItem('xyc_village');
-      var role = sessionStorage.getItem('xyc_role') || '';
-      if (myVillage && role === '村级') {
-        setTimeout(function() {
-          selectVillage(myVillage, myVillage, true);
-        }, 800);
+                  'evacuation_sites.js', 'backup_sites.js'];
+  // 地图关键数据就绪检查：任一缺失自动重试恢复（防"返回地图后数据没了"）
+  function mapDataReady() {
+    return typeof DATA_HAZARD_POINTS !== 'undefined' &&
+           typeof VILLAGE_INFO !== 'undefined' &&
+           typeof VILLAGE_PLANS !== 'undefined' &&
+           typeof DATA_THREATENED_AREAS !== 'undefined' &&
+           typeof DATA_EVACUATION_SITES !== 'undefined' &&
+           typeof DATA_BACKUP_SITES !== 'undefined';
+  }
+  function startMap(attempt) {
+    loadSecureData(MAP_DATA_FILES, function() {
+      if (!mapDataReady()) {
+        if (attempt > 0) { setTimeout(function() { startMap(attempt - 1); }, 600); return; }
+        document.getElementById('map').innerHTML = '<div style="text-align:center;color:#f87171;padding-top:60px;font-size:15px;">&#x26A0; 数据加载失败（网络或服务器异常），<a href="javascript:location.reload()" style="color:#fbbf24;">点此刷新重试</a></div>';
+        return;
       }
-    }
-  });
+      buildVillages();          // defer 的 village_centers.js 此时已执行，可安全构建村庄列表
+      initMap();
+      // 从看板点击村庄卡片跳转：自动选中目标村（一次性），不弹左上角信息窗（避免手机端拥挤）
+      var target = sessionStorage.getItem('xyc_map_village');
+      if (target) {
+        sessionStorage.removeItem('xyc_map_village');
+        setTimeout(function() {
+          selectVillage(target, target, true);
+        }, 800);
+      } else {
+        // 村级账号：自动定位到本村，巡查记录直接归本村
+        var myVillage = sessionStorage.getItem('xyc_village');
+        var role = sessionStorage.getItem('xyc_role') || '';
+        if (myVillage && role === '村级') {
+          setTimeout(function() {
+            selectVillage(myVillage, myVillage, true);
+          }, 800);
+        }
+      }
+    }, { force: attempt < 3 });
+  }
+  startMap(3);
 };
 </script>
 <script>

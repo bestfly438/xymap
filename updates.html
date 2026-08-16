@@ -113,13 +113,29 @@ body {
       <p>近期更新说明</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260816-13" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260816-14" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container">
   <div class="page-head">
     <h2>&#x1F4DD; 近期更新说明</h2>
     <div class="ph-sub">本次集中升级涵盖天气、预警、应急队伍、照片采集等功能，均为本次防汛备汛新增，各村可直接使用。</div>
+  </div>
+
+  <!-- v20260816-14 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v16-14</span>
+      <span class="ver-title">根治"返回看板后数据消失"：数据加载自愈 + 天气时序修复 + 缓存自动失效</span>
+      <span class="ver-date">2026年8月16日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>修复天气/预警不显示（重要）</b>：查明原因是上一轮手机提速时把村庄坐标数据文件改成了"延后加载"，而天气功能在其就绪前就启动，导致各村天气和气象预警一直空白。现已改为等待坐标数据就绪后再自动启动天气，进入系统即可正常显示各村天气；</li>
+      <li><b>数据自动修复</b>：看板、地图、专业分析、应急台账四类数据加载增加"就绪自检"——如果从子菜单返回后部分数据没加载出来，系统会<b>自动重试 3 次</b>，仍失败会给出红色提示和"点此刷新"按钮，不再出现"数据没了"的空白页；</li>
+      <li><b>缓存 30 分钟自动失效</b>：之前登录一次后，数据和责任人信息会一直用旧缓存，表册更新后手机上看不到最新数据。现在数据缓存最多保留 30 分钟自动刷新，确保责任人和台账始终是最新版本；</li>
+      <li><b>补齐返回刷新</b>：使用说明、系统自检、应急台账、各村防汛图、转移流程、专业分析等页面全部加上"返回强制刷新"，手机浏览器返回看板时不再恢复旧页面；</li>
+      <li>本次为纯前端修复，不涉及表册数据改动，全镇数据仍为 234 户 594 人。</li>
+    </ul>
   </div>
 
   <!-- v20260816-13 -->
@@ -186,7 +202,7 @@ body {
     </ul>
   </div>
 
-  <!-- v20260816-13 -->
+  <!-- v20260816-14 -->
   <div class="ver-card">
     <div class="ver-head">
       <span class="ver-badge">v12-09</span>
@@ -390,6 +406,18 @@ if (sessionStorage.getItem('xyc_auth') !== '1') {
 <script>
 // 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
 (function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
+</script>
+<script>
+// bfcache 返回强制刷新：从其他页面返回本页时若浏览器恢复旧快照，异步数据可能停留在空状态
+window.addEventListener('pageshow', function(e) {
+  var need = false;
+  if (e.persisted) need = true;
+  if (!need) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) need = true;
+  }
+  if (need) window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+});
 </script>
 </body>
 </html>

@@ -143,7 +143,7 @@ body {
       <p>村干部手机使用说明</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260816-13" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260816-14" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container">
@@ -231,6 +231,18 @@ if (sessionStorage.getItem('xyc_auth') !== '1') {
 <script>
 // 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
 (function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
+</script>
+<script>
+// bfcache 返回强制刷新：从其他页面返回本页时若浏览器恢复旧快照，异步数据可能停留在空状态
+window.addEventListener('pageshow', function(e) {
+  var need = false;
+  if (e.persisted) need = true;
+  if (!need) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) need = true;
+  }
+  if (need) window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+});
 </script>
 </body>
 </html>

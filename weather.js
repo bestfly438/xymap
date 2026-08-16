@@ -421,10 +421,22 @@ document.addEventListener('change', function(e) {
 
 // ========== 初始化 ==========
 var _wxTickTimer = null;
+// village_centers.js 为 defer 加载，需等 VILLAGE_CENTERS 就绪后再启动天气（否则全部村无坐标、天气空白）
 function weatherInit() {
   if (typeof VILLAGE_ORDER !== 'undefined') WEATHER.order = VILLAGE_ORDER.slice();
   else if (typeof VILLAGE_CENTERS !== 'undefined') WEATHER.order = Object.keys(VILLAGE_CENTERS);
-  // 立即拉一次，之后到点自动刷
-  refreshAllVillages();
-  if (!_wxTickTimer) _wxTickTimer = setInterval(weatherTick, 60 * 1000); // 每分钟检查是否到刷新整点
+  function start() {
+    refreshAllVillages();
+    if (!_wxTickTimer) _wxTickTimer = setInterval(weatherTick, 60 * 1000); // 每分钟检查是否到刷新整点
+  }
+  if (typeof VILLAGE_CENTERS !== 'undefined') { start(); return; }
+  // VILLAGE_CENTERS 尚未就绪（defer 脚本未执行）：轮询等待，最多 5 秒；就绪后立即启动
+  var tries = 0;
+  var wait = setInterval(function() {
+    tries++;
+    if (typeof VILLAGE_CENTERS !== 'undefined' || tries > 50) {
+      clearInterval(wait);
+      start();
+    }
+  }, 100);
 }

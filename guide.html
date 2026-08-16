@@ -196,9 +196,9 @@ td { color: var(--text-secondary); line-height: 1.7; }
     </div>
   </div>
   <div class="top-actions">
-    <a href="transfer.html?v=v20260816-13" class="btn">&#x1F500; 转移流程</a>
-    <a href="dashboard.html?v=v20260816-13" class="btn">&#x1F3E2; 返回看板</a>
-    <a href="map.html?v=v20260816-13" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="transfer.html?v=v20260816-14" class="btn">&#x1F500; 转移流程</a>
+    <a href="dashboard.html?v=v20260816-14" class="btn">&#x1F3E2; 返回看板</a>
+    <a href="map.html?v=v20260816-14" class="btn btn-primary">&#x1F5FA; 进入地图</a>
   </div>
 </div>
 
@@ -424,6 +424,18 @@ td { color: var(--text-secondary); line-height: 1.7; }
 <script>
 // 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
 (function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
+</script>
+<script>
+// bfcache 返回强制刷新：从其他页面返回本页时若浏览器恢复旧快照，异步数据可能停留在空状态
+window.addEventListener('pageshow', function(e) {
+  var need = false;
+  if (e.persisted) need = true;
+  if (!need) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) need = true;
+  }
+  if (need) window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+});
 </script>
 </body>
 </html>

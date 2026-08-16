@@ -140,7 +140,7 @@ body {
 (function() {
   // 如果已经登录，直接跳转（带版本参数绕过缓存）
   if (sessionStorage.getItem('xyc_auth') === '1') {
-    window.location.replace('dashboard.html?v=v20260816-13');
+    window.location.replace('dashboard.html?v=v20260816-14');
   }
 })();
 
@@ -197,7 +197,7 @@ function doLogin() {
       btn.textContent = '验证通过，正在进入...';
       setTimeout(function() {
         // 带版本参数跳转：绕过浏览器缓存，确保每次都加载最新版看板页面
-        window.location.replace('dashboard.html?v=v20260816-13');
+        window.location.replace('dashboard.html?v=v20260816-14');
       }, 500);
     } else {
       btn.textContent = '进入系统';
@@ -217,6 +217,18 @@ function showError(msg) {
   input.classList.add('error');
   setTimeout(function() { input.classList.remove('error'); }, 400);
 }
+</script>
+<script>
+// bfcache 返回强制刷新：从其他页面返回本页时若浏览器恢复旧快照，异步数据可能停留在空状态
+window.addEventListener('pageshow', function(e) {
+  var need = false;
+  if (e.persisted) need = true;
+  if (!need) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) need = true;
+  }
+  if (need) window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+});
 </script>
 </body>
 </html>

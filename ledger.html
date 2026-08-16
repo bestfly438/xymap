@@ -165,7 +165,7 @@ table.ak-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; min-wi
       <p>应急台账</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260816-13" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260816-14" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container">
@@ -201,7 +201,7 @@ table.ak-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; min-wi
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="feishu_config.js?v=v20260816-13"></script>
+<script src="feishu_config.js?v=v20260816-14"></script>
 <script>
 // 权限验证：未登录跳回登录页
 if (sessionStorage.getItem('xyc_auth') !== '1') {
@@ -443,22 +443,39 @@ function renderMaps() {
   var out = '<div class="map-grid">';
   VILLAGE_ORDER.forEach(function(v) {
     out += '<div class="map-card" onclick="openMap(\'' + v + '\')">' +
-      '<img class="mc-img" src="ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-13" loading="lazy" alt="' + esc(v) + '防汛图">' +
+      '<img class="mc-img" src="ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-14" loading="lazy" alt="' + esc(v) + '防汛图">' +
       '<div class="mc-name">' + esc(v) + '<span>点击查看大图</span></div></div>';
   });
   out += '</div>';
   document.getElementById('tabContent').innerHTML = out;
 }
 function openMap(v) {
-  document.getElementById('lbImg').src = 'ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-13';
+  document.getElementById('lbImg').src = 'ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-14';
   document.getElementById('lbTitle').textContent = v + ' 防汛图';
   document.getElementById('lightbox').classList.add('show');
 }
 function closeLightbox() { document.getElementById('lightbox').classList.remove('show'); }
 
 // ========== 数据加载 ==========
-function loadData() {
-  loadSecureData(['special_groups.js', 'shepherds.js', 'relief_shelters.js', 'water_works.js', 'grid_responsibility.js'], function() {
+var LEDGER_DATA_FILES = ['special_groups.js', 'shepherds.js', 'relief_shelters.js', 'water_works.js', 'grid_responsibility.js'];
+// 台账数据就绪检查：任一文件缺失自动重试恢复（与看板同套机制，防"返回后数据没了"）
+function ledgerDataReady() {
+  return typeof SPECIAL_GROUPS !== 'undefined' &&
+         typeof SHEPHERDS !== 'undefined' &&
+         typeof RELIEF_SHELTERS !== 'undefined' &&
+         typeof WATER_WORKS !== 'undefined' &&
+         typeof GRID_RESPONSIBILITY !== 'undefined';
+}
+function loadData(attempt) {
+  loadSecureData(LEDGER_DATA_FILES, function() {
+    if (!ledgerDataReady()) {
+      if (attempt > 0) {
+        setTimeout(function() { loadData(attempt - 1); }, 600);
+        return;
+      }
+      document.getElementById('tabContent').innerHTML = '<div class="empty">&#x26A0; 数据加载失败（网络或服务器异常），<a href="javascript:location.reload()" style="color:#fbbf24;">点此刷新重试</a></div>';
+      return;
+    }
     var sel = document.getElementById('villageSel');
     var opts = '<option value="">全部村</option>';
     VILLAGE_ORDER.forEach(function(v) {
@@ -466,13 +483,25 @@ function loadData() {
     });
     sel.innerHTML = opts;
     renderCurrent();
-  });
+  }, { force: attempt < 3 });
 }
-loadData();
+loadData(3);
 </script>
 <script>
 // 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
 (function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
+</script>
+<script>
+// bfcache 返回强制刷新：从其他页面返回本页时若浏览器恢复旧快照，异步数据可能停留在空状态
+window.addEventListener('pageshow', function(e) {
+  var need = false;
+  if (e.persisted) need = true;
+  if (!need) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) need = true;
+  }
+  if (need) window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+});
 </script>
 </body>
 </html>
