@@ -165,7 +165,7 @@ table.ak-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; min-wi
       <p>应急台账</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260816-15" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260816-16" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container">
@@ -201,7 +201,7 @@ table.ak-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; min-wi
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="feishu_config.js?v=v20260816-15"></script>
+<script src="feishu_config.js?v=v20260816-16"></script>
 <script>
 // 权限验证：未登录跳回登录页
 if (sessionStorage.getItem('xyc_auth') !== '1') {
@@ -443,14 +443,14 @@ function renderMaps() {
   var out = '<div class="map-grid">';
   VILLAGE_ORDER.forEach(function(v) {
     out += '<div class="map-card" onclick="openMap(\'' + v + '\')">' +
-      '<img class="mc-img" src="ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-15" loading="lazy" alt="' + esc(v) + '防汛图">' +
+      '<img class="mc-img" src="ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-16" loading="lazy" alt="' + esc(v) + '防汛图">' +
       '<div class="mc-name">' + esc(v) + '<span>点击查看大图</span></div></div>';
   });
   out += '</div>';
   document.getElementById('tabContent').innerHTML = out;
 }
 function openMap(v) {
-  document.getElementById('lbImg').src = 'ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-15';
+  document.getElementById('lbImg').src = 'ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-16';
   document.getElementById('lbTitle').textContent = v + ' 防汛图';
   document.getElementById('lightbox').classList.add('show');
 }

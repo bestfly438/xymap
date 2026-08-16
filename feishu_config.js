@@ -159,7 +159,10 @@ function loadSecureData(files, callback, opts) {
     });
   }
   var done = 0;
-  function finish() { if (++done >= files.length && callback) callback(); }
+  // 回调统一异步触发（setTimeout 0）：命中 sessionStorage 缓存时 inject 是同步的，
+  // 若不延迟，回调会在本段同步脚本执行完之前运行，导致其引用的 var 全局变量（如 VILLAGE_ORDER）
+  // 尚未赋值而抛错、渲染链中断 —— 这正是"进入子菜单返回后数据看板只剩骨架"的根因。
+  function finish() { if (++done >= files.length && callback) setTimeout(callback, 0); }
   files.forEach(function(f) {
     if (!force && SECURE_DATA_LOADED[f]) { finish(); return; }
     if (!force) {

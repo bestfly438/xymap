@@ -113,13 +113,27 @@ body {
       <p>近期更新说明</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260816-15" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260816-16" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container">
   <div class="page-head">
     <h2>&#x1F4DD; 近期更新说明</h2>
     <div class="ph-sub">本次集中升级涵盖天气、预警、应急队伍、照片采集等功能，均为本次防汛备汛新增，各村可直接使用。</div>
+  </div>
+
+  <!-- v20260816-16 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v16-16</span>
+      <span class="ver-title">找到并修复"返回看板后数据空白"的真正根因</span>
+      <span class="ver-date">2026年8月16日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>找到真正原因</b>：之前几轮都只做了"自动重试"的补救，但进入子菜单再返回时数据依然空白。本轮逐行排查，查明根因是——返回时浏览器用了本地缓存，数据"秒加载"，导致渲染程序在页面还没初始化完时就抢跑，跑到一半报错中断，于是页面只剩骨架、数字和卡片全空；</li>
+      <li><b>从根上修复</b>：把数据加载完成后的渲染动作统一"延后一拍"，确保页面其它代码先就绪再渲染，彻底杜绝"返回后只剩骨架"，电脑和手机浏览器都适用；</li>
+      <li>本次为纯前端修复，不涉及表册数据改动，全镇数据仍为 234 户 594 人。</li>
+    </ul>
   </div>
 
   <!-- v20260816-15 -->
@@ -216,7 +230,7 @@ body {
     </ul>
   </div>
 
-  <!-- v20260816-15 -->
+  <!-- v20260816-16 -->
   <div class="ver-card">
     <div class="ver-head">
       <span class="ver-badge">v12-09</span>
