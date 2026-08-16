@@ -165,7 +165,7 @@ table.ak-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; min-wi
       <p>应急台账</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260816-12" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260816-13" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container">
@@ -201,7 +201,7 @@ table.ak-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; min-wi
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="feishu_config.js?v=v20260816-12"></script>
+<script src="feishu_config.js?v=v20260816-13"></script>
 <script>
 // 权限验证：未登录跳回登录页
 if (sessionStorage.getItem('xyc_auth') !== '1') {
@@ -302,26 +302,59 @@ function renderSpecial() {
 }
 
 // ========== 牧羊人 ==========
+// 同一村组（社）的牧羊人合并显示，叫醒叫应责任人写在社首行并纵向合并，避免误以为只有第一人有责任人
 function renderShepherd() {
   if (typeof SHEPHERDS === 'undefined') { document.getElementById('tabContent').innerHTML = '<div class="empty">牧羊人数据未加载</div>'; return; }
-  var list = [];
+  // 1) 按村组分组（数据按社连续排列）
+  var groups = [];
   VILLAGE_ORDER.forEach(function(v) {
     (SHEPHERDS[v] || []).forEach(function(x) {
-      if (CUR_VILLAGE && v !== CUR_VILLAGE) return;
-      if (!matchFilter([x.name, x.group, x.phone, x.contact])) return;
-      list.push({ v: v, x: x });
+      var gk = String(x.group || '').replace(/\n/g, ' ').trim();
+      var cur = groups.length && groups[groups.length - 1].v === v && groups[groups.length - 1].gk === gk ? groups[groups.length - 1] : null;
+      if (!cur) {
+        cur = { v: v, gk: gk, contact: x.contact || '', members: [] };
+        groups.push(cur);
+      } else if (!cur.contact && x.contact) {
+        cur.contact = x.contact;
+      }
+      cur.members.push(x);
     });
+  });
+  // 2) 筛选
+  var hit = groups.filter(function(g) {
+    if (CUR_VILLAGE && g.v !== CUR_VILLAGE) return false;
+    if (FILTER) {
+      var f = FILTER.toLowerCase();
+      var ok = g.gk.toLowerCase().indexOf(f) >= 0 || String(g.contact).toLowerCase().indexOf(f) >= 0;
+      if (!ok) {
+        for (var i = 0; i < g.members.length; i++) {
+          if (String(g.members[i].name).toLowerCase().indexOf(f) >= 0 || String(g.members[i].phone).toLowerCase().indexOf(f) >= 0) { ok = true; break; }
+        }
+      }
+      if (!ok) return false;
+    }
+    return true;
   });
   var allCount = 0;
   VILLAGE_ORDER.forEach(function(v) { allCount += (SHEPHERDS[v] || []).length; });
+  var shown = 0;
+  hit.forEach(function(g) { shown += g.members.length; });
   var out = '';
-  out += '<div class="stat-cards">' + renderStat([list.length, allCount], ['筛选显示', '全镇牧羊人']) + '</div>';
+  out += '<div class="stat-cards">' + renderStat([shown, allCount, hit.length], ['筛选显示', '全镇牧羊人', '社组数']) + '</div>';
   out += '<div class="tbl-wrap"><table class="ak-tbl"><tr><th>村</th><th>村组</th><th>姓名</th><th>电话</th><th>叫醒叫应责任人</th></tr>';
-  list.forEach(function(i) {
-    out += '<tr><td>' + esc(i.v) + '</td><td>' + esc(i.x.group) + '</td><td><b>' + esc(i.x.name) + '</b></td>' +
-      '<td>' + tel(i.x.phone) + '</td><td>' + tel(i.x.contact) + '</td></tr>';
+  hit.forEach(function(g) {
+    var rs = g.members.length;
+    g.members.forEach(function(m, i) {
+      out += '<tr>' +
+        (i === 0 ? '<td rowspan="' + rs + '">' + esc(g.v) + '</td>' +
+          '<td rowspan="' + rs + '"><b>' + esc(g.gk) + '</b><span class="fstat" style="display:block;font-size:11px">（' + rs + '人）</span></td>' : '') +
+        '<td><b>' + esc(m.name) + '</b></td>' +
+        '<td>' + tel(m.phone) + '</td>' +
+        (i === 0 ? '<td rowspan="' + rs + '">' + tel(g.contact) + '</td>' : '');
+      out += '</tr>';
+    });
   });
-  if (!list.length) out += '<tr><td colspan="5" class="empty">无匹配数据</td></tr>';
+  if (!hit.length) out += '<tr><td colspan="5" class="empty">无匹配数据</td></tr>';
   out += '</table></div>';
   document.getElementById('tabContent').innerHTML = out;
 }
@@ -410,14 +443,14 @@ function renderMaps() {
   var out = '<div class="map-grid">';
   VILLAGE_ORDER.forEach(function(v) {
     out += '<div class="map-card" onclick="openMap(\'' + v + '\')">' +
-      '<img class="mc-img" src="ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-12" loading="lazy" alt="' + esc(v) + '防汛图">' +
+      '<img class="mc-img" src="ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-13" loading="lazy" alt="' + esc(v) + '防汛图">' +
       '<div class="mc-name">' + esc(v) + '<span>点击查看大图</span></div></div>';
   });
   out += '</div>';
   document.getElementById('tabContent').innerHTML = out;
 }
 function openMap(v) {
-  document.getElementById('lbImg').src = 'ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-12';
+  document.getElementById('lbImg').src = 'ak-maps/' + encodeURIComponent(v) + '.jpg?v=v20260816-13';
   document.getElementById('lbTitle').textContent = v + ' 防汛图';
   document.getElementById('lightbox').classList.add('show');
 }
