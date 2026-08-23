@@ -106,7 +106,7 @@ function _cacheGet(f) {
     var raw = sessionStorage.getItem('xyc_data_' + f);
     if (!raw) return null;
     var obj = JSON.parse(raw);
-    if (!obj || typeof obj.c !== 'string') { sessionStorage.removeItem('xyc_data_' + f); return null; }
+    if (!obj || obj.c === undefined || obj.c === null) { sessionStorage.removeItem('xyc_data_' + f); return null; }
     if (Date.now() - (obj.t || 0) > DATA_CACHE_TTL) { sessionStorage.removeItem('xyc_data_' + f); return null; }
     return obj.c;
   } catch(e) { return null; }
@@ -117,14 +117,20 @@ function loadSecureData(files, callback, opts) {
   var key = sessionStorage.getItem('xyc_key') || '';
   var device = sessionStorage.getItem('xyc_device') || '';
   if (!key || !device) { window.location.replace('index.html'); return; }
-  // 注入并执行取到的 JS 内容，返回是否成功
-  function inject(code, f) {
+  // 安全改造：云函数 /api/data 现在返回纯 JSON（{name,data} 或 {multi,list}），
+  // 这里直接把数据赋值到 window 全局变量，不再注入 <script> 执行任何代码。
+  function inject(d, f) {
     try {
-      var s = document.createElement('script');
-      s.textContent = code;          // 注入执行，文件内的 var 声明成为全局变量
-      document.head.appendChild(s);
+      var obj = (typeof d === 'string') ? JSON.parse(d) : d;
+      if (obj && obj.multi && obj.list) {
+        obj.list.forEach(function(it) { if (it && it.name) window[it.name] = it.data; });
+      } else if (obj && obj.name) {
+        window[obj.name] = obj.data;
+      } else {
+        return false;
+      }
       SECURE_DATA_LOADED[f] = true;
-      _cacheSet(f, code);
+      _cacheSet(f, obj);
       return true;
     } catch(e) { return false; }
   }

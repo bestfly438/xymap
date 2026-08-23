@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>新塬镇应急避险指挥系统 - 数据看板</title>
@@ -581,15 +582,15 @@ body {
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button class="btn" id="akSysBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-    <a href="analysis.html?v=v20260816-16" class="btn btn-primary">&#x1F4CA; 专业分析</a>
-    <a href="radar.html?v=v20260816-16" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
-    <a href="transfer.html?v=v20260816-16" class="btn">&#x1F500; 转移流程</a>
-    <a href="guide.html?v=v20260816-16" class="btn">&#x1F4D6; 防汛应急指南</a>
-    <a href="manual.html?v=v20260816-16" class="btn">&#x1F4F1; 使用说明</a>
-    <a href="ledger.html?v=v20260816-16" class="btn">&#x1F4CB; 应急台账</a>
-    <a href="updates.html?v=v20260816-16" class="btn">&#x1F4C4; 近期更新</a>
-    <a href="health.html?v=v20260816-16" class="btn" id="akHealthBtn" style="display:none">&#x1F50D; 系统自检</a>
-    <a href="map.html?v=v20260816-16" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="analysis.html?v=v20260823-17" class="btn btn-primary">&#x1F4CA; 专业分析</a>
+    <a href="radar.html?v=v20260823-17" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
+    <a href="transfer.html?v=v20260823-17" class="btn">&#x1F500; 转移流程</a>
+    <a href="guide.html?v=v20260823-17" class="btn">&#x1F4D6; 防汛应急指南</a>
+    <a href="manual.html?v=v20260823-17" class="btn">&#x1F4F1; 使用说明</a>
+    <a href="ledger.html?v=v20260823-17" class="btn">&#x1F4CB; 应急台账</a>
+    <a href="updates.html?v=v20260823-17" class="btn">&#x1F4C4; 近期更新</a>
+    <a href="health.html?v=v20260823-17" class="btn" id="akHealthBtn" style="display:none">&#x1F50D; 系统自检</a>
+    <a href="map.html?v=v20260823-17" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
     <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
@@ -597,15 +598,15 @@ body {
 
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
-  <a href="map.html?v=v20260816-16" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260816-16" class="mm-item">&#x1F4CA; 专业分析</a>
-  <a href="radar.html?v=v20260816-16" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
-  <a href="transfer.html?v=v20260816-16" class="mm-item">&#x1F500; 转移流程</a>
-  <a href="guide.html?v=v20260816-16" class="mm-item">&#x1F4D6; 防汛应急指南</a>
-  <a href="manual.html?v=v20260816-16" class="mm-item">&#x1F4F1; 手机使用说明</a>
-  <a href="ledger.html?v=v20260816-16" class="mm-item">&#x1F4CB; 应急台账</a>
-  <a href="updates.html?v=v20260816-16" class="mm-item">&#x1F4C4; 近期更新</a>
-  <a href="health.html?v=v20260816-16" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
+  <a href="map.html?v=v20260823-17" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="analysis.html?v=v20260823-17" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="radar.html?v=v20260823-17" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
+  <a href="transfer.html?v=v20260823-17" class="mm-item">&#x1F500; 转移流程</a>
+  <a href="guide.html?v=v20260823-17" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+  <a href="manual.html?v=v20260823-17" class="mm-item">&#x1F4F1; 手机使用说明</a>
+  <a href="ledger.html?v=v20260823-17" class="mm-item">&#x1F4CB; 应急台账</a>
+  <a href="updates.html?v=v20260823-17" class="mm-item">&#x1F4C4; 近期更新</a>
+  <a href="health.html?v=v20260823-17" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
   <button class="mm-item" id="akSysBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录 / 数据保险箱）</button>
   <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
@@ -769,25 +770,29 @@ body {
 
   <!-- 进入地图 -->
   <div class="map-entry">
-    <a href="map.html?v=v20260816-16">&#x1F5FA; 进入应急避险地图</a>
+    <a href="map.html?v=v20260823-17">&#x1F5FA; 进入应急避险地图</a>
   </div>
 </div>
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="keys.js?v=v20260816-16"></script>
-<script src="feishu_config.js?v=v20260816-16"></script>
-<script src="weather.js?v=v20260816-16"></script>
-<script src="photo.js?v=v20260816-16"></script>
-<script src="js_data/village_centers.js?v=v20260816-16" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260816-16" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260816-16" defer></script>
-<script src="js_data/rain_stations.js?v=v20260816-16" defer></script>
+<script src="feishu_config.js?v=v20260823-17"></script>
+<script src="weather.js?v=v20260823-17"></script>
+<script src="photo.js?v=v20260823-17"></script>
+<script src="js_data/village_centers.js?v=v20260823-17" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260823-17" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260823-17" defer></script>
+<script src="js_data/rain_stations.js?v=v20260823-17" defer></script>
 
 <script>
 // 权限验证
 if (sessionStorage.getItem('xyc_auth') !== '1') {
   window.location.replace('index.html');
+}
+
+// ========== 通用 HTML 转义（防存储型 XSS，所有拼入 innerHTML 的数据必须过 esc） ==========
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 // ========== bfcache 往返缓存修复 ==========
@@ -1164,32 +1169,32 @@ function refreshVillageGrid() {
       }
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260816-16';
+      window.location.href = 'map.html?v=v20260823-17';
     };
 
     var html = '';
     html += '<div class="vc-header">';
-    html += '<span class="vc-name">' + vname + '</span>';
+    html += '<span class="vc-name">' + esc(vname) + '</span>';
     html += badge;
     html += '</div>';
 
     if (isEditMode) {
-      html += '<button class="vc-edit-btn" onclick="event.stopPropagation();saveVillageEdit(\'' + vname + '\')" title="保存">&#x1F4BE;</button>';
+      html += '<button class="vc-edit-btn" onclick="event.stopPropagation();saveVillageEdit(\'' + esc(vname) + '\')" title="保存">&#x1F4BE;</button>';
       html += '<div class="vc-stats">';
       html += '<div class="vc-stat"><div class="vcs-num">' + (stats.households > 0 ? stats.households : '-') + '</div><div class="vcs-label">切坡建房(户)</div></div>';
       html += '<div class="vc-stat"><div class="vcs-num">' + (stats.hazards > 0 ? stats.hazards : '-') + '</div><div class="vcs-label">隐患点(个)</div></div>';
       html += '</div>';
-      html += '<div class="vc-contact"><span class="vc-strong">总指挥：</span><input class="edit-input vc-edit-leader" value="' + (info ? info.leader.replace(/灾害防御总指挥\s*/, '') : '') + '" placeholder="姓名+电话"></div>';
-      html += '<div class="vc-contact"><span class="vc-strong">电话：</span><input class="edit-input small vc-edit-phone" value="' + (phone || '') + '" placeholder="11位手机号"></div>';
-      html += '<div class="vc-contact"><span class="vc-strong">乡镇责任人：</span><input class="edit-input vc-edit-town" value="' + (info ? info.town_contact.replace(/乡镇包抓责任人\s*/, '').replace(/谁组织\s*/, '') : '') + '" placeholder="姓名+电话"></div>';
-      html += '<div class="vc-contact"><span class="vc-strong">电话：</span><input class="edit-input small vc-edit-townphone" value="' + (townPhone || '') + '" placeholder="11位手机号"></div>';
+      html += '<div class="vc-contact"><span class="vc-strong">总指挥：</span><input class="edit-input vc-edit-leader" value="' + esc(info ? info.leader.replace(/灾害防御总指挥\s*/, '') : '') + '" placeholder="姓名+电话"></div>';
+      html += '<div class="vc-contact"><span class="vc-strong">电话：</span><input class="edit-input small vc-edit-phone" value="' + esc(phone || '') + '" placeholder="11位手机号"></div>';
+      html += '<div class="vc-contact"><span class="vc-strong">乡镇责任人：</span><input class="edit-input vc-edit-town" value="' + esc(info ? info.town_contact.replace(/乡镇包抓责任人\s*/, '').replace(/谁组织\s*/, '') : '') + '" placeholder="姓名+电话"></div>';
+      html += '<div class="vc-contact"><span class="vc-strong">电话：</span><input class="edit-input small vc-edit-townphone" value="' + esc(townPhone || '') + '" placeholder="11位手机号"></div>';
     } else {
       html += '<div class="vc-stats">';
       html += '<div class="vc-stat"><div class="vcs-num">' + stats.households + '</div><div class="vcs-label">切坡建房(户)</div></div>';
       html += '<div class="vc-stat"><div class="vcs-num">' + stats.hazards + '</div><div class="vcs-label">隐患点(个)</div></div>';
       html += '</div>';
-      html += (leaderName ? '<div class="vc-contact"><span class="vc-strong">总指挥：</span>' + leaderName + '</div>' : '');
-      html += (phone ? '<div class="vc-contact"><span class="vc-strong">电话：</span>' + phone + '</div>' : '');
+      html += (leaderName ? '<div class="vc-contact"><span class="vc-strong">总指挥：</span>' + esc(leaderName) + '</div>' : '');
+      html += (phone ? '<div class="vc-contact"><span class="vc-strong">电话：</span>' + esc(phone) + '</div>' : '');
       html += '<div class="vc-hint">查看地图 &#x2192;</div>';
       html += '<div class="vc-accent-bar"></div>';
     }
@@ -1219,21 +1224,21 @@ function refreshContactLists() {
       var phoneMatch = leader.match(/\d{11}/);
       var phoneVal = phoneMatch ? phoneMatch[0] : (info.leader_phone || '');
       if (isEditMode) {
-        div.innerHTML = '<span class="cc-name">' + vname + '</span>' +
-          '<input class="edit-input" value="' + namePart + '" data-vname="' + vname + '" data-field="leader_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
-          '<input class="edit-input small" value="' + phoneVal + '" data-vname="' + vname + '" data-field="leader_phone" onchange="onContactPhoneChange(this)">';
+        div.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<input class="edit-input" value="' + esc(namePart) + '" data-vname="' + esc(vname) + '" data-field="leader_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
+          '<input class="edit-input small" value="' + esc(phoneVal) + '" data-vname="' + esc(vname) + '" data-field="leader_phone" onchange="onContactPhoneChange(this)">';
       } else {
-        div.innerHTML = '<span class="cc-name">' + vname + '</span>' +
-          '<span class="cc-role">' + namePart + '</span>' +
-          '<span class="cc-phone">' + phoneVal + '</span>';
+        div.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<span class="cc-role">' + esc(namePart) + '</span>' +
+          '<span class="cc-phone">' + esc(phoneVal) + '</span>';
       }
     } else {
       if (isEditMode) {
-        div.innerHTML = '<span class="cc-name">' + vname + '</span>' +
-          '<input class="edit-input" placeholder="总指挥姓名" data-vname="' + vname + '" data-field="leader_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
-          '<input class="edit-input small" placeholder="电话" data-vname="' + vname + '" data-field="leader_phone" onchange="onContactPhoneChange(this)">';
+        div.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<input class="edit-input" placeholder="总指挥姓名" data-vname="' + esc(vname) + '" data-field="leader_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
+          '<input class="edit-input small" placeholder="电话" data-vname="' + esc(vname) + '" data-field="leader_phone" onchange="onContactPhoneChange(this)">';
       } else {
-        div.innerHTML = '<span class="cc-name">' + vname + '</span>' +
+        div.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
           '<span class="cc-role" style="color:var(--text-muted);">暂无数据</span>' +
           '<span class="cc-phone"></span>';
       }
@@ -1250,21 +1255,21 @@ function refreshContactLists() {
       var tphoneMatch = tc.match(/\d{11}/);
       var tphoneVal = tphoneMatch ? tphoneMatch[0] : (info.town_phone || '');
       if (isEditMode) {
-        tdiv.innerHTML = '<span class="cc-name">' + vname + '</span>' +
-          '<input class="edit-input" value="' + tnamePart + '" data-vname="' + vname + '" data-field="town_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
-          '<input class="edit-input small" value="' + tphoneVal + '" data-vname="' + vname + '" data-field="town_phone" onchange="onContactPhoneChange(this)">';
+        tdiv.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<input class="edit-input" value="' + esc(tnamePart) + '" data-vname="' + esc(vname) + '" data-field="town_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
+          '<input class="edit-input small" value="' + esc(tphoneVal) + '" data-vname="' + esc(vname) + '" data-field="town_phone" onchange="onContactPhoneChange(this)">';
       } else {
-        tdiv.innerHTML = '<span class="cc-name">' + vname + '</span>' +
-          '<span class="cc-role">' + tnamePart + '</span>' +
-          '<span class="cc-phone">' + tphoneVal + '</span>';
+        tdiv.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<span class="cc-role">' + esc(tnamePart) + '</span>' +
+          '<span class="cc-phone">' + esc(tphoneVal) + '</span>';
       }
     } else {
       if (isEditMode) {
-        tdiv.innerHTML = '<span class="cc-name">' + vname + '</span>' +
-          '<input class="edit-input" placeholder="乡镇责任人" data-vname="' + vname + '" data-field="town_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
-          '<input class="edit-input small" placeholder="电话" data-vname="' + vname + '" data-field="town_phone" onchange="onContactPhoneChange(this)">';
+        tdiv.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<input class="edit-input" placeholder="乡镇责任人" data-vname="' + esc(vname) + '" data-field="town_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
+          '<input class="edit-input small" placeholder="电话" data-vname="' + esc(vname) + '" data-field="town_phone" onchange="onContactPhoneChange(this)">';
       } else {
-        tdiv.innerHTML = '<span class="cc-name">' + vname + '</span>' +
+        tdiv.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
           '<span class="cc-role" style="color:var(--text-muted);">暂无数据</span>' +
           '<span class="cc-phone"></span>';
       }
@@ -1304,7 +1309,7 @@ function renderTeams() {
     div.className = 'team-vill';
     div.innerHTML =
       '<div class="team-vill-head" onclick="event.stopPropagation();this.parentElement.classList.toggle(\'open\')">' +
-        '<span>' + v + '</span>' +
+        '<span>' + esc(v) + '</span>' +
         '<span class="tv-meta">' + arr.length + ' 支队伍 · ' + people + ' 人</span>' +
         '<span class="tv-arrow">&#x25B6;</span>' +
       '</div>' +
@@ -1318,13 +1323,13 @@ function buildTeamRows(arr) {
     var name = t.team || (t.group || '');
     var members = t.members || '';
     html += '<div class="team-row">' +
-      '<div class="tr-group">' + (t.group || '') + '</div>' +
+      '<div class="tr-group">' + esc(t.group || '') + '</div>' +
       '<div class="tr-leader">' +
-        '<span class="tr-name">' + name + '</span>' +
-        (members ? '<div class="tr-members">成员：' + members + '</div>' : '') +
-        '<div class="tr-members">负责人：' + (t.leader || '-') + '</div>' +
+        '<span class="tr-name">' + esc(name) + '</span>' +
+        (members ? '<div class="tr-members">成员：' + esc(members) + '</div>' : '') +
+        '<div class="tr-members">负责人：' + esc(t.leader || '-') + '</div>' +
       '</div>' +
-      (t.phone ? '<a class="tr-phone" href="tel:' + t.phone + '">' + t.phone + '</a>' : '') +
+      (t.phone ? '<a class="tr-phone" href="tel:' + esc(t.phone) + '">' + esc(t.phone) + '</a>' : '') +
     '</div>';
   });
   return html;

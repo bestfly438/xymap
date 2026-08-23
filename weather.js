@@ -17,6 +17,11 @@ var WEATHER = {
   loaded: false,
 };
 
+// 通用 HTML 转义（外部数据/可编辑数据拼入 innerHTML 前必须转义）
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 // 村名映射：看板全名 → 坐标表短名
 var WX_FULL2SHORT = { '常家坪村': '常坪村', '杨家河坝村': '河坝村' };
 function wxShort(vname) { return WX_FULL2SHORT[vname] || vname; }
@@ -281,7 +286,7 @@ function renderGeoHazard() {
     if (isLocal) {
       block.style.borderColor = 'rgba(239,68,68,0.8)';
       body.innerHTML = '<b style="color:#f87171;">&#x26A0; 涉及本镇区域！</b> ' +
-        '<span style="color:#fbbf24;">'+ c +'</span>';
+        '<span style="color:#fbbf24;">' + esc(c) + '</span>';
       note.textContent = '提示：地灾预警等级高时，切坡建房、临崖临河隐患点受威胁人员请按村组通知及时转移避险。';
       note.className = 'geo-warn-note local';
     } else {

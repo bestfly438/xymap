@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>新塬镇应急避险指挥系统</title>
@@ -596,8 +597,8 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
     <h1>新塬镇应急避险指挥系统</h1>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="analysis.html?v=v20260816-16" class="back-link">&#x1F4CA; 专业分析</a>
-    <a href="dashboard.html?v=v20260816-16" class="back-link">&#x2190; 返回看板</a>
+    <a href="analysis.html?v=v20260823-17" class="back-link">&#x1F4CA; 专业分析</a>
+    <a href="dashboard.html?v=v20260823-17" class="back-link">&#x2190; 返回看板</a>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
       <span class="arrow">&#x25BC;</span>
@@ -687,14 +688,13 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
   <span class="plb-close">&#x2715;</span>
 </div>
 
-<script src="leaflet/leaflet.js?v=v20260816-16" defer></script>
-<script src="keys.js?v=v20260816-16" defer></script>
-<script src="feishu_config.js?v=v20260816-16" defer></script>
-<script src="photo.js?v=v20260816-16" defer></script>
-<script src="js_data/village_centers.js?v=v20260816-16" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260816-16" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260816-16" defer></script>
-<script src="js_data/rain_stations.js?v=v20260816-16" defer></script>
+<script src="leaflet/leaflet.js?v=v20260823-17" defer></script>
+<script src="feishu_config.js?v=v20260823-17" defer></script>
+<script src="photo.js?v=v20260823-17" defer></script>
+<script src="js_data/village_centers.js?v=v20260823-17" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260823-17" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260823-17" defer></script>
+<script src="js_data/rain_stations.js?v=v20260823-17" defer></script>
 
 <script>
 // ========== 权限验证 ==========
@@ -855,47 +855,52 @@ function navigateTo(lng, lat, name) {
   }, { enableHighAccuracy: true, timeout: 10000 });
 }
 
-// PC端：调用高德Web服务API规划驾车路线（JSONP方式，不受跨域限制）
+// PC端：调用云函数 /api/route 中转高德驾车路线（安全改造：高德 Key 不再出现在前端）
 function planRoute(slng, slat, elng, elat, name) {
   clearRoute();
-  if (typeof AMAP_KEY === 'undefined' || !AMAP_KEY) {
+  showRouteInfo('正在规划驾车路线...');
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  fetch(FEISHU_CONFIG.apiBase + '/api/route', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-xyc-key': key,
+      'x-xyc-device': device
+    },
+    body: JSON.stringify({ origin: slng + ',' + slat, destination: elng + ',' + elat })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d && d.code === 0 && d.data) { handleRouteResult(d.data, elng, elat, name); return; }
     hideRouteInfo();
-    alert('未配置高德API Key，无法规划路线');
+    alert('路线获取失败：' + ((d && d.msg) || '未知原因'));
+  })
+  .catch(function() { hideRouteInfo(); alert('网络错误，路线获取失败'); });
+}
+function handleRouteResult(data, elng, elat, name) {
+  if (!data || data.status !== '1' || !data.route || !data.route.paths || data.route.paths.length === 0) {
+    hideRouteInfo();
+    alert('未找到可行路线：' + ((data && data.info) || '未知原因'));
     return;
   }
-  showRouteInfo('正在规划驾车路线...');
-  var url = 'https://restapi.amap.com/v3/direction/driving?origin=' + slng + ',' + slat +
-    '&destination=' + elng + ',' + elat + '&extensions=all&key=' + AMAP_KEY + '&callback=__amapRouteCb';
-  window.__amapRouteCb = function(data) {
-    var s = document.querySelector('script[data-navroute="1"]');
-    if (s) s.parentNode.removeChild(s);
-    if (!data || data.status !== '1' || !data.route || !data.route.paths || data.route.paths.length === 0) {
-      hideRouteInfo();
-      alert('未找到可行路线：' + ((data && data.info) || '未知原因'));
-      return;
-    }
-    var path = data.route.paths[0];
-    var points = [];
-    (path.steps || []).forEach(function(st) {
-      if (!st.polyline) return;
-      st.polyline.split(';').forEach(function(pt) {
-        var xy = pt.split(',');
-        if (xy.length >= 2) points.push([parseFloat(xy[1]), parseFloat(xy[0])]);
-      });
+  var path = data.route.paths[0];
+  var points = [];
+  (path.steps || []).forEach(function(st) {
+    if (!st.polyline) return;
+    st.polyline.split(';').forEach(function(pt) {
+      var xy = pt.split(',');
+      if (xy.length >= 2) points.push([parseFloat(xy[1]), parseFloat(xy[0])]);
     });
-    if (points.length === 0) { hideRouteInfo(); alert('路线解析失败，请重试'); return; }
-    routeLayer = L.polyline(points, { color: '#3b82f6', weight: 5, opacity: 0.9, dashArray: '10, 8' }).addTo(map);
-    map.fitBounds(routeLayer.getBounds(), { padding: [60, 60] });
-    routeMarker = L.circleMarker([elat, elng], { radius: 8, fillColor: '#ef4444', color: '#fff', weight: 2, fillOpacity: 0.9 })
-      .addTo(map).bindPopup('<b>' + name + '</b>（终点）');
-    var distKm = (path.distance / 1000).toFixed(1);
-    var mins = Math.round(path.duration / 60);
-    showRouteInfo('&#x1F6E3; 驾车约 <b>' + distKm + ' 公里</b> · 预计 <b>' + mins + ' 分钟</b>');
-  };
-  var script = document.createElement('script');
-  script.setAttribute('data-navroute', '1');
-  script.src = url;
-  document.head.appendChild(script);
+  });
+  if (points.length === 0) { hideRouteInfo(); alert('路线解析失败，请重试'); return; }
+  routeLayer = L.polyline(points, { color: '#3b82f6', weight: 5, opacity: 0.9, dashArray: '10, 8' }).addTo(map);
+  map.fitBounds(routeLayer.getBounds(), { padding: [60, 60] });
+  routeMarker = L.circleMarker([elat, elng], { radius: 8, fillColor: '#ef4444', color: '#fff', weight: 2, fillOpacity: 0.9 })
+    .addTo(map).bindPopup('<b>' + esc(name) + '</b>（终点）');
+  var distKm = (path.distance / 1000).toFixed(1);
+  var mins = Math.round(path.duration / 60);
+  showRouteInfo('&#x1F6E3; 驾车约 <b>' + distKm + ' 公里</b> · 预计 <b>' + mins + ' 分钟</b>');
 }
 
 // 导航按钮 HTML（安置点/备选点弹窗通用）
@@ -1053,29 +1058,29 @@ function loadHazardPoints() {
       else if (risk.indexOf('一般') >= 0) badgeClass = 'warn';
 
       var html = '<div class="popup-content">';
-      html += '<div class="pop-title">' + (p.HZXM || '隐患点') + ' 的家</div>';
+      html += '<div class="pop-title">' + esc(p.HZXM || '隐患点') + ' 的家</div>';
 
       // 户主信息
-      if (p.HZXM) html += '<div class="pop-row"><span class="pop-label">户主</span><span class="pop-val">' + p.HZXM + '</span></div>';
-      if (p.phone) html += '<div class="pop-row"><span class="pop-label">电话</span><span class="pop-val">' + p.phone + '</span></div>';
+      if (p.HZXM) html += '<div class="pop-row"><span class="pop-label">户主</span><span class="pop-val">' + esc(p.HZXM) + '</span></div>';
+      if (p.phone) html += '<div class="pop-row"><span class="pop-label">电话</span><span class="pop-val">' + esc(p.phone) + '</span></div>';
 
       // 村组
       var cz = shpToFullName(p.CZ) || p.CZ;
-      if (cz) html += '<div class="pop-row"><span class="pop-label">所属村组</span><span class="pop-val">' + cz + '</span></div>';
+      if (cz) html += '<div class="pop-row"><span class="pop-label">所属村组</span><span class="pop-val">' + esc(cz) + '</span></div>';
 
       // 风险等级
-      if (risk) html += '<div class="pop-row"><span class="pop-label">风险等级</span><span class="pop-val"><span class="pop-badge ' + badgeClass + '">' + risk + '</span></span></div>';
+      if (risk) html += '<div class="pop-row"><span class="pop-label">风险等级</span><span class="pop-val"><span class="pop-badge ' + esc(badgeClass) + '">' + esc(risk) + '</span></span></div>';
 
       // 责任人
-      if (p.resp_person) html += '<div class="pop-row"><span class="pop-label">避险责任人</span><span class="pop-val">' + p.resp_person + '</span></div>';
-      if (p.resp_phone) html += '<div class="pop-row"><span class="pop-label">责任人电话</span><span class="pop-val">' + p.resp_phone + '</span></div>';
+      if (p.resp_person) html += '<div class="pop-row"><span class="pop-label">避险责任人</span><span class="pop-val">' + esc(p.resp_person) + '</span></div>';
+      if (p.resp_phone) html += '<div class="pop-row"><span class="pop-label">责任人电话</span><span class="pop-val">' + esc(p.resp_phone) + '</span></div>';
 
       // 避险点
-      if (p.evac_site) html += '<div class="pop-row"><span class="pop-label">避险点</span><span class="pop-val">' + p.evac_site + '</span></div>';
+      if (p.evac_site) html += '<div class="pop-row"><span class="pop-label">避险点</span><span class="pop-val">' + esc(p.evac_site) + '</span></div>';
 
       // 隐患详情（YHXX原始文本）
       if (p.YHXX) {
-        var desc = p.YHXX.replace(/\n/g, '<br>');
+        var desc = esc(p.YHXX).replace(/\n/g, '<br>');
         html += '<div class="pop-desc">' + desc + '</div>';
       }
 
@@ -1083,7 +1088,7 @@ function loadHazardPoints() {
       var popVillage = shpToFullName(p.CZ) || p.CZ || '';
       var popOwner = p.HZXM || '';
       if (popVillage && popOwner) {
-        html += '<div class="pop-photos" data-v="' + popVillage + '" data-o="' + popOwner + '"><span class="ph-muted">照片加载中...</span></div>';
+        html += '<div class="pop-photos" data-v="' + esc(popVillage) + '" data-o="' + esc(popOwner) + '"><span class="ph-muted">照片加载中...</span></div>';
       }
 
       html += '</div>';
@@ -1147,7 +1152,7 @@ function loadEvacuationSites() {
       // 点击弹窗：显示安置点信息 + 一键导航
       var ll = layer.getLatLng();
       var html = '<div class="popup-content">';
-      html += '<div class="pop-title">&#x1F3E0; ' + name + '</div>';
+      html += '<div class="pop-title">&#x1F3E0; ' + esc(name) + '</div>';
       if (p.RESPONSIBLE) html += '<div class="pop-row"><span class="pop-label">负责人</span><span class="pop-val">' + esc(p.RESPONSIBLE) + '</span></div>';
       if (p.PHONE || p.TEL) {
         var ph = p.PHONE || p.TEL;
@@ -1177,7 +1182,7 @@ function loadBackupSites() {
       // 点击弹窗：显示备选点信息 + 一键导航
       var ll = layer.getLatLng();
       var html = '<div class="popup-content">';
-      html += '<div class="pop-title">&#x1F3E0; ' + name + '</div>';
+      html += '<div class="pop-title">&#x1F3E0; ' + esc(name) + '</div>';
       if (p.RESPONSIBLE) html += '<div class="pop-row"><span class="pop-label">负责人</span><span class="pop-val">' + esc(p.RESPONSIBLE) + '</span></div>';
       if (p.PHONE || p.TEL) {
         var ph = p.PHONE || p.TEL;
@@ -1214,75 +1219,93 @@ function loadThreatenedAreas() {
   }).addTo(layers.threatened);
 }
 
-function loadLargeLayers() {
-  fetch('js_data/rivers_simple.js')
-    .then(function(r) { return r.text(); })
-    .then(function(js) {
-      eval(js);
-      if (typeof rivers_simple !== 'undefined') {
-        var data = convertGeoJSON(rivers_simple);
-        L.geoJSON(data, {
-          style: { color: '#00bcd4', weight: 1.5, opacity: 0.45 }
-        }).addTo(layers.rivers);
+// 安全加载 js_data 静态文件：解析 `var NAME = {...}` 为 JSON 后赋值全局变量（不再使用 eval）
+function parseJsDataText(text) {
+  try {
+    var clean = String(text || '').replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/.*$/gm, '$1');
+    var m = /(?:^|\n)\s*(?:var\s+|window\.)?([A-Za-z_$][\w$]*)\s*=\s*([\[\{])/.exec(clean);
+    if (!m) return null;
+    var name = m[1], open = m[2], close = open === '{' ? '}' : ']';
+    var depth = 0, inStr = false, escF = false, seg = '', i = m.index + m[0].length - 1;
+    for (; i < clean.length; i++) {
+      var ch = clean[i];
+      if (inStr) {
+        seg += ch;
+        if (escF) escF = false;
+        else if (ch === '\\') escF = true;
+        else if (ch === '"') inStr = false;
+        continue;
       }
-    })
-    .catch(function() { console.log('河道数据加载失败'); });
+      if (ch === '"') { inStr = true; seg += ch; continue; }
+      if (ch === open) depth++;
+      else if (ch === close) { depth--; if (depth === 0) { seg += ch; i++; break; } }
+      seg += ch;
+    }
+    if (depth !== 0) return null;
+    window[name] = JSON.parse(seg);
+    return { name: name, data: window[name] };
+  } catch (e) { return null; }
+}
+function loadJsData(path, onload) {
+  fetch(path).then(function(r) { return r.text(); }).then(function(js) {
+    var v = parseJsDataText(js);
+    if (onload) onload(v);
+  }).catch(function() { if (onload) onload(null); });
+}
 
-  fetch('js_data/roads_simple.js')
-    .then(function(r) { return r.text(); })
-    .then(function(js) {
-      eval(js);
-      if (typeof roads_simple !== 'undefined') {
-        var data = convertGeoJSON(roads_simple);
-        L.geoJSON(data, {
-          style: { color: '#9e9e9e', weight: 1.5, opacity: 0.45 }
-        }).addTo(layers.roads);
-      }
-    })
-    .catch(function() { console.log('道路数据加载失败'); });
+function loadLargeLayers() {
+  loadJsData('js_data/rivers_simple.js', function(v) {
+    if (v && typeof rivers_simple !== 'undefined') {
+      var data = convertGeoJSON(rivers_simple);
+      L.geoJSON(data, {
+        style: { color: '#00bcd4', weight: 1.5, opacity: 0.45 }
+      }).addTo(layers.rivers);
+    } else { console.log('河道数据加载失败'); }
+  });
+
+  loadJsData('js_data/roads_simple.js', function(v) {
+    if (v && typeof roads_simple !== 'undefined') {
+      var data = convertGeoJSON(roads_simple);
+      L.geoJSON(data, {
+        style: { color: '#9e9e9e', weight: 1.5, opacity: 0.45 }
+      }).addTo(layers.roads);
+    } else { console.log('道路数据加载失败'); }
+  });
 
   // 主要道路（省道县道）
-  fetch('js_data/major_roads.js')
-    .then(function(r) { return r.text(); })
-    .then(function(js) {
-      eval(js);
-      if (typeof major_roads !== 'undefined') {
-        var data = convertGeoJSON(major_roads);
-        L.geoJSON(data, {
-          style: { color: '#f5a623', weight: 2.5, opacity: 0.7 }
-        }).addTo(layers.majorRoads);
-      }
-    })
-    .catch(function() { console.log('主要道路数据加载失败'); });
+  loadJsData('js_data/major_roads.js', function(v) {
+    if (v && typeof major_roads !== 'undefined') {
+      var data = convertGeoJSON(major_roads);
+      L.geoJSON(data, {
+        style: { color: '#f5a623', weight: 2.5, opacity: 0.7 }
+      }).addTo(layers.majorRoads);
+    } else { console.log('主要道路数据加载失败'); }
+  });
 
   // 地名标注
-  fetch('js_data/place_names.js')
-    .then(function(r) { return r.text(); })
-    .then(function(js) {
-      eval(js);
-      if (typeof DATA_PLACE_NAMES !== 'undefined') {
-        var data = convertGeoJSON(DATA_PLACE_NAMES);
-        // 只加载新塬镇范围内的地名（约36.0-36.3, 105.2-105.5）
-        var filtered = { type: 'FeatureCollection', features: data.features.filter(function(f) {
-          var c = f.geometry.coordinates;
-          return c[0] > 105.2 && c[0] < 105.5 && c[1] > 35.95 && c[1] < 36.35;
-        })};
-        L.geoJSON(filtered, {
-          pointToLayer: function(feature, latlng) {
-            var name = feature.properties.MC || '';
-            if (!name) return null;
-            return L.marker(latlng, {
-              icon: L.divIcon({
-                className: 'place-label',
-                html: '<div style="font-size:11px;color:#333;text-shadow:0 0 3px #fff,0 0 3px #fff;white-space:nowrap;font-weight:500;">' + name + '</div>',
-                iconSize: [0, 0], iconAnchor: [0, 0]
-              })
-            });
-          }
-        }).addTo(layers.placeNames);
-      }
-    })
-    .catch(function() { console.log('地名数据加载失败'); });
+  loadJsData('js_data/place_names.js', function(v) {
+    if (v && typeof DATA_PLACE_NAMES !== 'undefined') {
+      var data = convertGeoJSON(DATA_PLACE_NAMES);
+      // 只加载新塬镇范围内的地名（约36.0-36.3, 105.2-105.5）
+      var filtered = { type: 'FeatureCollection', features: data.features.filter(function(f) {
+        var c = f.geometry.coordinates;
+        return c[0] > 105.2 && c[0] < 105.5 && c[1] > 35.95 && c[1] < 36.35;
+      })};
+      L.geoJSON(filtered, {
+        pointToLayer: function(feature, latlng) {
+          var name = feature.properties.MC || '';
+          if (!name) return null;
+          return L.marker(latlng, {
+            icon: L.divIcon({
+              className: 'place-label',
+              html: '<div style="font-size:11px;color:#333;text-shadow:0 0 3px #fff,0 0 3px #fff;white-space:nowrap;font-weight:500;">' + esc(name) + '</div>',
+              iconSize: [0, 0], iconAnchor: [0, 0]
+            })
+          });
+        }
+      }).addTo(layers.placeNames);
+    } else { console.log('地名数据加载失败'); }
+  });
 }
 
 // ========== 村庄下拉菜单 ==========
