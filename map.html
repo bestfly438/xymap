@@ -597,8 +597,8 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
     <h1>新塬镇应急避险指挥系统</h1>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="analysis.html?v=v20260823-17" class="back-link">&#x1F4CA; 专业分析</a>
-    <a href="dashboard.html?v=v20260823-17" class="back-link">&#x2190; 返回看板</a>
+    <a href="analysis.html?v=v20260824-18" class="back-link">&#x1F4CA; 专业分析</a>
+    <a href="dashboard.html?v=v20260824-18" class="back-link">&#x2190; 返回看板</a>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
       <span class="arrow">&#x25BC;</span>
@@ -688,13 +688,13 @@ html, body { width: 100%; height: 100%; font-family: -apple-system, BlinkMacSyst
   <span class="plb-close">&#x2715;</span>
 </div>
 
-<script src="leaflet/leaflet.js?v=v20260823-17" defer></script>
-<script src="feishu_config.js?v=v20260823-17" defer></script>
-<script src="photo.js?v=v20260823-17" defer></script>
-<script src="js_data/village_centers.js?v=v20260823-17" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260823-17" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260823-17" defer></script>
-<script src="js_data/rain_stations.js?v=v20260823-17" defer></script>
+<script src="leaflet/leaflet.js?v=v20260824-18" defer></script>
+<script src="feishu_config.js?v=v20260824-18" defer></script>
+<script src="photo.js?v=v20260824-18" defer></script>
+<script src="js_data/village_centers.js?v=v20260824-18" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260824-18" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260824-18" defer></script>
+<script src="js_data/rain_stations.js?v=v20260824-18" defer></script>
 
 <script>
 // ========== 权限验证 ==========
@@ -2317,5 +2317,8 @@ window.onload = function() {
 // 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
 (function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
 </script>
-</body>
+<!-- 备案号（ICP 备案通过后全站挂载） -->
+<div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
+  <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
+</div></body>
 </html>
