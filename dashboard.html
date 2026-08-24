@@ -220,6 +220,9 @@ body {
 .contact-card .cc-name { color: var(--text); font-weight: 600; min-width: 80px; }
 .contact-card .cc-role { color: var(--text-secondary); font-size: 12px; flex: 1; margin: 0 12px; }
 .contact-card .cc-phone { color: var(--accent); font-size: 12px; font-weight: 500; white-space: nowrap; }
+/* 各村应急总指挥：两列紧凑显示（手机端自动恢复一列） */
+#leaderList { display: grid; grid-template-columns: 1fr 1fr; column-gap: 20px; max-height: 340px; }
+@media (max-width: 640px) { #leaderList { grid-template-columns: 1fr; } }
 
 /* ===== 雨量监测站 ===== */
 .rain-card {
@@ -582,15 +585,15 @@ body {
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button class="btn" id="akSysBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-    <a href="analysis.html?v=v20260824-19" class="btn btn-primary">&#x1F4CA; 专业分析</a>
-    <a href="radar.html?v=v20260824-19" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
-    <a href="transfer.html?v=v20260824-19" class="btn">&#x1F500; 转移流程</a>
-    <a href="guide.html?v=v20260824-19" class="btn">&#x1F4D6; 防汛应急指南</a>
-    <a href="manual.html?v=v20260824-19" class="btn">&#x1F4F1; 使用说明</a>
-    <a href="ledger.html?v=v20260824-19" class="btn">&#x1F4CB; 应急台账</a>
-    <a href="updates.html?v=v20260824-19" class="btn">&#x1F4C4; 近期更新</a>
-    <a href="health.html?v=v20260824-19" class="btn" id="akHealthBtn" style="display:none">&#x1F50D; 系统自检</a>
-    <a href="map.html?v=v20260824-19" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="analysis.html?v=v20260824-20" class="btn btn-primary">&#x1F4CA; 专业分析</a>
+    <a href="radar.html?v=v20260824-20" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
+    <a href="transfer.html?v=v20260824-20" class="btn">&#x1F500; 转移流程</a>
+    <a href="guide.html?v=v20260824-20" class="btn">&#x1F4D6; 防汛应急指南</a>
+    <a href="manual.html?v=v20260824-20" class="btn">&#x1F4F1; 使用说明</a>
+    <a href="ledger.html?v=v20260824-20" class="btn">&#x1F4CB; 应急台账</a>
+    <a href="updates.html?v=v20260824-20" class="btn">&#x1F4C4; 近期更新</a>
+    <a href="health.html?v=v20260824-20" class="btn" id="akHealthBtn" style="display:none">&#x1F50D; 系统自检</a>
+    <a href="map.html?v=v20260824-20" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
     <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
@@ -598,15 +601,15 @@ body {
 
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
-  <a href="map.html?v=v20260824-19" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260824-19" class="mm-item">&#x1F4CA; 专业分析</a>
-  <a href="radar.html?v=v20260824-19" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
-  <a href="transfer.html?v=v20260824-19" class="mm-item">&#x1F500; 转移流程</a>
-  <a href="guide.html?v=v20260824-19" class="mm-item">&#x1F4D6; 防汛应急指南</a>
-  <a href="manual.html?v=v20260824-19" class="mm-item">&#x1F4F1; 手机使用说明</a>
-  <a href="ledger.html?v=v20260824-19" class="mm-item">&#x1F4CB; 应急台账</a>
-  <a href="updates.html?v=v20260824-19" class="mm-item">&#x1F4C4; 近期更新</a>
-  <a href="health.html?v=v20260824-19" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
+  <a href="map.html?v=v20260824-20" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="analysis.html?v=v20260824-20" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="radar.html?v=v20260824-20" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
+  <a href="transfer.html?v=v20260824-20" class="mm-item">&#x1F500; 转移流程</a>
+  <a href="guide.html?v=v20260824-20" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+  <a href="manual.html?v=v20260824-20" class="mm-item">&#x1F4F1; 手机使用说明</a>
+  <a href="ledger.html?v=v20260824-20" class="mm-item">&#x1F4CB; 应急台账</a>
+  <a href="updates.html?v=v20260824-20" class="mm-item">&#x1F4C4; 近期更新</a>
+  <a href="health.html?v=v20260824-20" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
   <button class="mm-item" id="akSysBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录 / 数据保险箱）</button>
   <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
@@ -679,13 +682,12 @@ body {
   </div>
   <div class="village-grid" id="villageGrid"></div>
 
-  <!-- 应急联系人 + 雨量监测站 -->
-  <div class="two-col">
-    <div class="contact-card">
-      <div class="cc-header">&#x1F464; 各村应急总指挥</div>
-      <div class="cc-list" id="leaderList"></div>
-    </div>
-    <div class="rain-card">
+  <!-- 各村应急总指挥 + 各村天气实况 -->
+  <div class="contact-card" style="margin-bottom:16px;">
+    <div class="cc-header">&#x1F464; 各村应急总指挥</div>
+    <div class="cc-list" id="leaderList"></div>
+  </div>
+  <div class="rain-card" style="margin-bottom:28px;">
       <div class="cc-header">&#x2600; 各村天气实况 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">（和风天气 · 逐村）</span></div>
       <div class="rc-list" id="rainList"></div>
       <div class="nmc-wx" id="nmcWxBlock" style="display:none;margin-top:12px;border-top:1px dashed #e5e7eb;padding-top:10px;">
@@ -726,7 +728,6 @@ body {
         </div>
       </div>
     </div>
-  </div>
 
   <!-- 气象预警信息 -->
   <div class="warn-card">
@@ -777,19 +778,19 @@ body {
 
   <!-- 进入地图 -->
   <div class="map-entry">
-    <a href="map.html?v=v20260824-19">&#x1F5FA; 进入应急避险地图</a>
+    <a href="map.html?v=v20260824-20">&#x1F5FA; 进入应急避险地图</a>
   </div>
 </div>
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="feishu_config.js?v=v20260824-19"></script>
-<script src="weather.js?v=v20260824-19"></script>
-<script src="photo.js?v=v20260824-19"></script>
-<script src="js_data/village_centers.js?v=v20260824-19" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260824-19" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260824-19" defer></script>
-<script src="js_data/rain_stations.js?v=v20260824-19" defer></script>
+<script src="feishu_config.js?v=v20260824-20"></script>
+<script src="weather.js?v=v20260824-20"></script>
+<script src="photo.js?v=v20260824-20"></script>
+<script src="js_data/village_centers.js?v=v20260824-20" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260824-20" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260824-20" defer></script>
+<script src="js_data/rain_stations.js?v=v20260824-20" defer></script>
 
 <script>
 // 权限验证
@@ -1176,7 +1177,7 @@ function refreshVillageGrid() {
       }
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260824-19';
+      window.location.href = 'map.html?v=v20260824-20';
     };
 
     var html = '';
