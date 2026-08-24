@@ -224,6 +224,7 @@ function renderAllWeather() {
   renderVillageWeather();
   renderWarnings();
   renderGeoHazard();
+  renderNmcWeather();
   updateSchedulePanel();
   document.getElementById('warnScope') && (document.getElementById('warnScope').textContent = '新塬镇（和风天气）');
   document.getElementById('warnUpdateTime') && (document.getElementById('warnUpdateTime').textContent = new Date().toLocaleString('zh-CN', { hour12: false }));
@@ -444,4 +445,112 @@ function weatherInit() {
       start();
     }
   }, 100);
+}
+
+// ========== 中央气象台增强（/api/nmcweather）：未来3天降水 + 近24h温度/降雨趋势 ==========
+// 与和风互补：中央气象台会宁县站（QucKY），服务端抓取并缓存 30 分钟，登录后调用
+var nmcWxLoaded = false;
+function nmcWeatherApi(cb) {
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  if (!key || !device) { cb(null, '未登录或会话失效'); return; }
+  fetch(FEISHU_CONFIG.apiBase + '/api/nmcweather', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-xyc-key': key,
+      'x-xyc-device': device
+    },
+    body: JSON.stringify({})
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d && d.code === 401) { try { sessionStorage.clear(); } catch(e) {} window.location.replace('index.html'); return; }
+    if (d && d.code === 0) cb(d, null);
+    else cb(null, (d && d.msg) || '获取失败');
+  })
+  .catch(function(e) { cb(null, '网络错误: ' + e.message); });
+}
+
+// 未来3天降水卡片（今天/明天/后天）
+function renderRain3d(list) {
+  var names = ['今天', '明天', '后天'];
+  var html = '';
+  list.forEach(function(x, i) {
+    var day = x.dayInfo ? x.dayInfo : '';
+    var night = x.nightInfo ? x.nightInfo : '';
+    var temps = [];
+    if (x.dayTemp != null) temps.push('&#9728;' + x.dayTemp + '°');
+    if (x.nightTemp != null) temps.push('&#127769;' + x.nightTemp + '°');
+    var rainTxt = x.precip > 0
+      ? '<span style="color:#3b82f6;font-weight:700;">&#127783; ' + x.precip + 'mm</span>'
+      : '<span style="color:var(--text-muted);">无降水</span>';
+    html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 2px;border-bottom:1px dashed #f0f0f0;font-size:13px;">' +
+      '<span style="font-weight:600;width:42px;flex-shrink:0;">' + (names[i] || (x.date || '').slice(5)) + '</span>' +
+      '<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-muted);">' +
+      esc(day) + (day && night ? '转' : '') + esc(night) +
+      (temps.length ? ' ' + temps.join(' ') : '') + '</span>' +
+      '<span style="width:78px;text-align:right;flex-shrink:0;">' + rainTxt + '</span></div>';
+  });
+  return html;
+}
+
+// 近24小时温度/降雨趋势（SVG：橙线=温度，蓝柱=每小时降水）
+function renderTrend24(list) {
+  var W = 320, H = 120, PAD = 8;
+  var temps = list.map(function(x) { return x.temp; });
+  var valid = temps.filter(function(t) { return t != null; });
+  if (!valid.length) return '<div style="color:var(--text-muted);font-size:12px;padding:8px 2px;">暂无趋势数据</div>';
+  var tMin = Math.min.apply(null, valid), tMax = Math.max.apply(null, valid);
+  if (tMax - tMin < 2) { tMin -= 1; tMax += 1; }
+  var span = (tMax - tMin) || 1;
+  var n = list.length;
+  function px(i) { return PAD + (n <= 1 ? 0 : i * (W - 2 * PAD) / (n - 1)); }
+  function py(t) { return H - PAD - 14 - (t - tMin) / span * (H - 2 * PAD - 24); }
+  var pts = [];
+  for (var i = 0; i < n; i++) { if (temps[i] != null) pts.push(px(i).toFixed(1) + ',' + py(temps[i]).toFixed(1)); }
+  var maxRain = 0;
+  list.forEach(function(x) { if (x.rain1h > maxRain) maxRain = x.rain1h; });
+  var bars = '';
+  list.forEach(function(x, i) {
+    var r = x.rain1h || 0;
+    if (r > 0) {
+      var bh = Math.max(2, r / (maxRain || 1) * 40);
+      bars += '<rect x="' + (px(i) - 1.5).toFixed(1) + '" y="' + (H - PAD - 14 - bh).toFixed(1) +
+        '" width="3" height="' + bh.toFixed(1) + '" fill="#3b82f6" opacity="0.8" rx="1">' +
+        '<title>' + esc(x.time) + ' 降水 ' + r + 'mm</title></rect>';
+    }
+  });
+  var last = list[n - 1] || {};
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block;" role="img" aria-label="近24小时温度与降雨趋势">' +
+    bars +
+    '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linejoin="round"/>' +
+    '<line x1="' + PAD + '" y1="' + (H - PAD - 14) + '" x2="' + (W - PAD) + '" y2="' + (H - PAD - 14) + '" stroke="#e5e7eb" stroke-width="1"/>' +
+    '</svg>';
+  var t1 = list[0] && list[0].time ? list[0].time.slice(11, 16) : '';
+  var t2 = last.time ? last.time.slice(11, 16) : '';
+  return '<div>' + svg +
+    '<div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-top:2px;">' +
+    '<span>' + t1 + '</span><span>最高 ' + Math.round(tMax) + '° / 最低 ' + Math.round(tMin) + '°</span><span>' + t2 + '</span></div>' +
+    '<div style="font-size:10px;color:var(--text-muted);margin-top:2px;">橙线=温度 · 蓝柱=每小时降水（近24小时） 当前：' +
+    (last.temp != null ? last.temp + '°C' : '--') +
+    (maxRain > 0 ? ' · 最大时降水 ' + maxRain + 'mm' : '') + '</div></div>';
+}
+
+// 渲染入口（页面生命周期只取一次，数据 30 分钟级）
+function renderNmcWeather() {
+  if (nmcWxLoaded) return;
+  nmcWxLoaded = true;
+  var block = document.getElementById('nmcWxBlock');
+  if (!block) return;
+  nmcWeatherApi(function(d, err) {
+    if (err || !d || !d.rain3d) { block.style.display = 'none'; return; }
+    block.style.display = 'block';
+    var up = document.getElementById('nmcUpdateTime');
+    if (up) up.textContent = (d.publish || '') + ' 发布';
+    var r3 = document.getElementById('nmcRain3d');
+    if (r3 && d.rain3d.length) r3.innerHTML = renderRain3d(d.rain3d);
+    var tr = document.getElementById('nmcTrend');
+    if (tr && d.trend24 && d.trend24.length) tr.innerHTML = renderTrend24(d.trend24);
+  });
 }
