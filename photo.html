@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>照片档案 · 新塬镇应急避险指挥系统</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta name="color-scheme" content="light">
+<style>
+:root {
+  --bg:#eef2f7; --surface:#ffffff; --surface-2:#f7f9fc;
+  --ink:#14213d; --ink-2:#4a5878; --ink-3:#8a95ad;
+  --line:#e3e8f0; --line-2:#d1d8e6;
+  --brand:#0f2e4f; --brand-2:#1a4a7a; --brand-soft:#e7eff8;
+  --accent:#2f6fed; --accent-soft:#eaf0ff;
+  --red:#e2444a; --red-soft:#fdeaea; --orange:#ee8b24; --orange-soft:#fdf1e1;
+  --green:#22a55b; --green-soft:#e6f6ed;
+  --radius-lg:18px; --radius-md:13px; --radius-sm:9px;
+  --shadow-sm:0 1px 3px rgba(20,33,61,.05),0 4px 12px rgba(20,33,61,.05);
+  --sidebar-w:248px; --topbar-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;color:var(--ink);background:var(--bg)}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+input,select{font-family:inherit}
+svg{display:block;flex:none}
+a{color:inherit;text-decoration:none}
+.app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh}
+.sidebar{background:linear-gradient(180deg,#0c2744 0%,#0f2e4f 60%,#113658 100%);color:#e6eef8;padding:22px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:10}
+.sb-logo{padding:0 22px 22px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo .logo-ic{width:42px;height:42px;border-radius:12px;background:linear-gradient(155deg,#2a68b0,#184780);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(30,90,150,.35)}
+.sb-logo .logo-ic svg{width:22px;height:22px}
+.sb-logo .logo-t1{font-size:15.5px;font-weight:800;letter-spacing:.4px}
+.sb-logo .logo-t2{font-size:10.5px;color:#97b4d4;margin-top:3px;letter-spacing:1.2px}
+.sb-role{margin:16px 18px 10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+.sb-role .sr-t{font-size:11px;color:#89a7c8;font-weight:500}
+.sb-role .sr-n{font-size:15px;font-weight:700;margin-top:4px;display:flex;align-items:center;gap:8px}
+.sb-role .sr-n .sr-badge{font-size:10.5px;padding:3px 9px;border-radius:7px;font-weight:700;background:var(--accent);color:#fff}
+.sb-menu{flex:1;padding:10px 12px;overflow-y:auto}
+.sb-menu::-webkit-scrollbar{width:4px}
+.sb-menu::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
+.sb-group-t{font-size:10.5px;color:#718eb0;padding:14px 12px 8px;letter-spacing:1.2px;font-weight:600}
+.sb-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:11px;font-size:14px;color:#c7d8ec;font-weight:500;margin-bottom:3px;transition:all .18s;position:relative}
+.sb-item svg{width:19px;height:19px;color:#89a7c8}
+.sb-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.sb-item:hover svg{color:#c7d8ec}
+.sb-item.active{background:linear-gradient(90deg,rgba(47,111,237,.28),rgba(47,111,237,.08));color:#fff;box-shadow:inset 3px 0 0 var(--accent)}
+.sb-item.active svg{color:#fff}
+.sb-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sb-foot .sf-av{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center}
+.sb-foot .sf-av svg{width:20px;height:20px;color:#c7d8ec}
+.sb-foot .sf-n{font-size:13px;font-weight:600}
+.sb-foot .sf-s{font-size:10.5px;color:#89a7c8;margin-top:2px}
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--line);padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5;box-shadow:0 1px 0 rgba(20,33,61,.02)}
+.tb-left{display:flex;align-items:center;gap:16px}
+.crumb{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2);font-weight:500}
+.crumb b{color:var(--ink);font-weight:700}
+.crumb svg{width:14px;height:14px;color:var(--ink-3)}
+.tb-right{display:flex;align-items:center;gap:14px}
+.time-display{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:12.5px;font-weight:600;border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--surface);border-color:var(--line-2);color:var(--ink)}
+.content{padding:24px 28px 40px;flex:1}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:22px}
+.card-head{padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.ch-left{display:flex;align-items:center;gap:10px}
+.ch-ic{width:30px;height:30px;border-radius:9px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center}
+.ch-ic svg{width:15px;height:15px;color:var(--brand-2)}
+.ch-t{font-size:16px;font-weight:800}
+.ch-sub{font-size:12px;color:var(--ink-3);margin-top:3px;font-weight:500}
+.ch-more{font-size:12.5px;font-weight:600;color:var(--accent);padding:6px 12px;border-radius:8px}
+.card-body{padding:18px 22px}
+.photo-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.photo-toolbar select{background:var(--surface);color:var(--ink);border:1px solid var(--line-2);border-radius:8px;padding:7px 10px;font-size:13px;max-width:220px}
+.photo-toolbar select:disabled{opacity:.6}
+.photo-tip{font-size:12px;color:#b45309;font-weight:600}
+.ph-hint{font-size:13px;color:var(--ink-2);margin-bottom:10px}
+.ph-slots{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+.ph-slot{border:1px dashed var(--line-2);border-radius:var(--radius-sm);padding:12px}
+.ph-slot-title{font-size:12px;color:var(--ink-3);margin-bottom:8px}
+.ph-slot-body{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.ph-slot-img{width:100%}
+.ph-slot-img img{width:100%;max-height:260px;object-fit:cover;border-radius:8px;cursor:zoom-in}
+.ph-list-head{font-size:13px;color:var(--ink-2);margin-bottom:10px;font-weight:600}
+.ph-list{display:flex;flex-direction:column;gap:6px;max-height:480px;overflow-y:auto}
+.ph-list::-webkit-scrollbar{width:4px}
+.ph-list::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
+.ph-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface-2);border-radius:8px;font-size:13px}
+.ph-row-name{color:var(--ink);font-weight:600;min-width:90px}
+.ph-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap}
+.ph-badge.none{background:rgba(100,116,139,.15);color:var(--ink-3)}
+.ph-badge.part{background:rgba(245,158,11,.15);color:#b45309}
+.ph-badge.full{background:rgba(34,197,94,.12);color:#16a34a}
+.ph-row-imgs{display:flex;gap:6px;flex-wrap:wrap}
+.ph-thumb{width:64px;height:48px;overflow:hidden;border-radius:6px;background:var(--surface-2);display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink-3)}
+.ph-thumb img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}
+.ph-muted{color:var(--ink-3);font-size:12px}
+@media (max-width:640px){.ph-slots{grid-template-columns:1fr}.content{padding:14px}}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="logo-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="1.4" opacity=".55"/><circle cx="12" cy="12" r="5" stroke="#fff" stroke-width="1.4" opacity=".85"/><circle cx="12" cy="12" r="1.8" fill="#ffd166"/><path d="M12 2v2.5M12 19.5v2M2 12h2.5M19.5 12H22" stroke="#7fd1ff" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+      <div>
+        <div class="logo-t1">新塬应急指挥</div>
+        <div class="logo-t2">XINYUAN EMERGENCY</div>
+      </div>
+    </div>
+    <div class="sb-role">
+      <div class="sr-t">当前身份</div>
+      <div class="sr-n"><span id="pcRoleName">管理员</span><span class="sr-badge" id="pcRoleBadge">全部权限</span></div>
+    </div>
+    <nav class="sb-menu">
+      <div class="sb-group-t">主功能</div>
+      <a class="sb-item" href="dashboard.html?v=v20260827-26"><svg viewBox="0 0 24 24" fill="none"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>数据看板</a>
+      <a class="sb-item" href="map.html?v=v20260827-26"><svg viewBox="0 0 24 24" fill="none"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.7"/></svg>应急地图</a>
+      <a class="sb-item" href="analysis.html?v=v20260827-26"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M10 19V9M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>专业分析</a>
+      <a class="sb-item" href="radar.html?v=v20260827-26"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.4" opacity=".7"/></svg>雷达 / 预报</a>
+      <div class="sb-group-t">数据台账</div>
+      <a class="sb-item" href="ledger.html?v=v20260827-26"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>应急台账</a>
+      <a class="sb-item" href="transfer.html?v=v20260827-26"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h10M7 14h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>转移流程</a>
+      <div class="sb-item active" onclick=""><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>照片档案</div>
+      <div class="sb-group-t">应急模块</div>
+      <a class="sb-item" href="guide.html?v=v20260827-26"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>防汛应急指南</a>
+      <a class="sb-item" href="manual.html?v=v20260827-26"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>使用说明</a>
+      <div class="sb-group-t">系统</div>
+      <div class="sb-item" id="pcMenuAdmin" onclick="location.href='dashboard.html?v=v20260827-26#admin'" style="display:none"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>系统管理</div>
+      <a class="sb-item" id="pcMenuHealth" href="health.html?v=v20260827-26" style="display:none"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>系统自检</a>
+      <div class="sb-item" onclick="doLogout()"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h3M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>退出登录</div>
+    </nav>
+    <div class="sb-foot">
+      <div class="sf-av"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c1-3.2 3.5-4.8 7-4.8s6 1.6 7 4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+      <div>
+        <div class="sf-n" id="pcFootName">系统管理员</div>
+        <div class="sf-s" id="pcFootKey">XYC-2024-ADMIN</div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-left">
+        <div class="crumb"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.8"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><b>照片档案</b></div>
+      </div>
+      <div class="tb-right">
+        <a class="btn" href="dashboard.html?v=v20260827-26">&#x2190; 返回看板</a>
+        <div class="time-display" id="timeDisplay"></div>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="card" id="photoWrap">
+        <div class="card-head">
+          <div class="ch-left">
+            <div class="ch-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+            <div>
+              <div class="ch-t">照片档案 · 切坡建房农户</div>
+              <div class="ch-sub">每户最多2张 · 村级上传后不可修改，仅管理员可调整 · 支持现场拍照或从相册选取</div>
+            </div>
+          </div>
+          <span class="ch-more" id="photoVillageSel" style="display:none"></span>
+        </div>
+        <div class="card-body">
+          <div class="photo-toolbar">
+            <select id="photoVillage"></select>
+            <select id="photoOwner"></select>
+            <span class="photo-tip" id="photoTip"></span>
+          </div>
+          <div id="photoSlots"></div>
+          <div class="ph-list-head">各村照片收录情况</div>
+          <div id="photoList"></div>
+          <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="photoOnFile(this.files[0])">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+// 权限验证
+if (sessionStorage.getItem('xyc_auth') !== '1') {
+  window.location.replace('index.html');
+}
+</script>
+<script src="feishu_config.js?v=v20260827-26"></script>
+<script src="photo.js?v=v20260827-26"></script>
+<script src="js_data/village_centers.js?v=v20260827-26" defer></script>
+<script>
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function doLogout() {
+  sessionStorage.removeItem('xyc_auth');
+  sessionStorage.removeItem('xyc_key');
+  sessionStorage.removeItem('xyc_admin');
+  sessionStorage.removeItem('xyc_role');
+  sessionStorage.removeItem('xyc_village');
+  window.location.replace('index.html');
+}
+function updateTime() {
+  var now = new Date();
+  var str = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('timeDisplay').textContent = str;
+}
+updateTime();
+setInterval(updateTime, 1000);
+
+// 身份展示
+(function(){
+  var role = sessionStorage.getItem('xyc_role') || '村级';
+  var key = sessionStorage.getItem('xyc_key') || 'XYC-2024-XXXX';
+  var roleName = { '管理员':'管理员', '镇级':'镇级干部', '村级':'村级干部', '社长':'社长' }[role] || role;
+  var badge = { '管理员':'全部权限', '镇级':'全镇调度', '村级':'本村数据', '社长':'本社数据' }[role] || '';
+  ['pcRoleName','pcFootName'].forEach(function(id){ var e = document.getElementById(id); if (e) e.textContent = roleName; });
+  var b = document.getElementById('pcRoleBadge'); if (b) b.textContent = badge;
+  var k = document.getElementById('pcFootKey'); if (k) k.textContent = key;
+  var isAdmin = sessionStorage.getItem('xyc_admin') === '1' || role === '管理员';
+  var isStaff = isAdmin || role === '镇级';
+  document.getElementById('pcMenuAdmin').style.display = isAdmin ? 'flex' : 'none';
+  document.getElementById('pcMenuHealth').style.display = isStaff ? 'flex' : 'none';
+})();
+
+// 等数据就绪后初始化照片模块
+setTimeout(function(){ photoInit(); }, 300);
+</script>
+</body>
+</html>
