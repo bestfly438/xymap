@@ -452,8 +452,433 @@ a{color:inherit;text-decoration:none}
 .warn .w-sig{position:absolute;right:14px;top:14px;font-size:10px;color:var(--ink-3);letter-spacing:1px}
 
 
+/* ===== 正式站功能组件样式（浅色适配） ===== */
+/* ===== Layout ===== */
+.app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh}
+
+
+/* ===== Sidebar ===== */
+.sidebar{background:linear-gradient(180deg,#0c2744 0%,#0f2e4f 60%,#113658 100%);color:#e6eef8;padding:22px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:10}
+.sb-logo{padding:0 22px 22px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo .logo-ic{width:42px;height:42px;border-radius:12px;background:linear-gradient(155deg,#2a68b0,#184780);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(30,90,150,.35)}
+.sb-logo .logo-ic svg{width:22px;height:22px}
+.sb-logo .logo-t1{font-size:15.5px;font-weight:800;letter-spacing:.4px}
+.sb-logo .logo-t2{font-size:10.5px;color:#97b4d4;margin-top:3px;letter-spacing:1.2px}
+.sb-role{margin:16px 18px 10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+.sb-role .sr-t{font-size:11px;color:#89a7c8;font-weight:500}
+.sb-role .sr-n{font-size:15px;font-weight:700;margin-top:4px;display:flex;align-items:center;gap:8px}
+.sb-role .sr-n .sr-badge{font-size:10.5px;padding:3px 9px;border-radius:7px;font-weight:700;background:var(--accent);color:#fff}
+.sb-menu{flex:1;padding:10px 12px;overflow-y:auto}
+.sb-menu::-webkit-scrollbar{width:4px}
+.sb-menu::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
+.sb-group-t{font-size:10.5px;color:#718eb0;padding:14px 12px 8px;letter-spacing:1.2px;font-weight:600}
+.sb-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:11px;font-size:14px;color:#c7d8ec;font-weight:500;margin-bottom:3px;transition:all .18s;position:relative}
+.sb-item svg{width:19px;height:19px;color:#89a7c8}
+.sb-item .sb-badge{margin-left:auto;min-width:22px;height:22px;border-radius:11px;background:var(--red);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 7px}
+.sb-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.sb-item:hover svg{color:#c7d8ec}
+.sb-item.active{background:linear-gradient(90deg,rgba(47,111,237,.28),rgba(47,111,237,.08));color:#fff;box-shadow:inset 3px 0 0 var(--accent)}
+.sb-item.active svg{color:#fff}
+.sb-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sb-foot .sf-av{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center}
+.sb-foot .sf-av svg{width:20px;height:20px;color:#c7d8ec}
+.sb-foot .sf-n{font-size:13px;font-weight:600}
+.sb-foot .sf-s{font-size:10.5px;color:#89a7c8;margin-top:2px}
+
+
+/* ===== Main / Topbar ===== */
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--line);padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5;box-shadow:0 1px 0 rgba(20,33,61,.02)}
+.tb-left{display:flex;align-items:center;gap:16px}
+.crumb{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2);font-weight:500}
+.crumb b{color:var(--ink);font-weight:700}
+.crumb svg{width:14px;height:14px;color:var(--ink-3)}
+.role-switcher{display:flex;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:3px;gap:2px}
+.rs-opt{padding:7px 15px;border-radius:8px;font-size:12.5px;font-weight:600;color:var(--ink-3);transition:all .18s;display:flex;align-items:center;gap:6px}
+.rs-opt svg{width:13px;height:13px}
+.rs-opt.on{background:var(--surface);color:var(--brand);box-shadow:var(--shadow-sm)}
+.tb-right{display:flex;align-items:center;gap:14px}
+.weather-chip{display:flex;align-items:center;gap:9px;padding:8px 15px;border-radius:11px;background:var(--accent-soft);border:1px solid rgba(47,111,237,.18)}
+.weather-chip svg{width:18px;height:18px;color:var(--accent)}
+.weather-chip .wc-t{font-size:13px;font-weight:600;color:#1a4fb0}
+.weather-chip .wc-s{font-size:11px;color:#4e7dc8;font-weight:500;margin-left:2px}
+.tb-icon{position:relative;width:40px;height:40px;border-radius:11px;background:var(--surface-2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.tb-icon svg{width:19px;height:19px;color:var(--ink-2)}
+.tb-icon .tb-dot{position:absolute;top:10px;right:11px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid #fff}
+
+
+/* ===== Content ===== */
+.content{padding:24px 28px 40px;flex:1}
+
+
+/* ===== Login Banner Alert ===== */
+.alert-strip{background:linear-gradient(120deg,#e2444a 0%,#c93439 100%);border-radius:15px;padding:16px 22px;color:#fff;display:flex;align-items:center;gap:16px;box-shadow:0 10px 28px rgba(226,68,74,.22);margin-bottom:22px;position:relative;overflow:hidden}
+.alert-strip::after{content:"";position:absolute;right:-30px;top:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.07)}
+.alert-strip .as-pulse{width:12px;height:12px;border-radius:50%;background:#fff;position:relative;flex:none;box-shadow:0 0 0 0 rgba(255,255,255,.7);animation:as-pulse 1.8s infinite}
+@keyframes as-pulse{70%{box-shadow:0 0 0 14px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+.alert-strip .as-txt{flex:1;position:relative;z-index:1}
+.alert-strip .as-t1{font-size:15px;font-weight:700;line-height:1.4}
+.alert-strip .as-t2{font-size:12.5px;opacity:.92;margin-top:4px}
+.alert-strip .as-act{display:flex;gap:8px;position:relative;z-index:1}
+.btn-white{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);color:#fff;font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:9px;transition:all .18s}
+.btn-white:hover{background:rgba(255,255,255,.28)}
+
+
+/* ===== KPI Row ===== */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:20px 22px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden;transition:transform .18s,box-shadow .18s}
+.kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.kpi::before{content:"";position:absolute;right:-40px;top:-40px;width:140px;height:140px;border-radius:50%;opacity:.5}
+.kpi .k-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;position:relative;z-index:1}
+.kpi .k-label{font-size:13px;color:var(--ink-3);font-weight:500}
+.kpi .k-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.kpi .k-ic svg{width:20px;height:20px}
+.kpi.k-red::before{background:var(--red-soft)} .kpi.k-red .k-ic{background:var(--red-soft)} .kpi.k-red .k-ic svg{color:var(--red)}
+.kpi.k-brand::before{background:var(--brand-soft)} .kpi.k-brand .k-ic{background:var(--brand-soft)} .kpi.k-brand .k-ic svg{color:var(--brand-2)}
+.kpi.k-blue::before{background:var(--accent-soft)} .kpi.k-blue .k-ic{background:var(--accent-soft)} .kpi.k-blue .k-ic svg{color:var(--accent)}
+.kpi.k-green::before{background:var(--green-soft)} .kpi.k-green .k-ic{background:var(--green-soft)} .kpi.k-green .k-ic svg{color:var(--green)}
+.kpi .k-val{font-family:"Bahnschrift","DIN Alternate","Segoe UI",Arial,sans-serif;font-size:34px;font-weight:700;color:var(--ink);letter-spacing:-.6px;line-height:1;font-variant-numeric:tabular-nums;position:relative;z-index:1}
+.kpi .k-val .k-unit{font-size:13px;color:var(--ink-3);font-weight:600;margin-left:4px}
+.kpi.k-red .k-val{color:var(--red)}
+.kpi.k-brand .k-val{color:var(--brand)}
+.kpi .k-foot{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:12px;color:var(--ink-3);font-weight:500;position:relative;z-index:1}
+.kpi .k-foot .up{color:var(--red);font-weight:700}
+.kpi .k-foot .ok{color:var(--green);font-weight:700}
+.kpi .k-foot .flat{color:var(--ink-2);font-weight:600}
+
+
+/* ===== Grid 2col ===== */
+.grid-2{display:grid;grid-template-columns:1.5fr 1fr;gap:18px;margin-bottom:22px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden}
+.card-head{padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.ch-left{display:flex;align-items:center;gap:10px}
+.ch-ic{width:30px;height:30px;border-radius:9px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center}
+.ch-ic svg{width:15px;height:15px;color:var(--brand-2)}
+.ch-t{font-size:16px;font-weight:800}
+.ch-sub{font-size:12px;color:var(--ink-3);margin-top:3px;font-weight:500}
+.ch-act{display:flex;align-items:center;gap:10px}
+.ch-count{font-size:11.5px;font-weight:700;padding:4px 11px;border-radius:10px;background:var(--red);color:#fff}
+.ch-count.ok{background:var(--green-soft);color:#167a43}
+.ch-more{font-size:12.5px;font-weight:600;color:var(--accent);padding:6px 12px;border-radius:8px;transition:background .18s}
+.ch-more:hover{background:var(--accent-soft)}
+.card-body{padding:18px 22px}
+
+
+/* ===== Village Grid (admin/town view) ===== */
+.vill-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.v-card{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-md);padding:15px 16px;text-align:left;transition:all .18s;position:relative;overflow:hidden}
+.v-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
+.v-card.r::before{background:var(--red)} .v-card.o::before{background:var(--orange)} .v-card.g::before{background:var(--green)}
+.v-card:hover{background:var(--surface);transform:translateY(-2px);box-shadow:var(--shadow-sm);border-color:var(--line-2)}
+.v-head{display:flex;align-items:center;justify-content:space-between;padding-left:4px}
+.v-name{font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:7px}
+.v-name .v-dot{width:8px;height:8px;border-radius:50%}
+.v-card.r .v-dot{background:var(--red)} .v-card.o .v-dot{background:var(--orange)} .v-card.g .v-dot{background:var(--green)}
+.v-tag{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:7px}
+.tag-r{background:var(--red-soft);color:#c22f35}
+.tag-o{background:var(--orange-soft);color:#c56a10}
+.tag-g{background:var(--green-soft);color:#167a43}
+.v-stats{display:flex;align-items:baseline;gap:5px;margin-top:10px;padding-left:4px}
+.v-num{font-family:"Bahnschrift","DIN Alternate",Arial,sans-serif;font-size:24px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums}
+.v-card.r .v-num{color:var(--red)}
+.v-cap{font-size:11.5px;color:var(--ink-3);font-weight:500}
+.v-person{margin-top:9px;padding-top:10px;border-top:1px dashed var(--line-2);padding-left:4px;font-size:12px;color:var(--ink-2);font-weight:500;display:flex;align-items:center;gap:6px;line-height:1.5}
+.v-person svg{width:12px;height:12px;color:var(--ink-3)}
+.v-person b{color:var(--ink);font-weight:700}
+
+
+/* ===== 应急指挥卡片 ===== */
+.cmd-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cmd-card{background:linear-gradient(150deg,#163a5f,#0e2a47);border-radius:var(--radius-md);padding:16px 18px;color:#fff;position:relative;overflow:hidden;transition:transform .18s}
+.cmd-card:hover{transform:translateY(-2px)}
+.cmd-card::after{content:"⬢";position:absolute;right:-10px;bottom:-22px;font-size:90px;opacity:.07;line-height:1}
+.cmd-card .cc-t{font-size:11.5px;opacity:.8;font-weight:500;position:relative;z-index:1}
+.cmd-card .cc-n{font-size:20px;font-weight:800;margin-top:4px;letter-spacing:.3px;position:relative;z-index:1}
+.cmd-card .cc-s{font-size:11.5px;opacity:.78;margin-top:7px;display:flex;align-items:center;gap:5px;position:relative;z-index:1}
+.cmd-card .cc-s svg{width:12px;height:12px}
+
+
+/* ===== Person Card 整合 ===== */
+.person-row{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:4px 0}
+.p-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:11px;background:var(--surface-2);border:1px solid var(--line);transition:all .18s}
+.p-item:hover{background:var(--surface);border-color:var(--line-2)}
+.p-av{width:42px;height:42px;border-radius:12px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;flex:none}
+.p-av svg{width:20px;height:20px;color:var(--brand-2)}
+.p-info{flex:1;min-width:0}
+.p-role{font-size:10.5px;color:var(--ink-3);font-weight:600}
+.p-name{font-size:14px;font-weight:700;margin-top:3px}
+.p-name small{display:block;font-size:11px;color:var(--ink-3);font-weight:400;margin-top:2px}
+.p-call{width:36px;height:36px;border-radius:10px;background:var(--green-soft);display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.p-call:hover{transform:scale(1.07)}
+.p-call svg{width:17px;height:17px;color:var(--green)}
+
+
+/* ===== Weather / Map / Briefing ===== */
+.weather-card{background:linear-gradient(150deg,#2f6fed 0%,#1a4a9e 100%);border-radius:var(--radius-lg);padding:20px 22px;color:#fff;box-shadow:0 12px 30px rgba(47,111,237,.25);position:relative;overflow:hidden}
+.weather-card::after{content:"";position:absolute;right:-50px;bottom:-60px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.08)}
+.weather-card::before{content:"";position:absolute;right:60px;top:-40px;width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,.07)}
+.wc-row1{display:flex;align-items:center;gap:18px;position:relative;z-index:1}
+.wc-ic{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.wc-ic svg{width:34px;height:34px}
+.wc-temp{font-family:"Bahnschrift",Arial,sans-serif;font-size:46px;font-weight:700;letter-spacing:-1px;line-height:1}
+.wc-temp sup{font-size:22px;font-weight:500;margin-left:2px}
+.wc-desc{font-size:13px;opacity:.9;margin-top:6px;position:relative;z-index:1}
+.wc-loc{font-size:11.5px;opacity:.82;margin-top:12px;display:flex;align-items:center;gap:5px;position:relative;z-index:1}
+.wc-loc svg{width:12px;height:12px}
+.wc-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid rgba(255,255,255,.2);position:relative;z-index:1}
+.wc-m{text-align:center}
+.wc-m .w-v{font-size:18px;font-weight:700;font-family:"Bahnschrift",Arial,sans-serif}
+.wc-m .w-l{font-size:10.5px;opacity:.82;margin-top:3px;font-weight:500}
+
+.forecast{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px;padding-top:18px;border-top:1px solid rgba(255,255,255,.2);position:relative;z-index:1}
+.fc-item{background:rgba(255,255,255,.1);border-radius:10px;padding:11px 8px;text-align:center;backdrop-filter:blur(4px)}
+.fc-d{font-size:11px;opacity:.85;font-weight:500}
+.fc-ic{width:26px;height:26px;margin:7px auto 4px}
+.fc-t{font-size:14px;font-weight:700;font-family:"Bahnschrift",Arial,sans-serif}
+
+
+/* ===== 调度清单 ===== */
+.brief-list{display:flex;flex-direction:column;gap:11px}
+.brief{display:flex;align-items:flex-start;gap:13px;padding:14px 15px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);transition:all .18s}
+.brief:hover{background:var(--surface);border-color:var(--line-2)}
+.b-dot{width:10px;height:10px;border-radius:50%;margin-top:5px;flex:none;box-shadow:0 0 0 4px var(--red-soft)}
+.b-dot.r{background:var(--red);box-shadow:0 0 0 4px var(--red-soft)}
+.b-dot.o{background:var(--orange);box-shadow:0 0 0 4px var(--orange-soft)}
+.b-dot.b{background:var(--accent);box-shadow:0 0 0 4px var(--accent-soft)}
+.b-dot.g{background:var(--green);box-shadow:0 0 0 4px var(--green-soft)}
+.b-main{flex:1;min-width:0}
+.b-title{font-size:14px;font-weight:700;line-height:1.4}
+.b-sub{font-size:12px;color:var(--ink-3);margin-top:5px;font-weight:500}
+.b-tags{display:flex;gap:6px;margin-top:9px;flex-wrap:wrap}
+.b-tag{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:6px}
+.b-tag.urgent{background:var(--red-soft);color:#c22f35}
+.b-tag.notice{background:var(--accent-soft);color:#1a5fb8}
+.b-tag.fire{background:var(--orange-soft);color:#c56a10}
+.b-tag.reply{background:var(--green-soft);color:#167a43}
+.b-act{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex:none}
+.b-time{font-size:11px;color:var(--ink-3);font-weight:500}
+.b-btn{font-size:12px;font-weight:600;padding:6px 13px;border-radius:8px;border:1.5px solid rgba(47,111,237,.4);color:var(--accent);transition:all .18s}
+.b-btn:hover{background:var(--accent-soft)}
+.b-btn.done{background:var(--green-soft);border-color:transparent;color:#167a43}
+
+
+/* ===== Village Detail View ===== */
+.vill-banner{background:linear-gradient(120deg,#0f2e4f 0%,#194370 100%);border-radius:var(--radius-lg);padding:26px 30px;color:#fff;margin-bottom:22px;position:relative;overflow:hidden;box-shadow:0 14px 36px rgba(15,46,79,.22)}
+.vill-banner::after{content:"";position:absolute;right:-80px;top:-100px;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.05)}
+.vb-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;position:relative;z-index:1}
+.vb-left{display:flex;flex-direction:column;gap:10px}
+.vb-title{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.vb-name{font-size:28px;font-weight:800;letter-spacing:.6px}
+.vb-tag{font-size:12px;font-weight:700;padding:5px 13px;border-radius:8px}
+.vb-sub{font-size:13px;opacity:.85;display:flex;align-items:center;gap:7px}
+.vb-sub svg{width:13px;height:13px}
+.vb-right{display:flex;gap:18px}
+.vb-stat{text-align:center}
+.vb-stat .v-v{font-family:"Bahnschrift",Arial,sans-serif;font-size:30px;font-weight:700;letter-spacing:-.5px}
+.vb-stat .v-l{font-size:11.5px;opacity:.8;margin-top:4px;font-weight:500}
+
+
+/* ===== 社列表 ===== */
+.she-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.she-card{display:flex;align-items:center;gap:13px;padding:14px 16px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);transition:all .18s}
+.she-card:hover{background:var(--surface);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.she-ic{width:42px;height:42px;border-radius:11px;background:var(--red-soft);display:flex;align-items:center;justify-content:center;flex:none}
+.she-ic svg{width:20px;height:20px;color:var(--red)}
+.she-main{flex:1;min-width:0}
+.she-n{font-size:14px;font-weight:700}
+.she-d{font-size:11.5px;color:var(--ink-3);margin-top:4px;font-weight:500}
+.she-num{text-align:right;flex:none}
+.she-num b{font-family:"Bahnschrift",Arial,sans-serif;font-size:22px;font-weight:700;color:var(--red);display:block}
+.she-num span{font-size:10.5px;color:var(--ink-3);font-weight:500}
+
+
+/* ===== 快捷入口 ===== */
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.quick{display:flex;align-items:center;gap:13px;padding:15px 16px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line);transition:all .18s;text-align:left}
+.quick:hover{background:var(--surface);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+.q-ic{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none}
+.q-ic svg{width:21px;height:21px}
+.q-ic.b{background:var(--brand-soft)} .q-ic.b svg{color:var(--brand-2)}
+.q-ic.r{background:var(--red-soft)} .q-ic.r svg{color:var(--red)}
+.q-ic.a{background:var(--accent-soft)} .q-ic.a svg{color:var(--accent)}
+.q-ic.g{background:var(--green-soft)} .q-ic.g svg{color:var(--green)}
+.q-txt .q-t{font-size:14px;font-weight:700}
+.q-txt .q-s{font-size:11.5px;color:var(--ink-3);margin-top:3px;font-weight:500}
+
+
+/* ===== Sheet / Modal ===== */
+.modal-mask{position:fixed;inset:0;background:rgba(11,22,42,.45);z-index:100;display:none;align-items:center;justify-content:center;padding:24px;backdrop-filter:blur(3px)}
+.modal-mask.on{display:flex}
+.modal{background:var(--surface);border-radius:18px;width:100%;max-width:520px;max-height:88vh;overflow:hidden;box-shadow:0 30px 70px rgba(10,20,40,.25);display:flex;flex-direction:column}
+.modal-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+.modal-head .mh-t{font-size:17px;font-weight:800}
+.modal-head .mh-x{width:34px;height:34px;border-radius:10px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;color:var(--ink-2)}
+.modal-head .mh-x svg{width:16px;height:16px}
+.modal-body{padding:20px 22px;overflow-y:auto}
+.modal-foot{padding:14px 22px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end}
+.btn{padding:9px 18px;border-radius:10px;font-size:13px;font-weight:600;transition:all .18s}
+.btn-ghost{background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.btn-ghost:hover{background:var(--line)}
+.btn-primary{background:linear-gradient(180deg,#1b4a76,#12314f);color:#fff;box-shadow:0 8px 18px rgba(18,49,79,.22)}
+.btn-primary:hover{transform:translateY(-1px)}
+
+.form-label{font-size:13px;font-weight:600;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.form-label svg{width:14px;height:14px;color:var(--brand-2)}
+.tag-group{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tag-opt{padding:8px 15px;border-radius:20px;border:1.5px solid var(--line-2);font-size:13px;font-weight:600;color:var(--ink-2);transition:all .18s}
+.tag-opt.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.form-textarea{width:100%;min-height:100px;padding:12px 14px;border:1.5px solid var(--line-2);border-radius:11px;font-size:14px;line-height:1.6;resize:none;outline:none;background:var(--surface-2);color:var(--ink)}
+.form-textarea:focus{border-color:var(--brand)}
+.form-row{display:flex;gap:10px;margin-top:12px}
+.form-btn{flex:none;display:flex;align-items:center;gap:7px;padding:0 16px;height:44px;border:1.5px solid var(--line-2);border-radius:11px;font-size:13px;font-weight:600;color:var(--ink-2)}
+.form-btn svg{width:16px;height:16px}
+.form-btn.primary{flex:1;background:var(--brand);color:#fff;border-color:var(--brand);justify-content:center;letter-spacing:1px;box-shadow:0 8px 18px rgba(18,49,79,.22)}
+
+
+/* ===== Footer Info ===== */
+.page-foot{margin-top:26px;padding-top:18px;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;font-size:11.5px;color:var(--ink-3);font-weight:500;flex-wrap:wrap;gap:10px}
+.demo-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:8px;background:var(--yellow-soft);color:#8b6610;font-weight:600;font-size:11px}
+
+
+/* ========== 专业模块新增样式 ========== */
+/* 24h 降雨趋势图 */
+.rain-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:10px}
+.rain-legend{display:flex;align-items:center;gap:16px;font-size:12px;color:var(--ink-2);font-weight:500}
+.rl-item{display:flex;align-items:center;gap:6px}
+.rl-dot{width:14px;height:4px;border-radius:2px}
+.rl-dot.rain{background:var(--accent)}
+.rl-dot.thr{background:var(--red);background-image:repeating-linear-gradient(45deg,var(--red) 0 3px,transparent 3px 6px);height:3px}
+.rl-dot.max{background:var(--orange);height:3px}
+.rain-svg-wrap{width:100%;background:var(--surface-2);border-radius:12px;padding:12px 12px 6px;border:1px solid var(--line)}
+.rain-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+.rs-item{padding:12px 14px;border-radius:11px;background:var(--surface-2);border:1px solid var(--line)}
+.rs-item .rs-l{font-size:11px;color:var(--ink-3);font-weight:500}
+.rs-item .rs-v{font-family:"Bahnschrift",Arial,sans-serif;font-size:22px;font-weight:700;margin-top:5px;letter-spacing:-.3px}
+.rs-item .rs-v small{font-size:11px;font-weight:500;color:var(--ink-3);margin-left:3px}
+.rs-item.r .rs-v{color:var(--red)}
+.rs-item.o .rs-v{color:var(--orange)}
+.rs-item.a .rs-v{color:var(--accent)}
+
+/* 雷达云图 Tabs */
+.rad-tabs{display:flex;gap:4px;padding:3px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;align-self:flex-start}
+.rad-tab{padding:8px 18px;font-size:12.5px;font-weight:600;color:var(--ink-3);border-radius:8px;transition:all .18s;display:flex;align-items:center;gap:6px}
+.rad-tab svg{width:14px;height:14px}
+.rad-tab.on{background:var(--surface);color:var(--brand);box-shadow:var(--shadow-sm)}
+.rad-body{border-radius:14px;overflow:hidden;background:#0b1a2c;aspect-ratio:16/10;position:relative;border:1px solid var(--line)}
+.rad-body img{width:100%;height:100%;object-fit:cover;display:none}
+.rad-body img.on{display:block}
+.rad-body .rad-placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px;color:#9db5d1;font-size:13px;text-align:center;padding:20px}
+.rad-body .rad-placeholder svg{width:44px;height:44px;opacity:.5}
+.rad-info{position:absolute;left:12px;bottom:12px;z-index:2;background:rgba(11,26,44,.75);backdrop-filter:blur(6px);border-radius:10px;padding:8px 12px;color:#dbe8f7;font-size:11.5px;border:1px solid rgba(255,255,255,.08)}
+.rad-info b{color:#fff;font-weight:700}
+.rad-refresh{position:absolute;right:12px;top:12px;z-index:2;background:rgba(11,26,44,.75);backdrop-filter:blur(6px);border-radius:10px;padding:7px 12px;color:#dbe8f7;font-size:11.5px;border:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:6px;transition:all .18s}
+.rad-refresh:hover{background:rgba(11,26,44,.92)}
+.rad-refresh svg{width:13px;height:13px}
+
+/* 专业分析表 */
+.an-table{width:100%;border-collapse:separate;border-spacing:0;border-radius:12px;overflow:hidden;border:1px solid var(--line);font-size:13px}
+.an-table thead th{background:var(--surface-2);color:var(--ink-2);font-weight:600;font-size:12px;padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+.an-table tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle;color:var(--ink);font-weight:500}
+.an-table tbody tr:last-child td{border-bottom:none}
+.an-table tbody tr:hover td{background:var(--surface-2)}
+.rain-bar{height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden;position:relative;min-width:120px}
+.rain-bar .rb-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#62a0ff,#2f6fed);position:relative}
+.rain-bar .rb-fill.r{background:linear-gradient(90deg,#f3a1a4,#e2444a)}
+.rain-bar .rb-fill.o{background:linear-gradient(90deg,#ffc27a,#ee8b24)}
+.rain-bar::after{content:"";position:absolute;left:50%;top:-2px;bottom:-2px;width:2px;background:var(--red);border-radius:1px}
+.lvl{font-size:11px;font-weight:700;padding:3px 9px;border-radius:7px;display:inline-block;white-space:nowrap}
+.lvl.r{background:var(--red-soft);color:#c22f35}
+.lvl.o{background:var(--orange-soft);color:#c56a10}
+.lvl.y{background:var(--yellow-soft);color:#8b6610}
+.lvl.b{background:var(--accent-soft);color:#1a5fb8}
+.lvl.g{background:var(--green-soft);color:#167a43}
+
+/* 智能决策面板 */
+.dec-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dec-card{border-radius:14px;padding:16px 18px;color:#fff;position:relative;overflow:hidden;transition:transform .18s}
+.dec-card:hover{transform:translateY(-2px)}
+.dec-card.r{background:linear-gradient(135deg,#c93439,#e2444a 55%,#f0686d)}
+.dec-card.o{background:linear-gradient(135deg,#c5660a,#ee8b24 55%,#f7a84f)}
+.dec-card.b{background:linear-gradient(135deg,#1b4398,#2f6fed 55%,#5c90f7)}
+.dec-card::after{content:"";position:absolute;right:-30px;bottom:-30px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.1)}
+.dec-card .dc-t{font-size:11px;opacity:.85;font-weight:600;letter-spacing:1px;position:relative;z-index:1}
+.dec-card .dc-n{font-size:18px;font-weight:800;margin-top:6px;line-height:1.4;position:relative;z-index:1}
+.dec-card .dc-s{font-size:12px;opacity:.9;margin-top:9px;line-height:1.55;position:relative;z-index:1}
+.dec-card .dc-btn{margin-top:12px;padding:7px 14px;border-radius:9px;background:rgba(255,255,255,.22);color:#fff;font-size:12px;font-weight:600;border:1px solid rgba(255,255,255,.25);display:inline-block;position:relative;z-index:1;transition:background .18s}
+.dec-card .dc-btn:hover{background:rgba(255,255,255,.32)}
+.dec-list{margin-top:14px;padding:14px 16px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)}
+.dec-list .dl-h{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:7px;margin-bottom:9px}
+.dec-list .dl-h svg{width:15px;height:15px;color:var(--brand-2)}
+.dl-item{display:flex;gap:11px;padding:9px 0;border-top:1px dashed var(--line-2);align-items:flex-start}
+.dl-item:first-of-type{border-top:none}
+.dl-item .dl-n{width:22px;height:22px;border-radius:50%;background:var(--brand-soft);color:var(--brand);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
+.dl-item.r .dl-n{background:var(--red-soft);color:var(--red)}
+.dl-item.o .dl-n{background:var(--orange-soft);color:var(--orange)}
+.dl-item .dl-m{flex:1;font-size:13px;line-height:1.55;font-weight:500}
+.dl-item .dl-m b{color:var(--ink);font-weight:700}
+.dl-item .dl-m .act{color:var(--red);font-weight:700}
+.dl-item .dl-time{font-size:11px;color:var(--ink-3);white-space:nowrap;flex:none;font-weight:500;margin-top:2px}
+
+/* 降雨调度面板（管理员） */
+.disp-head{background:linear-gradient(120deg,#0f2e4f,#1a4a7a);color:#fff;border-radius:14px;padding:14px 18px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.disp-head .dh-t{font-size:15px;font-weight:800;display:flex;align-items:center;gap:9px}
+.disp-head .dh-t svg{width:18px;height:18px}
+.disp-head .dh-s{font-size:11.5px;opacity:.85}
+.disp-head .dh-running{display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:9px;background:rgba(34,165,91,.25);border:1px solid rgba(255,255,255,.15);font-size:12px;font-weight:600}
+.disp-head .dh-running .dot{width:8px;height:8px;border-radius:50%;background:#22a55b;animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.disp-form{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;margin-bottom:14px}
+.disp-box{padding:15px 16px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)}
+.disp-box .db-l{font-size:12.5px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.disp-box .db-l svg{width:14px;height:14px;color:var(--brand-2)}
+.dur-row{display:flex;gap:8px;flex-wrap:wrap}
+.dur{flex:1;min-width:86px;padding:10px 8px;text-align:center;border-radius:10px;border:1.5px solid var(--line-2);transition:all .18s;cursor:pointer}
+.dur .d-h{font-family:"Bahnschrift",Arial,sans-serif;font-size:22px;font-weight:700;letter-spacing:-.3px;color:var(--ink)}
+.dur .d-l{font-size:10.5px;color:var(--ink-3);font-weight:500;margin-top:2px}
+.dur.on{background:var(--brand);border-color:var(--brand)}
+.dur.on .d-h,.dur.on .d-l{color:#fff}
+.vcheck{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;max-height:180px;overflow-y:auto;padding-right:4px}
+.vcheck::-webkit-scrollbar{width:4px}
+.vcheck::-webkit-scrollbar-thumb{background:var(--line-2);border-radius:4px}
+.vc{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:9px;background:var(--surface);border:1.5px solid var(--line);font-size:12.5px;font-weight:500;transition:all .15s;cursor:pointer}
+.vc:hover{border-color:var(--brand-soft)}
+.vc.on{background:var(--brand-soft);border-color:var(--accent);color:var(--brand);font-weight:600}
+.vc input{display:none}
+.vc .vc-bx{width:15px;height:15px;border-radius:4px;border:1.5px solid var(--line-2);display:inline-block;flex:none;position:relative}
+.vc.on .vc-bx{background:var(--accent);border-color:var(--accent)}
+.vc.on .vc-bx::after{content:"✓";position:absolute;inset:-1px 0 0 0;color:#fff;font-size:10px;font-weight:900;text-align:center;line-height:15px}
+.disp-actions{display:flex;align-items:center;justify-content:space-between;padding:14px 0 0;border-top:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.disp-act-left{display:flex;gap:10px}
+.disp-info{font-size:12px;color:var(--ink-2);font-weight:500;display:flex;align-items:center;gap:6px}
+.disp-info svg{width:14px;height:14px;color:var(--accent)}
+.btn-lg{padding:11px 22px;border-radius:11px;font-size:14px;font-weight:700;letter-spacing:.5px}
+.btn-lg.primary{background:linear-gradient(180deg,#e2444a,#c93439);color:#fff;box-shadow:0 8px 20px rgba(226,68,74,.25);display:flex;align-items:center;gap:7px}
+.btn-lg.primary:hover{transform:translateY(-1px)}
+.btn-lg.ghost{background:var(--surface);border:1.5px solid var(--line-2);color:var(--ink-2)}
+.btn-lg.ghost:hover{background:var(--surface-2)}
+.btn-lg svg{width:16px;height:16px}
+
+/* 气象预警列表（独立） */
+.warn-list{display:flex;flex-direction:column;gap:10px}
+.warn{border-radius:12px;padding:12px 14px;border-left:4px solid #ccc;background:var(--surface);border:1px solid var(--line);position:relative;overflow:hidden}
+.warn.r{border-left-color:var(--red);background:linear-gradient(90deg,#fff5f5 0%,#fff 30%)}
+.warn.o{border-left-color:var(--orange);background:linear-gradient(90deg,#fff8ee 0%,#fff 30%)}
+.warn.y{border-left-color:var(--yellow);background:linear-gradient(90deg,#fbf8ea 0%,#fff 30%)}
+.warn.b{border-left-color:var(--accent);background:linear-gradient(90deg,#eef4ff 0%,#fff 30%)}
+.warn .wr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.warn .wl{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.warn .wl-t{font-size:13px;font-weight:700}
+.warn .wl .lvl{font-size:10.5px}
+.warn .wm{font-size:12px;color:var(--ink-2);margin-top:6px;line-height:1.55;font-weight:500}
+.warn .wt{font-size:10.5px;color:var(--ink-3);font-weight:500;white-space:nowrap}
+.warn .w-sig{position:absolute;right:14px;top:14px;font-size:10px;color:var(--ink-3);letter-spacing:1px}
+
+
+
 
 /* ===== 正式站功能组件样式（浅色适配） ===== */
+
 /* ===== 预警横幅 ===== */
 .alert-banner {
   border-radius: var(--radius); padding: 16px 24px; margin-bottom: 24px;
@@ -473,6 +898,7 @@ a{color:inherit;text-decoration:none}
 .alert-banner.danger .alert-text h3 { color: #ef4444; }
 .alert-banner .alert-text p { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
 @keyframes slideDown { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+
 
 
 /* ===== 统计卡片行 ===== */
@@ -509,6 +935,7 @@ a{color:inherit;text-decoration:none}
 .stat-card:nth-child(6) .sc-glow { background: #06b6d4; }
 
 
+
 /* ===== 区块标题 ===== */
 .section-header {
   display: flex; align-items: center; justify-content: space-between;
@@ -524,6 +951,7 @@ a{color:inherit;text-decoration:none}
 .section-title .st-dot.green { background: #22c55e; }
 .section-title .st-dot.purple { background: #8b5cf6; }
 .section-subtitle { font-size: 12px; color: var(--text-muted); }
+
 
 
 /* ===== 村庄网格 ===== */
@@ -562,8 +990,10 @@ a{color:inherit;text-decoration:none}
 .village-card:hover .vc-accent-bar { opacity: 1; }
 
 
+
 /* ===== 双栏区域 ===== */
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 28px; }
+
 
 
 /* ===== 联系人卡片 ===== */
@@ -593,6 +1023,7 @@ a{color:inherit;text-decoration:none}
 @media (max-width: 640px) { #leaderList { grid-template-columns: 1fr; } }
 
 
+
 /* ===== 雨量监测站 ===== */
 .rain-card {
   background: var(--bg-card); border-radius: var(--radius); padding: 20px;
@@ -611,6 +1042,7 @@ a{color:inherit;text-decoration:none}
 .rain-card .rc-item.rain { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35); }
 .rain-card .rc-item.rain .rc-name { color: #c56a10; }
 .rain-card .rc-item.rain .rc-value { color: #b45309; }
+
 
 
 /* ===== 天气调度（管理员降雨定时刷新） ===== */
@@ -643,6 +1075,7 @@ a{color:inherit;text-decoration:none}
 .wx-sched .ws-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 
+
 /* ===== 气象预警信息 ===== */
 .warn-card {
   background: var(--bg-card); border-radius: var(--radius); padding: 20px;
@@ -669,6 +1102,7 @@ a{color:inherit;text-decoration:none}
 .warn-ok { text-align: center; color: #22c55e; padding: 16px 0; font-size: 14px; font-weight: 600; }
 
 
+
 /* ===== 地质灾害气象风险预警（自然资源部+中国气象局联合发布） ===== */
 .geo-warn {
   background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.35);
@@ -684,6 +1118,7 @@ a{color:inherit;text-decoration:none}
 .geo-warn-body { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
 .geo-warn-note { font-size: 12px; color: var(--text-muted); margin-top: 6px; line-height: 1.6; }
 .geo-warn .geo-warn-note.local { color: #dc2626; font-weight: 600; }
+
 
 
 /* ===== 各村防汛应急队伍 ===== */
@@ -731,6 +1166,7 @@ a{color:inherit;text-decoration:none}
 }
 
 
+
 /* ===== 进入地图 ===== */
 .map-entry { text-align: center; margin: 36px 0 16px; }
 .map-entry a {
@@ -742,6 +1178,7 @@ a{color:inherit;text-decoration:none}
   transition: var(--transition);
 }
 .map-entry a:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(239,68,68,0.5); }
+
 
 
 /* ===== 编辑模式 ===== */
@@ -784,6 +1221,7 @@ a{color:inherit;text-decoration:none}
 @keyframes saveFade { to { opacity: 0; transform: translateY(-10px); } }
 
 
+
 /* ===== 响应式 ===== */
 @media (max-width: 1400px) {
   .stats-row { grid-template-columns: repeat(3, 1fr); }
@@ -816,6 +1254,7 @@ a{color:inherit;text-decoration:none}
   .more-btn.active { border-color: #ef4444; color: #ef4444; }
   .more-menu { top: 60px; }
 }
+
 
 /* ===== 系统管理面板（仅管理员） ===== */
 .ak-sys-overlay {
@@ -871,6 +1310,7 @@ a{color:inherit;text-decoration:none}
 }
 
 
+
 /* ===== 切坡建房农户照片 ===== */
 .photo-card {
   background: var(--bg-card); border-radius: var(--radius); padding: 20px;
@@ -916,6 +1356,7 @@ a{color:inherit;text-decoration:none}
 @media (max-width: 640px) {
   .ph-slots { grid-template-columns: 1fr; }
 }
+
 
 
 /* ===== 专业分析 · 各村降雨 vs 预警阈值对比（浅色政务风） ===== */
@@ -969,6 +1410,7 @@ a{color:inherit;text-decoration:none}
 }
 
 
+
 /* ===== 补充：顶栏更多菜单（手机端收纳） ===== */
 .more-btn {
   display: flex; align-items: center; justify-content: center;
@@ -994,6 +1436,7 @@ a{color:inherit;text-decoration:none}
 .more-menu .mm-item:hover { background: var(--surface-2, #f7f9fc); }
 .more-menu .mm-item.primary { color: #e2444a; font-weight: 600; }
 
+
 /* ===== 补充：全局按钮（系统管理面板） ===== */
 .btn {
   display: inline-flex; align-items: center; gap: 6px;
@@ -1013,6 +1456,7 @@ a{color:inherit;text-decoration:none}
 }
 .edit-mode-btn.active { background: linear-gradient(135deg, #22c55e, #16a34a); }
 
+
 /* ===== 补充：weather-badge 在演示站顶栏中的呈现 ===== */
 .topbar .weather-badge {
   display: flex; align-items: center; gap: 9px;
@@ -1026,11 +1470,108 @@ a{color:inherit;text-decoration:none}
 .time-display { font-size: 12.5px; color: var(--ink-3, #8a95ad); font-variant-numeric: tabular-nums; }
 .ak-sys-body .btn { margin: 0 6px 6px 0; }
 
+
 /* ===== 补充：正式站组件在浅色卡内的适配 ===== */
 .stat-card { background: var(--surface, #fff); border: 1px solid var(--line, #e2e8f0); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow-sm, 0 1px 3px rgba(20,33,61,.05)); }
 .village-card { background: var(--surface, #fff); border: 1px solid var(--line, #e2e8f0); border-radius: 13px; }
 .contact-card, .rain-card, .warn-card, .team-card, .photo-card { background: var(--surface, #fff); border: 1px solid var(--line, #e2e8f0); border-radius: 16px; box-shadow: var(--shadow-sm, 0 1px 3px rgba(20,33,61,.05)); }
 .card { background: var(--surface, #fff); border: 1px solid var(--line, #e2e8f0); border-radius: 16px; box-shadow: var(--shadow-sm, 0 1px 3px rgba(20,33,61,.05)); }
+
+
+/* ===== 补充：顶栏更多菜单 ===== */
+.more-btn {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--surface-2,#f7f9fc); border: 1px solid var(--line,#e2e8f0);
+  color: var(--ink-2,#475569); font-size: 20px; cursor: pointer;
+}
+.more-menu {
+  display: none; position: fixed; top: 56px; right: 12px; z-index: 200;
+  background: var(--surface,#fff); border: 1px solid var(--line-2,#cbd5e1);
+  border-radius: 12px; box-shadow: 0 8px 28px rgba(15,23,42,.15);
+  min-width: 200px; overflow: hidden;
+}
+.more-menu.show { display: block; animation: mmIn .18s ease; }
+@keyframes mmIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+.more-menu .mm-item {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 13px 18px; background: none; border: none; border-bottom: 1px solid var(--line,#e2e8f0);
+  color: var(--ink,#1e293b); font-size: 14px; cursor: pointer; font-family: inherit; text-align: left;
+  text-decoration: none;
+}
+.more-menu .mm-item:last-child { border-bottom: none; }
+.more-menu .mm-item:hover { background: var(--surface-2,#f7f9fc); }
+.more-menu .mm-item.primary { color: #e2444a; font-weight: 600; }
+
+/* ===== 补充：全局按钮 ===== */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: 9px; font-size: 12.5px; font-weight: 600;
+  border: 1px solid var(--line,#e2e8f0); background: var(--surface-2,#f7f9fc);
+  color: var(--ink-2,#475569); cursor: pointer; text-decoration: none;
+}
+.btn:hover { background: var(--surface,#fff); border-color: var(--line-2,#cbd5e1); color: var(--ink,#1e293b); }
+.btn-primary { background: linear-gradient(180deg,#1b4a76,#12314f); color:#fff !important; border-color:transparent; box-shadow:0 6px 14px rgba(18,49,79,.2); }
+.edit-mode-btn { background: linear-gradient(135deg,#f59e0b,#d97706); color:#fff; border-color:transparent; }
+.edit-mode-btn.active { background: linear-gradient(135deg,#22c55e,#16a34a); }
+
+/* ===== 补充：weather-badge 在顶栏 ===== */
+.topbar .weather-badge {
+  display: flex; align-items: center; gap: 9px; padding: 8px 16px; border-radius: 11px;
+  background: var(--accent-soft,#eaf0ff); border: 1px solid rgba(47,111,237,.18);
+  font-size: 13px; color: #1a4fb0;
+}
+.topbar .weather-badge .wt { font-size: 18px; }
+.topbar .weather-badge .wtemp { font-weight: 700; }
+.topbar .weather-badge .wc-s { font-size: 11px; color: #4e7dc8; font-weight: 500; }
+.time-display { font-size: 12.5px; color: var(--ink-3,#8a95ad); font-variant-numeric: tabular-nums; }
+
+/* ===== 补充：正式站组件在浅色卡内的适配 ===== */
+.contact-card,.rain-card,.warn-card,.team-card,.photo-card { background:var(--surface,#fff); border:1px solid var(--line,#e2e8f0); border-radius:16px; box-shadow:var(--shadow-sm); }
+.card { background:var(--surface,#fff); border:1px solid var(--line,#e2e8f0); border-radius:16px; box-shadow:var(--shadow-sm); }
+.stat-card { background:var(--surface,#fff); border:1px solid var(--line,#e2e8f0); border-radius:16px; padding:18px 20px; box-shadow:var(--shadow-sm); }
+.village-card { background:var(--surface,#fff); border:1px solid var(--line,#e2e8f0); border-radius:13px; }
+.ak-sys-body .btn { margin:0 6px 6px 0; }
+
+/* ===== 补充：统一调度指令模块 ===== */
+.disp-send-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+.disp-send-head .dsh-t { font-size:14px; font-weight:700; display:flex; align-items:center; gap:8px; }
+.disp-send-head .dsh-t svg { width:17px; height:17px; color:var(--accent); }
+.disp-send-list { display:flex; flex-direction:column; gap:10px; }
+.ds-item {
+  display: flex; align-items: flex-start; gap: 12px; padding: 13px 14px;
+  background: var(--surface-2,#f7f9fc); border: 1px solid var(--line,#e2e8f0);
+  border-radius: 12px; border-left: 4px solid var(--accent);
+}
+.ds-item.r { border-left-color: var(--red,#e2444a); }
+.ds-item.o { border-left-color: var(--orange,#ee8b24); }
+.ds-item.g { border-left-color: var(--green,#22a55b); }
+.ds-item .ds-dot { width:9px; height:9px; border-radius:50%; background:var(--accent); flex:none; margin-top:5px; }
+.ds-item.r .ds-dot { background:var(--red,#e2444a); }
+.ds-item.o .ds-dot { background:var(--orange,#ee8b24); }
+.ds-item.g .ds-dot { background:var(--green,#22a55b); }
+.ds-item .ds-m { flex:1; min-width:0; }
+.ds-item .ds-t { font-size:13.5px; font-weight:700; line-height:1.4; }
+.ds-item .ds-s { font-size:11px; color:var(--ink-3,#8a95ad); margin-top:4px; font-weight:500; line-height:1.45; }
+.ds-item .ds-tags { display:flex; gap:6px; margin-top:8px; flex-wrap:wrap; }
+.ds-item .ds-tag { font-size:10px; font-weight:700; padding:2.5px 8px; border-radius:6px; }
+.ds-tag.r { background:#fdeaea; color:#c22f35; }
+.ds-tag.a { background:#eaf0ff; color:#1a5fb8; }
+.ds-tag.o { background:#fdf1e1; color:#c56a10; }
+.ds-tag.g { background:#e6f6ed; color:#167a43; }
+.ds-item .ds-rt { display:flex; flex-direction:column; align-items:flex-end; gap:7px; flex:none; }
+.ds-item .ds-time { font-size:10.5px; color:var(--ink-3,#8a95ad); font-weight:500; }
+.ds-item .ds-btn { font-size:11.5px; font-weight:600; padding:5.5px 11px; border-radius:8px; color:var(--accent); border:1px solid rgba(47,111,237,.35); white-space:nowrap; background:var(--surface,#fff); }
+.ds-item .ds-btn.ok { background:#e6f6ed; color:#167a43; border-color:transparent; }
+.ds-empty { text-align:center; color:var(--ink-3,#8a95ad); padding:18px 0; font-size:12.5px; line-height:1.6; }
+
+/* ===== 补充：照片档案独立卡片 ===== */
+.photo-card .photo-toolbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
+.photo-card select { background:var(--surface,#fff); color:var(--ink,#1e293b); border:1px solid var(--line-2,#cbd5e1); border-radius:8px; padding:7px 10px; font-size:13px; max-width:220px; }
+.photo-card .photo-tip { font-size:12px; color:#b45309; font-weight:600; }
+.ph-row { display:flex; align-items:center; gap:10px; padding:8px 12px; background:var(--surface-2,#f7f9fc); border-radius:8px; font-size:13px; }
+.ph-thumb { width:64px; height:48px; overflow:hidden; border-radius:6px; background:var(--surface-2,#f7f9fc); }
+.ph-thumb img { width:100%; height:100%; object-fit:cover; cursor:zoom-in; }
 
 </style>
 </head>
@@ -1046,33 +1587,28 @@ a{color:inherit;text-decoration:none}
         <div class="logo-t2">XINYUAN EMERGENCY</div>
       </div>
     </div>
-
     <div class="sb-role">
       <div class="sr-t">当前身份</div>
       <div class="sr-n"><span id="pcRoleName">管理员</span><span class="sr-badge" id="pcRoleBadge">全部权限</span></div>
     </div>
-
     <nav class="sb-menu">
       <div class="sb-group-t">主功能</div>
       <div class="sb-item active" onclick="pcNav('dash',this)"><svg viewBox="0 0 24 24" fill="none"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>数据看板</div>
-      <a class="sb-item" href="map.html?v=v20260827-23"><svg viewBox="0 0 24 24" fill="none"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.7"/></svg>应急地图</a>
-      <a class="sb-item" href="analysis.html?v=v20260827-23"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M10 19V9M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>专业分析</a>
-      <a class="sb-item" href="radar.html?v=v20260827-23"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.4" opacity=".7"/></svg>雷达 / 预报</a>
-
+      <a class="sb-item" href="map.html?v=v20260827-24"><svg viewBox="0 0 24 24" fill="none"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.7"/></svg>应急地图</a>
+      <a class="sb-item" href="analysis.html?v=v20260827-24"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M10 19V9M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>专业分析</a>
+      <a class="sb-item" href="radar.html?v=v20260827-24"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.4" opacity=".7"/></svg>雷达 / 预报</a>
       <div class="sb-group-t">数据台账</div>
-      <a class="sb-item" href="ledger.html?v=v20260827-23"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>应急台账</a>
-      <a class="sb-item" href="transfer.html?v=v20260827-23"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h10M7 14h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>转移流程</a>
-
+      <a class="sb-item" href="ledger.html?v=v20260827-24"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>应急台账</a>
+      <a class="sb-item" href="transfer.html?v=v20260827-24"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h10M7 14h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>转移流程</a>
+      <div class="sb-item" onclick="pcNavTo('photo')"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>照片档案</div>
       <div class="sb-group-t">应急模块</div>
-      <a class="sb-item" href="guide.html?v=v20260827-23"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>防汛应急指南</a>
-      <a class="sb-item" href="manual.html?v=v20260827-23"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>使用说明</a>
-
+      <a class="sb-item" href="guide.html?v=v20260827-24"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>防汛应急指南</a>
+      <a class="sb-item" href="manual.html?v=v20260827-24"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>使用说明</a>
       <div class="sb-group-t">系统</div>
       <div class="sb-item" id="pcMenuAdmin" onclick="openAdminPanel()" style="display:none"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>系统管理</div>
-      <a class="sb-item" id="pcMenuHealth" href="health.html?v=v20260827-23" style="display:none"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>系统自检</a>
+      <a class="sb-item" id="pcMenuHealth" href="health.html?v=v20260827-24" style="display:none"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>系统自检</a>
       <div class="sb-item" onclick="doLogout()"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h3M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>退出登录</div>
     </nav>
-
     <div class="sb-foot">
       <div class="sf-av"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c1-3.2 3.5-4.8 7-4.8s6 1.6 7 4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
       <div>
@@ -1084,8 +1620,6 @@ a{color:inherit;text-decoration:none}
 
   <!-- ============ MAIN ============ -->
   <div class="main">
-
-    <!-- Topbar -->
     <header class="topbar">
       <div class="tb-left">
         <div class="crumb">
@@ -1109,62 +1643,80 @@ a{color:inherit;text-decoration:none}
         <div class="time-display" id="timeDisplay"></div>
         <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
         <button class="btn" id="akSysBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-        <a class="btn" id="akHealthBtn" href="health.html?v=v20260827-23" style="display:none">&#x1F50D; 自检</a>
+        <a class="btn" id="akHealthBtn" href="health.html?v=v20260827-24" style="display:none">&#x1F50D; 自检</a>
         <button class="tb-icon" onclick="toggleMoreMenu()" id="moreBtn" title="更多功能">&#x2630;</button>
       </div>
     </header>
 
     <!-- 手机端更多抽屉 -->
     <div class="more-menu" id="moreMenu">
-      <a href="map.html?v=v20260827-23" class="mm-item">&#x1F5FA; 进入地图</a>
-      <a href="analysis.html?v=v20260827-23" class="mm-item">&#x1F4CA; 专业分析</a>
-      <a href="radar.html?v=v20260827-23" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
-      <a href="transfer.html?v=v20260827-23" class="mm-item">&#x1F500; 转移流程</a>
-      <a href="guide.html?v=v20260827-23" class="mm-item">&#x1F4D6; 防汛应急指南</a>
-      <a href="manual.html?v=v20260827-23" class="mm-item">&#x1F4F1; 使用说明</a>
-      <a href="ledger.html?v=v20260827-23" class="mm-item">&#x1F4CB; 应急台账</a>
-      <a href="updates.html?v=v20260827-23" class="mm-item">&#x1F4C4; 近期更新</a>
-      <a href="health.html?v=v20260827-23" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
+      <a href="map.html?v=v20260827-24" class="mm-item">&#x1F5FA; 进入地图</a>
+      <a href="analysis.html?v=v20260827-24" class="mm-item">&#x1F4CA; 专业分析</a>
+      <a href="radar.html?v=v20260827-24" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
+      <a href="transfer.html?v=v20260827-24" class="mm-item">&#x1F500; 转移流程</a>
+      <a href="guide.html?v=v20260827-24" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+      <a href="manual.html?v=v20260827-24" class="mm-item">&#x1F4F1; 使用说明</a>
+      <a href="ledger.html?v=v20260827-24" class="mm-item">&#x1F4CB; 应急台账</a>
+      <a href="updates.html?v=v20260827-24" class="mm-item">&#x1F4C4; 近期更新</a>
+      <a href="health.html?v=v20260827-24" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
       <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
       <button class="mm-item" id="akSysBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理</button>
       <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
     </div>
 
-    <!-- ============ 内容区 ============ -->
+    <!-- ============ 内容区（按测试站形态） ============ -->
     <div class="content">
 
       <!-- 预警横幅 -->
       <div class="alert-banner" id="alertBanner" style="display:none;margin-bottom:22px;border-radius:15px;padding:16px 22px;">
         <div class="alert-icon">&#x26A0;</div>
-        <div class="alert-text">
-          <h3 id="alertTitle">天气提醒</h3>
-          <p id="alertDesc"></p>
+        <div class="alert-text"><h3 id="alertTitle">天气提醒</h3><p id="alertDesc"></p></div>
+      </div>
+
+      <!-- KPI 统计（测试站 kpi 卡 + 正式站 id） -->
+      <div class="kpi-row">
+        <div class="kpi k-red">
+          <div class="k-head"><span class="k-label">地质灾害隐患点</span><span class="k-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+          <div class="k-val" id="stat-hazards">-</div>
+          <div class="k-foot"><span class="flat" id="stat-hazards-sub">切坡建房及临崖临河隐患点</span></div>
+        </div>
+        <div class="kpi k-brand">
+          <div class="k-head"><span class="k-label">受威胁区域</span><span class="k-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.8"/></svg></span></div>
+          <div class="k-val" id="stat-areas">-</div>
+          <div class="k-foot"><span class="flat">全镇面状风险区</span></div>
+        </div>
+        <div class="kpi k-blue">
+          <div class="k-head"><span class="k-label">转移安置点</span><span class="k-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.8"/></svg></span></div>
+          <div class="k-val" id="stat-shelters">-</div>
+          <div class="k-foot"><span class="flat">含备选安置点</span></div>
+        </div>
+        <div class="kpi k-green">
+          <div class="k-head"><span class="k-label">撤离路线</span><span class="k-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span></div>
+          <div class="k-val" id="stat-routes">-</div>
+          <div class="k-foot"><span class="flat">含省道县道</span></div>
+        </div>
+        <div class="kpi k-brand">
+          <div class="k-head"><span class="k-label">村 / 社区</span><span class="k-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.8"/><path d="M3.5 20c.8-3 3-4.5 5.5-4.5s4.7 1.5 5.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span></div>
+          <div class="k-val" id="stat-villages">-</div>
+          <div class="k-foot"><span class="flat">覆盖全镇范围</span></div>
+        </div>
+        <div class="kpi k-red">
+          <div class="k-head"><span class="k-label">受威胁人口</span><span class="k-ic"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span></div>
+          <div class="k-val"><span id="stat-population">-</span><span class="k-unit">人</span></div>
+          <div class="k-foot"><span class="flat">各村撤离人员合计</span></div>
         </div>
       </div>
 
-      <!-- 全镇数据概览 -->
-      <div class="section-header">
-        <div class="section-title"><span class="st-dot red"></span>全镇数据概览</div>
-        <span class="section-subtitle">更新时间：<span id="updateTime">--</span></span>
-      </div>
-      <div class="stats-row">
-        <div class="stat-card"><div class="sc-glow"></div><div class="sc-icon red">&#x26A0;</div><div class="sc-num" id="stat-hazards">-</div><div class="sc-label">地质灾害隐患点</div><div class="sc-sub" id="stat-hazards-sub">切坡建房及临崖临河隐患点</div></div>
-        <div class="stat-card"><div class="sc-glow"></div><div class="sc-icon orange">&#x1F3D8;</div><div class="sc-num" id="stat-areas">-</div><div class="sc-label">受威胁区域</div><div class="sc-sub">全镇面状风险区</div></div>
-        <div class="stat-card"><div class="sc-glow"></div><div class="sc-icon green">&#x1F3E0;</div><div class="sc-num" id="stat-shelters">-</div><div class="sc-label">转移安置点</div><div class="sc-sub">含备选安置点</div></div>
-        <div class="stat-card"><div class="sc-glow"></div><div class="sc-icon blue">&#x27A1;</div><div class="sc-num" id="stat-routes">-</div><div class="sc-label">撤离路线</div><div class="sc-sub">含省道县道</div></div>
-        <div class="stat-card"><div class="sc-glow"></div><div class="sc-icon purple">&#x1F3D9;</div><div class="sc-num" id="stat-villages">-</div><div class="sc-label">村/社区</div><div class="sc-sub">覆盖全镇范围</div></div>
-        <div class="stat-card"><div class="sc-glow"></div><div class="sc-icon cyan">&#x1F465;</div><div class="sc-num"><span id="stat-population">-</span><span class="sc-unit">人</span></div><div class="sc-label">受威胁人口</div><div class="sc-sub">各村撤离人员合计</div></div>
-      </div>
-
-      <!-- 各村详情 -->
+      <!-- 各村详情（测试站 vill-grid + 正式站 villageGrid id） -->
       <div class="section-header">
         <div class="section-title"><span class="st-dot blue"></span>各村详情</div>
-        <span class="section-subtitle">点击卡片查看地图</span>
+        <span class="section-subtitle">点击卡片查看地图 · 更新时间：<span id="updateTime">--</span></span>
       </div>
-      <div class="village-grid" id="villageGrid"></div>
+      <div class="vill-grid" id="villageGrid" style="margin-bottom:24px;"></div>
 
-      <!-- 网格：天气 + 预警 -->
-      <div class="grid-2" style="margin-bottom:28px">
+      <!-- 网格：天气 + 预警（测试站卡形态） -->
+      <div class="grid-2" style="margin-bottom:22px">
+        <!-- 左：天气卡 -->
         <div class="card rain-card">
           <div class="card-head">
             <div class="ch-left">
@@ -1181,6 +1733,7 @@ a{color:inherit;text-decoration:none}
               <div id="nmcTrend"></div>
               <div style="font-size:11px;color:var(--ink-3);margin-top:6px;">来源：中央气象台 · 更新：<span id="nmcUpdateTime">--</span></div>
             </div>
+            <!-- 降雨调度（正式站 weather.js） -->
             <div class="wx-sched" id="wxScheduleWrap" style="display:none">
               <div class="ws-title">&#x26A0; 降雨天气调度（仅管理员）</div>
               <div class="ws-status" id="wxSchedStatus">检测到降雨，可多选村庄设置定时刷新</div>
@@ -1211,6 +1764,7 @@ a{color:inherit;text-decoration:none}
           </div>
         </div>
 
+        <!-- 右：预警卡 -->
         <div class="card warn-card">
           <div class="card-head">
             <div class="ch-left">
@@ -1236,10 +1790,9 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
 
-      <!-- ===== 中央气象台数据 & 专业分析模块 ===== -->
+      <!-- ===== 中央气象台数据 & 专业分析（测试站形态） ===== -->
       <a id="pcAnchorRain" style="position:relative;top:-20px"></a>
       <div class="grid-2" style="margin-bottom:22px">
-
         <!-- 左：24小时降雨趋势 -->
         <div class="card">
           <div class="card-head">
@@ -1253,6 +1806,7 @@ a{color:inherit;text-decoration:none}
             <div class="rain-legend">
               <span class="rl-item"><span class="rl-dot rain"></span>小时雨量</span>
               <span class="rl-item"><span class="rl-dot thr"></span>橙色预警阈值（50mm/24h）</span>
+              <span class="rl-item"><span class="rl-dot max"></span>历史极大值</span>
             </div>
           </div>
           <div class="card-body">
@@ -1269,6 +1823,8 @@ a{color:inherit;text-decoration:none}
                 </g>
                 <line x1="50" y1="101" x2="800" y2="101" stroke="#e2444a" stroke-width="1.5" stroke-dasharray="6 4"/>
                 <text x="795" y="97" fill="#c22f35" font-size="10" font-weight="700" text-anchor="end">橙色预警线 50mm/24h</text>
+                <line x1="50" y1="49" x2="800" y2="49" stroke="#ee8b24" stroke-width="1.2" stroke-dasharray="3 3" opacity=".85"/>
+                <text x="55" y="45" fill="#c56a10" font-size="10" font-weight="600">历史同日极大 72mm（2018年）</text>
                 <defs><linearGradient id="rg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f6fed" stop-opacity=".45"/><stop offset="1" stop-color="#2f6fed" stop-opacity=".03"/></linearGradient></defs>
                 <polygon fill="url(#rg)" points="50,220 50,217.6 112.5,218.8 175,219.3 237.5,217.6 300,214.8 362.5,209.3 425,203.9 487.5,200.5 550,206.9 612.5,209.8 675,212.6 737.5,213.8 800,215.3 800,220"/>
                 <polyline fill="none" stroke="#2f6fed" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round" points="50,217.6 112.5,218.8 175,219.3 237.5,217.6 300,214.8 362.5,209.3 425,203.9 487.5,200.5 550,206.9 612.5,209.8 675,212.6 737.5,213.8 800,215.3"/>
@@ -1383,7 +1939,28 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
 
-      <!-- 应急指挥 / 乡镇包抓 -->
+      <!-- ===== 统一调度指令模块（新增 · 管理员/镇级） ===== -->
+      <div class="card" id="pcDispSendCard" style="margin-bottom:22px">
+        <div class="card-head">
+          <div class="ch-left">
+            <div class="ch-ic" style="background:var(--red-soft)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg></div>
+            <div>
+              <div class="ch-t">调度指令 & 待办事项</div>
+              <div class="ch-sub">管理员 / 镇级可勾选多个村，统一发送调度指令</div>
+            </div>
+          </div>
+          <div class="ch-act">
+            <button class="btn btn-primary" onclick="pcOpenDispSend()" id="pcDispSendBtn">&#x1F4E4; 统一发送指令</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="disp-send-list" id="pcDispTodoList">
+            <div class="ds-empty">暂无调度指令。点击右上角「统一发送指令」，勾选目标村一次性下发。</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 应急指挥 / 乡镇包抓（测试站卡形态 + 正式站 id） -->
       <div class="two-col" style="margin-bottom:28px;">
         <div class="card contact-card">
           <div class="card-head">
@@ -1419,12 +1996,12 @@ a{color:inherit;text-decoration:none}
         </div>
       </div>
 
-      <!-- 切坡建房农户照片 -->
+      <!-- 照片档案（独立卡片） -->
       <div class="card photo-card" id="photoWrap" style="margin-bottom:28px;">
         <div class="card-head">
           <div class="ch-left">
             <div class="ch-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
-            <div><div class="ch-t">切坡建房农户照片</div><div class="ch-sub">每户最多2张 · 村级上传后不可修改，仅管理员可调整</div></div>
+            <div><div class="ch-t">照片档案 · 切坡建房农户</div><div class="ch-sub">每户最多2张 · 村级上传后不可修改，仅管理员可调整</div></div>
           </div>
         </div>
         <div class="card-body">
@@ -1441,12 +2018,40 @@ a{color:inherit;text-decoration:none}
 
       <!-- 进入地图 -->
       <div class="map-entry">
-        <a href="map.html?v=v20260827-23">&#x1F5FA; 进入应急避险地图</a>
+        <a href="map.html?v=v20260827-24">&#x1F5FA; 进入应急避险地图</a>
       </div>
 
       <div class="page-foot">
-        <div><span class="demo-tag">&#x26A0; 数据快照</span> 已集成：中央气象台 + 专业分析 + 阈值对比 + 智能决策 + 降雨调度 + 雷达云图</div>
-        <div>陇ICP备2026007741号-1 · 新塬镇应急避险指挥系统 v20260827-23</div>
+        <div><span class="demo-tag">&#x26A0; 数据快照</span> 已集成：中央气象台 + 专业分析 + 阈值对比 + 智能决策 + 统一调度 + 雷达云图</div>
+        <div>陇ICP备2026007741号-1 · 新塬镇应急避险指挥系统 v20260827-24</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 统一调度指令弹层（管理员/镇级） -->
+<div class="modal-mask" id="pcDispSendMask" style="display:none">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="mh-t">&#x1F4E4; 统一发送调度指令</div>
+      <button class="mh-x" onclick="pcCloseDispSend()"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-label"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.7"/></svg>① 选择目标村庄（可多选，按住勾选）</div>
+      <div class="tag-group" id="pcDispVills"></div>
+      <div class="form-label"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>② 指令类型（单选）</div>
+      <div class="tag-group" id="pcDispTypes">
+        <div class="tag-opt on" data-t="紧急调度">&#x1F6A8; 紧急调度</div>
+        <div class="tag-opt" data-t="巡查任务">&#x1F50D; 巡查任务</div>
+        <div class="tag-opt" data-t="转移指令">&#x1F6B6; 转移指令</div>
+        <div class="tag-opt" data-t="通知">&#x1F4E2; 通知</div>
+      </div>
+      <div class="form-label"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>③ 指令内容</div>
+      <textarea class="form-textarea" id="pcDispMsg" placeholder="例：降雨超阈值，请立即排查隐患点并 1 小时内回复处置情况；切坡区加密巡查并拍照上传…"></textarea>
+      <div class="form-row">
+        <button class="form-btn" onclick="pcDispSelectAll()"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12l5 5L20 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>全选</button>
+        <button class="form-btn" onclick="pcDispClearAll()"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>清空</button>
+        <button class="form-btn primary" onclick="pcDispSend()">&#x1F4E4; 一键发送到所选村</button>
       </div>
     </div>
   </div>
@@ -1666,13 +2271,13 @@ function doBackupVerify() {
 
 
 
-<script src="feishu_config.js?v=v20260827-23"></script>
-<script src="weather.js?v=v20260827-23"></script>
-<script src="photo.js?v=v20260827-23"></script>
-<script src="js_data/village_centers.js?v=v20260827-23" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260827-23" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260827-23" defer></script>
-<script src="js_data/rain_stations.js?v=v20260827-23" defer></script>
+<script src="feishu_config.js?v=v20260827-24"></script>
+<script src="weather.js?v=v20260827-24"></script>
+<script src="photo.js?v=v20260827-24"></script>
+<script src="js_data/village_centers.js?v=v20260827-24" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260827-24" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260827-24" defer></script>
+<script src="js_data/rain_stations.js?v=v20260827-24" defer></script>
 <script>
 // 权限验证
 if (sessionStorage.getItem('xyc_auth') !== '1') {
@@ -2058,7 +2663,7 @@ function refreshVillageGrid() {
       }
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260827-23';
+      window.location.href = 'map.html?v=v20260827-24';
     };
 
     var html = '';
@@ -2564,6 +3169,1268 @@ function pcOpenDispatch() {
     x.classList.toggle('on', x.getAttribute('data-role') === role);
   });
 })();
+</script>
+
+
+
+
+<script>
+// ========== 系统管理（仅管理员） ==========
+function openAdminPanel() {
+  document.getElementById('akSysOverlay').style.display = 'flex';
+  switchAdminTab('keys');
+}
+function closeAdminPanel() {
+  document.getElementById('akSysOverlay').style.display = 'none';
+}
+// 支持 #admin 锚点：从其他页面"系统管理"入口跳转过来时自动打开管理面板
+if (isAdmin && window.location.hash === '#admin') {
+  openAdminPanel();
+  window.location.hash = '';
+}
+function switchAdminTab(tab) {
+  document.getElementById('at-keys').classList.toggle('active', tab === 'keys');
+  document.getElementById('at-logs').classList.toggle('active', tab === 'logs');
+  document.getElementById('at-backup').classList.toggle('active', tab === 'backup');
+  if (tab === 'keys') loadAdminKeys();
+  else if (tab === 'logs') loadAdminLogs();
+  else loadBackupPanel();
+}
+function escAttr(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function adminBodyHtml(inner) {
+  document.getElementById('akSysBody').innerHTML = inner;
+}
+
+function loadAdminKeys() {
+  adminBodyHtml('<div class="ak-loading">加载密钥列表...</div>');
+  adminRequest('keys', {}, function(data, err) {
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">加载失败：' + (err || '未知错误') + '</div>'); return; }
+    var keys = data.data || [];
+    if (!keys.length) {
+      adminBodyHtml('<div class="ak-empty">未查询到任何密钥记录（服务端返回：' + JSON.stringify(data).substring(0, 300) + '）</div>');
+      return;
+    }
+    var h = '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>标签</th><th>角色</th><th>所属村</th><th>状态</th><th>绑定设备</th><th>操作</th></tr>';
+    keys.forEach(function(k) {
+      var devs = (k['绑定设备'] || '').split(/[,，\n]/).filter(function(x){return x.trim();});
+      var enabled = k['状态'] === '禁用';
+      h += '<tr>';
+      h += '<td class="ak-tag">' + escAttr(k['标签'] || '') + '</td>';
+      h += '<td>' + escAttr(k['角色'] || '') + '</td>';
+      h += '<td>' + escAttr(k['所属村'] || '') + '</td>';
+      h += '<td class="' + (enabled ? 'ak-off' : 'ak-on') + '">' + (enabled ? '已禁用' : '启用') + '</td>';
+      h += '<td>' + (devs.length ? devs.length + ' 台' : '0 台') + '</td>';
+      h += '<td style="white-space:nowrap">';
+      h += '<button class="ak-btn" onclick="resetAdminKey(\'' + escAttr(k['标签']) + '\')">重置</button>';
+      h += '<button class="ak-btn" onclick="unbindAdminKey(\'' + escAttr(k['标签']) + '\')">解绑</button>';
+      h += '<button class="ak-btn ' + (enabled ? '' : 'danger') + '" onclick="toggleAdminKey(\'' + escAttr(k['标签']) + '\',' + (enabled ? 'true' : 'false') + ')">' + (enabled ? '启用' : '禁用') + '</button>';
+      h += '</td></tr>';
+    });
+    h += '</table></div>';
+    adminBodyHtml(h);
+  });
+}
+
+function resetAdminKey(label) {
+  if (!confirm('确定重置密钥「' + label + '」？重置后旧密钥立即失效，该密钥已绑定的设备需重新登录。')) return;
+  adminRequest('reset_key', { label: label }, function(data, err) {
+    if (err || !data) { alert('重置失败：' + (err || '未知错误')); return; }
+    alert('已生成新密钥：\n' + data.data.new_key + '\n\n请妥善保管，原密钥已失效，绑定设备已清空。');
+    loadAdminKeys();
+  });
+}
+function unbindAdminKey(label) {
+  if (!confirm('确定解绑密钥「' + label + '」的全部设备？解绑后需在新设备上重新登录。')) return;
+  adminRequest('unbind', { label: label }, function(data, err) {
+    if (err) { alert('解绑失败：' + err); return; }
+    alert('已解绑「' + label + '」的全部设备');
+    loadAdminKeys();
+  });
+}
+function toggleAdminKey(label, enable) {
+  if (!confirm('确定' + (enable ? '启用' : '禁用') + '密钥「' + label + '」？')) return;
+  adminRequest('toggle', { label: label, enabled: enable }, function(data, err) {
+    if (err) { alert('操作失败：' + err); return; }
+    alert('已' + (enable ? '启用' : '禁用') + '「' + label + '」');
+    loadAdminKeys();
+  });
+}
+
+function loadAdminLogs() {
+  adminBodyHtml('<div class="ak-loading">加载登录记录...</div>');
+  adminRequest('logs', {}, function(data, err) {
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">加载失败：' + (err || '未知错误') + '</div>'); return; }
+    var logs = data.data || [];
+    if (!logs.length) { adminBodyHtml('<div class="ak-empty">暂无登录记录</div>'); return; }
+    var h = '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>时间</th><th>密钥标签</th><th>角色</th><th>IP</th><th>设备</th><th>结果</th></tr>';
+    logs.forEach(function(l) {
+      h += '<tr><td>' + escAttr(l['时间'] || '') + '</td><td class="ak-tag">' + escAttr(l['密钥标签'] || '') + '</td>' +
+        '<td>' + escAttr(l['角色'] || '') + '</td><td>' + escAttr(l['IP'] || '') + '</td>' +
+        '<td>' + escAttr(l['设备'] || '') + '</td><td>' + escAttr(l['结果'] || '') + '</td></tr>';
+    });
+    h += '</table></div>';
+    adminBodyHtml(h);
+  });
+}
+
+// ========== 数据保险箱（仅管理员） ==========
+var BACKUP_BUSY = false;
+function backupRequest(action, payload, callback) {
+  // 走 /api/backup（注意：adminRequest 固定拼 /api/admin/，故这里直接用原生 fetch）
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  fetch(FEISHU_CONFIG.apiBase + '/api/backup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'x-xyc-key': key, 'x-xyc-device': device },
+    body: JSON.stringify(Object.assign({ action: action }, payload || {}))
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data && data.code === 401) {
+      try { sessionStorage.clear(); } catch(e) {}
+      window.location.replace('index.html');
+      return;
+    }
+    if (data && data.code === 403) { callback(null, data.msg || '无权限'); return; }
+    if (data && data.code === 0) callback(data, null);
+    else callback(null, (data && data.msg) || '操作失败');
+  })
+  .catch(function(e) { callback(null, '网络错误: ' + e.message); });
+}
+
+function loadBackupPanel() {
+  adminBodyHtml('<div class="ak-loading">加载数据保险箱...</div>');
+  backupRequest('list', {}, function(data, err) {
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">加载失败：' + (err || '未知错误') + '</div>'); return; }
+    var d = data.data || {};
+    var backups = d.backups || [];
+    var h = '<div class="ak-sec">数据自动备份到腾讯云存储，保留最近 7 份，防止误删误改无法找回。可手动立即备份，或校验照片文件是否完整。</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 6px;">';
+    h += '<button class="btn btn-primary" onclick="doBackupNow()">&#x1F4BE; 立即备份</button>';
+    h += '<button class="btn" onclick="doBackupVerify()">&#x1F50D; 校验照片</button>';
+    h += '</div>';
+    h += '<div class="ak-sec">备份记录（' + backups.length + ' 份）</div>';
+    if (!backups.length) { h += '<div class="ak-empty">暂无备份记录，点击「立即备份」创建第一份</div>'; }
+    else {
+      h += '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>备份时间</th></tr>';
+      backups.forEach(function(b) {
+        h += '<tr><td>' + escAttr(b.replace(/^backup\//, '').replace(/\.json$/, '')) + '</td></tr>';
+      });
+      h += '</table></div>';
+    }
+    h += '<div class="ak-sec">照片统计</div>';
+    h += '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>照片总数</th><th>涉及村数</th></tr>';
+    h += '<tr><td>' + (d.photos_count || 0) + '</td><td>' + (d.villages ? Object.keys(d.villages).length : 0) + '</td></tr>';
+    h += '</table></div>';
+    adminBodyHtml(h);
+  });
+}
+
+function doBackupNow() {
+  if (BACKUP_BUSY) return;
+  BACKUP_BUSY = true;
+  adminBodyHtml('<div class="ak-loading">正在备份数据（飞书全部记录导出 + 上传云端）...</div>');
+  backupRequest('backup', {}, function(data, err) {
+    BACKUP_BUSY = false;
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">备份失败：' + (err || '未知错误') + '</div>'); return; }
+    var d = data.data || {};
+    var msg = '备份成功：' + (d.file || '').replace(/^backup\//, '').replace(/\.json$/, '');
+    if (d.deleted && d.deleted.length) msg += '，已自动清理旧备份 ' + d.deleted.length + ' 份';
+    adminBodyHtml('<div class="ak-empty" style="color:var(--success)">&#x2705; ' + msg + '</div>');
+    setTimeout(loadBackupPanel, 1200);
+  });
+}
+
+function doBackupVerify() {
+  if (BACKUP_BUSY) return;
+  BACKUP_BUSY = true;
+  adminBodyHtml('<div class="ak-loading">正在校验照片存储...</div>');
+  backupRequest('verify', {}, function(data, err) {
+    BACKUP_BUSY = false;
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">校验失败：' + (err || '未知错误') + '</div>'); return; }
+    var v = data.data || {};
+    var issues = v.issues || [];
+    var h = '<div class="ak-sec">照片完整性校验结果</div>';
+    h += '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>照片总数</th><th>涉及户数</th><th>异常项</th></tr>';
+    h += '<tr><td>' + (v.total || 0) + '</td><td>' + (v.houses || 0) + '</td><td class="' + (issues.length ? 'ak-off' : 'ak-on') + '">' + issues.length + '</td></tr>';
+    h += '</table></div>';
+    if (issues.length) {
+      h += '<div class="ak-sec">异常明细（需管理员处理）</div>';
+      h += '<div style="overflow-x:auto"><table class="ak-sys-table">';
+      issues.forEach(function(it) { h += '<tr><td class="ak-off">' + escAttr(it) + '</td></tr>'; });
+      h += '</table></div>';
+    } else {
+      h += '<div class="ak-empty" style="color:var(--success)">&#x2705; 所有照片文件命名规范、无缺失</div>';
+    }
+    adminBodyHtml(h);
+  });
+}
+</script>
+<script src="feishu_config.js?v=v20260827-24"></script>
+<script src="weather.js?v=v20260827-24"></script>
+<script src="photo.js?v=v20260827-24"></script>
+<script src="js_data/village_centers.js?v=v20260827-24" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260827-24" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260827-24" defer></script>
+<script src="js_data/rain_stations.js?v=v20260827-24" defer></script>
+<script>
+// 权限验证
+if (sessionStorage.getItem('xyc_auth') !== '1') {
+  window.location.replace('index.html');
+}
+
+// ========== 通用 HTML 转义（防存储型 XSS，所有拼入 innerHTML 的数据必须过 esc） ==========
+function esc(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// ========== bfcache 往返缓存修复 ==========
+// 从雷达/指南等页面返回看板时，浏览器可能直接从 bfcache 恢复页面快照（JS 不重新执行），
+// 导致异步加载的统计数据/天气/预警全部停留在空状态。检测到从 bfcache 恢复时强制整页刷新。
+window.addEventListener('pageshow', function(e) {
+  var needReload = false;
+  if (e.persisted) needReload = true;
+  if (!needReload) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) needReload = true;
+  }
+  if (needReload) {
+    window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+  }
+});
+
+// ========== 时钟 ==========
+function updateTime() {
+  var now = new Date();
+  var str = now.getFullYear() + '-' +
+    String(now.getMonth()+1).padStart(2,'0') + '-' +
+    String(now.getDate()).padStart(2,'0') + ' ' +
+    String(now.getHours()).padStart(2,'0') + ':' +
+    String(now.getMinutes()).padStart(2,'0') + ':' +
+    String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('timeDisplay').textContent = str;
+  document.getElementById('updateTime').textContent = str;
+}
+updateTime();
+setInterval(updateTime, 1000);
+
+// ========== 天气（和风天气，经云函数转发，见 weather.js） ==========
+// 天气逻辑已抽到 weather.js：各村差异化天气 + 8/10/12/15/18/20 点定时刷新 +
+// 降雨检测 + 管理员降雨调度。此处不再保留 Open-Meteo 旧逻辑。
+
+// ========== 气象预警信息（和风实时预警，见 weather.js renderWarnings） ==========
+var WARN_LEVEL_COLORS = { '蓝色': '#3b82f6', '黄色': '#f59e0b', '橙色': '#f97316', '红色': '#ef4444' };
+
+// ========== 敏感数据取数（数据私有化：隐患点名册/村情/预案等登录后从云函数读取） ==========
+var DASH_DATA_FILES = ['village_info.js', 'village_plans.js', 'hazard_points.js',
+                'threatened_areas.js', 'evacuation_sites.js', 'backup_sites.js', 'village_teams.js'];
+// 关键数据是否全部就绪：任一文件缺失即视为数据没加载出来，自动重试恢复（根治"返回看板后数据没了"）
+function dashboardDataReady() {
+  return typeof VILLAGE_INFO !== 'undefined' &&
+         typeof VILLAGE_PLANS !== 'undefined' &&
+         typeof DATA_HAZARD_POINTS !== 'undefined' &&
+         typeof DATA_THREATENED_AREAS !== 'undefined' &&
+         typeof DATA_EVACUATION_SITES !== 'undefined' &&
+         typeof DATA_BACKUP_SITES !== 'undefined' &&
+         typeof VILLAGE_TEAMS !== 'undefined';
+}
+function showDataErrorTip(show, msg) {
+  var tip = document.getElementById('dataErrorTip');
+  if (!tip) {
+    if (!show) return;
+    tip = document.createElement('div');
+    tip.id = 'dataErrorTip';
+    tip.style.cssText = 'position:fixed;left:12px;right:12px;bottom:76px;z-index:999;background:#7f1d1d;border:1px solid #ef4444;color:#fecaca;padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.6;box-shadow:0 4px 16px rgba(0,0,0,.4);';
+    document.body.appendChild(tip);
+  }
+  tip.style.display = show ? 'block' : 'none';
+  if (show) tip.innerHTML = msg;
+}
+// 数据加载守卫：防止并发重复加载；DASH_LOAD_START 用于看门狗判断加载是否"卡死"
+var DASH_LOADING = false;
+var DASH_LOAD_START = 0;
+function loadDashboardData(attempt) {
+  DASH_LOADING = true;
+  DASH_LOAD_START = Date.now();
+  loadSecureData(DASH_DATA_FILES, function() {
+    var ready = dashboardDataReady();
+    if (!ready && attempt > 0) {
+      showDataErrorTip(true, '&#x26A0; 部分数据加载失败，正在自动重试...');
+      setTimeout(function() { loadDashboardData(attempt - 1); }, 600);
+      return;   // 重试期间保持 DASH_LOADING=true，防止看门狗重复触发
+    }
+    DASH_LOADING = false;
+    if (!ready) {
+      showDataErrorTip(true, '&#x26A0; 数据加载失败（网络或服务器异常）。<a href="javascript:location.reload()" style="color:#fbbf24;text-decoration:underline;">点此刷新重试</a>');
+    } else {
+      showDataErrorTip(false);
+    }
+    initDashboardStats();
+    refreshVillageGrid();
+    refreshContactLists();
+    renderTeams();
+    photoInit();
+  }, { force: attempt < 3 });
+}
+// 数据自愈：无论页面以何种方式被恢复（bfcache/页面缓存/后台切换），只要数据缺失就重新加载。
+// 三层兜底（visibilitychange + 3秒轮询看门狗 + pageshow）任一命中即可恢复，根治"返回看板后数据没了"。
+// 关键：不依赖 e.persisted / performance.navigation 等在某些手机浏览器(微信/QQ内置)不可靠的判定。
+function ensureDashboardData() {
+  if (dashboardDataReady()) return;                                       // 已就绪，跳过
+  if (DASH_LOADING && (Date.now() - DASH_LOAD_START) < 8000) return;      // 正常加载中，跳过
+  loadDashboardData(3);                                                   // 未加载或加载卡死，重新加载
+}
+// 兜底1：页面从后台切回前台（bfcache 恢复、切换标签页/应用后返回都会触发 visibilitychange）
+document.addEventListener('visibilitychange', function() {
+  if (!document.hidden) ensureDashboardData();
+});
+// 兜底2：定时轮询看门狗（3 秒一次，仅前台且数据缺失时触发，数据就绪后立即返回，无性能负担）
+setInterval(function() {
+  if (!document.hidden) ensureDashboardData();
+}, 3000);
+loadDashboardData(3);
+
+// ========== 统计数据 ==========
+var VILLAGE_ORDER = ['上塬村', '东塬村', '刘家湾社区', '孟塬村', '常家坪村', '新塬村', '杨坪村', '杨家河坝村', '甘岔村', '老庄村'];
+
+// SHP村名映射（SHP数据用简称 → 完整名）
+var SHP_VILLAGE_MAP = {
+  '常坪村': '常家坪村',
+  '河坝村': '杨家河坝村'
+};
+var REVERSE_SHP_MAP = {};
+Object.keys(SHP_VILLAGE_MAP).forEach(function(k) { REVERSE_SHP_MAP[SHP_VILLAGE_MAP[k]] = k; });
+
+// 各村切坡建房户数（按 SHP 隐患点位统计：每户一个点，与地图红点一一对应）
+// 隐患点数量（来源：《新塬镇一页纸数据》Excel）；排除7个"全镇级"地质灾害汇总点
+function getShpHouseholds(vname) {
+  var shpName = REVERSE_SHP_MAP[vname] || vname;
+  var count = 0;
+  if (typeof DATA_HAZARD_POINTS === 'undefined' || !DATA_HAZARD_POINTS.features) return 0;
+  DATA_HAZARD_POINTS.features.forEach(function(f) {
+    var p = f.properties || {};
+    if (p.source === 'vector_data') return; // 全镇地质灾害点不算切坡建房户
+    if ((p.CZ || '') === shpName) count++;
+  });
+  return count;
+}
+
+function getVillagePlanStats(vname) {
+  var stats = { hazards: 0, households: 0 };
+  if (typeof VILLAGE_PLANS === 'undefined' || !VILLAGE_PLANS[vname]) return stats;
+  var hazards = VILLAGE_PLANS[vname].hazards || [];
+  stats.hazards = hazards.length;
+  // 切坡建房户数改为按 SHP 隐患点位统计（与地图红点一致），不再用"一页纸威胁户数"
+  stats.households = getShpHouseholds(vname);
+  return stats;
+}
+
+// 统计值（敏感数据就绪后调用：隐患点名册/村情/预案经 /api/data 登录取数）
+function initDashboardStats() {
+  var hazardCount = 0;          // 全镇隐患点数（一页纸数据）
+  var householdCount = 0;       // 全镇切坡建房户数（一页纸数据）
+  VILLAGE_ORDER.forEach(function(vname) {
+    var s = getVillagePlanStats(vname);
+    hazardCount += s.hazards;
+    householdCount += s.households;
+  });
+  var areaCount = (typeof DATA_THREATENED_AREAS !== 'undefined') ? DATA_THREATENED_AREAS.features.length : 0;
+  var siteCount = (typeof DATA_EVACUATION_SITES !== 'undefined' ? DATA_EVACUATION_SITES.features.length : 0) +
+                  (typeof DATA_BACKUP_SITES !== 'undefined' ? DATA_BACKUP_SITES.features.length : 0);
+  var routeCount = (typeof DATA_EVACUATION_ROUTES !== 'undefined') ? DATA_EVACUATION_ROUTES.features.length : 0;
+
+  // 计算受威胁人口
+  var totalPopulation = 0;
+  if (typeof VILLAGE_INFO !== 'undefined') {
+    VILLAGE_ORDER.forEach(function(vname) {
+      var info = VILLAGE_INFO[vname];
+      if (info && info.households) {
+        info.households.forEach(function(hh) {
+          var p = parseInt(hh.p);
+          if (!isNaN(p)) totalPopulation += p;
+        });
+      }
+    });
+  }
+
+  document.getElementById('stat-hazards').textContent = hazardCount;
+  document.getElementById('stat-hazards-sub').textContent = '切坡建房' + householdCount + '户 · 隐患点' + hazardCount + '处';
+  document.getElementById('stat-areas').textContent = areaCount;
+  document.getElementById('stat-shelters').textContent = siteCount;
+  document.getElementById('stat-routes').textContent = routeCount;
+  document.getElementById('stat-villages').textContent = VILLAGE_ORDER.length;
+  document.getElementById('stat-population').textContent = totalPopulation || '--';
+}
+
+// ========== 村庄卡片 ==========
+var grid = document.getElementById('villageGrid');
+
+// ========== 联系人列表 ==========
+var leaderList = document.getElementById('leaderList');
+var townList = document.getElementById('townContactList');
+
+// （各村天气渲染见 weather.js：renderVillageWeather / renderAllWeather）
+
+// ========== 退出 ==========
+function doLogout() {
+  sessionStorage.removeItem('xyc_auth');
+  sessionStorage.removeItem('xyc_key');
+  sessionStorage.removeItem('xyc_admin');
+  sessionStorage.removeItem('xyc_role');
+  sessionStorage.removeItem('xyc_village');
+  window.location.replace('index.html');
+}
+
+// ========== 手机端"更多"抽屉菜单 ==========
+function toggleMoreMenu() {
+  var menu = document.getElementById('moreMenu');
+  var btn = document.getElementById('moreBtn');
+  if (!menu) return;
+  menu.classList.toggle('show');
+  if (btn) btn.classList.toggle('active');
+}
+
+// 点击页面其他区域关闭"更多"菜单
+document.addEventListener('click', function(e) {
+  var menu = document.getElementById('moreMenu');
+  var btn = document.getElementById('moreBtn');
+  if (menu && menu.classList.contains('show')) {
+    // 以下交互区域不应触发更多菜单关闭（避免与展开/收起动作干涉）
+    var t = e.target;
+    var safe = false;
+    while (t && t !== document) {
+      var cls = (t.className && typeof t.className === 'string') ? t.className : '';
+      if (cls.indexOf('team-vill') >= 0 || cls.indexOf('village-card') >= 0 || cls.indexOf('cc-item') >= 0) { safe = true; break; }
+      if (t.id === 'akSysOverlay' || t.id === 'teamList' || t.id === 'villageGrid' || t.id === 'leaderList' || t.id === 'townContactList') { safe = true; break; }
+      t = t.parentElement;
+    }
+    if (safe) return;
+    var isMenu = menu.contains(e.target);
+    var isBtn = btn && btn.contains(e.target);
+    if (!isMenu && !isBtn) {
+      menu.classList.remove('show');
+      if (btn) btn.classList.remove('active');
+    }
+  }
+});
+
+// ========== 编辑模式 ==========
+var isEditMode = false;
+var isAdmin = sessionStorage.getItem('xyc_admin') === '1' || sessionStorage.getItem('xyc_role') === '管理员';
+var isStaff = isAdmin || sessionStorage.getItem('xyc_role') === '镇级';
+var EDIT_STORAGE_KEY = 'xyc_village_edit_data';
+
+// 显示管理员按钮
+if (isAdmin) {
+  document.getElementById('editModeBtn').style.display = 'flex';
+  var em2 = document.getElementById('editModeBtn2');
+  if (em2) em2.style.display = 'flex';
+  var ab = document.getElementById('akSysBtn');
+  if (ab) ab.style.display = 'flex';
+  var ab2 = document.getElementById('akSysBtn2');
+  if (ab2) ab2.style.display = 'flex';
+}
+// 系统自检入口：管理员 + 镇级可见
+if (isStaff) {
+  var hb = document.getElementById('akHealthBtn');
+  if (hb) hb.style.display = 'flex';
+  var hb2 = document.getElementById('akHealthBtn2');
+  if (hb2) hb2.style.display = 'flex';
+}
+
+// 从 localStorage 读取编辑数据
+function getEditData() {
+  try {
+    var data = localStorage.getItem(EDIT_STORAGE_KEY);
+    return data ? JSON.parse(data) : {};
+  } catch(e) {
+    return {};
+  }
+}
+
+// 保存编辑数据到 localStorage
+function saveEditData(data) {
+  try {
+    localStorage.setItem(EDIT_STORAGE_KEY, JSON.stringify(data));
+  } catch(e) {}
+}
+
+// 获取村庄数据（优先 localStorage）
+function getVillageData(vname) {
+  var editData = getEditData();
+  if (editData[vname]) {
+    // 合并编辑数据到原始数据
+    var original = (typeof VILLAGE_INFO !== 'undefined' && VILLAGE_INFO[vname]) ? VILLAGE_INFO[vname] : {};
+    var merged = {};
+    for (var k in original) { merged[k] = original[k]; }
+    for (var k in editData[vname]) { merged[k] = editData[vname][k]; }
+    return merged;
+  }
+  return (typeof VILLAGE_INFO !== 'undefined' && VILLAGE_INFO[vname]) ? VILLAGE_INFO[vname] : null;
+}
+
+// 切换编辑模式
+function toggleEditMode() {
+  isEditMode = !isEditMode;
+  var btn = document.getElementById('editModeBtn');
+  if (isEditMode) {
+    btn.classList.add('active');
+    btn.innerHTML = '&#x2714; 保存模式';
+  } else {
+    btn.classList.remove('active');
+    btn.innerHTML = '&#x270F; 编辑模式';
+  }
+  refreshVillageGrid();
+  refreshContactLists();
+}
+
+// 保存单个村的数据
+function saveVillageEdit(vname) {
+  var editData = getEditData();
+  if (!editData[vname]) editData[vname] = {};
+
+  // 收集编辑的字段
+  var card = document.querySelector('.village-card[data-vname="' + vname + '"]');
+  if (card) {
+    var leaderInput = card.querySelector('.vc-edit-leader');
+    var phoneInput = card.querySelector('.vc-edit-phone');
+    var townInput = card.querySelector('.vc-edit-town');
+    var townPhoneInput = card.querySelector('.vc-edit-townphone');
+    if (leaderInput) editData[vname].leader = '灾害防御总指挥 ' + leaderInput.value;
+    if (phoneInput) editData[vname].leader_phone = phoneInput.value;
+    if (townInput) editData[vname].town_contact = '乡镇包抓责任人 ' + townInput.value;
+    if (townPhoneInput) editData[vname].town_phone = townPhoneInput.value;
+  }
+
+  saveEditData(editData);
+  showSaveIndicator();
+}
+
+// 保存联系人编辑
+function saveContactEdit(vname, field, value) {
+  var editData = getEditData();
+  if (!editData[vname]) editData[vname] = {};
+  editData[vname][field] = value;
+  saveEditData(editData);
+  showSaveIndicator();
+}
+
+// 显示保存提示
+function showSaveIndicator() {
+  var existing = document.querySelector('.save-indicator');
+  if (existing) existing.remove();
+  var el = document.createElement('div');
+  el.className = 'save-indicator';
+  el.textContent = '已保存';
+  document.body.appendChild(el);
+  setTimeout(function() { if (el.parentNode) el.remove(); }, 2500);
+}
+
+// 刷新村庄卡片
+function refreshVillageGrid() {
+  var grid = document.getElementById('villageGrid');
+  grid.innerHTML = '';
+
+  VILLAGE_ORDER.forEach(function(vname) {
+    var stats = getVillagePlanStats(vname);
+    var info = getVillageData(vname);
+
+    var leader = info ? info.leader || '' : '';
+    var phone = info ? info.leader_phone || '' : '';
+    var townContact = info ? info.town_contact || '' : '';
+    var townPhone = info ? info.town_phone || '' : '';
+
+    var badge = vname.indexOf('社区') >= 0 ?
+      '<span class="vc-badge community">社区</span>' :
+      '<span class="vc-badge village">村</span>';
+
+    var leaderName = leader.replace(/灾害防御总指挥\s*/, '').replace(/\d{11}/g, '').trim();
+    if (leaderName.length > 8) leaderName = leaderName.substring(0, 8) + '...';
+
+    var card = document.createElement('div');
+    card.className = 'village-card' + (isEditMode ? ' editable' : '');
+    card.setAttribute('data-vname', vname);
+    card.onclick = function(e) {
+      var t = e.target;
+      while (t && t !== this) {
+        if (t.tagName === 'INPUT' || t.tagName === 'BUTTON' || t.tagName === 'A' || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA') return;
+        t = t.parentElement;
+      }
+      if (isEditMode) return;
+      sessionStorage.setItem('xyc_map_village', vname);
+      window.location.href = 'map.html?v=v20260827-24';
+    };
+
+    var html = '';
+    html += '<div class="vc-header">';
+    html += '<span class="vc-name">' + esc(vname) + '</span>';
+    html += badge;
+    html += '</div>';
+
+    if (isEditMode) {
+      html += '<button class="vc-edit-btn" onclick="event.stopPropagation();saveVillageEdit(\'' + esc(vname) + '\')" title="保存">&#x1F4BE;</button>';
+      html += '<div class="vc-stats">';
+      html += '<div class="vc-stat"><div class="vcs-num">' + (stats.households > 0 ? stats.households : '-') + '</div><div class="vcs-label">切坡建房(户)</div></div>';
+      html += '<div class="vc-stat"><div class="vcs-num">' + (stats.hazards > 0 ? stats.hazards : '-') + '</div><div class="vcs-label">隐患点(个)</div></div>';
+      html += '</div>';
+      html += '<div class="vc-contact"><span class="vc-strong">总指挥：</span><input class="edit-input vc-edit-leader" value="' + esc(info ? info.leader.replace(/灾害防御总指挥\s*/, '') : '') + '" placeholder="姓名+电话"></div>';
+      html += '<div class="vc-contact"><span class="vc-strong">电话：</span><input class="edit-input small vc-edit-phone" value="' + esc(phone || '') + '" placeholder="11位手机号"></div>';
+      html += '<div class="vc-contact"><span class="vc-strong">乡镇责任人：</span><input class="edit-input vc-edit-town" value="' + esc(info ? info.town_contact.replace(/乡镇包抓责任人\s*/, '').replace(/谁组织\s*/, '') : '') + '" placeholder="姓名+电话"></div>';
+      html += '<div class="vc-contact"><span class="vc-strong">电话：</span><input class="edit-input small vc-edit-townphone" value="' + esc(townPhone || '') + '" placeholder="11位手机号"></div>';
+    } else {
+      html += '<div class="vc-stats">';
+      html += '<div class="vc-stat"><div class="vcs-num">' + stats.households + '</div><div class="vcs-label">切坡建房(户)</div></div>';
+      html += '<div class="vc-stat"><div class="vcs-num">' + stats.hazards + '</div><div class="vcs-label">隐患点(个)</div></div>';
+      html += '</div>';
+      html += (leaderName ? '<div class="vc-contact"><span class="vc-strong">总指挥：</span>' + esc(leaderName) + '</div>' : '');
+      html += (phone ? '<div class="vc-contact"><span class="vc-strong">电话：</span>' + esc(phone) + '</div>' : '');
+      html += '<div class="vc-hint">查看地图 &#x2192;</div>';
+      html += '<div class="vc-accent-bar"></div>';
+    }
+
+    card.innerHTML = html;
+    grid.appendChild(card);
+  });
+}
+
+// 刷新联系人列表
+function refreshContactLists() {
+  var leaderList = document.getElementById('leaderList');
+  var townList = document.getElementById('townContactList');
+  leaderList.innerHTML = '';
+  townList.innerHTML = '';
+
+  VILLAGE_ORDER.forEach(function(vname) {
+    var info = getVillageData(vname);
+
+    // 各村应急总指挥
+    var div = document.createElement('div');
+    div.className = 'cc-item';
+    if (info && info.leader) {
+      var leader = info.leader.replace(/灾害防御总指挥\s*/, '');
+      var namePart = leader.replace(/\d{11}/g, '').trim();
+      if (namePart.length > 12) namePart = namePart.substring(0, 12) + '...';
+      var phoneMatch = leader.match(/\d{11}/);
+      var phoneVal = phoneMatch ? phoneMatch[0] : (info.leader_phone || '');
+      if (isEditMode) {
+        div.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<input class="edit-input" value="' + esc(namePart) + '" data-vname="' + esc(vname) + '" data-field="leader_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
+          '<input class="edit-input small" value="' + esc(phoneVal) + '" data-vname="' + esc(vname) + '" data-field="leader_phone" onchange="onContactPhoneChange(this)">';
+      } else {
+        div.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<span class="cc-role">' + esc(namePart) + '</span>' +
+          '<span class="cc-phone">' + esc(phoneVal) + '</span>';
+      }
+    } else {
+      if (isEditMode) {
+        div.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<input class="edit-input" placeholder="总指挥姓名" data-vname="' + esc(vname) + '" data-field="leader_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
+          '<input class="edit-input small" placeholder="电话" data-vname="' + esc(vname) + '" data-field="leader_phone" onchange="onContactPhoneChange(this)">';
+      } else {
+        div.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<span class="cc-role" style="color:var(--text-muted);">暂无数据</span>' +
+          '<span class="cc-phone"></span>';
+      }
+    }
+    leaderList.appendChild(div);
+
+    // 乡镇包抓责任人
+    var tdiv = document.createElement('div');
+    tdiv.className = 'cc-item';
+    if (info && info.town_contact) {
+      var tc = info.town_contact.replace(/谁组织\s*/, '').replace(/乡镇包抓责任人\s*/, '');
+      var tnamePart = tc.replace(/\d{11}/g, '').trim();
+      if (tnamePart.length > 12) tnamePart = tnamePart.substring(0, 12) + '...';
+      var tphoneMatch = tc.match(/\d{11}/);
+      var tphoneVal = tphoneMatch ? tphoneMatch[0] : (info.town_phone || '');
+      if (isEditMode) {
+        tdiv.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<input class="edit-input" value="' + esc(tnamePart) + '" data-vname="' + esc(vname) + '" data-field="town_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
+          '<input class="edit-input small" value="' + esc(tphoneVal) + '" data-vname="' + esc(vname) + '" data-field="town_phone" onchange="onContactPhoneChange(this)">';
+      } else {
+        tdiv.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<span class="cc-role">' + esc(tnamePart) + '</span>' +
+          '<span class="cc-phone">' + esc(tphoneVal) + '</span>';
+      }
+    } else {
+      if (isEditMode) {
+        tdiv.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<input class="edit-input" placeholder="乡镇责任人" data-vname="' + esc(vname) + '" data-field="town_name" onchange="onContactNameChange(this)" style="flex:1;margin:0 8px;">' +
+          '<input class="edit-input small" placeholder="电话" data-vname="' + esc(vname) + '" data-field="town_phone" onchange="onContactPhoneChange(this)">';
+      } else {
+        tdiv.innerHTML = '<span class="cc-name">' + esc(vname) + '</span>' +
+          '<span class="cc-role" style="color:var(--text-muted);">暂无数据</span>' +
+          '<span class="cc-phone"></span>';
+      }
+    }
+    townList.appendChild(tdiv);
+  });
+}
+
+// ========== 各村防汛应急队伍（village_teams.js，登录后取数注入） ==========
+function renderTeams() {
+  if (typeof VILLAGE_TEAMS === 'undefined' || !VILLAGE_TEAMS) {
+    document.getElementById('teamList').innerHTML =
+      '<div class="warn-empty">队伍数据加载中...</div>';
+    return;
+  }
+  var summary = document.getElementById('teamSummary');
+  var list = document.getElementById('teamList');
+  var totalTeams = 0, totalPeople = 0;
+  var chips = '';
+  VILLAGE_ORDER.forEach(function(v) {
+    var arr = VILLAGE_TEAMS[v];
+    if (!arr || !arr.length) return;
+    totalTeams += arr.length;
+    arr.forEach(function(t) { totalPeople += (t.count || 0); });
+  });
+  chips += '<span class="ts-chip">' + totalTeams + ' 支队伍</span>';
+  chips += '<span class="ts-chip">' + totalPeople + ' 人</span>';
+  summary.innerHTML = chips;
+
+  list.innerHTML = '';
+  VILLAGE_ORDER.forEach(function(v) {
+    var arr = VILLAGE_TEAMS[v];
+    if (!arr || !arr.length) return;
+    var people = 0;
+    arr.forEach(function(t) { people += (t.count || 0); });
+    var div = document.createElement('div');
+    div.className = 'team-vill';
+    div.innerHTML =
+      '<div class="team-vill-head" onclick="event.stopPropagation();this.parentElement.classList.toggle(\'open\')">' +
+        '<span>' + esc(v) + '</span>' +
+        '<span class="tv-meta">' + arr.length + ' 支队伍 · ' + people + ' 人</span>' +
+        '<span class="tv-arrow">&#x25B6;</span>' +
+      '</div>' +
+      '<div class="team-vill-body">' + buildTeamRows(arr) + '</div>';
+    list.appendChild(div);
+  });
+}
+function buildTeamRows(arr) {
+  var html = '';
+  arr.forEach(function(t) {
+    var name = t.team || (t.group || '');
+    var members = t.members || '';
+    html += '<div class="team-row">' +
+      '<div class="tr-group">' + esc(t.group || '') + '</div>' +
+      '<div class="tr-leader">' +
+        '<span class="tr-name">' + esc(name) + '</span>' +
+        (members ? '<div class="tr-members">成员：' + esc(members) + '</div>' : '') +
+        '<div class="tr-members">负责人：' + esc(t.leader || '-') + '</div>' +
+      '</div>' +
+      (t.phone ? '<a class="tr-phone" href="tel:' + esc(t.phone) + '">' + esc(t.phone) + '</a>' : '') +
+    '</div>';
+  });
+  return html;
+}
+
+// 联系人姓名变更
+function onContactNameChange(input) {
+  var vname = input.getAttribute('data-vname');
+  var field = input.getAttribute('data-field');
+  var editData = getEditData();
+  if (!editData[vname]) editData[vname] = {};
+
+  if (field === 'leader_name') {
+    var phoneInput = input.parentElement.querySelector('[data-field="leader_phone"]');
+    var phone = phoneInput ? phoneInput.value : '';
+    editData[vname].leader = '灾害防御总指挥 ' + input.value + (phone ? ' ' + phone : '');
+  } else if (field === 'town_name') {
+    var tphoneInput = input.parentElement.querySelector('[data-field="town_phone"]');
+    var tphone = tphoneInput ? tphoneInput.value : '';
+    editData[vname].town_contact = '乡镇包抓责任人 ' + input.value + (tphone ? ' ' + tphone : '');
+  }
+  saveEditData(editData);
+  showSaveIndicator();
+}
+
+// 联系人电话变更
+function onContactPhoneChange(input) {
+  var vname = input.getAttribute('data-vname');
+  var field = input.getAttribute('data-field');
+  var editData = getEditData();
+  if (!editData[vname]) editData[vname] = {};
+
+  if (field === 'leader_phone') {
+    editData[vname].leader_phone = input.value;
+    var nameInput = input.parentElement.querySelector('[data-field="leader_name"]');
+    var name = nameInput ? nameInput.value : '';
+    editData[vname].leader = '灾害防御总指挥 ' + name + (input.value ? ' ' + input.value : '');
+  } else if (field === 'town_phone') {
+    editData[vname].town_phone = input.value;
+    var tnameInput = input.parentElement.querySelector('[data-field="town_name"]');
+    var tname = tnameInput ? tnameInput.value : '';
+    editData[vname].town_contact = '乡镇包抓责任人 ' + tname + (input.value ? ' ' + input.value : '');
+  }
+  saveEditData(editData);
+  showSaveIndicator();
+}
+
+// ========== 天气初始化（和风 weather.js：各村差异化 + 定时刷新 + 降雨调度） ==========
+// 注意：必须在 VILLAGE_ORDER 定义之后调用（weatherInit 用 VILLAGE_ORDER 作为村顺序）
+weatherInit();
+
+// ========== 专业分析 · 各村降雨 vs 阈值（快照演示；接入自动雨量站后替换为实时值） ==========
+var PRO_RAIN = {
+  '甘岔村': { v: 42 }, '常家坪村': { v: 38 }, '上塬村': { v: 35 }, '孟塬村': { v: 19 },
+  '东塬村': { v: 17 }, '新塬村': { v: 8 }, '杨坪村': { v: 5 }, '杨家河坝村': { v: 11 },
+  '老庄村': { v: 20 }, '刘家湾社区': { v: 0 }
+};
+var PRO_RAIN_NOTE = {
+  '甘岔村': '已达黄色预警级，距橙色阈值仅 8mm，临崖区已现小塌方，建议立即转移河沿组 8 户',
+  '常家坪村': '黄色预警级，切坡区持续浸润，需 2h/次加密巡查并拍照上传',
+  '上塬村': '黄色预警级，南沟/井坪滑坡点需重点盯防，超 50mm 立即组织转移',
+  '孟塬村': '接近蓝色阈值（20mm），保持正常巡查即可',
+  '老庄村': '已达蓝色阈值，临河社注意水位变化',
+  '刘家湾社区': '无降雨，正常'
+};
+function proRainLevel(v) {
+  if (v >= 80) return 'r';
+  if (v >= 50) return 'o';
+  if (v >= 30) return 'y';
+  if (v >= 20) return 'b';
+  return 'g';
+}
+function proRenderAnalysis() {
+  var body = document.getElementById('anTableBody');
+  if (!body) return;
+  var lvlMap = { r: '红色预警', o: '橙色预警', y: '黄色预警', b: '蓝色预警', g: '正常' };
+  var html = '';
+  (window.VILLAGE_ORDER || Object.keys(PRO_RAIN)).forEach(function (name) {
+    var item = PRO_RAIN[name] || { v: 0 };
+    var lvl = proRainLevel(item.v);
+    var pct = Math.min(Math.max(item.v, 0), 100);
+    var fillCls = (lvl === 'r') ? 'r' : (lvl === 'o') ? 'o' : '';
+    var color = (lvl === 'r') ? '#e2444a' : (lvl === 'o') ? '#ee8b24' : 'var(--text)';
+    var note = PRO_RAIN_NOTE[name] || '正常，保持日常巡查';
+    html += '<tr>'
+      + '<td style="font-weight:700">' + esc(name) + '</td>'
+      + '<td style="font-weight:700;color:' + color + '">' + item.v + '</td>'
+      + '<td><div class="rain-bar"><div class="rb-fill ' + fillCls + '" style="width:' + pct + '%"></div></div></td>'
+      + '<td>30</td><td>50</td>'
+      + '<td><span class="lvl ' + lvl + '">' + lvlMap[lvl] + '</span></td>'
+      + '<td style="color:var(--text-secondary);font-size:12px;line-height:1.5">' + note + '</td>'
+      + '</tr>';
+  });
+  body.innerHTML = html;
+}
+proRenderAnalysis();
+
+</script>
+<script>
+// ========== 系统管理（仅管理员） ==========
+function openAdminPanel() {
+  document.getElementById('akSysOverlay').style.display = 'flex';
+  switchAdminTab('keys');
+}
+function closeAdminPanel() {
+  document.getElementById('akSysOverlay').style.display = 'none';
+}
+// 支持 #admin 锚点：从其他页面"系统管理"入口跳转过来时自动打开管理面板
+if (isAdmin && window.location.hash === '#admin') {
+  openAdminPanel();
+  window.location.hash = '';
+}
+function switchAdminTab(tab) {
+  document.getElementById('at-keys').classList.toggle('active', tab === 'keys');
+  document.getElementById('at-logs').classList.toggle('active', tab === 'logs');
+  document.getElementById('at-backup').classList.toggle('active', tab === 'backup');
+  if (tab === 'keys') loadAdminKeys();
+  else if (tab === 'logs') loadAdminLogs();
+  else loadBackupPanel();
+}
+function escAttr(s) {
+  return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function adminBodyHtml(inner) {
+  document.getElementById('akSysBody').innerHTML = inner;
+}
+
+function loadAdminKeys() {
+  adminBodyHtml('<div class="ak-loading">加载密钥列表...</div>');
+  adminRequest('keys', {}, function(data, err) {
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">加载失败：' + (err || '未知错误') + '</div>'); return; }
+    var keys = data.data || [];
+    if (!keys.length) {
+      adminBodyHtml('<div class="ak-empty">未查询到任何密钥记录（服务端返回：' + JSON.stringify(data).substring(0, 300) + '）</div>');
+      return;
+    }
+    var h = '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>标签</th><th>角色</th><th>所属村</th><th>状态</th><th>绑定设备</th><th>操作</th></tr>';
+    keys.forEach(function(k) {
+      var devs = (k['绑定设备'] || '').split(/[,，\n]/).filter(function(x){return x.trim();});
+      var enabled = k['状态'] === '禁用';
+      h += '<tr>';
+      h += '<td class="ak-tag">' + escAttr(k['标签'] || '') + '</td>';
+      h += '<td>' + escAttr(k['角色'] || '') + '</td>';
+      h += '<td>' + escAttr(k['所属村'] || '') + '</td>';
+      h += '<td class="' + (enabled ? 'ak-off' : 'ak-on') + '">' + (enabled ? '已禁用' : '启用') + '</td>';
+      h += '<td>' + (devs.length ? devs.length + ' 台' : '0 台') + '</td>';
+      h += '<td style="white-space:nowrap">';
+      h += '<button class="ak-btn" onclick="resetAdminKey(\'' + escAttr(k['标签']) + '\')">重置</button>';
+      h += '<button class="ak-btn" onclick="unbindAdminKey(\'' + escAttr(k['标签']) + '\')">解绑</button>';
+      h += '<button class="ak-btn ' + (enabled ? '' : 'danger') + '" onclick="toggleAdminKey(\'' + escAttr(k['标签']) + '\',' + (enabled ? 'true' : 'false') + ')">' + (enabled ? '启用' : '禁用') + '</button>';
+      h += '</td></tr>';
+    });
+    h += '</table></div>';
+    adminBodyHtml(h);
+  });
+}
+
+function resetAdminKey(label) {
+  if (!confirm('确定重置密钥「' + label + '」？重置后旧密钥立即失效，该密钥已绑定的设备需重新登录。')) return;
+  adminRequest('reset_key', { label: label }, function(data, err) {
+    if (err || !data) { alert('重置失败：' + (err || '未知错误')); return; }
+    alert('已生成新密钥：\n' + data.data.new_key + '\n\n请妥善保管，原密钥已失效，绑定设备已清空。');
+    loadAdminKeys();
+  });
+}
+function unbindAdminKey(label) {
+  if (!confirm('确定解绑密钥「' + label + '」的全部设备？解绑后需在新设备上重新登录。')) return;
+  adminRequest('unbind', { label: label }, function(data, err) {
+    if (err) { alert('解绑失败：' + err); return; }
+    alert('已解绑「' + label + '」的全部设备');
+    loadAdminKeys();
+  });
+}
+function toggleAdminKey(label, enable) {
+  if (!confirm('确定' + (enable ? '启用' : '禁用') + '密钥「' + label + '」？')) return;
+  adminRequest('toggle', { label: label, enabled: enable }, function(data, err) {
+    if (err) { alert('操作失败：' + err); return; }
+    alert('已' + (enable ? '启用' : '禁用') + '「' + label + '」');
+    loadAdminKeys();
+  });
+}
+
+function loadAdminLogs() {
+  adminBodyHtml('<div class="ak-loading">加载登录记录...</div>');
+  adminRequest('logs', {}, function(data, err) {
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">加载失败：' + (err || '未知错误') + '</div>'); return; }
+    var logs = data.data || [];
+    if (!logs.length) { adminBodyHtml('<div class="ak-empty">暂无登录记录</div>'); return; }
+    var h = '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>时间</th><th>密钥标签</th><th>角色</th><th>IP</th><th>设备</th><th>结果</th></tr>';
+    logs.forEach(function(l) {
+      h += '<tr><td>' + escAttr(l['时间'] || '') + '</td><td class="ak-tag">' + escAttr(l['密钥标签'] || '') + '</td>' +
+        '<td>' + escAttr(l['角色'] || '') + '</td><td>' + escAttr(l['IP'] || '') + '</td>' +
+        '<td>' + escAttr(l['设备'] || '') + '</td><td>' + escAttr(l['结果'] || '') + '</td></tr>';
+    });
+    h += '</table></div>';
+    adminBodyHtml(h);
+  });
+}
+
+// ========== 数据保险箱（仅管理员） ==========
+var BACKUP_BUSY = false;
+function backupRequest(action, payload, callback) {
+  // 走 /api/backup（注意：adminRequest 固定拼 /api/admin/，故这里直接用原生 fetch）
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  fetch(FEISHU_CONFIG.apiBase + '/api/backup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'x-xyc-key': key, 'x-xyc-device': device },
+    body: JSON.stringify(Object.assign({ action: action }, payload || {}))
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data && data.code === 401) {
+      try { sessionStorage.clear(); } catch(e) {}
+      window.location.replace('index.html');
+      return;
+    }
+    if (data && data.code === 403) { callback(null, data.msg || '无权限'); return; }
+    if (data && data.code === 0) callback(data, null);
+    else callback(null, (data && data.msg) || '操作失败');
+  })
+  .catch(function(e) { callback(null, '网络错误: ' + e.message); });
+}
+
+function loadBackupPanel() {
+  adminBodyHtml('<div class="ak-loading">加载数据保险箱...</div>');
+  backupRequest('list', {}, function(data, err) {
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">加载失败：' + (err || '未知错误') + '</div>'); return; }
+    var d = data.data || {};
+    var backups = d.backups || [];
+    var h = '<div class="ak-sec">数据自动备份到腾讯云存储，保留最近 7 份，防止误删误改无法找回。可手动立即备份，或校验照片文件是否完整。</div>';
+    h += '<div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 6px;">';
+    h += '<button class="btn btn-primary" onclick="doBackupNow()">&#x1F4BE; 立即备份</button>';
+    h += '<button class="btn" onclick="doBackupVerify()">&#x1F50D; 校验照片</button>';
+    h += '</div>';
+    h += '<div class="ak-sec">备份记录（' + backups.length + ' 份）</div>';
+    if (!backups.length) { h += '<div class="ak-empty">暂无备份记录，点击「立即备份」创建第一份</div>'; }
+    else {
+      h += '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>备份时间</th></tr>';
+      backups.forEach(function(b) {
+        h += '<tr><td>' + escAttr(b.replace(/^backup\//, '').replace(/\.json$/, '')) + '</td></tr>';
+      });
+      h += '</table></div>';
+    }
+    h += '<div class="ak-sec">照片统计</div>';
+    h += '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>照片总数</th><th>涉及村数</th></tr>';
+    h += '<tr><td>' + (d.photos_count || 0) + '</td><td>' + (d.villages ? Object.keys(d.villages).length : 0) + '</td></tr>';
+    h += '</table></div>';
+    adminBodyHtml(h);
+  });
+}
+
+function doBackupNow() {
+  if (BACKUP_BUSY) return;
+  BACKUP_BUSY = true;
+  adminBodyHtml('<div class="ak-loading">正在备份数据（飞书全部记录导出 + 上传云端）...</div>');
+  backupRequest('backup', {}, function(data, err) {
+    BACKUP_BUSY = false;
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">备份失败：' + (err || '未知错误') + '</div>'); return; }
+    var d = data.data || {};
+    var msg = '备份成功：' + (d.file || '').replace(/^backup\//, '').replace(/\.json$/, '');
+    if (d.deleted && d.deleted.length) msg += '，已自动清理旧备份 ' + d.deleted.length + ' 份';
+    adminBodyHtml('<div class="ak-empty" style="color:var(--success)">&#x2705; ' + msg + '</div>');
+    setTimeout(loadBackupPanel, 1200);
+  });
+}
+
+function doBackupVerify() {
+  if (BACKUP_BUSY) return;
+  BACKUP_BUSY = true;
+  adminBodyHtml('<div class="ak-loading">正在校验照片存储...</div>');
+  backupRequest('verify', {}, function(data, err) {
+    BACKUP_BUSY = false;
+    if (err || !data) { adminBodyHtml('<div class="ak-empty">校验失败：' + (err || '未知错误') + '</div>'); return; }
+    var v = data.data || {};
+    var issues = v.issues || [];
+    var h = '<div class="ak-sec">照片完整性校验结果</div>';
+    h += '<div style="overflow-x:auto"><table class="ak-sys-table"><tr><th>照片总数</th><th>涉及户数</th><th>异常项</th></tr>';
+    h += '<tr><td>' + (v.total || 0) + '</td><td>' + (v.houses || 0) + '</td><td class="' + (issues.length ? 'ak-off' : 'ak-on') + '">' + issues.length + '</td></tr>';
+    h += '</table></div>';
+    if (issues.length) {
+      h += '<div class="ak-sec">异常明细（需管理员处理）</div>';
+      h += '<div style="overflow-x:auto"><table class="ak-sys-table">';
+      issues.forEach(function(it) { h += '<tr><td class="ak-off">' + escAttr(it) + '</td></tr>'; });
+      h += '</table></div>';
+    } else {
+      h += '<div class="ak-empty" style="color:var(--success)">&#x2705; 所有照片文件命名规范、无缺失</div>';
+    }
+    adminBodyHtml(h);
+  });
+}
+</script>
+<script>
+function pcNav(key, el) {
+  document.querySelectorAll('.sb-item').forEach(function(x){ x.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  var map = { dash: '数据看板', map: '应急地图', analysis: '专业分析', radar: '雷达/预报', ledger: '应急台账', transfer: '转移流程', guide: '防汛应急指南', manual: '使用说明', admin: '系统管理' };
+  var crumb = document.getElementById('pcCrumb');
+  if (crumb) crumb.textContent = map[key] || '数据看板';
+}
+function pcRadTab(el) {
+  document.querySelectorAll('#radTabs .rad-tab').forEach(function(x){ x.classList.remove('on'); });
+  el.classList.add('on');
+  var key = el.getAttribute('data-rad');
+  var map = { rdcp: 'imgRdcp', wxbl: 'imgWxbl', ecmwf: 'imgEcmwf' };
+  var lblMap = { rdcp: '全国组合雷达 · 最新帧', wxbl: '风云四号A星 · 卫星云图', ecmwf: 'ECMWF 数值预报 · 24h 降水' };
+  ['imgRdcp','imgWxbl','imgEcmwf'].forEach(function(id){ document.getElementById(id).classList.remove('on'); });
+  document.getElementById(map[key]).classList.add('on');
+  var l = document.getElementById('radLbl'); if (l) l.textContent = lblMap[key];
+  var h = document.getElementById('radHolder'); if (h) h.style.display = 'none';
+}
+function pcRadRefresh() {
+  ['imgRdcp','imgWxbl','imgEcmwf'].forEach(function(id){
+    var img = document.getElementById(id);
+    if (!img) return;
+    var src = img.getAttribute('src').split('?')[0];
+    img.setAttribute('src', src + '?t=' + Date.now());
+    img.style.display = '';
+  });
+  var h = document.getElementById('radHolder'); if (h) h.style.display = 'none';
+  if (typeof toast === 'function') toast('正在通过 SCF /api/radar 抓取 nmc.cn 最新帧…');
+}
+function pcOpenDispatch() {
+  var el = document.getElementById('wxScheduleWrap');
+  if (el && getComputedStyle(el).display !== 'none') { el.scrollIntoView({behavior:'smooth'}); return; }
+  var cards = document.querySelectorAll('.card');
+  for (var i = 0; i < cards.length; i++) {
+    if (cards[i].textContent.indexOf('降雨天气调度') >= 0) { cards[i].scrollIntoView({behavior:'smooth'}); break; }
+  }
+}
+// 登录身份展示
+(function(){
+  var role = sessionStorage.getItem('xyc_role') || '村级';
+  var label = sessionStorage.getItem('xyc_label') || '';
+  var key = sessionStorage.getItem('xyc_key') || 'XYC-2024-XXXX';
+  var roleName = { '管理员':'管理员', '镇级':'镇级干部', '村级':'村级干部', '社长':'社长' }[role] || role;
+  var badge = { '管理员':'全部权限', '镇级':'全镇调度', '村级':'本村数据', '社长':'本社数据' }[role] || '';
+  ['pcRoleName','pcFootName'].forEach(function(id){ var e = document.getElementById(id); if (e) e.textContent = roleName; });
+  var b = document.getElementById('pcRoleBadge'); if (b) b.textContent = badge;
+  var k = document.getElementById('pcFootKey'); if (k) k.textContent = key;
+  document.querySelectorAll('.rs-opt').forEach(function(x){
+    x.classList.toggle('on', x.getAttribute('data-role') === role);
+  });
+})();
+</script>
+<!-- 重构补充：导航/雷达tab/统一调度指令/角色显示 -->
+<script>
+function pcNav(key, el) {
+  document.querySelectorAll('.sb-item').forEach(function(x){ x.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  var map = { dash: '数据看板', map: '应急地图', analysis: '专业分析', radar: '雷达/预报', ledger: '应急台账', transfer: '转移流程', guide: '防汛应急指南', manual: '使用说明', admin: '系统管理', photo: '照片档案' };
+  var crumb = document.getElementById('pcCrumb');
+  if (crumb) crumb.textContent = map[key] || '数据看板';
+}
+function pcNavTo(key) {
+  pcNav(key);
+  var el = document.getElementById(key === 'photo' ? 'photoWrap' : ('pcAnchor' + key[0].toUpperCase() + key.slice(1)));
+  if (el) el.scrollIntoView({behavior:'smooth'});
+}
+function pcRadTab(el) {
+  document.querySelectorAll('#radTabs .rad-tab').forEach(function(x){ x.classList.remove('on'); });
+  el.classList.add('on');
+  var key = el.getAttribute('data-rad');
+  var map = { rdcp: 'imgRdcp', wxbl: 'imgWxbl', ecmwf: 'imgEcmwf' };
+  var lblMap = { rdcp: '全国组合雷达 · 最新帧', wxbl: '风云四号A星 · 卫星云图', ecmwf: 'ECMWF 数值预报 · 24h 降水' };
+  ['imgRdcp','imgWxbl','imgEcmwf'].forEach(function(id){ document.getElementById(id).classList.remove('on'); });
+  document.getElementById(map[key]).classList.add('on');
+  var l = document.getElementById('radLbl'); if (l) l.textContent = lblMap[key];
+  var h = document.getElementById('radHolder'); if (h) h.style.display = 'none';
+}
+function pcRadRefresh() {
+  ['imgRdcp','imgWxbl','imgEcmwf'].forEach(function(id){
+    var img = document.getElementById(id);
+    if (!img) return;
+    var src = img.getAttribute('src').split('?')[0];
+    img.setAttribute('src', src + '?t=' + Date.now());
+    img.style.display = '';
+  });
+  var h = document.getElementById('radHolder'); if (h) h.style.display = 'none';
+  if (typeof toast === 'function') toast('正在通过 SCF /api/radar 抓取 nmc.cn 最新帧…');
+}
+function pcOpenDispatch() {
+  var el = document.getElementById('wxScheduleWrap');
+  if (el && getComputedStyle(el).display !== 'none') { el.scrollIntoView({behavior:'smooth'}); return; }
+  var el2 = document.getElementById('pcDispSendCard');
+  if (el2) el2.scrollIntoView({behavior:'smooth'});
+}
+
+/* ===== 统一调度指令（管理员/镇级） ===== */
+var DISP_KEY = 'xyc_dispatch_todos';
+function getDispList() {
+  try { return JSON.parse(localStorage.getItem(DISP_KEY) || '[]'); } catch(e) { return []; }
+}
+function saveDispList(list) {
+  try { localStorage.setItem(DISP_KEY, JSON.stringify(list)); } catch(e) {}
+}
+var pcDispType = '紧急调度';
+function pcOpenDispSend() {
+  renderDispVills();
+  document.getElementById('pcDispSendMask').style.display = 'flex';
+}
+function pcCloseDispSend() {
+  document.getElementById('pcDispSendMask').style.display = 'none';
+}
+function renderDispVills() {
+  var box = document.getElementById('pcDispVills');
+  var names = (window.VILLAGE_ORDER || Object.keys(PRO_RAIN || {}) || []);
+  var html = '';
+  names.forEach(function(n) {
+    html += '<div class="tag-opt on" data-v="' + n + '" onclick="pcDispToggle(this)">' + n + '</div>';
+  });
+  box.innerHTML = html;
+}
+function pcDispToggle(el){ el.classList.toggle('on'); }
+function pcDispSelectAll() {
+  document.querySelectorAll('#pcDispVills .tag-opt').forEach(function(x){ x.classList.add('on'); });
+}
+function pcDispClearAll() {
+  document.querySelectorAll('#pcDispVills .tag-opt').forEach(function(x){ x.classList.remove('on'); });
+}
+document.querySelectorAll('#pcDispTypes .tag-opt').forEach(function(t){
+  t.addEventListener('click', function(){
+    document.querySelectorAll('#pcDispTypes .tag-opt').forEach(function(x){ x.classList.remove('on'); });
+    t.classList.add('on');
+    pcDispType = t.getAttribute('data-t');
+  });
+});
+function pcDispSend() {
+  var sel = document.querySelectorAll('#pcDispVills .tag-opt.on');
+  if (!sel.length) { alert('请至少选择 1 个目标村庄'); return; }
+  var msg = document.getElementById('pcDispMsg').value.trim();
+  if (!msg) { alert('请填写指令内容'); return; }
+  var now = new Date();
+  var timeStr = now.getMonth()+1 + '/' + now.getDate() + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  var list = getDispList();
+  sel.forEach(function(x) {
+    list.unshift({
+      village: x.textContent.trim(),
+      type: pcDispType,
+      msg: msg,
+      time: timeStr,
+      status: '待回复'
+    });
+  });
+  saveDispList(list);
+  pcCloseDispSend();
+  document.getElementById('pcDispMsg').value = '';
+  renderDispTodos();
+  if (typeof toast === 'function') toast('已发送 ' + sel.length + ' 村调度指令（演示存储，真实系统同步下发至各村账号）');
+}
+function renderDispTodos() {
+  var box = document.getElementById('pcDispTodoList');
+  var list = getDispList();
+  if (!list.length) {
+    box.innerHTML = '<div class="ds-empty">暂无调度指令。点击右上角「统一发送指令」，勾选目标村一次性下发。</div>';
+    return;
+  }
+  var cls = { '紧急调度':'r', '巡查任务':'o', '转移指令':'r', '通知':'a' };
+  var html = '';
+  list.forEach(function(item, idx) {
+    var c = cls[item.type] || 'a';
+    html += '<div class="ds-item ' + c + '">'
+      + '<span class="ds-dot"></span>'
+      + '<div class="ds-m">'
+      + '<div class="ds-t">' + item.village + '</div>'
+      + '<div class="ds-s">' + item.msg + '</div>'
+      + '<div class="ds-tags"><span class="ds-tag ' + c + '">' + item.type + '</span>'
+      + (item.status === '已回复' ? '<span class="ds-tag g">已回复</span>' : '<span class="ds-tag ' + c + '">待回复</span>') + '</div>'
+      + '</div>'
+      + '<div class="ds-rt"><span class="ds-time">' + item.time + '</span>'
+      + (item.status === '已回复'
+          ? '<button class="ds-btn ok" onclick="pcDispReply(' + idx + ')">✓ 已回复</button>'
+          : '<button class="ds-btn" onclick="pcDispReply(' + idx + ')">回复</button>')
+      + '</div></div>';
+  });
+  box.innerHTML = html;
+}
+function pcDispReply(idx) {
+  var list = getDispList();
+  if (!list[idx]) return;
+  if (list[idx].status === '已回复') return;
+  var r = prompt('回复「' + list[idx].village + '」的处置情况：', '已按指令执行，正在逐户排查…');
+  if (r === null) return;
+  list[idx].status = '已回复';
+  list[idx].reply = r;
+  saveDispList(list);
+  renderDispTodos();
+  if (typeof toast === 'function') toast('已回复：' + list[idx].village);
+}
+
+/* 登录身份展示 + 调度权限（管理员/镇级可见） */
+(function(){
+  var role = sessionStorage.getItem('xyc_role') || '村级';
+  var key = sessionStorage.getItem('xyc_key') || 'XYC-2024-XXXX';
+  var roleName = { '管理员':'管理员', '镇级':'镇级干部', '村级':'村级干部', '社长':'社长' }[role] || role;
+  var badge = { '管理员':'全部权限', '镇级':'全镇调度', '村级':'本村数据', '社长':'本社数据' }[role] || '';
+  ['pcRoleName','pcFootName'].forEach(function(id){ var e = document.getElementById(id); if (e) e.textContent = roleName; });
+  var b = document.getElementById('pcRoleBadge'); if (b) b.textContent = badge;
+  var k = document.getElementById('pcFootKey'); if (k) k.textContent = key;
+  document.querySelectorAll('.rs-opt').forEach(function(x){
+    x.classList.toggle('on', x.getAttribute('data-role') === role);
+  });
+  // 统一调度：管理员/镇级可见
+  var canDispatch = (role === '管理员' || role === '镇级');
+  var card = document.getElementById('pcDispSendCard');
+  var btn = document.getElementById('pcDispSendBtn');
+  if (card) card.style.display = canDispatch ? '' : 'none';
+  if (btn) btn.style.display = canDispatch ? '' : 'none';
+})();
+renderDispTodos();
 </script>
 </body>
 </html>
