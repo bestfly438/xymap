@@ -11,14 +11,14 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --bg: #0a0e17;
-  --bg-card: #111827;
-  --bg-card-hover: #1a2332;
-  --border: #1e293b;
-  --border-light: #273549;
-  --text: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --bg: #eef2f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f4f7fb;
+  --border: #e2e8f0;
+  --border-light: #cbd5e1;
+  --text: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
   --primary: #ef4444;
   --primary-glow: rgba(239,68,68,0.3);
   --accent: #3b82f6;
@@ -40,14 +40,14 @@ body {
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(59,130,246,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(239,68,68,0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(139,92,246,0.03) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 0%, rgba(59,130,246,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(239,68,68,0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.03) 0%, transparent 50%);
 }
 
 /* ===== 顶栏 ===== */
 .topbar {
-  background: rgba(17,24,39,0.85);
+  background: rgba(255,255,255,0.92);
   border-bottom: 1px solid var(--border);
   padding: 0 32px; height: 64px;
   display: flex; align-items: center; justify-content: space-between;
@@ -68,7 +68,7 @@ body {
 .topbar .top-actions { display: flex; align-items: center; gap: 14px; }
 .topbar .weather-badge {
   display: flex; align-items: center; gap: 10px;
-  background: rgba(30,41,59,0.8); padding: 8px 18px; border-radius: 24px;
+  background: rgba(241,245,249,0.9); padding: 8px 18px; border-radius: 24px;
   font-size: 13px; color: var(--text-secondary); border: 1px solid var(--border);
 }
 .topbar .weather-badge .wt { font-size: 22px; }
@@ -167,15 +167,15 @@ body {
   border: 1px solid var(--border); cursor: pointer; transition: var(--transition);
   position: relative; overflow: hidden;
 }
-.village-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+.village-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(15,23,42,0.12); }
 .village-card:active { transform: scale(0.98); }
 .village-card .vc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .village-card .vc-name { font-size: 16px; font-weight: 700; color: var(--text); }
 .village-card .vc-badge {
   font-size: 10px; padding: 3px 10px; border-radius: 12px; font-weight: 600;
 }
-.vc-badge.community { background: rgba(59,130,246,0.15); color: #60a5fa; }
-.vc-badge.village { background: rgba(139,92,246,0.15); color: #a78bfa; }
+.vc-badge.community { background: rgba(47,111,237,0.12); color: #2f6fed; }
+.vc-badge.village { background: rgba(124,92,224,0.12); color: #7c5ce0; }
 .village-card .vc-stats { display: flex; gap: 16px; margin-bottom: 10px; }
 .village-card .vc-stat { text-align: center; }
 .village-card .vc-stat .vcs-num { font-size: 22px; font-weight: 800; color: var(--primary); }
@@ -212,10 +212,10 @@ body {
 .contact-card .cc-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 .contact-card .cc-item {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 10px 0; border-bottom: 1px solid rgba(30,41,59,0.5); font-size: 13px;
+  padding: 10px 0; border-bottom: 1px solid rgba(15,23,42,0.08); font-size: 13px;
   transition: background 0.15s;
 }
-.contact-card .cc-item:hover { background: rgba(255,255,255,0.02); }
+.contact-card .cc-item:hover { background: rgba(15,23,42,0.03); }
 .contact-card .cc-item:last-child { border-bottom: none; }
 .contact-card .cc-name { color: var(--text); font-weight: 600; min-width: 80px; }
 .contact-card .cc-role { color: var(--text-secondary); font-size: 12px; flex: 1; margin: 0 12px; }
@@ -232,7 +232,7 @@ body {
 .rain-card .rc-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .rain-card .rc-item {
   display: flex; align-items: center; gap: 10px; padding: 10px 12px;
-  background: rgba(30,41,59,0.5); border-radius: var(--radius-sm); font-size: 13px;
+  background: rgba(15,23,42,0.04); border-radius: var(--radius-sm); font-size: 13px;
 }
 .rain-card .rc-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .rain-card .rc-dot.online { background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,0.5); }
@@ -240,15 +240,15 @@ body {
 .rain-card .rc-name { color: var(--text); flex: 0 0 auto; min-width: 72px; font-weight: 600; }
 .rain-card .rc-value { color: var(--text-secondary); font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rain-card .rc-item.rain { background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35); }
-.rain-card .rc-item.rain .rc-name { color: #fbbf24; }
-.rain-card .rc-item.rain .rc-value { color: #fcd34d; }
+.rain-card .rc-item.rain .rc-name { color: #c56a10; }
+.rain-card .rc-item.rain .rc-value { color: #b45309; }
 
 /* ===== 天气调度（管理员降雨定时刷新） ===== */
 .wx-sched {
   margin-top: 14px; padding: 12px 14px; border-radius: var(--radius-sm);
-  background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.3);
+  background: rgba(245,158,11,0.06); border: 1px solid rgba(245,158,11,0.35);
 }
-.wx-sched .ws-title { font-size: 13px; font-weight: 700; color: #fbbf24; margin-bottom: 8px; }
+.wx-sched .ws-title { font-size: 13px; font-weight: 700; color: #b45309; margin-bottom: 8px; }
 .wx-sched .ws-status { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.5; }
 .wx-sched .ws-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
 .wx-sched .ws-row label { font-size: 12px; color: var(--text-secondary); }
@@ -259,9 +259,9 @@ body {
 .wx-sched .ws-mins { display: flex; gap: 6px; }
 .wx-sched .ws-mins label, .wx-sched .ws-vills label {
   display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text-secondary);
-  background: rgba(30,41,59,0.6); padding: 5px 10px; border-radius: 6px; cursor: pointer;
+  background: rgba(15,23,42,0.05); padding: 5px 10px; border-radius: 6px; cursor: pointer;
 }
-.wx-sched .ws-mins label.on { color: #fbbf24; border: 1px solid rgba(245,158,11,0.5); }
+.wx-sched .ws-mins label.on { color: #b45309; border: 1px solid rgba(245,158,11,0.6); background: rgba(245,158,11,0.1); }
 .wx-sched .ws-mins input, .wx-sched .ws-vills input { accent-color: #f59e0b; }
 .wx-sched .ws-vills { display: flex; flex-wrap: wrap; gap: 6px; }
 .wx-sched .ws-btn {
@@ -269,7 +269,7 @@ body {
 }
 .wx-sched .ws-btn.start { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
 .wx-sched .ws-btn.stop { background: rgba(239,68,68,0.2); color: #ef4444; border: 1px solid rgba(239,68,68,0.4); }
-.wx-sched .ws-btn.now { background: rgba(59,130,246,0.2); color: #60a5fa; border: 1px solid rgba(59,130,246,0.4); }
+.wx-sched .ws-btn.now { background: rgba(47,111,237,0.1); color: #2f6fed; border: 1px solid rgba(47,111,237,0.4); }
 .wx-sched .ws-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 /* ===== 气象预警信息 ===== */
@@ -285,7 +285,7 @@ body {
 .warn-list { display: flex; flex-direction: column; gap: 10px; max-height: 420px; overflow-y: auto; }
 .warn-item {
   display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-  background: rgba(30,41,59,0.5); border-radius: var(--radius-sm); font-size: 13px;
+  background: rgba(15,23,42,0.04); border-radius: var(--radius-sm); font-size: 13px;
   border-left: 3px solid var(--warn-color, #f59e0b);
 }
 .warn-level {
@@ -311,7 +311,7 @@ body {
 .geo-warn-meta { margin-left: auto; font-size: 11px; color: var(--text-muted); }
 .geo-warn-body { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
 .geo-warn-note { font-size: 12px; color: var(--text-muted); margin-top: 6px; line-height: 1.6; }
-.geo-warn .geo-warn-note.local { color: #f87171; font-weight: 600; }
+.geo-warn .geo-warn-note.local { color: #dc2626; font-weight: 600; }
 
 /* ===== 各村防汛应急队伍 ===== */
 .team-card {
@@ -324,12 +324,12 @@ body {
 }
 .team-summary .ts-chip {
   background: rgba(59,130,246,0.12); border: 1px solid rgba(59,130,246,0.3);
-  color: #60a5fa; padding: 4px 12px; border-radius: 999px; font-weight: 600;
+  color: #2f6fed; padding: 4px 12px; border-radius: 999px; font-weight: 600;
 }
 .team-list { display: flex; flex-direction: column; gap: 10px; }
 .team-vill {
   border: 1px solid var(--border-light); border-radius: var(--radius-sm);
-  background: rgba(30,41,59,0.4); overflow: hidden;
+  background: rgba(15,23,42,0.03); overflow: hidden;
 }
 .team-vill-head {
   display: flex; align-items: center; gap: 10px; padding: 12px 14px;
@@ -345,7 +345,7 @@ body {
 .team-vill-body::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 2px; }
 .team-row {
   display: grid; grid-template-columns: 88px 1fr auto; gap: 8px; align-items: start;
-  background: rgba(15,23,42,0.4); border-radius: 8px; padding: 9px 12px; font-size: 13px;
+  background: rgba(15,23,42,0.03); border-radius: 8px; padding: 9px 12px; font-size: 13px;
   min-height: 0;
 }
 .team-row .tr-group { color: var(--text-secondary); font-size: 12px; word-break: break-all; }
@@ -353,8 +353,8 @@ body {
 .team-row .tr-leader .tr-name { font-weight: 600; }
 .team-row .tr-leader .tr-members { color: var(--text-muted); font-size: 12px; word-break: break-all; line-height: 1.6; white-space: normal; overflow: visible; text-overflow: initial; max-height: none; }
 .team-row .tr-phone {
-  color: #fbbf24; font-weight: 700; font-size: 12px; white-space: nowrap;
-  background: rgba(245,158,11,0.1); padding: 3px 8px; border-radius: 6px;
+  color: #b45309; font-weight: 700; font-size: 12px; white-space: nowrap;
+  background: rgba(245,158,11,0.12); padding: 3px 8px; border-radius: 6px;
 }
 
 /* ===== 进入地图 ===== */
@@ -382,7 +382,7 @@ body {
 .edit-mode-btn.active { background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 0 16px rgba(34,197,94,0.3); }
 
 .edit-input {
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(245,158,11,0.3);
+  background: #fffdf7; border: 1px solid rgba(245,158,11,0.4);
   color: var(--text); padding: 4px 8px; border-radius: 6px;
   font-size: 12px; font-family: inherit; outline: none;
   transition: border-color 0.2s; width: 100%;
@@ -418,7 +418,7 @@ body {
 .more-menu {
   display: none; position: fixed; top: 56px; right: 12px; z-index: 200;
   background: var(--bg-card); border: 1px solid var(--border-light);
-  border-radius: 12px; box-shadow: 0 8px 28px rgba(0,0,0,0.45);
+  border-radius: 12px; box-shadow: 0 8px 28px rgba(15,23,42,0.15);
   min-width: 200px; overflow: hidden;
 }
 .more-menu.show { display: block; animation: mmIn 0.18s ease; }
@@ -468,13 +468,13 @@ body {
 /* ===== 系统管理面板（仅管理员） ===== */
 .ak-sys-overlay {
   position: fixed; inset: 0; z-index: 1000;
-  background: rgba(2,6,23,0.7); backdrop-filter: blur(4px);
+  background: rgba(15,23,42,0.45); backdrop-filter: blur(4px);
   display: flex; align-items: center; justify-content: center; padding: 20px;
 }
 .ak-sys-panel {
   width: 860px; max-width: 96vw; max-height: 88vh; display: flex; flex-direction: column;
   background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
-  box-shadow: 0 24px 80px rgba(0,0,0,0.6); overflow: hidden;
+  box-shadow: 0 24px 80px rgba(15,23,42,0.2); overflow: hidden;
 }
 .ak-sys-head {
   display: flex; justify-content: space-between; align-items: center;
@@ -530,7 +530,7 @@ body {
   border-radius: 6px; padding: 7px 10px; font-size: 13px; max-width: 220px;
 }
 .photo-toolbar select:disabled { opacity: 0.6; }
-.photo-tip { font-size: 12px; color: #fbbf24; font-weight: 600; }
+.photo-tip { font-size: 12px; color: #b45309; font-weight: 600; }
 .ph-hint { font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
 .ph-slots { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
 .ph-slot { border: 1px dashed var(--border-light); border-radius: var(--radius-sm); padding: 12px; }
@@ -545,17 +545,17 @@ body {
 .ph-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 .ph-row {
   display: flex; align-items: center; gap: 10px; padding: 8px 12px;
-  background: rgba(30,41,59,0.4); border-radius: 8px; font-size: 13px;
+  background: rgba(15,23,42,0.03); border-radius: 8px; font-size: 13px;
 }
 .ph-row-name { color: var(--text); font-weight: 600; min-width: 90px; }
 .ph-badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; white-space: nowrap; }
 .ph-badge.none { background: rgba(100,116,139,0.2); color: var(--text-muted); }
-.ph-badge.part { background: rgba(245,158,11,0.15); color: #fbbf24; }
-.ph-badge.full { background: rgba(34,197,94,0.15); color: #4ade80; }
+.ph-badge.part { background: rgba(245,158,11,0.15); color: #b45309; }
+.ph-badge.full { background: rgba(34,197,94,0.12); color: #16a34a; }
 .ph-row-imgs { display: flex; gap: 6px; flex-wrap: wrap; }
 .ph-thumb {
   width: 64px; height: 48px; overflow: hidden; border-radius: 6px;
-  background: rgba(15,23,42,0.5); display: inline-flex; align-items: center;
+  background: rgba(15,23,42,0.06); display: inline-flex; align-items: center;
   justify-content: center; font-size: 11px; color: var(--text-muted);
 }
 .ph-thumb img { width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
@@ -563,6 +563,57 @@ body {
 @media (max-width: 640px) {
   .ph-slots { grid-template-columns: 1fr; }
 }
+
+/* ===== 专业分析 · 各村降雨 vs 预警阈值对比（浅色政务风） ===== */
+.an-card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+  border: 1px solid var(--border); margin-bottom: 28px;
+}
+.an-card .an-tip { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+.an-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); font-size: 13px; }
+.an-table thead th { background: var(--bg-card-hover); color: var(--text-secondary); font-weight: 600; font-size: 12px; padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.an-table tbody td { padding: 11px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); font-weight: 500; }
+.an-table tbody tr:last-child td { border-bottom: none; }
+.an-table tbody tr:hover td { background: var(--bg-card-hover); }
+.rain-bar { height: 8px; border-radius: 4px; background: var(--bg-card-hover); overflow: hidden; position: relative; min-width: 120px; }
+.rain-bar .rb-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #62a0ff, #2f6fed); position: relative; }
+.rain-bar .rb-fill.r { background: linear-gradient(90deg, #f3a1a4, #e2444a); }
+.rain-bar .rb-fill.o { background: linear-gradient(90deg, #ffc27a, #ee8b24); }
+.rain-bar::after { content: ""; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 2px; background: #e2444a; border-radius: 1px; }
+.lvl { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 7px; display: inline-block; white-space: nowrap; }
+.lvl.r { background: #fdeaea; color: #c22f35; }
+.lvl.o { background: #fdf1e1; color: #c56a10; }
+.lvl.y { background: #fbf3da; color: #8b6610; }
+.lvl.b { background: #eaf0ff; color: #1a5fb8; }
+.lvl.g { background: #e6f6ed; color: #167a43; }
+/* 智能决策建议 */
+.dec-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.dec-card { border-radius: 14px; padding: 16px 18px; color: #fff; position: relative; overflow: hidden; transition: transform 0.18s; }
+.dec-card:hover { transform: translateY(-2px); }
+.dec-card.r { background: linear-gradient(135deg, #c93439, #e2444a 55%, #f0686d); }
+.dec-card.o { background: linear-gradient(135deg, #c5660a, #ee8b24 55%, #f7a84f); }
+.dec-card::after { content: ""; position: absolute; right: -30px; bottom: -30px; width: 140px; height: 140px; border-radius: 50%; background: rgba(255,255,255,0.1); }
+.dec-card .dc-t { font-size: 11px; opacity: 0.85; font-weight: 600; letter-spacing: 1px; position: relative; z-index: 1; }
+.dec-card .dc-n { font-size: 18px; font-weight: 800; margin-top: 6px; line-height: 1.4; position: relative; z-index: 1; }
+.dec-card .dc-s { font-size: 12px; opacity: 0.9; margin-top: 9px; line-height: 1.55; position: relative; z-index: 1; }
+.dec-list { margin-top: 14px; padding: 14px 16px; border-radius: 12px; background: var(--bg-card-hover); border: 1px solid var(--border); }
+.dec-list .dl-h { font-size: 12.5px; font-weight: 700; display: flex; align-items: center; gap: 7px; margin-bottom: 9px; color: var(--text); }
+.dl-item { display: flex; gap: 11px; padding: 9px 0; border-top: 1px dashed var(--border-light); align-items: flex-start; }
+.dl-item:first-of-type { border-top: none; }
+.dl-item .dl-n { width: 22px; height: 22px; border-radius: 50%; background: var(--bg-card); color: var(--accent); font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex: none; margin-top: 1px; border: 1px solid var(--border-light); }
+.dl-item.r .dl-n { background: #fdeaea; color: #e2444a; border-color: transparent; }
+.dl-item.o .dl-n { background: #fdf1e1; color: #ee8b24; border-color: transparent; }
+.dl-item .dl-m { flex: 1; font-size: 13px; line-height: 1.55; font-weight: 500; color: var(--text-secondary); }
+.dl-item .dl-m b { color: var(--text); font-weight: 700; }
+.dl-item .dl-m .act { color: #e2444a; font-weight: 700; }
+.dl-item .dl-time { font-size: 11px; color: var(--text-muted); white-space: nowrap; flex: none; font-weight: 500; margin-top: 2px; }
+@media (max-width: 640px) {
+  .an-table { font-size: 12px; display: block; overflow-x: auto; white-space: nowrap; }
+  .an-table thead th, .an-table tbody td { padding: 9px 10px; }
+  .rain-bar { min-width: 70px; }
+  .dec-grid { grid-template-columns: 1fr; }
+}
+
 </style>
 </head>
 <body>
@@ -585,15 +636,15 @@ body {
     <div class="time-display" id="timeDisplay"></div>
     <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
     <button class="btn" id="akSysBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-    <a href="analysis.html?v=v20260824-21" class="btn btn-primary">&#x1F4CA; 专业分析</a>
-    <a href="radar.html?v=v20260824-21" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
-    <a href="transfer.html?v=v20260824-21" class="btn">&#x1F500; 转移流程</a>
-    <a href="guide.html?v=v20260824-21" class="btn">&#x1F4D6; 防汛应急指南</a>
-    <a href="manual.html?v=v20260824-21" class="btn">&#x1F4F1; 使用说明</a>
-    <a href="ledger.html?v=v20260824-21" class="btn">&#x1F4CB; 应急台账</a>
-    <a href="updates.html?v=v20260824-21" class="btn">&#x1F4C4; 近期更新</a>
-    <a href="health.html?v=v20260824-21" class="btn" id="akHealthBtn" style="display:none">&#x1F50D; 系统自检</a>
-    <a href="map.html?v=v20260824-21" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="analysis.html?v=v20260827-22" class="btn btn-primary">&#x1F4CA; 专业分析</a>
+    <a href="radar.html?v=v20260827-22" class="btn">&#x1F32B;&#xFE0F; 雷达/预报</a>
+    <a href="transfer.html?v=v20260827-22" class="btn">&#x1F500; 转移流程</a>
+    <a href="guide.html?v=v20260827-22" class="btn">&#x1F4D6; 防汛应急指南</a>
+    <a href="manual.html?v=v20260827-22" class="btn">&#x1F4F1; 使用说明</a>
+    <a href="ledger.html?v=v20260827-22" class="btn">&#x1F4CB; 应急台账</a>
+    <a href="updates.html?v=v20260827-22" class="btn">&#x1F4C4; 近期更新</a>
+    <a href="health.html?v=v20260827-22" class="btn" id="akHealthBtn" style="display:none">&#x1F50D; 系统自检</a>
+    <a href="map.html?v=v20260827-22" class="btn btn-primary">&#x1F5FA; 进入地图</a>
     <button class="btn" onclick="doLogout()">退出</button>
     <button class="more-btn" id="moreBtn" title="更多功能" onclick="toggleMoreMenu()">&#x2630;</button>
   </div>
@@ -601,15 +652,15 @@ body {
 
 <!-- 手机端"更多"抽屉菜单 -->
 <div class="more-menu" id="moreMenu">
-  <a href="map.html?v=v20260824-21" class="mm-item">&#x1F5FA; 进入地图</a>
-  <a href="analysis.html?v=v20260824-21" class="mm-item">&#x1F4CA; 专业分析</a>
-  <a href="radar.html?v=v20260824-21" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
-  <a href="transfer.html?v=v20260824-21" class="mm-item">&#x1F500; 转移流程</a>
-  <a href="guide.html?v=v20260824-21" class="mm-item">&#x1F4D6; 防汛应急指南</a>
-  <a href="manual.html?v=v20260824-21" class="mm-item">&#x1F4F1; 手机使用说明</a>
-  <a href="ledger.html?v=v20260824-21" class="mm-item">&#x1F4CB; 应急台账</a>
-  <a href="updates.html?v=v20260824-21" class="mm-item">&#x1F4C4; 近期更新</a>
-  <a href="health.html?v=v20260824-21" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
+  <a href="map.html?v=v20260827-22" class="mm-item">&#x1F5FA; 进入地图</a>
+  <a href="analysis.html?v=v20260827-22" class="mm-item">&#x1F4CA; 专业分析</a>
+  <a href="radar.html?v=v20260827-22" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
+  <a href="transfer.html?v=v20260827-22" class="mm-item">&#x1F500; 转移流程</a>
+  <a href="guide.html?v=v20260827-22" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+  <a href="manual.html?v=v20260827-22" class="mm-item">&#x1F4F1; 手机使用说明</a>
+  <a href="ledger.html?v=v20260827-22" class="mm-item">&#x1F4CB; 应急台账</a>
+  <a href="updates.html?v=v20260827-22" class="mm-item">&#x1F4C4; 近期更新</a>
+  <a href="health.html?v=v20260827-22" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
   <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
   <button class="mm-item" id="akSysBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理（密钥管理 / 登录记录 / 数据保险箱）</button>
   <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
@@ -690,7 +741,7 @@ body {
   <div class="rain-card" style="margin-bottom:28px;">
       <div class="cc-header">&#x2600; 各村天气实况 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">（和风天气 · 逐村）</span></div>
       <div class="rc-list" id="rainList"></div>
-      <div class="nmc-wx" id="nmcWxBlock" style="display:none;margin-top:12px;border-top:1px dashed #e5e7eb;padding-top:10px;">
+      <div class="nmc-wx" id="nmcWxBlock" style="display:none;margin-top:12px;border-top:1px dashed #dbe3ef;padding-top:10px;">
         <div class="cc-header">&#x1F4C5; 未来3天降水 <span style="font-size:11px;color:var(--text-muted);font-weight:400;">（中央气象台 · 会宁县）</span></div>
         <div id="nmcRain3d"></div>
         <div class="cc-header" style="margin-top:10px;">&#x1F4C8; 近24小时温度/降雨趋势</div>
@@ -750,6 +801,39 @@ body {
     </div>
   </div>
 
+  <!-- ===== 专业分析 · 各村降雨 vs 预警阈值对比 + 智能决策建议（快照演示） ===== -->
+  <div class="an-card">
+    <div class="cc-header">&#x1F4CA; 专业分析 · 各村降雨 vs 预警阈值 <span class="an-tip">（蓝20 / 黄30 / 橙50 / 红80 mm · 快照 2026-08-27 08:30 · 接入自动雨量站后实时更新）</span></div>
+    <table class="an-table">
+      <thead>
+        <tr><th>行政村</th><th>24h 累计(mm)</th><th>降雨强度图示</th><th>黄色阈值 30</th><th>橙色阈值 50</th><th>风险等级</th><th>专业研判</th></tr>
+      </thead>
+      <tbody id="anTableBody"></tbody>
+    </table>
+  </div>
+
+  <div class="an-card">
+    <div class="cc-header">&#x1F9E0; 智能决策建议 <span class="an-tip">（基于降雨快照 + 各村隐患底数自动生成 · 每 10 分钟重算）</span></div>
+    <div class="dec-grid">
+      <div class="dec-card r">
+        <div class="dc-t">01 · 立即调度 · 红色优先级</div>
+        <div class="dc-n">甘岔村河沿组临崖区<br>8 户立即组织撤离</div>
+        <div class="dc-s">降雨累计已达 42mm（阈值 85%），未来 3h 预报 +15mm，切坡区有小塌方迹象。</div>
+      </div>
+      <div class="dec-card o">
+        <div class="dc-t">02 · 加强巡查 · 橙色优先级</div>
+        <div class="dc-n">常家坪 / 上塬 两村<br>2h 一次切坡区巡查</div>
+        <div class="dc-s">两村 24h 累积均超 30mm 注意线，村支书与包村干部联合巡查并拍照上传。</div>
+      </div>
+    </div>
+    <div class="dec-list">
+      <div class="dl-h">&#x2705; 按村处置清单（自动生成）</div>
+      <div class="dl-item r"><span class="dl-n">!</span><div class="dl-m"><b>甘岔村：</b><span class="act">立即执行</span>河沿组 8 户 20 人转移至村部安置点，社长逐户敲门，包村干部点名；邵坪组每 30 分钟上报位移变化。</div><span class="dl-time">09:00 前完成</span></div>
+      <div class="dl-item o"><span class="dl-n">!</span><div class="dl-m"><b>常家坪村：</b>村支书带队对村北切坡建房区<span class="act">每 2 小时</span>巡查，上传照片不少于 6 张/次；重点户 12 户电话叫醒确认。</div><span class="dl-time">持续至降雨结束</span></div>
+      <div class="dl-item o"><span class="dl-n">!</span><div class="dl-m"><b>上塬村：</b>南沟组/井坪组 5 户滑坡风险点<span class="act">重点盯防</span>，降雨超 50mm 立即转移；其余 6 村正常巡查。</div><span class="dl-time">12:00 前确认</span></div>
+    </div>
+  </div>
+
   <!-- 乡镇包抓责任人 + 各村防汛应急队伍（并排两列，缩短页面） -->
   <div class="two-col" style="margin-bottom:28px;">
     <div class="contact-card">
@@ -778,19 +862,19 @@ body {
 
   <!-- 进入地图 -->
   <div class="map-entry">
-    <a href="map.html?v=v20260824-21">&#x1F5FA; 进入应急避险地图</a>
+    <a href="map.html?v=v20260827-22">&#x1F5FA; 进入应急避险地图</a>
   </div>
 </div>
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="feishu_config.js?v=v20260824-21"></script>
-<script src="weather.js?v=v20260824-21"></script>
-<script src="photo.js?v=v20260824-21"></script>
-<script src="js_data/village_centers.js?v=v20260824-21" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260824-21" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260824-21" defer></script>
-<script src="js_data/rain_stations.js?v=v20260824-21" defer></script>
+<script src="feishu_config.js?v=v20260827-22"></script>
+<script src="weather.js?v=v20260827-22"></script>
+<script src="photo.js?v=v20260827-22"></script>
+<script src="js_data/village_centers.js?v=v20260827-22" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260827-22" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260827-22" defer></script>
+<script src="js_data/rain_stations.js?v=v20260827-22" defer></script>
 
 <script>
 // 权限验证
@@ -1177,7 +1261,7 @@ function refreshVillageGrid() {
       }
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260824-21';
+      window.location.href = 'map.html?v=v20260827-22';
     };
 
     var html = '';
@@ -1388,6 +1472,53 @@ function onContactPhoneChange(input) {
 // ========== 天气初始化（和风 weather.js：各村差异化 + 定时刷新 + 降雨调度） ==========
 // 注意：必须在 VILLAGE_ORDER 定义之后调用（weatherInit 用 VILLAGE_ORDER 作为村顺序）
 weatherInit();
+
+// ========== 专业分析 · 各村降雨 vs 阈值（快照演示；接入自动雨量站后替换为实时值） ==========
+var PRO_RAIN = {
+  '甘岔村': { v: 42 }, '常家坪村': { v: 38 }, '上塬村': { v: 35 }, '孟塬村': { v: 19 },
+  '东塬村': { v: 17 }, '新塬村': { v: 8 }, '杨坪村': { v: 5 }, '杨家河坝村': { v: 11 },
+  '老庄村': { v: 20 }, '刘家湾社区': { v: 0 }
+};
+var PRO_RAIN_NOTE = {
+  '甘岔村': '已达黄色预警级，距橙色阈值仅 8mm，临崖区已现小塌方，建议立即转移河沿组 8 户',
+  '常家坪村': '黄色预警级，切坡区持续浸润，需 2h/次加密巡查并拍照上传',
+  '上塬村': '黄色预警级，南沟/井坪滑坡点需重点盯防，超 50mm 立即组织转移',
+  '孟塬村': '接近蓝色阈值（20mm），保持正常巡查即可',
+  '老庄村': '已达蓝色阈值，临河社注意水位变化',
+  '刘家湾社区': '无降雨，正常'
+};
+function proRainLevel(v) {
+  if (v >= 80) return 'r';
+  if (v >= 50) return 'o';
+  if (v >= 30) return 'y';
+  if (v >= 20) return 'b';
+  return 'g';
+}
+function proRenderAnalysis() {
+  var body = document.getElementById('anTableBody');
+  if (!body) return;
+  var lvlMap = { r: '红色预警', o: '橙色预警', y: '黄色预警', b: '蓝色预警', g: '正常' };
+  var html = '';
+  (window.VILLAGE_ORDER || Object.keys(PRO_RAIN)).forEach(function (name) {
+    var item = PRO_RAIN[name] || { v: 0 };
+    var lvl = proRainLevel(item.v);
+    var pct = Math.min(Math.max(item.v, 0), 100);
+    var fillCls = (lvl === 'r') ? 'r' : (lvl === 'o') ? 'o' : '';
+    var color = (lvl === 'r') ? '#e2444a' : (lvl === 'o') ? '#ee8b24' : 'var(--text)';
+    var note = PRO_RAIN_NOTE[name] || '正常，保持日常巡查';
+    html += '<tr>'
+      + '<td style="font-weight:700">' + esc(name) + '</td>'
+      + '<td style="font-weight:700;color:' + color + '">' + item.v + '</td>'
+      + '<td><div class="rain-bar"><div class="rb-fill ' + fillCls + '" style="width:' + pct + '%"></div></div></td>'
+      + '<td>30</td><td>50</td>'
+      + '<td><span class="lvl ' + lvl + '">' + lvlMap[lvl] + '</span></td>'
+      + '<td style="color:var(--text-secondary);font-size:12px;line-height:1.5">' + note + '</td>'
+      + '</tr>';
+  });
+  body.innerHTML = html;
+}
+proRenderAnalysis();
+
 </script>
 
 <!-- ===== 系统管理面板（仅管理员） ===== -->

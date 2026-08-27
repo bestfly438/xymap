@@ -286,8 +286,8 @@ function renderGeoHazard() {
     meta.textContent = data.publish ? (data.publish + ' 发布 · 中央气象台') : '中央气象台';
     if (isLocal) {
       block.style.borderColor = 'rgba(239,68,68,0.8)';
-      body.innerHTML = '<b style="color:#f87171;">&#x26A0; 涉及本镇区域！</b> ' +
-        '<span style="color:#fbbf24;">' + esc(c) + '</span>';
+      body.innerHTML = '<b style="color:#dc2626;">&#x26A0; 涉及本镇区域！</b> ' +
+        '<span style="color:#c56a10;">' + esc(c) + '</span>';
       note.textContent = '提示：地灾预警等级高时，切坡建房、临崖临河隐患点受威胁人员请按村组通知及时转移避险。';
       note.className = 'geo-warn-note local';
     } else {
@@ -522,20 +522,20 @@ function renderTrend24(list) {
   var grid = '';
   ticks.forEach(function(t) {
     var gy = yOf(t);
-    grid += '<line x1="' + L + '" y1="' + gy.toFixed(1) + '" x2="' + (W - R) + '" y2="' + gy.toFixed(1) + '" stroke="#24344d" stroke-width="1"/>' +
-      '<text x="' + (L - 5) + '" y="' + (gy + 3).toFixed(1) + '" text-anchor="end" font-size="9" fill="#7d8ca3">' + Math.round(t) + '°</text>';
+    grid += '<line x1="' + L + '" y1="' + gy.toFixed(1) + '" x2="' + (W - R) + '" y2="' + gy.toFixed(1) + '" stroke="#e2e8f0" stroke-width="1"/>' +
+      '<text x="' + (L - 5) + '" y="' + (gy + 3).toFixed(1) + '" text-anchor="end" font-size="9" fill="#94a3b8">' + Math.round(t) + '°</text>';
   });
   // 纵轴轴线 + 底轴线
-  grid += '<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + B + '" stroke="#334155" stroke-width="1"/>';
-  grid += '<line x1="' + L + '" y1="' + B + '" x2="' + (W - R) + '" y2="' + B + '" stroke="#334155" stroke-width="1"/>';
+  grid += '<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + B + '" stroke="#cbd5e1" stroke-width="1"/>';
+  grid += '<line x1="' + L + '" y1="' + B + '" x2="' + (W - R) + '" y2="' + B + '" stroke="#cbd5e1" stroke-width="1"/>';
   // 横轴时间刻度（每 4 小时一个，末尾补当前时刻）
   var xl = '';
   for (var i = 0; i < n; i += 4) {
     var tt = list[i] && list[i].time ? list[i].time.slice(11, 16) : '';
-    xl += '<text x="' + px(i).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="middle" font-size="9" fill="#7d8ca3">' + tt + '</text>';
+    xl += '<text x="' + px(i).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="middle" font-size="9" fill="#94a3b8">' + tt + '</text>';
   }
   if ((n - 1) % 4 !== 0 && list[n - 1] && list[n - 1].time) {
-    xl += '<text x="' + px(n - 1).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="end" font-size="9" fill="#f59e0b">' + list[n - 1].time.slice(11, 16) + '</text>';
+    xl += '<text x="' + px(n - 1).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="end" font-size="9" fill="#c56a10">' + list[n - 1].time.slice(11, 16) + '</text>';
   }
   // 降雨柱（先画，垫在温度线下层）
   var maxRain = 0;
@@ -553,23 +553,23 @@ function renderTrend24(list) {
   for (var i = 0; i < n; i++) { if (temps[i] != null) pts.push(px(i).toFixed(1) + ',' + yOf(temps[i]).toFixed(1)); }
   var dots = '';
   for (var i = 0; i < n; i++) {
-    if (temps[i] != null) dots += '<circle cx="' + px(i).toFixed(1) + '" cy="' + yOf(temps[i]).toFixed(1) + '" r="2.2" fill="#f59e0b"/>';
+    if (temps[i] != null) dots += '<circle cx="' + px(i).toFixed(1) + '" cy="' + yOf(temps[i]).toFixed(1) + '" r="2.2" fill="#c56a10"/>';
   }
   // 当前温度标注
   var curTxt = '';
   var last = list[n - 1] || {};
   if (last.temp != null) {
     var lastY = yOf(last.temp);
-    curTxt = '<text x="' + px(n - 1).toFixed(1) + '" y="' + (Math.max(T + 8, lastY - 7)).toFixed(1) + '" text-anchor="middle" font-size="11" font-weight="700" fill="#fbbf24">' + Math.round(last.temp) + '°</text>';
+    curTxt = '<text x="' + px(n - 1).toFixed(1) + '" y="' + (Math.max(T + 8, lastY - 7)).toFixed(1) + '" text-anchor="middle" font-size="11" font-weight="700" fill="#c56a10">' + Math.round(last.temp) + '°</text>';
   }
-  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block;background:rgba(30,41,59,0.4);border-radius:10px;padding:4px 0;" role="img" aria-label="近24小时温度与降雨趋势图">' +
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block;background:rgba(241,245,249,0.85);border-radius:10px;padding:4px 0;" role="img" aria-label="近24小时温度与降雨趋势图">' +
     grid + bars +
-    '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>' +
+    '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#ee8b24" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>' +
     dots + curTxt + xl + '</svg>';
   var t1 = list[0] && list[0].time ? list[0].time.slice(11, 16) : '';
   var t2 = last.time ? last.time.slice(11, 16) : '';
-  var leg = '<span style="color:#fbbf24;font-weight:600;">&#9472; 温度</span>' +
-    ' <span style="color:#60a5fa;font-weight:600;">&#9608; 每小时降水</span>' +
+  var leg = '<span style="color:#c56a10;font-weight:600;">&#9472; 温度</span>' +
+    ' <span style="color:#2f6fed;font-weight:600;">&#9608; 每小时降水</span>' +
     ' <span style="color:var(--text-secondary);">当前 ' + (last.temp != null ? Math.round(last.temp) + '°C' : '--') +
     (maxRain > 0 ? ' · 最大时降水 ' + maxRain + 'mm' : '') +
     ' · ' + t1 + ' → ' + t2 + '</span>';
