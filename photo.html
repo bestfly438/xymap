@@ -229,7 +229,50 @@ setInterval(updateTime, 1000);
 })();
 
 // 等数据就绪后初始化照片模块
-setTimeout(function(){ photoInit(); }, 300);
+var PHOTO_VILLAGE_ORDER = ['上塬村', '东塬村', '刘家湾社区', '孟塬村', '常家坪村', '新塬村', '杨坪村', '杨家河坝村', '甘岔村', '老庄村'];
+window.VILLAGE_ORDER = window.VILLAGE_ORDER || PHOTO_VILLAGE_ORDER;
+
+// 照片模块只需隐患点名册（户主名单）数据；经 /api/data 登录取数，失败重试
+var PHOTO_FILES = ['hazard_points.js'];
+var PHOTO_READY = false;
+function photoDataReady() {
+  return typeof DATA_HAZARD_POINTS !== 'undefined' && DATA_HAZARD_POINTS.features;
+}
+// 先用静态 VILLAGE_ORDER 填充村下拉（村级锁定本村），保证进页面即可选村
+function prefillVillage() {
+  var selV = document.getElementById('photoVillage');
+  if (!selV) return;
+  if (selV.options.length > 0) return;
+  var role = sessionStorage.getItem('xyc_role') || '';
+  var cun = sessionStorage.getItem('xyc_village') || '';
+  window.VILLAGE_ORDER = window.VILLAGE_ORDER || ['上塬村', '东塬村', '刘家湾社区', '孟塬村', '常家坪村', '新塬村', '杨坪村', '杨家河坝村', '甘岔村', '老庄村'];
+  selV.innerHTML = '';
+  window.VILLAGE_ORDER.forEach(function(v) {
+    if (role === '村级' && v !== cun) return;
+    var op = document.createElement('option');
+    op.value = v; op.textContent = v;
+    selV.appendChild(op);
+  });
+  if (role === '村级' && cun) selV.value = cun;
+  selV.disabled = (role === '村级');
+}
+function loadPhotoData(attempt) {
+  prefillVillage();
+  if (photoDataReady()) { photoInit(); return; }
+  try {
+    loadSecureData(PHOTO_FILES, function() {
+      if (photoDataReady()) { photoInit(); }
+      else if (attempt > 0) { setTimeout(function() { loadPhotoData(attempt - 1); }, 600); }
+      else {
+        var tip = document.getElementById('photoTip');
+        if (tip) tip.textContent = '户主名单加载失败，村列表仍可浏览，请稍后刷新重试';
+      }
+    }, { force: attempt < 3 });
+  } catch(e) {
+    setTimeout(function() { loadPhotoData(Math.max(0, attempt - 1)); }, 600);
+  }
+}
+loadPhotoData(4);
 </script>
 </body>
 </html>
