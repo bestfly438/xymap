@@ -80,6 +80,9 @@ a{color:inherit;text-decoration:none}
 .section-subtitle{font-size:12px;color:var(--ink-3)}
 .empty-box{text-align:center;color:var(--ink-3);padding:36px 0;font-size:13px;line-height:1.8}
 @media (max-width:640px){.content{padding:14px}.app{grid-template-columns:1fr}.sidebar{display:none}}
+/* ===== 无障碍与动效偏好（reduced-motion / 键盘焦点）===== */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
 </style>
 </head>
 <body>
@@ -197,7 +200,7 @@ a{color:inherit;text-decoration:none}
 .pt-stat .ps-v{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
 .pt-stat .ps-l{font-size:12px;color:var(--ink-3);margin-top:3px;font-weight:500}
 .pl-list{display:flex;flex-direction:column;gap:11px}
-.pl-item{display:flex;align-items:flex-start;gap:14px;padding:15px 17px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;border-left:4px solid var(--green);transition:all .18s}
+.pl-item{display:flex;align-items:flex-start;gap:14px;padding:15px 17px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;border-left:2px solid var(--green);transition:all .18s}
 .pl-item:hover{border-color:var(--line-2);background:var(--surface)}
 .pl-item .pl-main{flex:1;min-width:0}
 .pl-item .pl-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}

@@ -5,6 +5,21 @@
 
 ---
 
+## 2026-08-28 · v2.3 无障碍与界面打磨（ui-ux-pro-max / impeccable / improve-animations 四 skill 应用）
+
+### 改动内容
+1. **全站补无障碍支持**（`dashboard.html`、`map.html`、`index.html`、`health.html`、`msg.html`、`patrol.html`、`team.html`、`photo.html`）
+   - 新增 `prefers-reduced-motion` 支持：系统开启"减弱动态效果"的用户，脉冲/闪烁/位移动画自动停用，避免眩晕。
+   - 新增 `:focus-visible` 键盘焦点环：键盘导航（Tab）时能清楚看到当前焦点，符合政府/应急系统无障碍要求。
+2. **去 AI 味（界面打磨）**
+   - 列表项装饰性彩色左边框由 4px/3px 收细为 2px（调度指令、预警消息、巡查记录），红色/橙色/绿色语义色标保留——重要程度仍一眼可辨。
+
+### 涉及文件
+- 更新上述 8 个页面、`version.txt`、`CHANGELOG.md`
+
+---
+---
+
 ## 2026-08-28 · v2.2.1 修复应急队伍页空白
 
 ### 问题
