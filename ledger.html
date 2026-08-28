@@ -11,29 +11,29 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
-  --bg: #0a0e17;
-  --bg-card: #111827;
-  --bg-card-hover: #1a2332;
-  --border: #1e293b;
-  --border-light: #273549;
-  --text: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --primary: #ef4444;
-  --accent: #3b82f6;
-  --success: #22c55e;
-  --warning: #f59e0b;
+  --bg: #eef2f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f9fc;
+  --border: #e3e8f0;
+  --border-light: #d1d8e6;
+  --text: #14213d;
+  --text-secondary: #8a95ad;
+  --text-muted: #8a95ad;
+  --primary: #2f6fed;
+  --accent: #2f6fed;
+  --success: #22a55b;
+  --warning: #ee8b24;
   --radius: 12px;
 }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', 'Segoe UI', sans-serif;
+  font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
   background: var(--bg);
   color: var(--text);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
 .topbar {
-  background: rgba(17,24,39,0.85);
+  background: rgba(255,255,255,0.92);
   border-bottom: 1px solid var(--border);
   padding: 0 32px; height: 64px;
   display: flex; align-items: center; justify-content: space-between;
@@ -44,10 +44,10 @@ body {
 .topbar .logo { display: flex; align-items: center; gap: 14px; }
 .topbar .logo-icon {
   width: 40px; height: 40px;
-  background: linear-gradient(135deg, #ef4444, #dc2626);
+  background: linear-gradient(135deg, #1a4a7a, #12314f);
   border-radius: 10px; display: flex; align-items: center; justify-content: center;
   font-size: 20px; color: #fff;
-  box-shadow: 0 0 20px rgba(239,68,68,0.3);
+  box-shadow: 0 0 20px rgba(47,111,237,0.25);
 }
 .topbar .logo-text h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
 .topbar .logo-text p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
@@ -74,7 +74,7 @@ body {
 }
 .tab-btn:hover { border-color: var(--border-light); color: var(--text); }
 .tab-btn.active {
-  background: rgba(239,68,68,0.15); color: #f87171;
+  background: rgba(47,111,237,0.12); color: #e2444a;
   border-color: rgba(239,68,68,0.4);
 }
 /* 筛选行 */
@@ -106,16 +106,16 @@ table.ak-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; min-wi
   padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border);
   vertical-align: top; line-height: 1.6;
 }
-.ak-tbl th { color: var(--text-muted); font-weight: 600; white-space: nowrap; background: rgba(17,24,39,0.6); position: sticky; top: 0; }
+.ak-tbl th { color: var(--text-muted); font-weight: 600; white-space: nowrap; background: rgba(20,33,61,0.05); position: sticky; top: 0; }
 .ak-tbl tr:last-child td { border-bottom: none; }
 .ak-tbl tr:hover td { background: var(--bg-card-hover); }
 .ak-tbl .tag { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
-.ak-tbl .tag.red { background: rgba(239,68,68,0.15); color: #f87171; }
+.ak-tbl .tag.red { background: rgba(47,111,237,0.12); color: #e2444a; }
 .ak-tbl .tag.orange { background: rgba(249,115,22,0.15); color: #fb923c; }
 .ak-tbl .tag.yellow { background: rgba(245,158,11,0.15); color: #fbbf24; }
-.ak-tbl .tag.blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.ak-tbl .tag.blue { background: rgba(47,111,237,0.12); color: #60a5fa; }
 .ak-tbl .tag.green { background: rgba(34,197,94,0.15); color: #4ade80; }
-.ak-tbl .tag.gray { background: rgba(100,116,139,0.2); color: #94a3b8; }
+.ak-tbl .tag.gray { background: rgba(100,116,139,0.2); color: #8a95ad; }
 .ak-tbl a.tel { color: var(--accent); text-decoration: none; }
 .ak-tbl a.tel:hover { text-decoration: underline; }
 .empty { text-align: center; color: var(--text-muted); padding: 40px 0; font-size: 13px; }
@@ -128,7 +128,7 @@ table.ak-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; min-wi
   overflow: hidden; cursor: pointer; transition: 0.25s;
 }
 .map-card:hover { border-color: var(--border-light); transform: translateY(-2px); }
-.map-card .mc-img { width: 100%; height: 320px; object-fit: cover; background: #1a2332; display: block; }
+.map-card .mc-img { width: 100%; height: 320px; object-fit: cover; background: #f7f9fc; display: block; }
 .map-card .mc-name { padding: 10px 14px; font-size: 14px; font-weight: 700; }
 .map-card .mc-name span { color: var(--text-muted); font-weight: 400; font-size: 12px; margin-left: 6px; }
 /* 大图查看 */
