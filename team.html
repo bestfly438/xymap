@@ -4,11 +4,12 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>照片档案 · 新塬镇应急避险指挥系统</title>
+<title>应急队伍 · 新塬镇应急避险指挥系统</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta name="color-scheme" content="light">
 <style>
+
 :root {
   --bg:#eef2f7; --surface:#ffffff; --surface-2:#f7f9fc;
   --ink:#14213d; --ink-2:#4a5878; --ink-3:#8a95ad;
@@ -24,7 +25,6 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{height:100%;font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;color:var(--ink);background:var(--bg)}
 button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
-input,select{font-family:inherit}
 svg{display:block;flex:none}
 a{color:inherit;text-decoration:none}
 .app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh}
@@ -45,24 +45,22 @@ a{color:inherit;text-decoration:none}
 .sb-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:11px;font-size:14px;color:#c7d8ec;font-weight:500;margin-bottom:3px;transition:all .18s;position:relative}
 .sb-item svg{width:19px;height:19px;color:#89a7c8}
 .sb-item:hover{background:rgba(255,255,255,.06);color:#fff}
-.sb-item:hover svg{color:#c7d8ec}
 .sb-item.active{background:linear-gradient(90deg,rgba(47,111,237,.28),rgba(47,111,237,.08));color:#fff;box-shadow:inset 3px 0 0 var(--accent)}
-.sb-item.active svg{color:#fff}
 .sb-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
 .sb-foot .sf-av{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center}
 .sb-foot .sf-av svg{width:20px;height:20px;color:#c7d8ec}
 .sb-foot .sf-n{font-size:13px;font-weight:600}
 .sb-foot .sf-s{font-size:10.5px;color:#89a7c8;margin-top:2px}
 .main{display:flex;flex-direction:column;min-width:0}
-.topbar{height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--line);padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5;box-shadow:0 1px 0 rgba(20,33,61,.02)}
+.topbar{height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--line);padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}
 .tb-left{display:flex;align-items:center;gap:16px}
 .crumb{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2);font-weight:500}
 .crumb b{color:var(--ink);font-weight:700}
 .crumb svg{width:14px;height:14px;color:var(--ink-3)}
 .tb-right{display:flex;align-items:center;gap:14px}
-.time-display{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:12.5px;font-weight:600;border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);cursor:pointer;text-decoration:none}
 .btn:hover{background:var(--surface);border-color:var(--line-2);color:var(--ink)}
+.time-display{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
 .content{padding:24px 28px 40px;flex:1}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:22px}
 .card-head{padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
@@ -71,34 +69,32 @@ a{color:inherit;text-decoration:none}
 .ch-ic svg{width:15px;height:15px;color:var(--brand-2)}
 .ch-t{font-size:16px;font-weight:800}
 .ch-sub{font-size:12px;color:var(--ink-3);margin-top:3px;font-weight:500}
-.ch-more{font-size:12.5px;font-weight:600;color:var(--accent);padding:6px 12px;border-radius:8px}
 .card-body{padding:18px 22px}
-.photo-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
-.photo-toolbar select{background:var(--surface);color:var(--ink);border:1px solid var(--line-2);border-radius:8px;padding:7px 10px;font-size:13px;max-width:220px}
-.photo-toolbar select:disabled{opacity:.6}
-.photo-tip{font-size:12px;color:#b45309;font-weight:600}
-.ph-hint{font-size:13px;color:var(--ink-2);margin-bottom:10px}
-.ph-slots{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
-.ph-slot{border:1px dashed var(--line-2);border-radius:var(--radius-sm);padding:12px}
-.ph-slot-title{font-size:12px;color:var(--ink-3);margin-bottom:8px}
-.ph-slot-body{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
-.ph-slot-img{width:100%}
-.ph-slot-img img{width:100%;max-height:260px;object-fit:cover;border-radius:8px;cursor:zoom-in}
-.ph-list-head{font-size:13px;color:var(--ink-2);margin-bottom:10px;font-weight:600}
-.ph-list{display:flex;flex-direction:column;gap:6px;max-height:480px;overflow-y:auto}
-.ph-list::-webkit-scrollbar{width:4px}
-.ph-list::-webkit-scrollbar-thumb{background:var(--line);border-radius:2px}
-.ph-row{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface-2);border-radius:8px;font-size:13px}
-.ph-row-name{color:var(--ink);font-weight:600;min-width:90px}
-.ph-badge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;white-space:nowrap}
-.ph-badge.none{background:rgba(100,116,139,.15);color:var(--ink-3)}
-.ph-badge.part{background:rgba(245,158,11,.15);color:#b45309}
-.ph-badge.full{background:rgba(34,197,94,.12);color:#16a34a}
-.ph-row-imgs{display:flex;gap:6px;flex-wrap:wrap}
-.ph-thumb{width:64px;height:48px;overflow:hidden;border-radius:6px;background:var(--surface-2);display:inline-flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink-3)}
-.ph-thumb img{width:100%;height:100%;object-fit:cover;cursor:zoom-in}
-.ph-muted{color:var(--ink-3);font-size:12px}
-@media (max-width:640px){.ph-slots{grid-template-columns:1fr}.content{padding:14px}}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin:26px 0 14px}
+.section-title{font-size:17px;font-weight:800;display:flex;align-items:center;gap:9px}
+.st-dot{width:9px;height:9px;border-radius:50%}
+.st-dot.red{background:var(--red)} .st-dot.blue{background:var(--accent)}
+.section-subtitle{font-size:12px;color:var(--ink-3)}
+.warn-empty{text-align:center;color:var(--ink-3);padding:24px 0;font-size:13px}
+@media (max-width:640px){.content{padding:14px}}
+
+.team-summary{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.ts-chip{font-size:12px;font-weight:700;padding:6px 14px;border-radius:9px;background:var(--brand-soft);color:var(--brand-2)}
+.team-list{display:flex;flex-direction:column;gap:10px}
+.team-vill{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface)}
+.team-vill-head{display:flex;align-items:center;gap:10px;padding:13px 16px;cursor:pointer;background:var(--surface-2);font-size:14px;font-weight:700}
+.team-vill-head:hover{background:var(--accent-soft)}
+.tv-meta{font-size:11.5px;color:var(--ink-3);font-weight:500;margin-left:auto}
+.tv-arrow{font-size:10px;color:var(--ink-3);transition:transform .2s}
+.team-vill.open .tv-arrow{transform:rotate(90deg)}
+.team-vill-body{display:none;padding:8px 16px}
+.team-vill.open .team-vill-body{display:block}
+.team-row{display:flex;align-items:center;gap:12px;padding:11px 4px;border-top:1px dashed var(--line-2)}
+.team-row .tr-group{font-size:11px;font-weight:700;color:var(--brand-2);background:var(--brand-soft);padding:4px 10px;border-radius:7px;flex:none}
+.team-row .tr-leader{flex:1;min-width:0}
+.team-row .tr-name{font-size:13.5px;font-weight:700}
+.team-row .tr-members{font-size:11.5px;color:var(--ink-3);margin-top:3px;line-height:1.5}
+.team-row .tr-phone{font-size:12px;font-weight:700;color:var(--green);background:var(--green-soft);padding:6px 11px;border-radius:8px;text-decoration:none;flex:none}
 
 </style>
 </head>
@@ -124,9 +120,10 @@ a{color:inherit;text-decoration:none}
       <a class="sb-item" href="radar.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.4" opacity=".7"/></svg>雷达 / 预报</a>
       <div class="sb-group-t">数据台账</div>
       <a class="sb-item" href="ledger.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>应急台账</a>
-      <a class="sb-item" href="transfer.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h10M7 14h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>转移流程</a>
-      <div class="sb-item active" onclick=""><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>照片档案</div>
+      <a class="sb-item" href="team.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.7"/></svg>应急队伍</a>
+      <a class="sb-item" href="photo.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>照片档案</a>
       <div class="sb-group-t">应急模块</div>
+      <a class="sb-item" href="transfer.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h10M7 14h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>转移流程</a>
       <a class="sb-item" href="guide.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>防汛应急指南</a>
       <a class="sb-item" href="manual.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>使用说明</a>
       <div class="sb-group-t">系统</div>
@@ -146,7 +143,7 @@ a{color:inherit;text-decoration:none}
   <div class="main">
     <header class="topbar">
       <div class="tb-left">
-        <div class="crumb"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.8"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><b>照片档案</b></div>
+        <div class="crumb"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.8"/></svg><b>各村防汛应急队伍</b></div>
       </div>
       <div class="tb-right">
         <a class="btn" href="dashboard.html?v=v20260827-27">&#x2190; 返回看板</a>
@@ -155,44 +152,36 @@ a{color:inherit;text-decoration:none}
     </header>
 
     <div class="content">
-      <div class="card" id="photoWrap">
-        <div class="card-head">
-          <div class="ch-left">
-            <div class="ch-ic"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
-            <div>
-              <div class="ch-t">照片档案 · 切坡建房农户</div>
-              <div class="ch-sub">每户最多2张 · 村级上传后不可修改，仅管理员可调整 · 支持现场拍照或从相册选取</div>
-            </div>
-          </div>
-          <span class="ch-more" id="photoVillageSel" style="display:none"></span>
-        </div>
+      <div class="section-header">
+        <div class="section-title"><span class="st-dot blue"></span>各村防汛应急队伍</div>
+        <span class="section-subtitle">村社级应急力量 · 点击展开查看成员与负责人</span>
+      </div>
+      <div class="card">
         <div class="card-body">
-          <div class="photo-toolbar">
-            <select id="photoVillage"></select>
-            <select id="photoOwner"></select>
-            <span class="photo-tip" id="photoTip"></span>
-          </div>
-          <div id="photoSlots"></div>
-          <div class="ph-list-head">各村照片收录情况</div>
-          <div id="photoList"></div>
-          <input type="file" id="photoFileInput" accept="image/*" style="display:none" onchange="photoOnFile(this.files[0])">
+          <div class="team-summary" id="teamSummary"></div>
+          <div class="team-list" id="teamList"></div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-
-
 <script>
 // 权限验证
 if (sessionStorage.getItem('xyc_auth') !== '1') {
   window.location.replace('index.html');
 }
+window.addEventListener('pageshow', function(e) {
+  var needReload = false;
+  if (e.persisted) needReload = true;
+  if (!needReload) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) needReload = true;
+  }
+  if (needReload) window.location.replace(window.location.pathname + '?_r=' + Date.now());
+});
 </script>
 <script src="feishu_config.js?v=v20260827-27"></script>
-<script src="photo.js?v=v20260827-27"></script>
-<script src="js_data/village_centers.js?v=v20260827-27" defer></script>
 <script>
 function esc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -223,13 +212,96 @@ setInterval(updateTime, 1000);
   var b = document.getElementById('pcRoleBadge'); if (b) b.textContent = badge;
   var k = document.getElementById('pcFootKey'); if (k) k.textContent = key;
   var isAdmin = sessionStorage.getItem('xyc_admin') === '1' || role === '管理员';
-  var isStaff = isAdmin || role === '镇级';
   document.getElementById('pcMenuAdmin').style.display = isAdmin ? 'flex' : 'none';
-  document.getElementById('pcMenuHealth').style.display = isStaff ? 'flex' : 'none';
+  document.getElementById('pcMenuHealth').style.display = (isAdmin || role === '镇级') ? 'flex' : 'none';
 })();
+</script>
+<script>
+// 队伍数据加载
+var VILLAGE_TEAMS = null;
+function loadTeams() {
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  fetch(FEISHU_CONFIG.apiBase + '/api/data', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json; charset=utf-8', 'x-xyc-key': key, 'x-xyc-device': device },
+    body: JSON.stringify({ village: '全部' })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d && d.code === 401) { try { sessionStorage.clear(); } catch(e){} window.location.replace('index.html'); return; }
+    if (d && d.code === 0) {
+      VILLAGE_TEAMS = (d.data && d.data.teams) || null;
+      if (!VILLAGE_TEAMS) VILLAGE_TEAMS = (d.data && d.data.village_teams) || null;
+    }
+    renderTeams();
+  })
+  .catch(function() { renderTeams(); });
+}
+var VILLAGE_ORDER = [];
+function loadVillageOrder() {
+  var o = sessionStorage.getItem('xyc_village_order');
+  if (o) { try { VILLAGE_ORDER = JSON.parse(o); } catch(e){} }
+}
+function renderTeams() {
+  if (typeof VILLAGE_TEAMS === 'undefined' || !VILLAGE_TEAMS) {
+    document.getElementById('teamList').innerHTML =
+      '<div class="warn-empty">队伍数据加载中...</div>';
+    return;
+  }
+  var summary = document.getElementById('teamSummary');
+  var list = document.getElementById('teamList');
+  var totalTeams = 0, totalPeople = 0;
+  var chips = '';
+  VILLAGE_ORDER.forEach(function(v) {
+    var arr = VILLAGE_TEAMS[v];
+    if (!arr || !arr.length) return;
+    totalTeams += arr.length;
+    arr.forEach(function(t) { totalPeople += (t.count || 0); });
+  });
+  chips += '<span class="ts-chip">' + totalTeams + ' 支队伍</span>';
+  chips += '<span class="ts-chip">' + totalPeople + ' 人</span>';
+  summary.innerHTML = chips;
 
-// 等数据就绪后初始化照片模块
-setTimeout(function(){ photoInit(); }, 300);
+  list.innerHTML = '';
+  VILLAGE_ORDER.forEach(function(v) {
+    var arr = VILLAGE_TEAMS[v];
+    if (!arr || !arr.length) return;
+    var people = 0;
+    arr.forEach(function(t) { people += (t.count || 0); });
+    var div = document.createElement('div');
+    div.className = 'team-vill';
+    div.innerHTML =
+      '<div class="team-vill-head" onclick="event.stopPropagation();this.parentElement.classList.toggle(\'open\')">' +
+        '<span>' + esc(v) + '</span>' +
+        '<span class="tv-meta">' + arr.length + ' 支队伍 · ' + people + ' 人</span>' +
+        '<span class="tv-arrow">&#x25B6;</span>' +
+      '</div>' +
+      '<div class="team-vill-body">' + buildTeamRows(arr) + '</div>';
+    list.appendChild(div);
+  });
+}
+function buildTeamRows(arr) {
+  var html = '';
+  arr.forEach(function(t) {
+    var name = t.team || (t.group || '');
+    var members = t.members || '';
+    html += '<div class="team-row">' +
+      '<div class="tr-group">' + esc(t.group || '') + '</div>' +
+      '<div class="tr-leader">' +
+        '<span class="tr-name">' + esc(name) + '</span>' +
+        (members ? '<div class="tr-members">成员：' + esc(members) + '</div>' : '') +
+        '<div class="tr-members">负责人：' + esc(t.leader || '-') + '</div>' +
+      '</div>' +
+      (t.phone ? '<a class="tr-phone" href="tel:' + esc(t.phone) + '">' + esc(t.phone) + '</a>' : '') +
+    '</div>';
+  });
+  return html;
+}
+
+
+loadVillageOrder();
+loadTeams();
 </script>
 </body>
 </html>

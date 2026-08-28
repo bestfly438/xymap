@@ -495,15 +495,14 @@ function renderRain3d(list) {
   return html;
 }
 
-// 近24小时温度/降雨趋势（SVG 图表：坐标系 + 温度刻度 + 时间轴 + 网格 + 图例）
+// 近24小时温度/降雨趋势（重新设计：渐变面积 + 双轴 + 高亮当前值）
 function renderTrend24(list) {
-  var W = 340, H = 152, L = 36, R = 8, T = 10, B = 118;
+  var W = 560, H = 220, L = 42, R = 12, T = 14, B = 172;
   var temps = list.map(function(x) { return x.temp; });
   var valid = temps.filter(function(t) { return t != null; });
-  if (!valid.length) return '<div style="color:var(--text-muted);font-size:12px;padding:8px 2px;">暂无趋势数据</div>';
+  if (!valid.length) return '<div style="color:var(--ink-3);font-size:12px;padding:8px 2px;">暂无趋势数据</div>';
   var tMin = Math.min.apply(null, valid), tMax = Math.max.apply(null, valid);
   if (tMax - tMin < 4) { tMin -= 2; tMax += 2; }
-  // 生成"整齐"的温度刻度（1/2/5 步进），保证纵轴刻度是整数好认
   var step = (tMax - tMin) / 4;
   var mag = Math.pow(10, Math.floor(Math.log10(step || 1)));
   var norm = step / mag;
@@ -513,67 +512,85 @@ function renderTrend24(list) {
   var ticks = [];
   for (var t = t0; t <= tMax; t += tickStep) ticks.push(Math.round(t * 10) / 10);
   if (ticks.length < 2) ticks = [Math.round(tMin), Math.round(tMax)];
-  var yTop = T, yBot = B;
   var tickSpan = (ticks[ticks.length - 1] - ticks[0]) || 1;
-  function yOf(t) { return yBot - (t - ticks[0]) / tickSpan * (yBot - yTop); }
+  function yOf(t) { return B - (t - ticks[0]) / tickSpan * (B - T); }
   var n = list.length;
   function px(i) { return L + (n <= 1 ? 0 : i * (W - L - R) / (n - 1)); }
-  // 横向网格线 + 纵轴温度刻度
+
+  // 横向网格线 + 温度刻度（左侧）
   var grid = '';
   ticks.forEach(function(t) {
     var gy = yOf(t);
-    grid += '<line x1="' + L + '" y1="' + gy.toFixed(1) + '" x2="' + (W - R) + '" y2="' + gy.toFixed(1) + '" stroke="#e2e8f0" stroke-width="1"/>' +
-      '<text x="' + (L - 5) + '" y="' + (gy + 3).toFixed(1) + '" text-anchor="end" font-size="9" fill="#94a3b8">' + Math.round(t) + '°</text>';
+    grid += '<line x1="' + L + '" y1="' + gy.toFixed(1) + '" x2="' + (W - R) + '" y2="' + gy.toFixed(1) + '" stroke="#e8ecf4" stroke-width="1" stroke-dasharray="4 4"/>' +
+      '<text x="' + (L - 6) + '" y="' + (gy + 3.5).toFixed(1) + '" text-anchor="end" font-size="10" fill="#8a95ad">' + Math.round(t) + '°</text>';
   });
-  // 纵轴轴线 + 底轴线
   grid += '<line x1="' + L + '" y1="' + T + '" x2="' + L + '" y2="' + B + '" stroke="#cbd5e1" stroke-width="1"/>';
   grid += '<line x1="' + L + '" y1="' + B + '" x2="' + (W - R) + '" y2="' + B + '" stroke="#cbd5e1" stroke-width="1"/>';
-  // 横轴时间刻度（每 4 小时一个，末尾补当前时刻）
-  var xl = '';
-  for (var i = 0; i < n; i += 4) {
-    var tt = list[i] && list[i].time ? list[i].time.slice(11, 16) : '';
-    xl += '<text x="' + px(i).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="middle" font-size="9" fill="#94a3b8">' + tt + '</text>';
-  }
-  if ((n - 1) % 4 !== 0 && list[n - 1] && list[n - 1].time) {
-    xl += '<text x="' + px(n - 1).toFixed(1) + '" y="' + (H - 5) + '" text-anchor="end" font-size="9" fill="#c56a10">' + list[n - 1].time.slice(11, 16) + '</text>';
-  }
-  // 降雨柱（先画，垫在温度线下层）
+
+  // 降雨柱（蓝色半透明，底部对齐）
   var maxRain = 0;
   list.forEach(function(x) { if (x.rain1h > maxRain) maxRain = x.rain1h; });
   var bars = '';
   list.forEach(function(x, i) {
     var r = x.rain1h || 0;
     if (r > 0) {
-      var bh = Math.max(2, r / (maxRain || 1) * (yBot - yTop) * 0.85);
-      bars += '<rect x="' + (px(i) - 3).toFixed(1) + '" y="' + (yBot - bh).toFixed(1) + '" width="6" height="' + bh.toFixed(1) + '" fill="#3b82f6" opacity="0.75" rx="1"><title>' + esc(x.time) + ' 降水 ' + r + 'mm</title></rect>';
+      var bh = Math.max(3, r / (maxRain || 1) * (B - T) * 0.72);
+      bars += '<rect x="' + (px(i) - 4).toFixed(1) + '" y="' + (B - bh).toFixed(1) + '" width="8" height="' + bh.toFixed(1) + '" fill="#3b82f6" opacity="0.55" rx="1.5"><title>' + esc(x.time) + ' 降水 ' + r + 'mm</title></rect>';
     }
   });
-  // 温度折线 + 数据点
+
+  // 温度面积渐变
   var pts = [];
   for (var i = 0; i < n; i++) { if (temps[i] != null) pts.push(px(i).toFixed(1) + ',' + yOf(temps[i]).toFixed(1)); }
+  var area = pts.length ? '<polygon points="' + L + ',' + B + ' ' + pts.join(' ') + ' ' + px(n - 1).toFixed(1) + ',' + B + '" fill="url(#tg24)" opacity="0.5"/>' : '';
   var dots = '';
   for (var i = 0; i < n; i++) {
-    if (temps[i] != null) dots += '<circle cx="' + px(i).toFixed(1) + '" cy="' + yOf(temps[i]).toFixed(1) + '" r="2.2" fill="#c56a10"/>';
+    if (temps[i] != null) dots += '<circle cx="' + px(i).toFixed(1) + '" cy="' + yOf(temps[i]).toFixed(1) + '" r="3" fill="#ee8b24" stroke="#fff" stroke-width="1.2"/>';
   }
-  // 当前温度标注
-  var curTxt = '';
+
+  // 横轴时间刻度（每 4 小时一个 + 当前时刻）
+  var xl = '';
+  for (var i = 0; i < n; i += 4) {
+    var tt = list[i] && list[i].time ? list[i].time.slice(11, 16) : '';
+    xl += '<text x="' + px(i).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle" font-size="9.5" fill="#8a95ad">' + tt + '</text>';
+  }
+  if ((n - 1) % 4 !== 0 && list[n - 1] && list[n - 1].time) {
+    xl += '<text x="' + px(n - 1).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="end" font-size="9.5" fill="#c56a10" font-weight="700">' + list[n - 1].time.slice(11, 16) + '</text>';
+  }
+
+  // 当前温度大标注
   var last = list[n - 1] || {};
+  var curTxt = '';
   if (last.temp != null) {
     var lastY = yOf(last.temp);
-    curTxt = '<text x="' + px(n - 1).toFixed(1) + '" y="' + (Math.max(T + 8, lastY - 7)).toFixed(1) + '" text-anchor="middle" font-size="11" font-weight="700" fill="#c56a10">' + Math.round(last.temp) + '°</text>';
+    var lx = px(n - 1);
+    curTxt = '<text x="' + (lx - 4).toFixed(1) + '" y="' + (Math.max(T + 12, lastY - 8)).toFixed(1) + '" text-anchor="end" font-size="15" font-weight="800" fill="#ee8b24">' + Math.round(last.temp) + '°</text>';
+    curTxt += '<circle cx="' + lx.toFixed(1) + '" cy="' + lastY.toFixed(1) + '" r="5" fill="none" stroke="#ee8b24" stroke-width="1.6" opacity="0.7"/>';
   }
-  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block;background:rgba(241,245,249,0.85);border-radius:10px;padding:4px 0;" role="img" aria-label="近24小时温度与降雨趋势图">' +
-    grid + bars +
-    '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#ee8b24" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>' +
-    dots + curTxt + xl + '</svg>';
+
+  // 最高/最低温
+  var tMaxV = Math.round(tMax), tMinV = Math.round(tMin);
+  var maxIdx = -1, minIdx = -1;
+  for (var i = 0; i < n; i++) { if (temps[i] != null && Math.round(temps[i]) === tMaxV && maxIdx < 0) maxIdx = i; }
+  for (var i = 0; i < n; i++) { if (temps[i] != null && Math.round(temps[i]) === tMinV && minIdx < 0) minIdx = i; }
+  var hl = '';
+  if (maxIdx >= 0) hl += '<text x="' + px(maxIdx).toFixed(1) + '" y="' + (yOf(temps[maxIdx]) - 8).toFixed(1) + '" text-anchor="middle" font-size="9" font-weight="700" fill="#e2444a">H ' + tMaxV + '°</text>';
+  if (minIdx >= 0 && minIdx !== maxIdx) hl += '<text x="' + px(minIdx).toFixed(1) + '" y="' + (yOf(temps[minIdx]) + 16).toFixed(1) + '" text-anchor="middle" font-size="9" font-weight="700" fill="#2f6fed">L ' + tMinV + '°</text>';
+
+  var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block;background:#f8fafc;border-radius:12px;padding:6px 2px;" role="img" aria-label="近24小时温度与降雨趋势图">' +
+    '<defs><linearGradient id="tg24" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ee8b24" stop-opacity="0.55"/><stop offset="1" stop-color="#ee8b24" stop-opacity="0.02"/></linearGradient></defs>' +
+    grid + bars + area +
+    '<polyline points="' + pts.join(' ') + '" fill="none" stroke="#ee8b24" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>' +
+    dots + hl + curTxt + xl + '</svg>';
+
   var t1 = list[0] && list[0].time ? list[0].time.slice(11, 16) : '';
   var t2 = last.time ? last.time.slice(11, 16) : '';
-  var leg = '<span style="color:#c56a10;font-weight:600;">&#9472; 温度</span>' +
-    ' <span style="color:#2f6fed;font-weight:600;">&#9608; 每小时降水</span>' +
-    ' <span style="color:var(--text-secondary);">当前 ' + (last.temp != null ? Math.round(last.temp) + '°C' : '--') +
+  var leg = '<span style="color:#ee8b24;font-weight:700;">&#9679; 温度</span>' +
+    ' <span style="color:#3b82f6;font-weight:700;">&#9608; 每小时降水</span>' +
+    ' <span style="color:var(--ink-3);">当前 ' + (last.temp != null ? Math.round(last.temp) + '°C' : '--') +
     (maxRain > 0 ? ' · 最大时降水 ' + maxRain + 'mm' : '') +
-    ' · ' + t1 + ' → ' + t2 + '</span>';
-  return '<div>' + svg + '<div style="font-size:11px;color:var(--text-secondary);margin-top:6px;">' + leg + '</div></div>';
+    ' · 区间 ' + t1 + ' → ' + t2 + '</span>';
+  return '<div>' + svg + '<div style="font-size:11px;color:var(--ink-3);margin-top:6px;">' + leg + '</div></div>';
 }
 
 // 渲染入口（页面生命周期只取一次，数据 30 分钟级）
