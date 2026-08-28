@@ -835,29 +835,53 @@ function loadRealData(){
       var e3=document.querySelector('.wm-loc'); if(e3) e3.innerHTML='<svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="#fff" stroke-width="1.4"/></svg>新塬镇 · 实时天气';
     }
   }).catch(function(){});
-  // 村情数据（云函数登录取数）
+  // 村情数据（云函数登录取数，与主站同一口径）
   if(typeof loadSecureData==='function'){
     loadSecureData(['village_info.js','hazard_points.js'], function(){
       try{
-        var totalHouse=0, totalPop=0;
-        if(typeof VILLAGE_INFO!=='undefined' && VILLAGE_INFO){
-          for(var n in VILLAGE_INFO){
-            var v=VILLAGE_INFO[n];
-            if(!v) continue;
-            if(v.house!=null) totalHouse+=Number(v.house)||0;
-            if(v.pop!=null) totalPop+=Number(v.pop)||0;
-            if(AP_DATA[n]){
-              if(v.house!=null && Number(v.house)>0) AP_DATA[n].house=Number(v.house);
-              if(v.pop!=null && Number(v.pop)>0) AP_DATA[n].pop=Number(v.pop);
-            }
-          }
-          if(totalHouse){ var k1=document.querySelector('#atView .kpi.r .k-num'); if(k1) k1.innerHTML=totalHouse+'<span class="k-unit">户</span>'; }
-          if(totalPop){ var k2=document.querySelector('#atView .kpi.b .k-num'); if(k2) k2.innerHTML=totalPop+'<span class="k-unit">人</span>'; }
-          renderApAnList();
-          apRender();
-        }
+        apApplyRealVillageStats();
       }catch(e){}
     });
+  }
+}
+/* 真实村情统计：切坡户数=SH隐患点计数；受威胁人口=village_info.households撤离人数之和（与主站一致） */
+var AP_SHP_MAP={'常坪村':'常家坪村','河坝村':'杨家河坝村'};
+function apCountHouse(vname){
+  var shpName=vname;
+  for(var k in AP_SHP_MAP){ if(AP_SHP_MAP[k]===vname){ shpName=k; break; } }
+  var c=0;
+  if(typeof DATA_HAZARD_POINTS==='undefined'||!DATA_HAZARD_POINTS.features) return 0;
+  DATA_HAZARD_POINTS.features.forEach(function(f){
+    var pr=f.properties||{};
+    if(pr.source==='vector_data') return;
+    if((pr.CZ||'')===shpName) c++;
+  });
+  return c;
+}
+function apCountPop(vname){
+  var total=0;
+  var info=(typeof VILLAGE_INFO!=='undefined')?VILLAGE_INFO[vname]:null;
+  if(info&&info.households){
+    info.households.forEach(function(hh){
+      var pp=parseInt(hh.p,10);
+      if(!isNaN(pp)) total+=pp;
+    });
+  }
+  return total;
+}
+function apApplyRealVillageStats(){
+  var totalHouse=0, totalPop=0;
+  if(typeof VILLAGE_INFO!=='undefined' && VILLAGE_INFO){
+    for(var n in VILLAGE_INFO){
+      var h=apCountHouse(n), pp=apCountPop(n);
+      if(h>0 && AP_DATA[n]) AP_DATA[n].house=h;
+      if(pp>0 && AP_DATA[n]) AP_DATA[n].pop=pp;
+      totalHouse+=h; totalPop+=pp;
+    }
+    if(totalHouse){ var k1=document.querySelector('#atView .kpi.r .k-num'); if(k1) k1.innerHTML=totalHouse+'<span class="k-unit">户</span>'; }
+    if(totalPop){ var k2=document.querySelector('#atView .kpi.b .k-num'); if(k2) k2.innerHTML=totalPop+'<span class="k-unit">人</span>'; }
+    renderApAnList();
+    apRender();
   }
 }
 /* 登录页遗留函数兼容 */
