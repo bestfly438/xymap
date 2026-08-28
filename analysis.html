@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -213,6 +213,11 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: "PingF
 #loading { display: none; position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%);
   background: rgba(15,23,42,.85); color: #fff; font-size: 13px; padding: 8px 16px;
   border-radius: 20px; z-index: 1200; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.25); }
+/* ===== 界面细节打磨（make-interfaces-feel-better）===== */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+button,a,.btn,input,select{touch-action:manipulation}
+*{-webkit-tap-highlight-color:transparent}
+button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </style>
 </head>
 <body>

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
@@ -142,6 +142,11 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: "PingF
   #layer-sheet .cp-row { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
   #layer-sheet .cp-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
 }
+/* ===== 界面细节打磨（make-interfaces-feel-better）===== */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+button,a,.btn,input,select{touch-action:manipulation}
+*{-webkit-tap-highlight-color:transparent}
+button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </style>
 </head>
 <body>

@@ -5,6 +5,27 @@
 
 ---
 
+## 2026-08-28 · v2.5 界面细节打磨（web-design-guidelines + make-interfaces-feel-better skills 落地）
+
+### 改动内容（12 个页面）
+1. **`transition: all` 全部改指定属性**（共 60 处）
+   - 反模式修复：`transition: all .18s` → `transition: background-color,color,border-color,transform,opacity,box-shadow`，避免无关属性被无谓过渡、提升交互性能。
+2. **恢复页面缩放**（`map/index/analysis/vuln`）
+   - 移除 viewport 里的 `maximum-scale=1.0, user-scalable=no`，不再禁用用户缩放（无障碍规范反模式）。
+3. **省略号规范**（31 处）
+   - `加载中...`、`正在获取位置...` 等统一为 `…`（排版规范）。
+4. **文字渲染与触摸细节**
+   - 全站补字体平滑（`-webkit-font-smoothing:antialiased`），macOS 文字更清晰。
+   - 交互元素加 `touch-action:manipulation`，手机双击不再误触页面缩放延迟。
+   - 去除移动端点击高亮灰框（`-webkit-tap-highlight-color:transparent`）。
+5. **按钮按压反馈**：按钮 `:active` 时轻微缩小到 `scale(.96)`，按压更有手感（配合已启用的 reduced-motion 自动关闭）。
+
+### 涉及文件
+- 12 个页面 + `version.txt` + `CHANGELOG.md`
+
+---
+---
+
 ## 2026-08-28 · v2.4 全站设计风格统一（所有页面对齐主页浅色+品牌蓝设计语言）
 
 ### 背景

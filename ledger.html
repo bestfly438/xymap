@@ -154,6 +154,11 @@ table.ak-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; min-wi
   .tab-btn { padding: 8px 13px; font-size: 13px; }
   .map-card .mc-img { height: 220px; }
 }
+/* ===== 界面细节打磨（make-interfaces-feel-better）===== */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+button,a,.btn,input,select{touch-action:manipulation}
+*{-webkit-tap-highlight-color:transparent}
+button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </style>
 </head>
 <body>
@@ -186,11 +191,11 @@ table.ak-tbl { width: 100%; border-collapse: collapse; font-size: 12.5px; min-wi
 
   <div class="filter-row" id="filterRow">
     <select id="villageSel" onchange="renderCurrent()"></select>
-    <input type="search" id="searchBox" placeholder="搜索姓名 / 村组 / 电话..." oninput="renderCurrent()">
+    <input type="search" id="searchBox" placeholder="搜索姓名 / 村组 / 电话…" oninput="renderCurrent()">
     <span class="f-stat" id="fstat"></span>
   </div>
 
-  <div id="tabContent"><div class="loading">数据加载中...</div></div>
+  <div id="tabContent"><div class="loading">数据加载中…</div></div>
 </div>
 
 <!-- 大图查看 -->

@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>新塬镇应急避险指挥系统</title>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
@@ -44,13 +44,13 @@ html, body { width: 100%; height: 100%; font-family: "PingFang SC","Microsoft Ya
 #topbar .logout-btn {
   background: rgba(20,33,61,0.05); border: 1px solid rgba(20,33,61,0.08);
   color: #8a95ad; padding: 6px 14px; border-radius: 6px; font-size: 12px; cursor: pointer;
-  transition: all 0.2s;
+  transition:background-color 0.2s,color 0.2s,border-color 0.2s,transform 0.2s,opacity 0.2s,box-shadow 0.2s;
 }
 #topbar .logout-btn:hover { background: rgba(47,111,237,0.12); color: #2f6fed; border-color: rgba(47,111,237,0.25); }
 #topbar .back-link {
   color: #8a95ad; text-decoration: none; font-size: 12px;
   display: flex; align-items: center; gap: 4px; padding: 4px 10px;
-  border-radius: 6px; transition: all 0.2s;
+  border-radius: 6px; transition:background-color 0.2s,color 0.2s,border-color 0.2s,transform 0.2s,opacity 0.2s,box-shadow 0.2s;
 }
 #topbar .back-link:hover { background: rgba(20,33,61,0.05); color: #14213d; }
 
@@ -157,7 +157,7 @@ html, body { width: 100%; height: 100%; font-family: "PingFang SC","Microsoft Ya
   width: 40px; height: 40px; border-radius: 10px; border: 1px solid rgba(20,33,61,0.12);
   background: rgba(255,255,255,0.9); color: #4a5878; font-size: 16px;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s; backdrop-filter: blur(10px);
+  transition:background-color 0.2s,color 0.2s,border-color 0.2s,transform 0.2s,opacity 0.2s,box-shadow 0.2s; backdrop-filter: blur(10px);
 }
 #layer-ctrl button:hover { background: rgba(47,111,237,0.12); border-color: #2f6fed; }
 #layer-ctrl button.off { opacity: 0.35; }
@@ -200,7 +200,7 @@ html, body { width: 100%; height: 100%; font-family: "PingFang SC","Microsoft Ya
   border: 1px solid rgba(20,33,61,0.12);
   background: rgba(255,255,255,0.92); color: #4a5878; font-size: 18px;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
-  transition: all 0.2s; backdrop-filter: blur(10px);
+  transition:background-color 0.2s,color 0.2s,border-color 0.2s,transform 0.2s,opacity 0.2s,box-shadow 0.2s; backdrop-filter: blur(10px);
 }
 #side-panel-toggle:hover { background: rgba(47,111,237,0.12); border-color: #2f6fed; color: #2f6fed; }
 #side-panel-toggle.active { background: rgba(47,111,237,0.18); color: #2f6fed; }
@@ -212,7 +212,7 @@ html, body { width: 100%; height: 100%; font-family: "PingFang SC","Microsoft Ya
   border-radius: 12px; color: #8a95ad; font-size: 13px;
   backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   box-shadow: 0 8px 24px rgba(20,33,61,0.12);
-  display: none; transition: all 0.3s ease;
+  display: none; transition:background-color 0.3s,color 0.3s,border-color 0.3s,transform 0.3s,opacity 0.3s,box-shadow 0.3s ease;
 }
 #side-panel.show { display: block; animation: panelSlideIn 0.3s ease; }
 @keyframes panelSlideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
@@ -283,7 +283,7 @@ html, body { width: 100%; height: 100%; font-family: "PingFang SC","Microsoft Ya
   border: 1px solid rgba(20,33,61,0.06);
   background: rgba(20,33,61,0.03); color: #8a95ad;
   font-size: 12px; cursor: pointer; text-align: center;
-  transition: all 0.2s; line-height: 1.3;
+  transition:background-color 0.2s,color 0.2s,border-color 0.2s,transform 0.2s,opacity 0.2s,box-shadow 0.2s; line-height: 1.3;
 }
 .vp-tab .vp-tab-icon { display: block; font-size: 15px; margin-bottom: 2px; }
 .vp-tab:hover { background: rgba(20,33,61,0.06); color: #14213d; }
@@ -359,7 +359,7 @@ html, body { width: 100%; height: 100%; font-family: "PingFang SC","Microsoft Ya
   display: inline-flex; align-items: center; gap: 3px;
   padding: 3px 10px; border-radius: 13px; text-decoration: none;
   background: rgba(34,165,91,0.14); border: 1px solid rgba(34,165,91,0.3);
-  color: #22a55b; font-size: 11px; cursor: pointer; transition: all 0.2s;
+  color: #22a55b; font-size: 11px; cursor: pointer; transition:background-color 0.2s,color 0.2s,border-color 0.2s,transform 0.2s,opacity 0.2s,box-shadow 0.2s;
   white-space: nowrap;
 }
 .call-btn:hover { background: rgba(34,165,91,0.28); color: #34b96f; }
@@ -373,7 +373,7 @@ html, body { width: 100%; height: 100%; font-family: "PingFang SC","Microsoft Ya
   width: 100%; padding: 9px 0; border-radius: 8px;
   background: linear-gradient(135deg, #2f6fed, #1a4a7a);
   border: none; color: #fff; font-size: 13px; font-weight: 700;
-  cursor: pointer; transition: all 0.2s;
+  cursor: pointer; transition:background-color 0.2s,color 0.2s,border-color 0.2s,transform 0.2s,opacity 0.2s,box-shadow 0.2s;
 }
 .pn-btn:hover { opacity: 0.9; }
 .pn-btn:active { transform: scale(0.98); }
@@ -418,7 +418,7 @@ html, body { width: 100%; height: 100%; font-family: "PingFang SC","Microsoft Ya
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer;
   background: rgba(47,111,237,0.1); border: 1px solid rgba(47,111,237,0.22);
-  color: #2f6fed; transition: all 0.2s;
+  color: #2f6fed; transition:background-color 0.2s,color 0.2s,border-color 0.2s,transform 0.2s,opacity 0.2s,box-shadow 0.2s;
 }
 .patrol-form .pf-photo-btn:hover { background: rgba(47,111,237,0.18); }
 .patrol-form .pf-submit {
@@ -588,6 +588,11 @@ html, body { width: 100%; height: 100%; font-family: "PingFang SC","Microsoft Ya
 /* ===== 无障碍与动效偏好（reduced-motion / 键盘焦点）===== */
 :focus-visible{outline:2px solid #2f6fed;outline-offset:2px;border-radius:3px}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
+/* ===== 界面细节打磨（make-interfaces-feel-better）===== */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+button,a,.btn,input,select{touch-action:manipulation}
+*{-webkit-tap-highlight-color:transparent}
+button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </style>
 </head>
 <body>
@@ -848,7 +853,7 @@ function navigateTo(lng, lat, name) {
   }
   // PC端：先获取当前位置作为起点，再规划驾车路线
   if (!navigator.geolocation) { alert('浏览器不支持定位，无法规划路线'); return; }
-  showRouteInfo('正在获取当前位置...');
+  showRouteInfo('正在获取当前位置…');
   navigator.geolocation.getCurrentPosition(function(pos) {
     var gcj = wgs84ToGcj02(pos.coords.longitude, pos.coords.latitude);
     planRoute(gcj[0], gcj[1], lng, lat, name);
@@ -861,7 +866,7 @@ function navigateTo(lng, lat, name) {
 // PC端：调用云函数 /api/route 中转高德驾车路线（安全改造：高德 Key 不再出现在前端）
 function planRoute(slng, slat, elng, elat, name) {
   clearRoute();
-  showRouteInfo('正在规划驾车路线...');
+  showRouteInfo('正在规划驾车路线…');
   var key = sessionStorage.getItem('xyc_key') || '';
   var device = sessionStorage.getItem('xyc_device') || '';
   fetch(FEISHU_CONFIG.apiBase + '/api/route', {
@@ -968,7 +973,7 @@ function fullToShpName(fullName) {
 
 // ========== 初始化地图 ==========
 function initMap() {
-  showStatus('正在加载地图...');
+  showStatus('正在加载地图…');
 
   map = L.map('map', {
     center: VILLAGES[0].center,
@@ -1091,7 +1096,7 @@ function loadHazardPoints() {
       var popVillage = shpToFullName(p.CZ) || p.CZ || '';
       var popOwner = p.HZXM || '';
       if (popVillage && popOwner) {
-        html += '<div class="pop-photos" data-v="' + esc(popVillage) + '" data-o="' + esc(popOwner) + '"><span class="ph-muted">照片加载中...</span></div>';
+        html += '<div class="pop-photos" data-v="' + esc(popVillage) + '" data-o="' + esc(popOwner) + '"><span class="ph-muted">照片加载中…</span></div>';
       }
 
       html += '</div>';
@@ -1746,7 +1751,7 @@ function getWeatherText() {
     var info = wmoInfo(weatherCache.weathercode);
     return info[1] + ' ' + info[0] + ' ' + Math.round(weatherCache.temperature_2m) + '°C';
   }
-  return '天气数据获取中...';
+  return '天气数据获取中…';
 }
 
 function getLocalPatrolRecords(vname) {
@@ -1918,7 +1923,7 @@ function renderPatrolTab(vid) {
     if (currentPatrolLocation) {
       h += '经度：' + currentPatrolLocation.lng.toFixed(6) + '，纬度：' + currentPatrolLocation.lat.toFixed(6);
     } else {
-      h += '点击获取GPS位置...';
+      h += '点击获取GPS位置…';
     }
     h += '</div>';
     h += '</div>';
@@ -1975,7 +1980,7 @@ function getPatrolLocation() {
     return;
   }
   var el = document.getElementById('pf-location');
-  if (el) el.textContent = '正在获取位置...';
+  if (el) el.textContent = '正在获取位置…';
   navigator.geolocation.getCurrentPosition(function(pos) {
     var gcj = wgs84ToGcj02(pos.coords.longitude, pos.coords.latitude);
     currentPatrolLocation = { lat: gcj[1], lng: gcj[0] };
@@ -1990,7 +1995,7 @@ function getPatrolLocation() {
 function onPatrolPhotoSelect(input) {
   var file = input.files[0];
   if (!file) return;
-  showPfMsg('正在压缩照片...', '');
+  showPfMsg('正在压缩照片…', '');
   compressPhoto(file, function(dataUrl) {
     patrolPhotoData = dataUrl;
     var preview = document.getElementById('pf-photo-preview');
@@ -2024,7 +2029,7 @@ function submitPatrol(vid) {
   }
 
   var btn = document.querySelector('.pf-submit');
-  if (btn) { btn.disabled = true; btn.textContent = '提交中...'; }
+  if (btn) { btn.disabled = true; btn.textContent = '提交中…'; }
   window._lastPatrolSubmit = { key: dupKey, ts: Date.now() };
 
   var now = new Date();
@@ -2059,7 +2064,7 @@ function submitPatrol(vid) {
       if (photoInput) photoInput.value = '';
       if (desc) desc.value = '';
       var locEl = document.getElementById('pf-location');
-      if (locEl) locEl.textContent = '点击获取GPS位置...';
+      if (locEl) locEl.textContent = '点击获取GPS位置…';
       refreshPatrolList(vid);
     } else {
       showPfMsg('云端保存失败，已存入本机（' + (err || '未知原因') + '）', 'error');
@@ -2136,7 +2141,7 @@ function exportPatrolCSV(vid) {
 // ========== 定位 ==========
 function locateMe() {
   if (!navigator.geolocation) { showStatus('浏览器不支持定位'); return; }
-  showStatus('正在获取位置...');
+  showStatus('正在获取位置…');
   navigator.geolocation.getCurrentPosition(function(pos) {
     map.setView([pos.coords.latitude, pos.coords.longitude], 16);
     L.circleMarker([pos.coords.latitude, pos.coords.longitude], {
