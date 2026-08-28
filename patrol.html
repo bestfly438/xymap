@@ -247,6 +247,30 @@ var VILLAGES = ['上塬村','东塬村','刘家湾社区','孟塬村','常家坪
 var XYC_ROLE = sessionStorage.getItem('xyc_role') || '';
 var XYC_CUN = sessionStorage.getItem('xyc_village') || '';
 var XYC_IS_STAFF = !(XYC_ROLE === '村级' || XYC_ROLE === '社长');
+
+function fmtTime(v) {
+  if (!v) return '';
+  var s = String(v);
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function out(d) {
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+      + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+  // 纯数字时间戳（秒或毫秒）
+  if (/^\d{10,13}$/.test(s)) {
+    var n = Number(s); if (n < 1e12) n *= 1000;
+    var d = new Date(n);
+    if (!isNaN(d.getTime())) return out(d);
+  }
+  // ISO 格式（含 T 或带时区偏移）
+  if (s.indexOf('T') > -1) {
+    var d2 = new Date(s);
+    if (!isNaN(d2.getTime())) return out(d2);
+  }
+  // 已格式化的 2026-08-28 10:30（无 T）或无法解析：直接规整显示
+  return s.replace(/T/g, ' ').replace(/\.\d+/, '').replace(/(\+|-)\d{2}:?\d{2}$/, '');
+}
+
 var PT_ALL = [];
 var PT_LOADED = false;
 
@@ -262,7 +286,7 @@ function getPatrolRecords(vname, callback) {
   var filter = JSON.stringify({ logic: 'and', conditions: [['村名', '==', vname]] });
   var path = '/open-apis/base/v3/bases/' + FEISHU_CONFIG.baseToken +
     '/tables/' + FEISHU_CONFIG.tables.patrol +
-    '/records?page_size=200&filter=' + encodeURIComponent(filter);
+    '/records?page_size=500&filter=' + encodeURIComponent(filter);
   feishuRequest('GET', path, null, function(data, err) {
     if (err || !data || data.code !== 0) {
       if (callback) callback(getLocalPatrolRecords(vname));
@@ -283,21 +307,25 @@ function getPatrolRecords(vname, callback) {
         weather: f['天气'] || '',
         photo: f['照片base64'] || '',
         description: f['巡查描述'] || '',
-        time: f['巡查时间'] || ''
+        time: fmtTime(f['巡查时间'])
       };
     });
     try {
       var all = JSON.parse(localStorage.getItem(PATROL_STORAGE_KEY) || '[]');
       var others = all.filter(function(r) { return r.village !== vname; });
-      var cloudIds = {};
-      records.forEach(function(r) { if (r.record_id) cloudIds[r.record_id] = true; });
-      var merged = records.concat(all.filter(function(r) {
-        return r.village === vname && (!r.record_id || !cloudIds[r.record_id]);
-      }));
+      var merged = records.slice();
+      var seenIds = {};
+      records.forEach(function(r) { if (r.record_id) seenIds[r.record_id] = true; });
+      // 本地补充：无 record_id 的暂存记录，或有 record_id 但云端本次未返回的记录（云端可能分页截断，不能丢弃）
+      all.forEach(function(r) {
+        if (r.village !== vname) return;
+        if (r.record_id && seenIds[r.record_id]) return;
+        merged.push(r);
+      });
       var seen = {};
       var seenContent = {};
       merged = merged.filter(function(r) {
-        var k = r.id || r.record_id;
+        var k = r.record_id || r.id;
         if (!k || seen[k]) return false;
         seen[k] = true;
         var ck = (r.village||'') + '|' + (r.inspector||'') + '|' + (r.time||'') + '|' + (r.description||'');
@@ -305,7 +333,6 @@ function getPatrolRecords(vname, callback) {
         seenContent[ck] = true;
         return true;
       });
-      while (merged.length > 200) merged.pop();
       localStorage.setItem(PATROL_STORAGE_KEY, JSON.stringify(others.concat(merged)));
       if (callback) callback(merged);
       return;
@@ -342,18 +369,35 @@ function patrolRefresh() {
   if (selVillage) villages = [selVillage];
   var hint = document.getElementById('ptHint');
   if (hint) hint.textContent = '正在同步云端数据…';
+  // 先用本机缓存立刻渲染，避免云端慢时一直转圈
+  PT_ALL = getLocalPatrolRecords('');
+  PT_LOADED = true;
+  renderPatrol();
   var collected = [];
   var done = 0;
+  var timedOut = false;
   function finish() {
     if (++done < villages.length) return;
     PT_ALL = collected;
     PT_LOADED = true;
-    if (hint) hint.textContent = villages.length + ' 个村已同步（飞书云端 + 本机缓存）';
+    if (hint) hint.textContent = villages.length + ' 个村已同步（飞书云端 + 本机缓存）'
+      + (timedOut ? '，云端响应慢，部分显示本机缓存' : '');
     renderPatrol();
   }
   if (!villages.length) { finish(); return; }
   villages.forEach(function(v) {
+    var returned = false;
+    var timer = setTimeout(function() {   // 云端 12 秒未响应：用本地缓存兜底，不无限等待
+      if (returned) return;
+      returned = true;
+      timedOut = true;
+      collected = collected.concat(getLocalPatrolRecords(v));
+      finish();
+    }, 12000);
     getPatrolRecords(v, function(recs) {
+      if (returned) return;
+      returned = true;
+      clearTimeout(timer);
       collected = collected.concat(recs || []);
       finish();
     });

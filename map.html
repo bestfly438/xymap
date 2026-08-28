@@ -1709,6 +1709,30 @@ function wmoInfo(code) { return WMO_MAP[code] || ['未知', '&#x2600;']; }
 
 function escAttr(s) { return String(s || '').replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
 
+function fmtTime(v) {
+  if (!v) return '';
+  var s = String(v);
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function out(d) {
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+      + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+  // 纯数字时间戳（秒或毫秒）
+  if (/^\d{10,13}$/.test(s)) {
+    var n = Number(s); if (n < 1e12) n *= 1000;
+    var d = new Date(n);
+    if (!isNaN(d.getTime())) return out(d);
+  }
+  // ISO 格式（含 T 或带时区偏移）
+  if (s.indexOf('T') > -1) {
+    var d2 = new Date(s);
+    if (!isNaN(d2.getTime())) return out(d2);
+  }
+  // 已格式化的 2026-08-28 10:30（无 T）或无法解析：直接规整显示
+  return s.replace(/T/g, ' ').replace(/\.\d+/, '').replace(/(\+|-)\d{2}:?\d{2}$/, '');
+}
+
+
 function showPfMsg(msg, type) {
   var el = document.getElementById('pf-msg');
   if (el) {
@@ -1805,21 +1829,24 @@ function getPatrolRecords(vname, callback) {
         weather: f['天气'] || '',
         photo: f['照片base64'] || '',
         description: f['巡查描述'] || '',
-        time: f['巡查时间'] || ''
+        time: fmtTime(f['巡查时间'])
       };
     });
     try {
       var all = JSON.parse(localStorage.getItem(PATROL_STORAGE_KEY) || '[]');
       var others = all.filter(function(r) { return r.village !== vname; });
-      var cloudIds = {};
-      records.forEach(function(r) { if (r.record_id) cloudIds[r.record_id] = true; });
-      var merged = records.concat(all.filter(function(r) {
-        return r.village === vname && (!r.record_id || !cloudIds[r.record_id]);
-      }));
+      var merged = records.slice();
+      var seenIds = {};
+      records.forEach(function(r) { if (r.record_id) seenIds[r.record_id] = true; });
+      all.forEach(function(r) {
+        if (r.village !== vname) return;
+        if (r.record_id && seenIds[r.record_id]) return;
+        merged.push(r);
+      });
       var seen = {};
       var seenContent = {};
       merged = merged.filter(function(r) {
-        var k = r.id || r.record_id;
+        var k = r.record_id || r.id;
         if (!k || seen[k]) return false;
         seen[k] = true;
         var ck = (r.village||'') + '|' + (r.inspector||'') + '|' + (r.time||'') + '|' + (r.description||'');
@@ -1827,7 +1854,6 @@ function getPatrolRecords(vname, callback) {
         seenContent[ck] = true;
         return true;
       });
-      while (merged.length > 200) merged.pop();
       localStorage.setItem(PATROL_STORAGE_KEY, JSON.stringify(others.concat(merged)));
       if (callback) callback(merged);
       return;
