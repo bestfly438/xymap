@@ -2033,6 +2033,17 @@ a{color:inherit;text-decoration:none}
 .fc-d{font-size:11px;opacity:.85;font-weight:500}
 .fc-ic{width:26px;height:26px;margin:7px auto 4px}
 
+/* ===== 补充：村级本村待办提醒栏 ===== */
+.vtb-bar{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding:13px 18px;border-radius:13px;background:linear-gradient(120deg,#7f1d1d,#991b1b);color:#fff;box-shadow:0 6px 16px rgba(127,29,29,.25)}
+.vtb-ic{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center;font-size:16px;flex:none}
+.vtb-t{font-size:15px;font-weight:800;white-space:nowrap}
+.vtb-msgs{flex:1;min-width:0;font-size:12.5px;line-height:1.6;opacity:.95;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.vtb-btn{margin-left:auto;padding:8px 16px;border-radius:9px;background:#fff;color:#991b1b;font-size:12.5px;font-weight:800;white-space:nowrap}
+.vtb-btn:hover{background:#fee2e2}
+
+/* ===== 补充：统一调度模块说明 ===== */
+.disp-send-list .ds-item .ds-rt{flex-direction:row}
+@media (max-width:640px){.vtb-msgs{-webkit-line-clamp:3}}
 /* ===== 补充：预警防御指引 ===== */
 .warn-guide{margin-top:16px;padding-top:14px;border-top:1px dashed var(--line-2)}
 .wg-h{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:800;color:var(--ink)}
@@ -2197,20 +2208,20 @@ a{color:inherit;text-decoration:none}
     <nav class="sb-menu">
       <div class="sb-group-t">主功能</div>
       <div class="sb-item active" onclick="pcNav('dash',this)"><svg viewBox="0 0 24 24" fill="none"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>数据看板</div>
-      <a class="sb-item" href="map.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.7"/></svg>应急地图</a>
-      <a class="sb-item" href="analysis.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M10 19V9M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>专业分析</a>
-      <a class="sb-item" href="radar.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.4" opacity=".7"/></svg>雷达 / 预报</a>
+      <a class="sb-item" href="map.html?v=v20260827-28"><svg viewBox="0 0 24 24" fill="none"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.7"/></svg>应急地图</a>
+      <a class="sb-item" href="analysis.html?v=v20260827-28"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M10 19V9M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>专业分析</a>
+      <a class="sb-item" href="radar.html?v=v20260827-28"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.4" opacity=".7"/></svg>雷达 / 预报</a>
       <div class="sb-group-t">数据台账</div>
-      <a class="sb-item" href="ledger.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>应急台账</a>
-      <a class="sb-item" href="transfer.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h10M7 14h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>转移流程</a>
-      <a class="sb-item" href="team.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.7"/></svg>应急队伍</a>
-      <a class="sb-item" href="photo.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>照片档案</a>
+      <a class="sb-item" href="ledger.html?v=v20260827-28"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>应急台账</a>
+      <a class="sb-item" href="transfer.html?v=v20260827-28"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h10M7 14h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>转移流程</a>
+      <a class="sb-item" href="team.html?v=v20260827-28"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.7"/></svg>应急队伍</a>
+      <a class="sb-item" href="photo.html?v=v20260827-28"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>照片档案</a>
       <div class="sb-group-t">应急模块</div>
-      <a class="sb-item" href="guide.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>防汛应急指南</a>
-      <a class="sb-item" href="manual.html?v=v20260827-27"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>使用说明</a>
+      <a class="sb-item" href="guide.html?v=v20260827-28"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>防汛应急指南</a>
+      <a class="sb-item" href="manual.html?v=v20260827-28"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>使用说明</a>
       <div class="sb-group-t">系统</div>
       <div class="sb-item" id="pcMenuAdmin" onclick="openAdminPanel()" style="display:none"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>系统管理</div>
-      <a class="sb-item" id="pcMenuHealth" href="health.html?v=v20260827-27" style="display:none"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>系统自检</a>
+      <a class="sb-item" id="pcMenuHealth" href="health.html?v=v20260827-28" style="display:none"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>系统自检</a>
       <div class="sb-item" onclick="doLogout()"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h3M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>退出登录</div>
     </nav>
     <div class="sb-foot">
@@ -2247,24 +2258,24 @@ a{color:inherit;text-decoration:none}
         <div class="time-display" id="timeDisplay"></div>
         <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
         <button class="btn" id="akSysBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-        <a class="btn" id="akHealthBtn" href="health.html?v=v20260827-27" style="display:none">&#x1F50D; 自检</a>
+        <a class="btn" id="akHealthBtn" href="health.html?v=v20260827-28" style="display:none">&#x1F50D; 自检</a>
         <button class="tb-icon" onclick="toggleMoreMenu()" id="moreBtn" title="更多功能">&#x2630;</button>
       </div>
     </header>
 
     <!-- 手机端更多抽屉 -->
     <div class="more-menu" id="moreMenu">
-      <a href="map.html?v=v20260827-27" class="mm-item">&#x1F5FA; 进入地图</a>
-      <a href="analysis.html?v=v20260827-27" class="mm-item">&#x1F4CA; 专业分析</a>
-      <a href="radar.html?v=v20260827-27" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
-      <a href="transfer.html?v=v20260827-27" class="mm-item">&#x1F500; 转移流程</a>
-      <a href="team.html?v=v20260827-27" class="mm-item">&#x1F465; 应急队伍</a>
-      <a href="photo.html?v=v20260827-27" class="mm-item">&#x1F4F7; 照片档案</a>
-      <a href="guide.html?v=v20260827-27" class="mm-item">&#x1F4D6; 防汛应急指南</a>
-      <a href="manual.html?v=v20260827-27" class="mm-item">&#x1F4F1; 使用说明</a>
-      <a href="ledger.html?v=v20260827-27" class="mm-item">&#x1F4CB; 应急台账</a>
-      <a href="updates.html?v=v20260827-27" class="mm-item">&#x1F4C4; 近期更新</a>
-      <a href="health.html?v=v20260827-27" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
+      <a href="map.html?v=v20260827-28" class="mm-item">&#x1F5FA; 进入地图</a>
+      <a href="analysis.html?v=v20260827-28" class="mm-item">&#x1F4CA; 专业分析</a>
+      <a href="radar.html?v=v20260827-28" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
+      <a href="transfer.html?v=v20260827-28" class="mm-item">&#x1F500; 转移流程</a>
+      <a href="team.html?v=v20260827-28" class="mm-item">&#x1F465; 应急队伍</a>
+      <a href="photo.html?v=v20260827-28" class="mm-item">&#x1F4F7; 照片档案</a>
+      <a href="guide.html?v=v20260827-28" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+      <a href="manual.html?v=v20260827-28" class="mm-item">&#x1F4F1; 使用说明</a>
+      <a href="ledger.html?v=v20260827-28" class="mm-item">&#x1F4CB; 应急台账</a>
+      <a href="updates.html?v=v20260827-28" class="mm-item">&#x1F4C4; 近期更新</a>
+      <a href="health.html?v=v20260827-28" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
       <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
       <button class="mm-item" id="akSysBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理</button>
       <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
@@ -2277,6 +2288,14 @@ a{color:inherit;text-decoration:none}
       <div class="alert-banner" id="alertBanner" style="display:none;margin-bottom:22px;border-radius:15px;padding:16px 22px;">
         <div class="alert-icon">&#x26A0;</div>
         <div class="alert-text"><h3 id="alertTitle">天气提醒</h3><p id="alertDesc"></p></div>
+      </div>
+
+      <!-- 村级/社长：本村待办提醒（镇级/管理员统一下发） -->
+      <div class="vtb-bar" id="pcVillageTodoBar" style="display:none">
+        <span class="vtb-ic">&#x1F6A8;</span>
+        <div class="vtb-t">本村待办</div>
+        <div class="vtb-msgs">加载中…</div>
+        <button class="vtb-btn" onclick="pcOpenReplyBar()">回复</button>
       </div>
 
       <!-- KPI 统计 -->
@@ -2618,12 +2637,12 @@ a{color:inherit;text-decoration:none}
 
       <!-- 进入地图 -->
       <div class="map-entry">
-        <a href="map.html?v=v20260827-27">&#x1F5FA; 进入应急避险地图</a>
+        <a href="map.html?v=v20260827-28">&#x1F5FA; 进入应急避险地图</a>
       </div>
 
       <div class="page-foot">
         <div><span class="demo-tag">&#x26A0; 数据快照</span> 已集成：中央气象台 + 专业分析 + 阈值对比 + 智能决策 + 统一调度 + 雷达云图</div>
-        <div>陇ICP备2026007741号-1 · 新塬镇应急避险指挥系统 v20260827-27</div>
+        <div>陇ICP备2026007741号-1 · 新塬镇应急避险指挥系统 v20260827-28</div>
       </div>
     </div>
   </div>
@@ -2657,12 +2676,12 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<script src="feishu_config.js?v=v20260827-27"></script>
-<script src="weather.js?v=v20260827-27"></script>
-<script src="js_data/village_centers.js?v=v20260827-27" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260827-27" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260827-27" defer></script>
-<script src="js_data/rain_stations.js?v=v20260827-27" defer></script>
+<script src="feishu_config.js?v=v20260827-28"></script>
+<script src="weather.js?v=v20260827-28"></script>
+<script src="js_data/village_centers.js?v=v20260827-28" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260827-28" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260827-28" defer></script>
+<script src="js_data/rain_stations.js?v=v20260827-28" defer></script>
 
 <script>
 
@@ -2908,8 +2927,10 @@ document.addEventListener('click', function(e) {
 
 // ========== 编辑模式 ==========
 var isEditMode = false;
-var isAdmin = sessionStorage.getItem('xyc_admin') === '1' || sessionStorage.getItem('xyc_role') === '管理员';
-var isStaff = isAdmin || sessionStorage.getItem('xyc_role') === '镇级';
+function xyRole() { return String(sessionStorage.getItem('xyc_role') || '').trim(); }
+function xyIsVillageLevel() { var r = xyRole(); return r === '村级' || r === '社长'; }
+var isAdmin = sessionStorage.getItem('xyc_admin') === '1' || xyRole() === '管理员';
+var isStaff = !xyIsVillageLevel();   // 管理员/镇级/其他管理角色：非村级社长即可调度
 var EDIT_STORAGE_KEY = 'xyc_village_edit_data';
 
 // 显示管理员按钮
@@ -3063,7 +3084,7 @@ function refreshVillageGrid() {
       }
       if (isEditMode) return;
       sessionStorage.setItem('xyc_map_village', vname);
-      window.location.href = 'map.html?v=v20260827-27;'
+      window.location.href = 'map.html?v=v20260827-28;'
     };
 
     var html = '';
@@ -3740,13 +3761,42 @@ function pcDispReply(idx) {
     x.classList.toggle('on', x.getAttribute('data-role') === role);
   });
   // 统一调度：管理员/镇级可见
-  var canDispatch = (role === '管理员' || role === '镇级');
+  var canDispatch = !(role === '村级' || role === '社长');
   var card = document.getElementById('pcDispSendCard');
   var btn = document.getElementById('pcDispSendBtn');
   if (card) card.style.display = canDispatch ? '' : 'none';
   if (btn) btn.style.display = canDispatch ? '' : 'none';
 })();
 renderDispTodos();
+// 村级/社长：顶部显示"本村待办"（由镇级/管理员统一下发）
+(function(){
+  var role = sessionStorage.getItem('xyc_role') || '';
+  if (role !== '村级' && role !== '社长') return;
+  var cun = sessionStorage.getItem('xyc_village') || '';
+  var wrap = document.getElementById('pcVillageTodoBar');
+  if (!wrap) return;
+  var list = getDispList();
+  var mine = list.filter(function(x){ return x.village === cun && x.status === '待回复'; });
+  if (!mine.length) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'flex';
+  var html = '<span class="vtb-ic">&#x1F6A8;</span><div class="vtb-t">本村待办 <b>' + mine.length + '</b> 条</div><div class="vtb-msgs">' + mine.slice(0,3).map(function(x){ return esc(x.type + '：' + x.msg); }).join('<br>') + '</div><button class="vtb-btn" onclick="pcOpenReplyBar()">回复</button>';
+  wrap.innerHTML = html;
+})();
+function pcOpenReplyBar(){
+  var cun = sessionStorage.getItem('xyc_village') || '';
+  var list = getDispList();
+  var mine = list.filter(function(x){ return x.village === cun && x.status === '待回复'; });
+  if (!mine.length) return;
+  var r = prompt('回复「' + mine[0].village + '」的处置情况：', '已按指令执行…');
+  if (r === null) return;
+  mine[0].status = '已回复';
+  mine[0].reply = r;
+  saveDispList(list);
+  renderDispTodos();
+  var wrap = document.getElementById('pcVillageTodoBar');
+  if (wrap) wrap.style.display = 'none';
+  if (typeof toast === 'function') toast('已回复');
+}
 </script>
 
 <div class="ak-sys-overlay" id="akSysOverlay" style="display:none" onclick="if(event.target===this)closeAdminPanel()">
