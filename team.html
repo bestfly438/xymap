@@ -220,40 +220,28 @@ setInterval(updateTime, 1000);
 })();
 </script>
 <script>
-// 队伍数据加载
-var VILLAGE_TEAMS = null;
-function loadTeams() {
-  var key = sessionStorage.getItem('xyc_key') || '';
-  var device = sessionStorage.getItem('xyc_device') || '';
-  fetch(FEISHU_CONFIG.apiBase + '/api/data', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json; charset=utf-8', 'x-xyc-key': key, 'x-xyc-device': device },
-    body: JSON.stringify({ village: '全部' })
-  })
-  .then(function(r) { return r.json(); })
-  .then(function(d) {
-    if (d && d.code === 401) { try { sessionStorage.clear(); } catch(e){} window.location.replace('index.html'); return; }
-    if (d && d.code === 0) {
-      VILLAGE_TEAMS = (d.data && d.data.teams) || null;
-      if (!VILLAGE_TEAMS) VILLAGE_TEAMS = (d.data && d.data.village_teams) || null;
-    }
-    renderTeams();
-  })
-  .catch(function() { renderTeams(); });
-}
-var VILLAGE_ORDER = [];
-function loadVillageOrder() {
-  var o = sessionStorage.getItem('xyc_village_order');
-  if (o) { try { VILLAGE_ORDER = JSON.parse(o); } catch(e){} }
+// 队伍数据加载（village_teams.js，登录后经 /api/data 取数，与数据看板同一数据源）
+var VILLAGE_TEAMS = undefined;
+var TEAM_LOADED = false;
+var VILLAGE_ORDER = ['上塬村', '东塬村', '刘家湾社区', '孟塬村', '常家坪村', '新塬村', '杨坪村', '杨家河坝村', '甘岔村', '老庄村'];
+(function(){
+  try {
+    var o = sessionStorage.getItem('xyc_village_order');
+    if (o) { var arr = JSON.parse(o); if (Array.isArray(arr) && arr.length) VILLAGE_ORDER = arr; }
+  } catch(e) {}
+})();
+
+function teamsDataReady() {
+  return typeof VILLAGE_TEAMS !== 'undefined' && VILLAGE_TEAMS;
 }
 function renderTeams() {
-  if (typeof VILLAGE_TEAMS === 'undefined' || !VILLAGE_TEAMS) {
-    document.getElementById('teamList').innerHTML =
-      '<div class="warn-empty">队伍数据加载中...</div>';
+  var listEl = document.getElementById('teamList');
+  var sumEl = document.getElementById('teamSummary');
+  if (!teamsDataReady()) {
+    listEl.innerHTML = '<div class="warn-empty">队伍数据加载中...</div>';
+    if (sumEl) sumEl.innerHTML = '';
     return;
   }
-  var summary = document.getElementById('teamSummary');
-  var list = document.getElementById('teamList');
   var totalTeams = 0, totalPeople = 0;
   var chips = '';
   VILLAGE_ORDER.forEach(function(v) {
@@ -264,9 +252,9 @@ function renderTeams() {
   });
   chips += '<span class="ts-chip">' + totalTeams + ' 支队伍</span>';
   chips += '<span class="ts-chip">' + totalPeople + ' 人</span>';
-  summary.innerHTML = chips;
+  sumEl.innerHTML = chips;
 
-  list.innerHTML = '';
+  listEl.innerHTML = '';
   VILLAGE_ORDER.forEach(function(v) {
     var arr = VILLAGE_TEAMS[v];
     if (!arr || !arr.length) return;
@@ -281,7 +269,7 @@ function renderTeams() {
         '<span class="tv-arrow">&#x25B6;</span>' +
       '</div>' +
       '<div class="team-vill-body">' + buildTeamRows(arr) + '</div>';
-    list.appendChild(div);
+    listEl.appendChild(div);
   });
 }
 function buildTeamRows(arr) {
@@ -302,8 +290,15 @@ function buildTeamRows(arr) {
   return html;
 }
 
-
-loadVillageOrder();
+function loadTeams(attempt) {
+  attempt = attempt || 0;
+  if (teamsDataReady()) { renderTeams(); return; }
+  loadSecureData(['village_teams.js'], function() {
+    if (teamsDataReady()) { renderTeams(); return; }
+    if (attempt < 2) { setTimeout(function() { loadTeams(attempt + 1); }, 600); }
+    else { renderTeams(); }
+  });
+}
 loadTeams();
 </script>
 </body>
