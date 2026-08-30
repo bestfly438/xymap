@@ -2299,7 +2299,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
     <div class="content">
 
       <!-- 预警横幅 -->
-      <div class="alert-banner" id="alertBanner" style="display:none;margin-bottom:22px;border-radius:15px;padding:16px 22px;">
+      <div class="alert-banner v29-sticky-warn" id="alertBanner" style="display:none;margin-bottom:22px;border-radius:15px;padding:16px 22px;">
         <div class="alert-icon">&#x26A0;</div>
         <div class="alert-text"><h3 id="alertTitle">天气提醒</h3><p id="alertDesc"></p></div>
       </div>
@@ -2390,8 +2390,9 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
               <div id="nmcTrend"></div>
               <div style="font-size:11px;color:var(--ink-3);margin-top:6px;">来源：中央气象台 · 更新：<span id="nmcUpdateTime">--</span></div>
             </div>
-            <div class="wx-sched" id="wxScheduleWrap" style="display:none">
-              <div class="ws-title">&#x26A0; 降雨天气调度（仅管理员）</div>
+            <div class="wx-sched v29-sched" id="wxScheduleWrap" style="display:none">
+              <div class="ws-title v29-sched-head" onclick="v29ToggleSched()"><span>&#x26A0; 降雨天气调度（仅管理员）</span><span class="v29-sched-arrow" id="v29SchedArrow">&#x25B6;</span></div>
+              <div class="v29-sched-body" id="v29SchedBody" style="display:none">
               <div class="ws-status" id="wxSchedStatus">检测到降雨，可多选村庄设置定时刷新</div>
               <div class="ws-row"><label>调度村庄</label><div class="ws-vills" id="wxSchedVills"></div></div>
               <div class="ws-row">
@@ -2415,6 +2416,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
                 <button class="ws-btn start" id="wxSchedStart" onclick="wxStartSchedule()">&#x23F3; 开始调度</button>
                 <button class="ws-btn stop" id="wxSchedStop" onclick="wxStopSchedule()">&#x23F9; 停止</button>
                 <button class="ws-btn now" id="wxRefreshAllNow" onclick="wxRefreshAllNow()">&#x21BB; 单次刷新全部村</button>
+              </div>
               </div>
             </div>
           </div>
@@ -3826,6 +3828,41 @@ function pcOpenReplyBar(){
     </div>
     <div class="ak-sys-body" id="akSysBody"><div class="ak-loading">加载中…</div></div>
   </div>
+
+<script>
+// v29 大屏模式：URL 带 ?screen=1 进入深色态势大屏（只读，隐藏编辑/调度）
+(function(){
+  if (location.search.indexOf('screen=1') < 0) return;
+  document.body.classList.add('v29-screen');
+  var head = document.createElement('div');
+  head.className = 'v29-screen-head';
+  head.innerHTML = '<div class="v29-screen-title">新塬镇防汛态势</div><div class="v29-screen-clock" id="v29ScreenClock"></div>';
+  document.body.insertBefore(head, document.body.firstChild);
+  function tick(){ var el = document.getElementById('v29ScreenClock'); if (el) el.textContent = new Date().toLocaleString('zh-CN',{hour12:false}); }
+  tick(); setInterval(tick, 1000);
+  ['editModeBtn','akSysBtn','akHealthBtn','wxScheduleWrap','pcDispSendCard','roleSwitcher'].forEach(function(id){
+    var e = document.getElementById(id); if (e) e.style.display = 'none';
+  });
+  var kvs = document.querySelectorAll('.k-val');
+  kvs.forEach(function(k){ k.style.fontSize = '48px'; });
+  var board = document.createElement('div');
+  board.className = 'v29-screen-board';
+  board.innerHTML = '<div class="v29-board-title">指令看板</div><div id="v29BoardList">加载中…</div>';
+  document.body.appendChild(board);
+  function renderBoard(){
+    var list = [];
+    try { list = JSON.parse(localStorage.getItem('xyc_dispatch_todos') || '[]'); } catch(e) {}
+    var box = document.getElementById('v29BoardList');
+    if (!box) return;
+    var vills = (window.VILLAGE_ORDER || []).length || 10;
+    var recent = list.slice(0,3);
+    box.innerHTML = '<div class="v29-board-vills">全镇 ' + vills + ' 村 · 未响应 <b style="color:#F04438">' + recent.length + '</b> 条最新指令</div>' +
+      (recent.map(function(t,i){ return '<div class="v29-board-item"><b>' + (t.type||'指令') + '</b> · ' + (t.content||'') + '</div>'; }).join('') || '<div class="v29-board-item">暂无指令</div>');
+  }
+  renderBoard(); setInterval(renderBoard, 10000);
+})();
+</script>
+
 <script src="js/icons.js?v=20260831"></script>
 <script src="js/nav.js?v=20260831"></script>
 </body>
