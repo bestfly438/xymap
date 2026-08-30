@@ -222,6 +222,7 @@ function renderWarnings() {
 function renderAllWeather() {
   renderTopBadge();
   renderVillageWeather();
+  if (typeof proRenderAnalysis === 'function') { try { proRenderAnalysis(); } catch(e) {} }
   renderWarnings();
   renderGeoHazard();
   renderNmcWeather();

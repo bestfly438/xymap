@@ -4,7 +4,7 @@
  * 所有飞书读写统一走腾讯云函数 /api/feishu（会话校验 + 服务端权限规则）。
  */
 var FEISHU_CONFIG = {
-  apiBase: 'https://1463495179-bhdx6dldr1.ap-guangzhou.tencentscf.com', // 腾讯云函数URL
+  apiBase: 'https://1463495179-lzhwkpy0vr.ap-guangzhou.tencentscf.com', // 腾讯云函数URL(v29 含24h预报)
   baseToken: 'RfabbIErzaadtFsM9jZcqffvnOb',   // 多维表格 app_token（仅用于拼路径）
   tables: {
     patrol: 'tblz3JMnhmwDuNld',   // 巡查记录表
