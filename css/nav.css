@@ -114,23 +114,6 @@
 .v29-sched-head{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
 .v29-sched-arrow{font-size:11px;color:#8A97A8;transition:transform .2s;}
 
-/* 大屏模式（?screen=1 深色） */
-body.v29-screen{background:#0A1628 !important;color:#F2F6FA;}
-body.v29-screen .card,body.v29-screen .kpi,body.v29-screen .v-card,body.v29-screen .vill-card,
-body.v29-screen .rain-card,body.v29-screen .warn-card{background:#10203A;border-color:rgba(255,255,255,.10);color:#F2F6FA;}
-body.v29-screen .kpi .k-val,body.v29-screen .stat-card .sc-num{color:#F2F6FA !important;}
-body.v29-screen .k-label,body.v29-screen .k-foot,body.v29-screen .flat,body.v29-screen .section-title{color:#F2F6FA;}
-body.v29-screen .section-subtitle,body.v29-screen .ch-sub,body.v29-screen .k-foot{color:#8FA3BD;}
-body.v29-screen .v29-tabbar,body.v29-screen .topbar,body.v29-screen .v29-sidebar,body.v29-screen aside.sidebar{display:none !important;}
-body.v29-screen .content{margin-top:70px;}
-.v29-screen-head{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;justify-content:space-between;align-items:center;padding:16px 28px;background:#0A1628;border-bottom:1px solid rgba(255,255,255,.10);}
-.v29-screen-title{font-size:24px;font-weight:700;color:#F2F6FA;letter-spacing:2px;}
-.v29-screen-clock{font-size:16px;color:#8FA3BD;}
-.v29-screen-board{position:fixed;right:24px;top:80px;width:320px;max-width:88vw;background:#10203A;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:16px;z-index:500;}
-.v29-board-title{font-size:16px;font-weight:600;color:#F2F6FA;margin-bottom:12px;}
-.v29-board-vills{font-size:13px;color:#8FA3BD;margin-bottom:10px;}
-.v29-board-item{padding:10px 12px;background:rgba(255,255,255,.05);border-radius:10px;margin-bottom:8px;font-size:13px;color:#DCE7F5;line-height:1.6;}
-
 /* 大屏模式（?screen=1 深色）——覆盖 CSS 变量实现整体深色 */
 body.v29-screen{
   --surface:#10203A; --surface-2:#10203A; --surface-3:#0E1B33;
@@ -154,6 +137,9 @@ body.v29-screen .page-sub,body.v29-screen .wc-s,body.v29-screen .w-l{color:#8FA3
 body.v29-screen table th{background:#0E1B33;color:#8FA3BD;}
 body.v29-screen table td{color:#DCE7F5;border-color:rgba(255,255,255,.08);}
 body.v29-screen .v29-tabbar,body.v29-screen .topbar,body.v29-screen .v29-sidebar,body.v29-screen aside.sidebar{display:none !important;}
+/* 大屏模式：隐藏侧栏后 .app 仍保留 248px grid 列，需改单列否则内容被挤压横向溢出 */
+body.v29-screen .app{grid-template-columns:1fr !important;display:block;}
+body.v29-screen .main{width:100% !important;min-width:0;}
 body.v29-screen .content{margin-top:70px;}
 .v29-screen-head{position:fixed;top:0;left:0;right:0;z-index:500;display:flex;justify-content:space-between;align-items:center;padding:16px 28px;background:#0A1628;border-bottom:1px solid rgba(255,255,255,.10);}
 .v29-screen-title{font-size:24px;font-weight:700;color:#F2F6FA;letter-spacing:2px;}
