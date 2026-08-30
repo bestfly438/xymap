@@ -3177,12 +3177,13 @@ function refreshContactLists() {
 // ========== 各村防汛应急队伍（village_teams.js，登录后取数注入） ==========
 function renderTeams() {
   if (typeof VILLAGE_TEAMS === 'undefined' || !VILLAGE_TEAMS) {
-    document.getElementById('teamList').innerHTML =
-      '<div class="warn-empty">队伍数据加载中…</div>';
+    var el0 = document.getElementById('teamList');
+    if (el0) el0.innerHTML = '<div class="warn-empty">队伍数据加载中…</div>';
     return;
   }
   var summary = document.getElementById('teamSummary');
   var list = document.getElementById('teamList');
+  if (!summary || !list) return; // 页面无队伍模块时不渲染，避免报错中断
   var totalTeams = 0, totalPeople = 0;
   var chips = '';
   VILLAGE_ORDER.forEach(function(v) {
