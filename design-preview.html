@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>v29 视觉规范预览 · 新塬应急</title>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<style>
+  .dp-wrap{max-width:1100px;margin:0 auto;padding:24px 16px 80px;}
+  .dp-h{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+  .dp-h .logo{width:40px;height:40px;border-radius:12px;background:var(--brand-700);color:#fff;display:flex;align-items:center;justify-content:center;}
+  .dp-sec{margin-top:32px;}
+  .dp-sec h3{font-size:var(--fs-card-title);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+  .dp-sec h3 .tag{background:var(--brand-100);color:var(--brand-600);font-size:12px;padding:2px 10px;border-radius:6px;}
+  .sw-row{display:flex;flex-wrap:wrap;gap:12px;}
+  .sw{width:150px;border:1px solid var(--border);border-radius:var(--rd-card);overflow:hidden;background:var(--bg-card);}
+  .sw .c{height:64px;}
+  .sw .t{padding:8px 10px;font-size:12px;color:var(--text-2);}
+  .sw .t b{display:block;color:var(--text-1);font-size:13px;}
+  .demo-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;}
+  .ic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:10px;}
+  .ic-cell{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--rd-btn);padding:12px 6px;text-align:center;color:var(--text-2);font-size:11px;}
+  .ic-cell svg{display:block;margin:0 auto 6px;color:var(--brand-600);}
+  .note{margin-top:24px;padding:14px 16px;border-radius:var(--rd-card);background:var(--brand-100);color:var(--brand-700);font-size:14px;line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="dp-wrap">
+  <div class="dp-h">
+    <div class="logo"><span data-ic="shield" data-ic-size="24"></span></div>
+    <div>
+      <h1 style="font-size:22px;font-weight:700;">v29 视觉规范预览</h1>
+      <div class="page-sub">新塬应急 · 设计令牌与基础组件验收页（非功能页，确认后逐页铺开）</div>
+    </div>
+  </div>
+
+  <div class="dp-sec">
+    <h3><span class="tag">品牌色</span>Brand</h3>
+    <div class="sw-row">
+      <div class="sw"><div class="c" style="background:var(--brand-700);"></div><div class="t"><b>#14355C</b>brand-700 侧栏/深底</div></div>
+      <div class="sw"><div class="c" style="background:var(--brand-600);"></div><div class="t"><b>#1D4E89</b>brand-600 主按钮/高亮</div></div>
+      <div class="sw"><div class="c" style="background:var(--brand-500);"></div><div class="t"><b>#2B6CB0</b>brand-500 hover</div></div>
+      <div class="sw"><div class="c" style="background:var(--brand-100);"></div><div class="t"><b>#E8F0F9</b>brand-100 浅底</div></div>
+    </div>
+  </div>
+
+  <div class="dp-sec">
+    <h3><span class="tag">风险五色</span>Risk</h3>
+    <div class="sw-row">
+      <div class="sw"><div class="c" style="background:var(--risk-blue);"></div><div class="t"><b>#2E90FA</b>蓝 · 蓝色预警</div></div>
+      <div class="sw"><div class="c" style="background:var(--risk-yellow);"></div><div class="t"><b>#F59E0B</b>黄 · 黄色预警</div></div>
+      <div class="sw"><div class="c" style="background:var(--risk-orange);"></div><div class="t"><b>#EA580C</b>橙 · 橙色预警</div></div>
+      <div class="sw"><div class="c" style="background:var(--risk-red);"></div><div class="t"><b>#DC2626</b>红 · 红色预警</div></div>
+      <div class="sw"><div class="c" style="background:var(--safe-green);"></div><div class="t"><b>#16A34A</b>绿 · 安全</div></div>
+    </div>
+  </div>
+
+  <div class="dp-sec">
+    <h3><span class="tag">按钮</span>Button</h3>
+    <div class="demo-row">
+      <button class="btn btn-primary">主要操作</button>
+      <button class="btn btn-outline">次要操作</button>
+      <button class="btn btn-danger">危险操作</button>
+      <button class="btn btn-ghost">幽灵按钮</button>
+      <button class="btn btn-primary" disabled>禁用</button>
+    </div>
+  </div>
+
+  <div class="dp-sec">
+    <h3><span class="tag">风险标签</span>Pill / Dot</h3>
+    <div class="demo-row">
+      <span class="pill pill-blue">蓝色预警</span>
+      <span class="pill pill-yellow">黄色预警</span>
+      <span class="pill pill-orange">橙色预警</span>
+      <span class="pill pill-red">红色预警</span>
+      <span class="pill pill-green">已处置</span>
+      <span class="pill pill-gray">待回复</span>
+      <span class="dot dot-blue"></span>已读
+      <span class="dot dot-orange"></span>响应中
+      <span class="dot dot-green"></span>已完成
+      <span class="dot dot-gray"></span>未读
+    </div>
+  </div>
+
+  <div class="dp-sec">
+    <h3><span class="tag">横幅</span>Banner</h3>
+    <div style="display:grid;gap:10px;max-width:640px;">
+      <div class="banner banner-blue"><span data-ic="alert-triangle"></span>蓝色预警：未来 12 小时有中雨，请关注。</div>
+      <div class="banner banner-yellow"><span data-ic="alert-triangle"></span>黄色预警：暴雨蓝色预警生效中。</div>
+      <div class="banner banner-orange"><span data-ic="alert-triangle"></span>橙色预警：请各村组织重点巡查。</div>
+      <div class="banner banner-red"><span data-ic="alert-triangle"></span>红色预警：威胁户全部转移避险！</div>
+    </div>
+  </div>
+
+  <div class="dp-sec">
+    <h3><span class="tag">标签页</span>Tabs</h3>
+    <div class="tabs">
+      <button class="tab-btn active"><span data-ic="home" data-ic-size="16"></span>数据看板</button>
+      <button class="tab-btn"><span data-ic="map" data-ic-size="16"></span>应急地图</button>
+      <button class="tab-btn"><span data-ic="chart" data-ic-size="16"></span>专业分析</button>
+      <button class="tab-btn"><span data-ic="radar" data-ic-size="16"></span>雷达预报</button>
+    </div>
+  </div>
+
+  <div class="dp-sec">
+    <h3><span class="tag">表格</span>Table</h3>
+    <div class="card" style="padding:0;">
+      <table class="table">
+        <tr><th>村</th><th>切坡建房</th><th>威胁人口</th><th>状态</th></tr>
+        <tr><td>上塬村</td><td class="tnum">36 户</td><td class="tnum">81 人</td><td><span class="pill pill-green">正常</span></td></tr>
+        <tr><td>甘岔村</td><td class="tnum">56 户</td><td class="tnum">112 人</td><td><span class="pill pill-orange">关注</span></td></tr>
+        <tr><td>常家坪村</td><td class="tnum">37 户</td><td class="tnum">125 人</td><td><span class="pill pill-red">重点</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="dp-sec">
+    <h3><span class="tag">SVG 图标库</span>Icons（<span id="icCount"></span> 个）</h3>
+    <div class="ic-grid" id="icGrid"></div>
+  </div>
+
+  <div class="note">
+    <b>确认点：</b>1) 品牌色与风险五色是否符合预期；2) 按钮/标签/横幅样式；3) SVG 线性图标风格。
+    <br>确认后我将按此规范逐页铺开（导航、看板、消息中心、各业务页）。有任何颜色/圆角/字号想调，直接告诉我。
+  </div>
+</div>
+
+<script src="js/icons.js"></script>
+<script>
+  var names = ['shield','home','bar-chart','map','chart','radar','clipboard','clipboard-check','route','camera','message-circle','users','book','smartphone','file-clock','activity','droplet','alert-triangle','pencil','settings','logout','phone','sun','cloud','download','refresh','arrow-left','chevron-down','search','clock','eye','trash','plus','x','bell'];
+  document.getElementById('icCount').textContent = names.length;
+  var grid = document.getElementById('icGrid');
+  names.forEach(function(n){
+    var d = document.createElement('div');
+    d.className = 'ic-cell';
+    d.innerHTML = '<span data-ic="' + n + '" data-ic-size="22"></span>' + n;
+    grid.appendChild(d);
+  });
+</script>
+</body>
+</html>
