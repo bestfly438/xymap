@@ -97,6 +97,9 @@
   .v29-sidebar{transform:translateX(-105%);transition:transform .25s ease;}
   .v29-sidebar.open{transform:translateX(0);box-shadow:4px 0 24px rgba(16,32,58,.2);}
   .v29-map-nav{display:none;} /* 手机用底部 Tab */
+  /* 手机/窄屏隐藏页面已有侧栏，仅保留底部 Tab + 抽屉 */
+  aside.sidebar{display:none !important;}
+  .sidebar{display:none !important;}
 }
 @media (min-width:1280px){
   body.v29-with-sidebar{margin-left:220px;}
