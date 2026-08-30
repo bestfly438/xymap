@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>防汛应急指南 - 新塬镇应急避险指挥系统</title>
+<meta name="color-scheme" content="light">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #eef2f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #eef2f7;
+  --border: #e2e8f0;
+  --border-light: #cbd5e1;
+  --text: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --primary: #2f6fed;
+  --primary-glow: rgba(47,111,237,0.2);
+  --blue: #2f6fed;
+  --green: #22a55b;
+  --orange: #ee8b24;
+  --purple: #7c3aed;
+  --cyan: #0891b2;
+  --radius: 12px;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color-scheme: light;
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif
+  background: var(--bg); color: var(--text); min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background:
+    radial-gradient(ellipse at 20% 0%, rgba(59,130,246,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(239,68,68,0.04) 0%, transparent 50%);
+}
+/* 顶栏 */
+.topbar {
+  background: rgba(255,255,255,0.9); border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 1px 8px rgba(15,23,42,0.06);
+}
+.topbar .logo { display: flex; align-items: center; gap: 14px; }
+.topbar .logo-icon {
+  width: 40px; height: 40px; background: linear-gradient(135deg, #2f6fed, #1a4a7a);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: #fff; box-shadow: 0 0 20px rgba(59,130,246,0.3);
+}
+.topbar .logo-text h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+.topbar .logo-text p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.topbar .top-actions { display: flex; align-items: center; gap: 14px; }
+.topbar .btn {
+  padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: var(--transition); border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--text-secondary); text-decoration: none; display: flex; align-items: center; gap: 6px;
+}
+.topbar .btn:hover { background: var(--bg-card-hover); border-color: var(--border-light); color: var(--text); }
+.topbar .btn-primary {
+  background: linear-gradient(135deg, #1a4a7a, #12314f); color: #fff; border-color: transparent;
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+.topbar .btn-primary:hover { box-shadow: 0 0 30px rgba(239,68,68,0.5); transform: translateY(-1px); }
+.container { max-width: 980px; margin: 0 auto; padding: 32px 20px 60px; position: relative; z-index: 1; }
+/* 页头 */
+.page-head { text-align: center; margin-bottom: 36px; }
+.page-head h2 { font-size: 28px; font-weight: 800; letter-spacing: 1px; margin-bottom: 10px; }
+.page-head p { font-size: 14px; color: var(--text-muted); line-height: 1.8; }
+.page-head .ph-badge {
+  display: inline-block; margin-top: 12px; padding: 5px 16px; border-radius: 20px;
+  background: rgba(47,111,237,0.08); color: #2f6fed; font-size: 12px; font-weight: 600;
+  border: 1px solid rgba(239,68,68,0.25);
+}
+/* 目录导航 */
+.toc {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 20px 24px; margin-bottom: 28px;
+}
+.toc h4 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--text); }
+.toc .toc-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; }
+.toc a {
+  display: flex; align-items: center; gap: 8px; color: var(--text-secondary); text-decoration: none;
+  font-size: 13px; padding: 6px 8px; border-radius: 6px; transition: var(--transition);
+}
+.toc a:hover { color: var(--text); background: rgba(15,23,42,0.04); }
+.toc a .toc-num {
+  width: 22px; height: 22px; border-radius: 6px; background: rgba(47,111,237,0.12); color: #2f6fed;
+  display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+/* 章节卡片 */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 28px 30px; margin-bottom: 24px; transition: var(--transition);
+}
+.card:hover { border-color: var(--border-light); }
+.card .sec-title { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.card .sec-title .sec-icon {
+  width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.sec-icon.blue { background: rgba(59,130,246,0.12); }
+.sec-icon.red { background: rgba(239,68,68,0.12); }
+.sec-icon.green { background: rgba(34,197,94,0.12); }
+.sec-icon.orange { background: rgba(245,158,11,0.12); }
+.sec-icon.purple { background: rgba(139,92,246,0.12); }
+.sec-icon.cyan { background: rgba(6,182,212,0.12); }
+.card .sec-title h3 { font-size: 18px; font-weight: 700; }
+.card .sec-title .sec-sub { margin-left: auto; font-size: 11px; color: var(--text-muted); }
+.card p { font-size: 14px; color: var(--text-secondary); line-height: 1.9; margin-bottom: 12px; }
+.card ul, .card ol { padding-left: 22px; margin-bottom: 12px; }
+.card li { font-size: 14px; color: var(--text-secondary); line-height: 1.9; margin-bottom: 6px; }
+.card li strong { color: var(--text); }
+.card .tip {
+  background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.25); border-radius: 8px;
+  padding: 12px 16px; font-size: 13px; color: #fbbf24; margin: 12px 0; line-height: 1.8;
+}
+.card .danger-box {
+  background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.25); border-radius: 8px;
+  padding: 12px 16px; font-size: 13px; color: #2f6fed; margin: 12px 0; line-height: 1.8;
+}
+.card .ok-box {
+  background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25); border-radius: 8px;
+  padding: 12px 16px; font-size: 13px; color: #4ade80; margin: 12px 0; line-height: 1.8;
+}
+/* 预警等级表 */
+table { width: 100%; border-collapse: collapse; margin: 12px 0 16px; font-size: 13px; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+th { color: var(--text-muted); font-weight: 600; font-size: 12px; background: rgba(15,23,42,0.03); }
+td { color: var(--text-secondary); line-height: 1.7; }
+.level-tag { display: inline-block; padding: 2px 10px; border-radius: 4px; font-size: 12px; font-weight: 700; color: #fff; }
+.lv-blue { background: #3b82f6; }
+.lv-yellow { background: #f59e0b; }
+.lv-orange { background: #f97316; }
+.lv-red { background: #ef4444; }
+/* 步骤流程 */
+.flow { display: flex; flex-direction: column; gap: 0; margin: 16px 0; }
+.flow-item { display: flex; gap: 14px; position: relative; padding-bottom: 20px; }
+.flow-item::before {
+  content: ''; position: absolute; left: 17px; top: 38px; bottom: 0; width: 2px;
+  background: var(--border-light);
+}
+.flow-item:last-child::before { display: none; }
+.flow-num {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0; z-index: 1;
+  background: linear-gradient(135deg, #2f6fed, #1a4a7a); color: #fff;
+  display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700;
+  box-shadow: 0 0 16px rgba(59,130,246,0.3);
+}
+.flow-body { flex: 1; padding-top: 4px; }
+.flow-body h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.flow-body p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin: 0; }
+/* 应急包清单 */
+.kit-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 16px 0; }
+.kit-item {
+  background: rgba(37,99,235,0.05); border: 1px solid var(--border); border-radius: 10px;
+  padding: 14px; text-align: center; transition: var(--transition);
+}
+.kit-item:hover { border-color: var(--border-light); transform: translateY(-2px); }
+.kit-item .ki-icon { font-size: 26px; margin-bottom: 8px; }
+.kit-item .ki-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.kit-item .ki-desc { font-size: 11px; color: var(--text-muted); line-height: 1.6; }
+/* 底部 */
+.footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; opacity: 0.6; }
+@media (max-width: 640px) {
+  .topbar { padding: 0 10px; height: 52px; }
+  .topbar .logo { gap: 8px; min-width: 0; }
+  .topbar .logo-text { min-width: 0; }
+  .topbar .logo-text h1 { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .topbar .logo-text p { display: none; }
+  .topbar .top-actions { gap: 6px; }
+  .topbar .btn { white-space: nowrap; padding: 5px 9px; font-size: 11px; flex-shrink: 0; }
+  .container { padding: 20px 14px 40px; }
+  .page-head h2 { font-size: 21px; }
+  .toc .toc-grid { grid-template-columns: 1fr; }
+  .kit-grid { grid-template-columns: repeat(2, 1fr); }
+  .card { padding: 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">&#x1F6A8;</div>
+    <div class="logo-text">
+      <h1>新塬镇防汛应急指南</h1>
+      <p>甘肃省白银市会宁县新塬镇 · 应急避险常识</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <a href="transfer.html?v=v20260827-28" class="btn">&#x1F500; 转移流程</a>
+    <a href="dashboard.html?v=v20260827-28" class="btn">&#x1F3E2; 返回看板</a>
+    <a href="map.html?v=v20260827-28" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="page-head">
+    <h2>&#x1F6A8; 防汛应急避险指南</h2>
+    <p>汛期降雨集中、山洪突发，提前掌握避险知识，关键时刻能保命。<br>请全镇干部群众认真阅读，并转发给家人邻里。</p>
+    <span class="ph-badge">&#x26A0; 建议收藏并定期学习</span>
+  </div>
+
+  <div class="toc">
+    <h4>&#x1F4CB; 内容目录</h4>
+    <div class="toc-grid">
+      <a href="#sec1"><span class="toc-num">1</span>预警信号等级怎么看</a>
+      <a href="#sec2"><span class="toc-num">2</span>应急响应启动流程</a>
+      <a href="#sec3"><span class="toc-num">3</span>接到转移指令怎么做</a>
+      <a href="#sec4"><span class="toc-num">4</span>山洪·滑坡·泥石流避险</a>
+      <a href="#sec5"><span class="toc-num">5</span>家中应急准备清单</a>
+      <a href="#sec6"><span class="toc-num">6</span>自救互救常识</a>
+      <a href="#sec7"><span class="toc-num">7</span>紧急联系电话</a>
+    </div>
+  </div>
+
+  <!-- 1 预警等级 -->
+  <div class="card" id="sec1">
+    <div class="sec-title">
+      <div class="sec-icon blue">&#x1F6A9;</div>
+      <h3>一、预警信号等级怎么看</h3>
+      <span class="sec-sub">依据气象灾害预警信号标准</span>
+    </div>
+    <p>气象部门发布的暴雨、山洪、地质灾害预警信号分<b>蓝、黄、橙、红</b>四个等级，颜色越深，危险越大。收到预警后，务必按对应等级行动：</p>
+    <table>
+      <tr><th style="width:90px;">等级</th><th>含义</th><th>应采取措施</th></tr>
+      <tr>
+        <td><span class="level-tag lv-blue">蓝色</span></td>
+        <td>12小时内降雨量将达50毫米以上，或已达并可能持续</td>
+        <td>关注预警信息，检查排水沟渠，做好转移准备</td>
+      </tr>
+      <tr>
+        <td><span class="level-tag lv-yellow">黄色</span></td>
+        <td>6小时内降雨量将达50毫米以上，或已达并可能持续</td>
+        <td>停止户外作业，危房人员提前转移，随时准备撤离</td>
+      </tr>
+      <tr>
+        <td><span class="level-tag lv-orange">橙色</span></td>
+        <td>3小时内降雨量将达50毫米以上，或已达并可能持续</td>
+        <td><b>立即转移</b>危险区人员，停止一切户外活动，低洼地带断电</td>
+      </tr>
+      <tr>
+        <td><span class="level-tag lv-red">红色</span></td>
+        <td>3小时内降雨量将达100毫米以上，或已达并可能持续</td>
+        <td><b>全面强制转移</b>，危险区域一律封控，严禁人员进入</td>
+      </tr>
+    </table>
+    <div class="tip">&#x1F4A1; <b>特别提醒：</b>新塬镇地处黄土高原沟壑区，切坡建房、临崖临河住户是重点防护对象，黄色预警起就应主动转移。</div>
+  </div>
+
+  <!-- 2 应急响应流程 -->
+  <div class="card" id="sec2">
+    <div class="sec-title">
+      <div class="sec-icon red">&#x1F4E2;</div>
+      <h3>二、应急响应启动流程</h3>
+      <span class="sec-sub">从预警到行动的完整链条</span>
+    </div>
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-num">1</div>
+        <div class="flow-body">
+          <h4>接收预警</h4>
+          <p>镇应急办通过广播、微信群、电话、上门等方式发布预警，请务必保持通讯畅通。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">2</div>
+        <div class="flow-body">
+          <h4>村级响应</h4>
+          <p>村干部、包抓责任人迅速到岗，开启应急喇叭，组织巡查员对隐患点、河道、切坡点加密巡查。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">3</div>
+        <div class="flow-body">
+          <h4>提前转移</h4>
+          <p>橙色及以上预警，危险区群众按"包抓责任人"安排，沿既定撤离路线转移到安置点，做到"应转尽转、不落一人"。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">4</div>
+        <div class="flow-body">
+          <h4>安置保障</h4>
+          <p>安置点落实食品、饮水、住宿、医疗，做好转移人员登记，禁止擅自返回危险区。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">5</div>
+        <div class="flow-body">
+          <h4>解除响应</h4>
+          <p>气象预警解除、经隐患排查确认安全后，由镇应急办统一宣布，群众有序返回。</p>
+        </div>
+      </div>
+    </div>
+    <div class="danger-box">&#x26D4; <b>严禁</b>：预警未解除前擅自返回家中、进入河道、上山作业。历年伤亡事故多发生在"以为雨停了"的侥幸心理。</div>
+  </div>
+
+  <!-- 3 转移要点 -->
+  <div class="card" id="sec3">
+    <div class="sec-title">
+      <div class="sec-icon orange">&#x1F6B6;</div>
+      <h3>三、接到转移指令怎么做</h3>
+      <span class="sec-sub">转移有讲究，顺序要记牢</span>
+    </div>
+    <ol>
+      <li><strong>听指挥：</strong>服从包抓责任人和村干部统一安排，沿指定<b>撤离路线</b>转移，不要抄近路、走河道。</li>
+      <li><strong>带证件：</strong>带上身份证、户口本、医保卡、存折等，转移安置和后续救助要用。</li>
+      <li><strong>断水电：</strong>出门前关闭家中电闸、气阀，防止次生火灾。</li>
+      <li><strong>老人小孩优先：</strong>优先转移老弱病残孕，邻里之间互相搭把手，做到互帮互救。</li>
+      <li><strong>到安置点登记：</strong>到达安置点后立即登记姓名、人数，方便村干部核对是否"不落一人"。</li>
+    </ol>
+    <div class="ok-box">&#x2705; <b>撤离路线和安置点位置</b>可在应急避险地图上查看——打开地图，点开本村信息，即可看到撤离路线、安置点和责任人电话。</div>
+  </div>
+
+  <!-- 4 山洪滑坡泥石流 -->
+  <div class="card" id="sec4">
+    <div class="sec-title">
+      <div class="sec-icon purple">&#x26A0;</div>
+      <h3>四、山洪·滑坡·泥石流避险</h3>
+      <span class="sec-sub">三大灾害的识别与逃生</span>
+    </div>
+    <p><b>山洪（河道涨水）：</b>暴雨后山沟、河道可能在几分钟内暴涨，切勿在河边看水、捞柴、捕鱼。</p>
+    <ul>
+      <li>发现河水突然变浑、水位猛涨、上游传来轰鸣声——<strong>立即向两侧高地撤离</strong>，切不可沿河道跑。</li>
+      <li>夜间更危险，听见异常响动立即转移，不要贪恋财物。</li>
+    </ul>
+    <p><b>滑坡（山体滑动）：</b>切坡建房户、坡脚住户是重点。</p>
+    <ul>
+      <li>征兆：坡体出现裂缝、小规模掉块、树木歪斜、泉水变浑浊或干涸。</li>
+      <li>逃生：向<b>垂直于滑坡方向</b>的两侧高处跑，不要顺着滑坡方向跑，也不要在坡脚停留。</li>
+    </ul>
+    <p><b>泥石流：</b>沟谷地带暴雨后多发，来势凶猛。</p>
+    <ul>
+      <li>发现沟内水流突然断流又突然增大、伴有巨大响声——立刻跑向沟谷<b>两侧高处</b>。</li>
+      <li>不要躲在沟谷内的低洼处、桥下、涵洞中。</li>
+    </ul>
+    <div class="tip">&#x1F4A1; <b>口诀：</b>雨大不出门，水涨往高走；山响快跑开，坡裂早撤离。</div>
+  </div>
+
+  <!-- 5 应急准备清单 -->
+  <div class="card" id="sec5">
+    <div class="sec-title">
+      <div class="sec-icon green">&#x1F4E6;</div>
+      <h3>五、家中应急准备清单</h3>
+      <span class="sec-sub">汛前备好，用时从容</span>
+    </div>
+    <div class="kit-grid">
+      <div class="kit-item"><div class="ki-icon">&#x1F4F1;</div><div class="ki-name">通讯工具</div><div class="ki-desc">充满电的手机、备用充电宝、手电筒、备用电池</div></div>
+      <div class="kit-item"><div class="ki-icon">&#x1F4E2;</div><div class="ki-name">收音机/喇叭</div><div class="ki-desc">断电断网时接收预警信息的重要渠道</div></div>
+      <div class="kit-item"><div class="ki-icon">&#x1F95A;</div><div class="ki-name">食物饮水</div><div class="ki-desc">至少3天的方便食品、瓶装水</div></div>
+      <div class="kit-item"><div class="ki-icon">&#x1F48A;</div><div class="ki-name">常用药品</div><div class="ki-desc">感冒药、降压药等常备药，慢性病药多备一份</div></div>
+      <div class="kit-item"><div class="ki-icon">&#x1F9FA;</div><div class="ki-name">重要证件</div><div class="ki-desc">身份证、户口本、存折等放入防水袋随身携带</div></div>
+      <div class="kit-item"><div class="ki-icon">&#x1F46A;</div><div class="ki-name">应急联络</div><div class="ki-desc">家人互约"集合点"，记住村干部和责任人电话</div></div>
+    </div>
+  </div>
+
+  <!-- 6 自救互救 -->
+  <div class="card" id="sec6">
+    <div class="sec-title">
+      <div class="sec-icon cyan">&#x1F91D;</div>
+      <h3>六、自救互救常识</h3>
+      <span class="sec-sub">关键时刻能救命</span>
+    </div>
+    <ul>
+      <li><strong>溺水急救：</strong>救起溺水者后，先清除口鼻异物，将其侧卧；无呼吸心跳时立即做心肺复苏（胸外按压30次+人工呼吸2次循环），并拨打120。</li>
+      <li><strong>触电防护：</strong>发现有人触电，先切断电源或用干燥木棍挑开电线，<b>切勿直接用手拉拽</b>。</li>
+      <li><strong>被埋自救：</strong>滑坡、坍塌被埋时，保持冷静、保存体力，护住口鼻防止吸入泥土，有规律地敲击物体发出求救信号。</li>
+      <li><strong>失温处理：</strong>淋雨后尽快换干衣、裹毛毯、喝温热水，避免长时间泡在冷水中。</li>
+      <li><strong>不盲从施救：</strong>山洪、泥石流中不要贸然下水救人，先报警、再借助绳索等工具科学施救。</li>
+    </ul>
+  </div>
+
+  <!-- 7 联系电话 -->
+  <div class="card" id="sec7">
+    <div class="sec-title">
+      <div class="sec-icon red">&#x1F4DE;</div>
+      <h3>七、紧急联系电话</h3>
+      <span class="sec-sub">重要号码建议保存到手机</span>
+    </div>
+    <table>
+      <tr><th>事项</th><th>号码</th></tr>
+      <tr><td>报警（公安）</td><td><b>110</b></td></tr>
+      <tr><td>火警</td><td><b>119</b></td></tr>
+      <tr><td>急救（医疗）</td><td><b>120</b></td></tr>
+      <tr><td>防汛抗洪抢险</td><td>镇应急管理办公室（详见系统内"应急电话"）</td></tr>
+    </table>
+    <div class="ok-box">&#x2705; 各村应急总指挥、包抓责任人、隐患点监测人电话，请查看<b>看板"各村应急总指挥"</b>或<b>地图村级信息</b>。</div>
+  </div>
+
+</div>
+
+<div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
+
+<script>
+// ========== 自动版本检测：发现版本更新强制刷新，避免浏览器缓存旧页面（无需手动清缓存） ==========
+(function() {
+  try {
+    fetch('version.txt?t=' + Date.now(), { cache: 'no-store' })
+      .then(function(r) { return r.text(); })
+      .then(function(v) {
+        v = (v || '').trim();
+        if (!v) return;
+        var cur = sessionStorage.getItem('xyc_app_version');
+        if (cur && cur !== v) {
+          sessionStorage.setItem('xyc_app_version', v);
+          location.reload(true);
+        } else {
+          sessionStorage.setItem('xyc_app_version', v);
+        }
+      })
+      .catch(function() {});
+  } catch(e) {}
+})();
+</script>
+<script>
+// 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
+(function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
+</script>
+<script>
+// bfcache 返回强制刷新：从其他页面返回本页时若浏览器恢复旧快照，异步数据可能停留在空状态
+window.addEventListener('pageshow', function(e) {
+  var need = false;
+  if (e.persisted) need = true;
+  if (!need) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) need = true;
+  }
+  if (need) window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+});
+</script>
+<!-- 备案号（ICP 备案通过后全站挂载） -->
+<div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
+  <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
+</div></body>
+</html>

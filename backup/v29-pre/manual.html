@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>手机使用说明 · 新塬镇应急避险指挥系统</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta name="color-scheme" content="light">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #eef2f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f9fc;
+  --border: #e3e8f0;
+  --border-light: #d1d8e6;
+  --text: #14213d;
+  --text-secondary: #4a5878;
+  --text-muted: #8a95ad;
+  --primary: #2f6fed;
+  --accent: #2f6fed;
+  --success: #22a55b;
+  --warning: #ee8b24;
+  --radius: 12px;
+}
+body {
+  font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  font-size: 17px; /* 大字号，方便村干部阅读 */
+}
+.topbar {
+  background: rgba(255,255,255,0.92);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.topbar .logo { display: flex; align-items: center; gap: 14px; }
+.topbar .logo-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #1a4a7a, #12314f);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: #fff;
+  box-shadow: 0 0 20px rgba(47,111,237,0.25);
+}
+.topbar .logo-text h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+.topbar .logo-text p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: 0.25s; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-secondary); text-decoration: none;
+}
+.back-link:hover { background: var(--bg-card-hover); color: var(--text); border-color: var(--border-light); }
+.container { max-width: 760px; margin: 0 auto; padding: 28px 24px 60px; }
+.page-head { margin-bottom: 22px; }
+.page-head h2 { font-size: 24px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+.page-head .ph-sub { font-size: 14px; color: var(--text-muted); margin-top: 6px; line-height: 1.7; }
+
+/* 章节导航（手机端置顶快捷跳转） */
+.sec-nav {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+  margin-bottom: 24px;
+}
+.sec-nav a {
+  display: flex; align-items: center; gap: 10px;
+  padding: 13px 16px; border-radius: 10px; text-decoration: none;
+  background: var(--bg-card); border: 1px solid var(--border);
+  color: var(--text-secondary); font-size: 14px; font-weight: 600;
+  transition: 0.25s;
+}
+.sec-nav a:hover { border-color: var(--border-light); background: var(--bg-card-hover); color: var(--text); }
+.sec-nav a .nav-icon { font-size: 19px; }
+
+/* 章节卡片 */
+.sec {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 22px 24px; margin-bottom: 18px;
+}
+.sec-head {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 19px; font-weight: 800; color: var(--text);
+  padding-bottom: 14px; margin-bottom: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.sec-head .sec-icon {
+  width: 38px; height: 38px; flex: 0 0 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; font-size: 19px;
+  background: rgba(47,111,237,0.1);
+}
+.sec-head .sec-no {
+  margin-left: auto; font-size: 12px; color: var(--text-muted);
+  background: var(--bg-card-hover); padding: 3px 10px; border-radius: 999px;
+  white-space: nowrap;
+}
+.step {
+  position: relative; padding: 12px 0 12px 40px; font-size: 16.5px;
+  color: var(--text-secondary); line-height: 1.85;
+}
+.step::before {
+  content: attr(data-step);
+  position: absolute; left: 0; top: 13px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(47,111,237,0.12); color: #e2444a;
+  font-size: 14px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+.step b { color: var(--text); font-weight: 700; }
+.step .hl { color: var(--warning); font-weight: 700; }
+.step .hl-red { color: #e2444a; font-weight: 700; }
+.note {
+  background: rgba(238,139,36,0.1); border: 1px solid rgba(238,139,36,0.3);
+  border-radius: 10px; padding: 12px 16px; margin-top: 10px;
+  font-size: 15px; color: #fcd34d; line-height: 1.8;
+}
+.note b { color: #fbbf24; }
+
+.footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; opacity: 0.6; }
+@media (max-width: 640px) {
+  .topbar { padding: 0 14px; height: 52px; }
+  .topbar .logo-text h1 { font-size: 14px; }
+  .topbar .logo-text p { display: none; }
+  .container { padding: 18px 14px 40px; }
+  .sec { padding: 18px 16px; }
+  .sec-head { font-size: 17px; }
+  .step { font-size: 16px; padding-left: 36px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">&#x1F4F1;</div>
+    <div class="logo-text">
+      <h1>新塬镇应急避险指挥系统</h1>
+      <p>村干部手机使用说明</p>
+    </div>
+  </div>
+  <a href="dashboard.html?v=v20260827-28" class="back-link">&#x2190; 返回看板</a>
+</div>
+
+<div class="container">
+  <div class="page-head">
+    <h2>&#x1F4F1; 村干部手机使用说明</h2>
+    <div class="ph-sub">本手册用通俗的大白话教您用手机操作本系统，一共 5 件事：登录、查预警、传照片、看地图、查安置点。照着做就行。</div>
+  </div>
+
+  <div class="sec-nav">
+    <a href="#s1"><span class="nav-icon">&#x1F511;</span> 一、怎么登录</a>
+    <a href="#s2"><span class="nav-icon">&#x1F6A8;</span> 二、怎么查预警</a>
+    <a href="#s3"><span class="nav-icon">&#x1F4F7;</span> 三、怎么传照片</a>
+    <a href="#s4"><span class="nav-icon">&#x1F5FA;</span> 四、怎么看地图</a>
+    <a href="#s5"><span class="nav-icon">&#x1F4CD;</span> 五、安置点导航</a>
+    <a href="#s6"><span class="nav-icon">&#x2753;</span> 六、常见问题</a>
+  </div>
+
+  <!-- 一、登录 -->
+  <div class="sec" id="s1">
+    <div class="sec-head"><span class="sec-icon">&#x1F511;</span> 一、怎么登录<span class="sec-no">第 1 步开始</span></div>
+    <div class="step" data-step="1">在手机<b>微信</b>或<b>浏览器</b>里，打开系统网址（镇里发的二维码或链接）。</div>
+    <div class="step" data-step="2">第一次打开，会看到登录页，输入<b>自己的密钥</b>（一串 XYC 开头的字母数字，由管理员发放）。</div>
+    <div class="step" data-step="3">点<b>「登录」</b>，就进入系统主页了。<b>一次登录后，下次打开不用再输</b>，只要别点退出。</div>
+    <div class="note"><b>注意：</b>密钥就是您的"身份证"，<b>不要发给别人</b>。发现登录不了，先看看是不是输错了大小写。</div>
+  </div>
+
+  <!-- 二、查预警 -->
+  <div class="sec" id="s2">
+    <div class="sec-head"><span class="sec-icon">&#x1F6A8;</span> 二、怎么查预警<span class="sec-no">打开看板就有</span></div>
+    <div class="step" data-step="1">登录后进入的<b>首页（看板）</b>，最上面就是<b>气象预警信息</b>，红色大条幅，一眼就能看到。</div>
+    <div class="step" data-step="2">预警等级用<b>中文显示</b>：<span class="hl-red">红色（最严重）</span> → 橙色 → 黄色 → 蓝色（最轻）。看到红色/橙色预警，就要马上按镇里的安排准备转移。</div>
+    <div class="step" data-step="3">再看<b>本村天气</b>：看板上每个村有一张卡片，显示<b>实时天气</b>和<b>未来三天预报</b>，哪村有雨哪村卡片会变红提示。</div>
+    <div class="step" data-step="4">想看得更细，点顶栏<b>「雷达/预报」</b>，能看到雷达回波图（哪里在下雨、雨往哪边飘）和<b>未来 24 小时降水预报</b>。</div>
+    <div class="note"><b>注意：</b>预报每 6 小时自动更新一次；雷达图每 10 分钟自动刷新，遇到降雨时多看看。</div>
+  </div>
+
+  <!-- 三、传照片 -->
+  <div class="sec" id="s3">
+    <div class="sec-head"><span class="sec-icon">&#x1F4F7;</span> 三、怎么传照片<span class="sec-no">切坡户房屋照片</span></div>
+    <div class="step" data-step="1">首页看板往下滑，找到<b>「切坡建房农户照片」</b>板块。</div>
+    <div class="step" data-step="2">选好<b>村</b>、再选<b>户主</b>，点<b>「上传照片」</b>。</div>
+    <div class="step" data-step="3">可以<b>现场拍照</b>，也可以<b>从相册选</b>。第 1 张拍<b>房屋全景</b>，第 2 张拍<b>切坡和房屋的位置关系</b>（能看清坡体就行）。每户最多传 2 张。</div>
+    <div class="step" data-step="4">传完点<b>「保存」</b>，照片自动压缩变小、直接可用。</div>
+    <div class="note"><b>注意：</b>村级传上去就<b>不能自己改</b>了，传错了请管理员处理。照片会显示在地图隐患点弹窗里，供镇里判断风险。</div>
+  </div>
+
+  <!-- 四、看地图 -->
+  <div class="sec" id="s4">
+    <div class="sec-head"><span class="sec-icon">&#x1F5FA;</span> 四、怎么看地图<span class="sec-no">全镇一目了然</span></div>
+    <div class="step" data-step="1">看板顶栏点<b>「进入地图」</b>，进入全镇电子地图。</div>
+    <div class="step" data-step="2">地图上能看到：<b>各村的切坡建房隐患点</b>（红点）、<b>转移安置点</b>（绿点）、<b>备选安置点</b>（粉点）、河流、道路、降雨监测站等。</div>
+    <div class="step" data-step="3"><b>点一下</b>任意红点，会弹出这一户的信息；点<b>绿点/粉点</b>能看安置点名称和电话，还能一键导航（见下一节）。</div>
+    <div class="step" data-step="4">两个手指在屏幕上<b>捏合放大、拖动移动</b>，和手机地图一样用。</div>
+  </div>
+
+  <!-- 五、安置点导航 -->
+  <div class="sec" id="s5">
+    <div class="sec-head"><span class="sec-icon">&#x1F4CD;</span> 五、安置点导航<span class="sec-no">一键带路</span></div>
+    <div class="step" data-step="1">在地图上点一个<b>绿色（安置点）</b>或<b>粉色（备选安置点）</b>圆点。</div>
+    <div class="step" data-step="2">弹窗里点<b>「导航前往」</b>。</div>
+    <div class="step" data-step="3">手机装有<b>高德地图 App</b>，会自动打开高德直接导航；没装高德，会打开网页地图带路。</div>
+    <div class="note"><b>提示：</b>建议平时就装好高德地图 App，转移时点一下就能走，不用手忙脚乱。</div>
+  </div>
+
+  <!-- 六、常见问题 -->
+  <div class="sec" id="s6">
+    <div class="sec-head"><span class="sec-icon">&#x2753;</span> 六、常见问题<span class="sec-no">先看这里</span></div>
+    <div class="step" data-step="1"><b>登录不了？</b> ① 检查密钥有没有输错大小写；② 换个手机或清理微信缓存再试；③ 还不行，联系管理员重新发密钥。</div>
+    <div class="step" data-step="2"><b>照片传不上去？</b> ① 检查手机网络；② 照片太大（超过几十 MB）先别传，系统会自动压缩但网络差会失败；③ 换个时间再传。</div>
+    <div class="step" data-step="3"><b>页面打不开 / 白屏？</b> ① 刷新一下页面（下拉或点浏览器刷新按钮）；② 关掉再重新打开网址；③ 还不行，说明系统在维护，等几分钟再试。</div>
+    <div class="step" data-step="4"><b>数据怎么没刷新？</b> 天气每 6 小时自动更新、雷达每 10 分钟刷新，页面右上角有时间，超过时间就说明正常。</div>
+    <div class="note"><b>记住一句话：</b>遇到问题先<b>刷新页面</b>，多数问题刷新就好。实在不行找管理员。</div>
+  </div>
+
+</div>
+
+<div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
+
+<script>
+// 权限验证：未登录跳回登录页
+if (sessionStorage.getItem('xyc_auth') !== '1') {
+  window.location.replace('index.html');
+}
+</script>
+<script>
+// 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
+(function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
+</script>
+<script>
+// bfcache 返回强制刷新：从其他页面返回本页时若浏览器恢复旧快照，异步数据可能停留在空状态
+window.addEventListener('pageshow', function(e) {
+  var need = false;
+  if (e.persisted) need = true;
+  if (!need) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) need = true;
+  }
+  if (need) window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+});
+</script>
+<!-- 备案号（ICP 备案通过后全站挂载） -->
+<div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
+  <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
+</div></body>
+</html>

@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>转移流程图 · 新塬镇应急避险指挥系统</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta name="color-scheme" content="light">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #eef2f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f9fc;
+  --border: #e3e8f0;
+  --border-light: #d1d8e6;
+  --text: #14213d;
+  --text-secondary: #8a95ad;
+  --text-muted: #8a95ad;
+  --primary: #2f6fed;
+  --primary-glow: rgba(47,111,237,0.25);
+  --accent: #2f6fed;
+  --success: #22a55b;
+  --warning: #ee8b24;
+  --danger: #e2444a;
+  --purple: #8b5cf6;
+  --cyan: #06b6d4;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+html { scroll-behavior: smooth; }
+body {
+  font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(ellipse at 20% 0%, rgba(59,130,246,0.06) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(239,68,68,0.04) 0%, transparent 50%);
+}
+/* 顶栏 */
+.topbar {
+  background: rgba(255,255,255,0.92);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.topbar .logo { display: flex; align-items: center; gap: 14px; }
+.topbar .logo-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #ee8b24, #ea580c);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: #fff;
+  box-shadow: 0 0 20px rgba(238,139,36,0.3);
+}
+.topbar .logo-text h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+.topbar .logo-text p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.topbar .btn {
+  padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: var(--transition); border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-secondary); text-decoration: none;
+  display: flex; align-items: center; gap: 6px;
+}
+.topbar .btn:hover { background: var(--bg-card-hover); border-color: var(--border-light); color: var(--text); }
+.topbar .btn-primary {
+  background: linear-gradient(135deg, #1a4a7a, #12314f);
+  color: #fff; border-color: transparent;
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+/* 主容器 */
+.container { max-width: 900px; margin: 0 auto; padding: 28px 24px 60px; }
+.page-head { margin-bottom: 22px; }
+.page-head h2 {
+  font-size: 22px; font-weight: 800; color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+}
+.page-head .ph-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; line-height: 1.7; }
+.ph-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(245,158,11,0.12); color: #ee8b24;
+  border: 1px solid rgba(245,158,11,0.25);
+  padding: 4px 12px; border-radius: 999px; font-size: 12px; margin-top: 10px;
+}
+/* 卡片 */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 24px 26px; margin-bottom: 18px;
+}
+.sec-title { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.sec-icon {
+  width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 20px;
+}
+.sec-icon.red { background: rgba(47,111,237,0.1); }
+.sec-icon.orange { background: rgba(245,158,11,0.12); }
+.sec-icon.blue { background: rgba(47,111,237,0.1); }
+.sec-icon.green { background: rgba(34,197,94,0.12); }
+.sec-icon.purple { background: rgba(139,92,246,0.12); }
+.sec-title h3 { font-size: 17px; font-weight: 700; }
+.sec-sub { font-size: 12px; color: var(--text-muted); margin-left: auto; white-space: nowrap; }
+.card p { font-size: 13.5px; color: var(--text-secondary); line-height: 1.8; }
+
+/* 主流程 */
+.flow { display: flex; flex-direction: column; gap: 0; }
+.flow-item { display: flex; gap: 16px; position: relative; padding-bottom: 22px; }
+.flow-item::before {
+  content: ''; position: absolute; left: 19px; top: 44px; bottom: 0;
+  width: 2px; background: linear-gradient(to bottom, var(--border-light), var(--border));
+}
+.flow-item:last-child::before { display: none; }
+.flow-num {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 800; color: #fff;
+  background: linear-gradient(135deg, #2f6fed, #1a4a7a);
+  box-shadow: 0 0 16px rgba(59,130,246,0.3);
+  position: relative; z-index: 1;
+}
+.flow-num.warn { background: linear-gradient(135deg, #ee8b24, #ea580c); box-shadow: 0 0 16px rgba(238,139,36,0.3); }
+.flow-num.danger { background: linear-gradient(135deg, #1a4a7a, #12314f); box-shadow: 0 0 16px rgba(47,111,237,0.25); }
+.flow-body { flex: 1; background: rgba(20,33,61,0.05); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; }
+.flow-body h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+.flow-body p { font-size: 13px; color: var(--text-secondary); line-height: 1.75; }
+
+/* 三个紧急撤离 */
+.urgent-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.25);
+  border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 12px;
+}
+.urgent-item .ui-num {
+  width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+  background: linear-gradient(135deg, #1a4a7a, #12314f);
+  color: #fff; font-size: 13px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+.urgent-item .ui-body { flex: 1; }
+.urgent-item .ui-body h5 { font-size: 14px; font-weight: 700; color: #e2444a; margin-bottom: 4px; }
+.urgent-item .ui-body p { font-size: 13px; color: var(--text-secondary); line-height: 1.75; }
+
+/* 四个一律 */
+.rule-item {
+  display: flex; gap: 12px; align-items: flex-start;
+  background: rgba(47,111,237,0.08); border-left: 4px solid #e2444a;
+  border-radius: var(--radius-sm); padding: 14px 16px; margin-bottom: 12px;
+}
+.rule-item .ri-icon { font-size: 18px; flex-shrink: 0; }
+.rule-item .ri-body { flex: 1; }
+.rule-item .ri-body h5 { font-size: 14.5px; font-weight: 800; color: #e2444a; margin-bottom: 4px; }
+.rule-item .ri-body p { font-size: 13px; color: var(--text-secondary); line-height: 1.75; }
+
+/* 对照表 */
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+th, td { padding: 12px 14px; border: 1px solid var(--border); text-align: left; line-height: 1.7; vertical-align: top; }
+th { background: rgba(30,41,59,0.8); font-weight: 700; color: var(--text); white-space: nowrap; }
+td { color: var(--text-secondary); }
+tr:nth-child(even) td { background: rgba(20,33,61,0.03); }
+.tag-must { color: #e2444a; font-weight: 700; white-space: nowrap; }
+.tag-optional { color: #fbbf24; font-weight: 700; white-space: nowrap; }
+.tag-no { color: #22a55b; font-weight: 700; white-space: nowrap; }
+
+/* 提示框 */
+.tip {
+  background: rgba(245,158,11,0.08); border: 1px solid rgba(238,139,36,0.2);
+  border-radius: var(--radius-sm); padding: 14px 16px; margin: 12px 0;
+  font-size: 13px; color: var(--text-secondary); line-height: 1.75;
+}
+.danger-box {
+  background: rgba(47,111,237,0.08); border: 1px solid rgba(47,111,237,0.25);
+  border-radius: var(--radius-sm); padding: 14px 16px; margin: 12px 0;
+  font-size: 13.5px; color: #fca5a5; line-height: 1.75; font-weight: 500;
+}
+.ok-box {
+  background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.25);
+  border-radius: var(--radius-sm); padding: 14px 16px; margin: 12px 0;
+  font-size: 13.5px; color: #86efac; line-height: 1.75; font-weight: 500;
+}
+b { color: var(--text); }
+.footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; opacity: 0.6; }
+
+@media (max-width: 640px) {
+  .topbar { padding: 0 14px; height: 52px; }
+  .topbar .logo-text h1 { font-size: 14px; }
+  .topbar .logo-text p { display: none; }
+  .container { padding: 18px 14px 40px; }
+  .card { padding: 18px; }
+  .sec-sub { display: none; }
+  .flow-item { gap: 10px; }
+  .flow-num { width: 36px; height: 36px; font-size: 15px; }
+  .flow-item::before { left: 17px; }
+  th, td { padding: 10px 10px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">&#x1F6A8;</div>
+    <div class="logo-text">
+      <h1>新塬镇应急避险指挥系统</h1>
+      <p>转移避险流程图</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <a href="dashboard.html?v=v20260827-28" class="btn">&#x1F3E2; 返回看板</a>
+    <a href="guide.html?v=v20260827-28" class="btn btn-primary">&#x1F4D6; 防汛应急指南</a>
+  </div>
+</div>
+
+<div class="container">
+  <div class="page-head">
+    <h2>&#x1F500; 转移避险流程图</h2>
+    <div class="ph-sub">转移避险是防汛工作的重中之重，本流程适用于全镇 10 个村。核心原则：<b>宁可错转、不可漏转，宁听骂声、不听哭声。</b></div>
+    <span class="ph-badge">&#x26A0; 全镇统一执行 · 危险区人员务必牢记</span>
+  </div>
+
+  <!-- 1 主流程 -->
+  <div class="card">
+    <div class="sec-title">
+      <div class="sec-icon blue">&#x1F4E2;</div>
+      <h3>一、镇级转移避险总流程</h3>
+      <span class="sec-sub">从预警到返回的完整链条</span>
+    </div>
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-num">1</div>
+        <div class="flow-body">
+          <h4>监测预警</h4>
+          <p>镇应急办密切关注气象预警、雨量监测和各村巡查上报，实时掌握雨情、水情、险情。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">2</div>
+        <div class="flow-body">
+          <h4>预警"叫应"</h4>
+          <p>预警信息直达各村责任人（书记、主任、包抓责任人），电话、微信群逐一确认收到并反馈，做到"叫醒叫应、有人应答"。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num warn">3</div>
+        <div class="flow-body">
+          <h4>研判决策</h4>
+          <p>镇防汛指挥部会商研判，对照"三个紧急撤离""四个一律"标准，确定是否需要转移、转移哪些村组。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num warn">4</div>
+        <div class="flow-body">
+          <h4>下达转移指令</h4>
+          <p>通过广播、微信群、电话、上门通知等方式发布转移指令，责任人拥有临机决断权，<b>无需层层请示即可下达转移</b>。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num warn">5</div>
+        <div class="flow-body">
+          <h4>村级响应</h4>
+          <p>村干部、包抓责任人迅速到岗，开启应急喇叭，组织巡查员加密巡查隐患点、河道、切坡点，逐户通知到位。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num danger">6</div>
+        <div class="flow-body">
+          <h4>组织转移</h4>
+          <p>按预案沿既定撤离路线转移，<b>老弱病残孕优先</b>，一对一结对帮扶，做到"应转尽转、不落一户、不漏一人"。白天能转不等到晚上，夜雨风险必须在<b>天黑前</b>完成转移。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num danger">7</div>
+        <div class="flow-body">
+          <h4>安置登记</h4>
+          <p>到达安置点后立即登记姓名、人数，安置点落实食品、饮水、住宿、医疗保障，村干部逐一核对是否"不落一人"。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">8</div>
+        <div class="flow-body">
+          <h4>解除返回</h4>
+          <p>隐患消除、经镇应急办确认安全后统一宣布解除，群众有序返回。<b>严禁擅自返回危险区</b>，安排专人值守管控。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 三个紧急撤离 -->
+  <div class="card">
+    <div class="sec-title">
+      <div class="sec-icon red">&#x26A0;</div>
+      <h3>二、三个紧急撤离（必须立即撤离）</h3>
+      <span class="sec-sub">出现以下任一情况，立即撤离</span>
+    </div>
+    <div class="urgent-item">
+      <div class="ui-num">1</div>
+      <div class="ui-body">
+        <h5>预警触发撤离</h5>
+        <p>发布暴雨<b>橙色、红色预警</b>，或雨量达到临灾预警值时，危险区人员立即撤离。</p>
+      </div>
+    </div>
+    <div class="urgent-item">
+      <div class="ui-num">2</div>
+      <div class="ui-body">
+        <h5>险情突发撤离</h5>
+        <p>发现<b>滑坡裂缝、河水猛涨、地面塌陷、切坡异常、房屋异响</b>等险情征兆时，立即撤离，不等不靠。</p>
+      </div>
+    </div>
+    <div class="urgent-item">
+      <div class="ui-num">3</div>
+      <div class="ui-body">
+        <h5>指令强制撤离</h5>
+        <p>上级下达转移指令，或风险隐患<b>无法准确预判、无法排除</b>时，无条件执行撤离。</p>
+      </div>
+    </div>
+    <div class="danger-box">&#x26D4; 三个紧急撤离，任何一条触发都必须立即行动，<b>没有任何商量余地</b>。夜间遇险更要当机立断、连夜转移。</div>
+  </div>
+
+  <!-- 3 四个一律 -->
+  <div class="card">
+    <div class="sec-title">
+      <div class="sec-icon red">&#x1F6AB;</div>
+      <h3>三、转移避险"四个一律"</h3>
+      <span class="sec-sub">刚性底线 · 严禁突破</span>
+    </div>
+    <div class="rule-item">
+      <div class="ri-icon">&#x1F6AB;</div>
+      <div class="ri-body">
+        <h5>雨量达到临灾预警值，一律立即转移</h5>
+        <p>不观望、不等待，达到预警值即刻转移。</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="ri-icon">&#x1F6AB;</div>
+      <div class="ri-body">
+        <h5>区域内出现险情异动、隐患征兆，一律立即转移</h5>
+        <p>裂缝、猛涨、塌陷、异响等征兆出现，即刻转移。</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="ri-icon">&#x1F6AB;</div>
+      <div class="ri-body">
+        <h5>风险隐患无法准确预判、无法排除，一律立即转移</h5>
+        <p>拿不准、说不清、排除不了的，一律先转。</p>
+      </div>
+    </div>
+    <div class="rule-item">
+      <div class="ri-icon">&#x1F6AB;</div>
+      <div class="ri-body">
+        <h5>夜间遇以上险情，不等不拖、连夜一律转移</h5>
+        <p>夜间转移难度大、风险高，但越等伤亡概率越大，必须当机立断连夜转移。</p>
+      </div>
+    </div>
+    <div class="ok-box">&#x2705; "四个一律"核心逻辑：<b>宁可错转、不可漏转</b>。宁可群众白跑一趟，也不能让任何一个人留在危险区。</div>
+  </div>
+
+  <!-- 4 必须转 / 可转可不转 -->
+  <div class="card">
+    <div class="sec-title">
+      <div class="sec-icon orange">&#x1F4CD;</div>
+      <h3>四、哪些情况必须转 · 哪些可转可不转</h3>
+      <span class="sec-sub">对照判定，不打折扣</span>
+    </div>
+    <table>
+      <tr><th style="width:120px;">情况</th><th>判定</th><th>处理要求</th></tr>
+      <tr>
+        <td>红/橙色预警，人在危险区（切坡建房、临崖临河、隐患点周边）</td>
+        <td class="tag-must">必须转</td>
+        <td>强制转移、一人不留，封控危险区域</td>
+      </tr>
+      <tr>
+        <td>出现任何险情征兆（裂缝、猛涨、塌陷、异响）</td>
+        <td class="tag-must">必须转</td>
+        <td>立即撤离，向两侧高地转移，不沿河道跑</td>
+      </tr>
+      <tr>
+        <td>隐患不明、无法判断是否安全</td>
+        <td class="tag-must">必须转</td>
+        <td>一律先转，宁听骂声、不听哭声</td>
+      </tr>
+      <tr>
+        <td>上级下达转移指令 / 夜间遇险</td>
+        <td class="tag-must">必须转</td>
+        <td>无条件执行，连夜转移</td>
+      </tr>
+      <tr>
+        <td>黄色预警，人在一般区域（非危险区）</td>
+        <td class="tag-optional">可转可不转</td>
+        <td>做好转移准备、随时撤离；老弱病残孕<b>建议先转</b></td>
+      </tr>
+      <tr>
+        <td>蓝色预警 / 雨势减弱、隐患已排除、上级确认安全</td>
+        <td class="tag-no">不转</td>
+        <td>保持戒备、原地待命，禁止擅自返回已撤离区域</td>
+      </tr>
+    </table>
+    <div class="tip">&#x1F4A1; <b>判断口诀：</b>人危险就转、有征兆就转、拿不准就转、上级叫转就转；雨小、隐患除、确认安全才不转。</div>
+  </div>
+
+  <!-- 5 五个关键环节 -->
+  <div class="card">
+    <div class="sec-title">
+      <div class="sec-icon green">&#x1F4CB;</div>
+      <h3>五、转移全流程"五个关键环节"</h3>
+      <span class="sec-sub">一个都不能少</span>
+    </div>
+    <table>
+      <tr><th style="width:90px;">环节</th><th>要求</th></tr>
+      <tr><td><b>谁组织</b></td><td>包抓责任人、村干部组织，责任人拥有临机决断权，无需层层请示</td></tr>
+      <tr><td><b>转移谁</b></td><td>提前摸清危险区人员底数，重点覆盖老弱病残孕，一对一结对帮扶</td></tr>
+      <tr><td><b>何时转</b></td><td>"上游下雨、中游吹哨、下游开跑"，提前转、白天转，夜雨风险必须天黑前完成</td></tr>
+      <tr><td><b>转何处</b></td><td>沿既定撤离路线到安置点，安置点有生活物资保障</td></tr>
+      <tr><td><b>不擅返</b></td><td>隐患未消除前专人值守管控，严禁群众擅自返回</td></tr>
+    </table>
+  </div>
+
+  <!-- 6 安置点管理 -->
+  <div class="card">
+    <div class="sec-title">
+      <div class="sec-icon blue">&#x1F3D6;</div>
+      <h3>六、安置点管理规范</h3>
+      <span class="sec-sub">把人转出来，更要管好安置好</span>
+    </div>
+    <p>人员转移是第一步，<b>安置点的规范管理</b>才是保证群众安全的"后半篇文章"。安置点管理做到"四个到位"：</p>
+
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-num">1</div>
+        <div class="flow-body">
+          <h4>登记在册、不漏一人</h4>
+          <p>转移群众到达安置点后，<b>立即逐人登记</b>（姓名、人数、来自哪个村组、联系电话、是否老弱病残孕），村干部逐一核对，确保"应转尽转、不落一人"。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">2</div>
+        <div class="flow-body">
+          <h4>专人值守、压实责任</h4>
+          <p>每个安置点明确<b>1 名包抓责任人 + 若干村干部</b>驻点值守，24 小时在岗，负责人员管理、生活保障和情况上报，做到"安置点有人在、有事有人管"。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num">3</div>
+        <div class="flow-body">
+          <h4>生活保障、关心到位</h4>
+          <p>落实<b>食品、饮水、住宿、医疗、保暖</b>等基本生活保障，优先照顾老弱病残孕和儿童，做好情绪安抚，防止转移群众因生活不便擅自离点。</p>
+        </div>
+      </div>
+      <div class="flow-item">
+        <div class="flow-num danger">4</div>
+        <div class="flow-body">
+          <h4>严禁擅自返回、统一解除</h4>
+          <p><b>危险信号未解除前，任何转移人员一律不得擅自返回</b>。安置点出入口设专人值守管控，发现擅自返回立即劝返并上报。只有气象预警解除、经镇应急办组织隐患排查确认安全后，由镇里<b>统一宣布解除安置</b>，群众方可有序返回。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="danger-box">&#x26D4; <b>铁律：</b>预警未解除、隐患未消除，坚决不放任何一人返回危险区。历年伤亡事故多发生在"以为雨停了、偷偷回去看看"的侥幸心理，务必守好安置点这道关口。</div>
+
+    <div class="tip">&#x1F4A1; <b>返回条件三同时：</b>①气象预警已解除 ②镇应急办隐患排查确认安全 ③镇里统一宣布解除安置 —— 三个条件<b>全部满足</b>才能返回。</div>
+  </div>
+
+</div>
+
+<div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
+
+<script>
+// 权限验证：未登录跳回登录页
+if (sessionStorage.getItem('xyc_auth') !== '1') {
+  window.location.replace('index.html');
+}
+// bfcache 往返缓存修复：从 bfcache 恢复时强制整页刷新，避免数据停留在空状态
+window.addEventListener('pageshow', function(e) {
+  var needReload = false;
+  if (e.persisted) needReload = true;
+  if (!needReload) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) needReload = true;
+  }
+  if (needReload) {
+    window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+  }
+});
+</script>
+<script>
+// 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
+(function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
+</script>
+<!-- 备案号（ICP 备案通过后全站挂载） -->
+<div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
+  <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
+</div></body>
+</html>

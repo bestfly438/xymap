@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>近期更新 · 新塬镇应急避险指挥系统</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta name="color-scheme" content="light">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #eef2f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f9fc;
+  --border: #e3e8f0;
+  --border-light: #d1d8e6;
+  --text: #14213d;
+  --text-secondary: #8a95ad;
+  --text-muted: #8a95ad;
+  --primary: #2f6fed;
+  --accent: #2f6fed;
+  --success: #22a55b;
+  --warning: #ee8b24;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+body {
+  font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+/* 顶栏 */
+.topbar {
+  background: rgba(255,255,255,0.92);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.topbar .logo { display: flex; align-items: center; gap: 14px; }
+.topbar .logo-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #1a4a7a, #12314f);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: #fff;
+  box-shadow: 0 0 20px rgba(47,111,237,0.25);
+}
+.topbar .logo-text h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+.topbar .logo-text p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: 0.25s; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-secondary); text-decoration: none;
+}
+.back-link:hover { background: var(--bg-card-hover); color: var(--text); border-color: var(--border-light); }
+/* 主容器 */
+.container { max-width: 860px; margin: 0 auto; padding: 28px 24px 60px; }
+.page-head { margin-bottom: 22px; }
+.page-head h2 {
+  font-size: 22px; font-weight: 800; color: var(--text);
+  display: flex; align-items: center; gap: 10px;
+}
+.page-head .ph-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; line-height: 1.7; }
+/* 版本卡片 */
+.ver-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 20px 22px; margin-bottom: 16px;
+  transition: 0.25s;
+}
+.ver-card:hover { border-color: var(--border-light); }
+.ver-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.ver-badge {
+  background: linear-gradient(135deg, #1a4a7a, #12314f);
+  color: #fff; font-size: 12px; font-weight: 700;
+  padding: 4px 12px; border-radius: 999px; white-space: nowrap;
+}
+.ver-title { font-size: 16px; font-weight: 700; color: var(--text); }
+.ver-date { font-size: 12px; color: var(--text-muted); margin-left: auto; white-space: nowrap; }
+.ver-list { list-style: none; }
+.ver-list li {
+  position: relative; padding: 6px 0 6px 18px;
+  font-size: 13.5px; color: var(--text-secondary); line-height: 1.8;
+}
+.ver-list li::before {
+  content: ''; position: absolute; left: 2px; top: 14px;
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); opacity: 0.8;
+}
+.footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; opacity: 0.6; }
+@media (max-width: 640px) {
+  .topbar { padding: 0 14px; height: 52px; }
+  .topbar .logo-text h1 { font-size: 14px; }
+  .topbar .logo-text p { display: none; }
+  .container { padding: 18px 14px 40px; }
+  .ver-card { padding: 16px; }
+  .ver-date { margin-left: 0; width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">&#x1F6E1;</div>
+    <div class="logo-text">
+      <h1>新塬镇应急避险指挥系统</h1>
+      <p>近期更新说明</p>
+    </div>
+  </div>
+  <a href="dashboard.html?v=v20260827-28" class="back-link">&#x2190; 返回看板</a>
+</div>
+
+<div class="container">
+  <div class="page-head">
+  <!-- v20260827-28 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v28</span>
+      <span class="ver-title">镇级账号调度指令模块 + 村级待办回复闭环</span>
+      <span class="ver-date">2026年8月27日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>镇级账号调度指令模块</b>：镇级干部（以及管理员）登录后可见「调度指令 & 待办事项」，支持<b>勾选多个村一次性下发</b>指令（紧急调度 / 巡查任务 / 转移指令 / 通知），无需一村一村单独发送；</li>
+      <li><b>村级待办提醒</b>：村级 / 社长账号登录后，若镇级对其所在村下发了指令，看板顶部自动显示「本村待办」提醒条，可直接回复处置情况；</li>
+      <li>权限判断更健壮：除村级 / 社长外的管理账号均可见调度模块，兼容云端各种角色写法；</li>
+      <li>保留天气、预警、雷达、专业分析、统一调度、照片档案、应急队伍等全部功能与数据。</li>
+    </ul>
+  </div>
+
+  <!-- v20260827-28 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v27</span>
+      <span class="ver-title">数据看板按反馈优化：各村天气入卡 + 全镇气温卡 + 预警防御指引 + 雷达修复</span>
+      <span class="ver-date">2026年8月27日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>各村天气整合进村卡片</b>：各村详情卡片内直接显示当前天气（如"小雨 14°"），不再单独罗列天气列表；</li>
+      <li><b>新增全镇气温卡</b>：看板顶部新增蓝色渐变"全镇气温"大卡（当前温度 + 未来3天预报）；</li>
+      <li><b>24h 温度/降雨趋势重新设计</b>：更大更清晰的图表（温度曲线 + 降雨柱 + 最高/最低温标注 + 当前值高亮）；</li>
+      <li><b>预警下方新增暴雨防御指引</b>：4 条防御要点 + 镇应急办 / 县防汛办应急值班电话，不再留空白；</li>
+      <li><b>修复雷达/卫星云图不显示</b>：改为经 SCF /api/radar 代理动态获取最新帧，替代已失效的直链；</li>
+      <li><b>专业研判改为客观描述</b>：删除推测性内容（如"小塌方"等），只保留实测累计降雨与阈值对比，按预案提示；</li>
+      <li><b>各村防汛应急队伍独立成页</b>：移入左侧菜单"应急队伍"，主页不再堆叠；</li>
+      <li><b>各村总指挥/包抓整合进村卡</b>：村支书、包村干部电话按钮直接放在各村卡片内，一键拨打；</li>
+      <li>保留登录、统计、天气、预警、调度、系统管理、保险箱等全部原有功能与数据。</li>
+    </ul>
+  </div>
+
+  <!-- v20260827-28 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v26</span>
+      <span class="ver-title">数据看板全面升级：照片档案独立子页面 + 各村/指挥/天气新版式</span>
+      <span class="ver-date">2026年8月27日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>照片档案独立成子页面</b>：点击侧边栏「照片档案」进入独立页面，不再堆在首页底部；</li>
+      <li><b>各村详情新版式</b>：各村卡片改为新版样式（风险色条 + 村名 + 切坡户数 + 村支书/包村干部），点击卡片直接进入地图；</li>
+      <li><b>应急总指挥 & 乡镇包抓</b>：改为人员卡片样式（头像 + 姓名 + 电话一键拨打）；</li>
+      <li><b>快捷入口 / 智能决策 / 阈值对比 / 雷达云图 / 统一调度</b>：新版式布局，与设计方案一致；</li>
+      <li><b>保留全部原有功能与数据</b>：登录、统计、天气、预警、降雨调度、应急队伍、系统管理、数据保险箱一律未动，数据零风险。</li>
+    </ul>
+  </div>
+
+  <!-- v20260827-28 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v25</span>
+      <span class="ver-title">修复：数据看板加载问题（脚本去重优化）</span>
+      <span class="ver-date">2026年8月27日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>修复加载异常</b>：上一版页面脚本存在重复加载问题，导致部分浏览器打开缓慢或空白，本次已全面去重优化，打开更流畅稳定；</li>
+      <li>数据看板新版式（侧边栏 + 顶栏 + 浅色政务风）、统一调度指令、照片档案等全部功能保留不变；</li>
+      <li>如仍打开旧页面，请刷新一次或清除浏览器缓存后重试。</li>
+    </ul>
+  </div>
+
+  <!-- v20260827-28 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v24</span>
+      <span class="ver-title">数据看板按新版方案全面重构：统一调度指令 + 照片档案独立栏目</span>
+      <span class="ver-date">2026年8月27日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>新版方案落地</b>：数据看板采用新版设计方案（侧边栏 + 顶栏 + 浅色政务风），KPI 统计卡、各村详情、天气实况、24h 降雨趋势、雷达云图、智能决策、阈值对比表均按新版样式展示；</li>
+      <li><b>新增「统一调度指令」</b>：管理员 / 镇级账号可<b>勾选多个村一次性下发调度指令</b>（紧急调度 / 巡查任务 / 转移指令 / 通知），各村生成待办事项并可直接回复处置情况，无需一村一村单独发送；</li>
+      <li><b>照片档案独立栏目</b>：切坡建房农户照片移至「照片档案」独立栏目，侧边栏可直接进入，页面更清爽；</li>
+      <li><b>保留全部原有功能</b>：密钥登录、统计概览、各村天气、气象/地灾预警、降雨调度、应急队伍、系统管理、数据保险箱等一律未动；</li>
+      <li><b>数据零风险</b>：照片、巡查台账、密钥、GIS 数据仍全部存于云端（COS / 飞书 / 云函数），本次仅调整页面展示。</li>
+    </ul>
+  </div>
+
+  <!-- v20260827-28 改版 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v23</span>
+      <span class="ver-title">数据看板全新版式：侧边栏导航 + 浅色政务风（与新版方案完全一致）</span>
+      <span class="ver-date">2026年8月27日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>版式重构</b>：数据看板升级为<b>侧边栏 + 顶栏</b>布局，浅色政务风界面，与新版设计方案完全一致；</li>
+      <li><b>新增侧边导航</b>：应急地图 / 专业分析 / 雷达预报 / 应急台账 / 转移流程 / 使用说明等一键直达；</li>
+      <li><b>看板顶部新增</b>：24h 降雨趋势图、气象雷达 / 卫星云图、智能决策建议、各村降雨 vs 阈值对比表；</li>
+      <li><b>保留全部原有功能</b>：密钥登录、统计概览、各村天气、气象/地灾预警、降雨调度、应急队伍、切坡建房照片、系统管理、数据保险箱等一律未动；</li>
+      <li><b>数据零风险</b>：照片、巡查台账、密钥、GIS 数据仍全部存于云端（COS / 飞书 / 云函数），本次仅调整页面展示。</li>
+    </ul>
+  </div>
+
+  <!-- v20260827-28 改版 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v22</span>
+      <span class="ver-title">数据看板全新改版（浅色政务风）+ 专业分析模块上线</span>
+      <span class="ver-date">2026年8月27日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>整体界面升级为浅色政务风</b>：更清爽、更符合日常办公习惯，电脑/手机均可正常使用；</li>
+      <li><b>新增"专业分析 · 各村降雨 vs 预警阈值对比表"</b>：10 个村 24h 累计降雨与蓝20/黄30/橙50/红80 预警阈值逐村对比，自动标注风险等级与专业研判；</li>
+      <li><b>新增"智能决策建议"</b>：根据降雨快照与各村隐患底数自动生成处置清单（转移/巡查/盯防），一键掌握该做什么；</li>
+      <li><b>保留全部原有功能</b>：密钥登录、数据看板、应急地图、气象预警、地灾预警、降雨调度、照片台账、系统管理、数据保险箱等一律未动；</li>
+      <li><b>数据零风险</b>：照片、巡查台账、密钥、GIS 数据全部仍存云端（COS/飞书/云函数），本次仅调整页面展示，不触碰任何业务数据。</li>
+    </ul>
+  </div>
+
+    <h2>&#x1F4DD; 近期更新说明</h2>
+    <div class="ph-sub">本次集中升级涵盖天气、预警、应急队伍、照片采集等功能，均为本次防汛备汛新增，各村可直接使用。</div>
+  </div>
+
+  <!-- v20260827-28 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v19</span>
+      <span class="ver-title">天气板块增强：未来3天降水 + 近24小时温度/降雨趋势</span>
+      <span class="ver-date">2026年8月24日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>新增"未来3天降水"</b>：看板天气卡里显示今天/明天/后天每天的天气、白天夜间温度，以及<b>降水量（毫米）</b>，提前知道哪天有雨、雨多大；</li>
+      <li><b>新增"近24小时温度/降雨趋势"图</b>：橙色线为温度走势，蓝色柱子为每小时降水量，一眼看出最近一天什么时候下过雨、下了多少、温度怎么变化；</li>
+      <li>数据来自<b>中央气象台会宁县站</b>，权威免费，与各村天气（和风天气）互补显示。</li>
+    </ul>
+  </div>
+
+  <!-- v20260824-18 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v18</span>
+      <span class="ver-title">系统迁入国内服务器，启用正式域名 xyzyj.cn</span>
+      <span class="ver-date">2026年8月24日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>ICP 备案通过，启用正式域名</b>：系统从海外测试地址迁入腾讯云国内服务器，正式域名 <b>https://xyzyj.cn</b>（www.xyzyj.cn 同样可访问），自动跳转加密访问；</li>
+      <li><b>全部页面底部已挂载备案号</b>：陇ICP备2026007741号-1（点击可到工信部备案查询页），符合国家备案要求；</li>
+      <li><b>数据全部存放在国内</b>：网站文件、后台服务、照片、业务数据、天气数据均在境内服务器，个人数据安全合规；</li>
+      <li>网页加载开启压缩加速；原 GitHub 站点保留作为备用，验证满意后将清理。</li>
+    </ul>
+  </div>
+
+  <!-- v20260823-17 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v17</span>
+      <span class="ver-title">系统安全加固：密钥防护、权限收紧、网页防注入</span>
+      <span class="ver-date">2026年8月23日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>高德地图密钥收进后台</b>：之前地图页面的导航功能把高德地图的接口密钥直接写在网页里，任何人查看网页源码就能看到并盗用。现在密钥只存放在后台服务，网页通过后台中转调用，网页里再也找不到密钥；</li>
+      <li><b>村级账号只能看本村数据</b>：之前各村的登录密钥在技术上可以绕到后台直接读取全镇的巡查记录、村庄数据和照片。现在后台强制校验——村级账号只能读取本村的巡查和村庄数据，只能查看本村的照片，其他村的照片和记录一律拒绝；</li>
+      <li><b>网页防注入加固</b>：地图弹窗、看板卡片、气象预警等所有显示人员信息的地方，统一增加"特殊字符过滤"，防止有人把恶意代码写进数据里在他人手机上运行；</li>
+      <li><b>新增内容安全策略（CSP）</b>：给全部 12 个页面加上浏览器安全限制，网页只能加载自己的脚本和图片，防止被外部注入或嵌入；</li>
+      <li><b>安全响应头</b>：后台接口统一增加浏览器安全防护头，禁止网页被套到别的网站上显示（防钓鱼嵌套）、禁止乱猜文件类型（防脚本伪装）；</li>
+      <li><b>数据改纯数据格式传输</b>：看板/地图等页面的数据不再以"可执行脚本"形式下发，改为纯数据，从根上杜绝数据里藏代码的可能。</li>
+    </ul>
+  </div>
+
+  <!-- v20260816-16 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v16-16</span>
+      <span class="ver-title">找到并修复"返回看板后数据空白"的真正根因</span>
+      <span class="ver-date">2026年8月16日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>找到真正原因</b>：之前几轮都只做了"自动重试"的补救，但进入子菜单再返回时数据依然空白。本轮逐行排查，查明根因是——返回时浏览器用了本地缓存，数据"秒加载"，导致渲染程序在页面还没初始化完时就抢跑，跑到一半报错中断，于是页面只剩骨架、数字和卡片全空；</li>
+      <li><b>从根上修复</b>：把数据加载完成后的渲染动作统一"延后一拍"，确保页面其它代码先就绪再渲染，彻底杜绝"返回后只剩骨架"，电脑和手机浏览器都适用；</li>
+      <li>本次为纯前端修复，不涉及表册数据改动，全镇数据仍为 234 户 594 人。</li>
+    </ul>
+  </div>
+
+  <!-- v20260816-15 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v16-15</span>
+      <span class="ver-title">彻底修复"返回看板后数据不加载"：数据自愈看门狗</span>
+      <span class="ver-date">2026年8月16日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>彻底根治"返回看板数据没了"</b>：之前靠浏览器"返回缓存"的检测在部分手机（微信/QQ 内置浏览器）里不可靠，导致从子菜单返回看板时数据仍然空白。本次改为<b>三层自动自愈</b>——页面一旦重新显示、或每隔 3 秒自动检查一次，只要发现数据缺失就立即重新加载，不再依赖浏览器返回判定，任何手机都能自动恢复数据；</li>
+      <li><b>修复一个隐藏隐患</b>：会话失效跳回登录页时，之前可能因少调用一次"完成"回调而导致页面卡住，现已补上；</li>
+      <li>本次为纯前端修复，不涉及表册数据改动，全镇数据仍为 234 户 594 人。</li>
+    </ul>
+  </div>
+
+  <!-- v20260816-14 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v16-14</span>
+      <span class="ver-title">根治"返回看板后数据消失"：数据加载自愈 + 天气时序修复 + 缓存自动失效</span>
+      <span class="ver-date">2026年8月16日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>修复天气/预警不显示（重要）</b>：查明原因是上一轮手机提速时把村庄坐标数据文件改成了"延后加载"，而天气功能在其就绪前就启动，导致各村天气和气象预警一直空白。现已改为等待坐标数据就绪后再自动启动天气，进入系统即可正常显示各村天气；</li>
+      <li><b>数据自动修复</b>：看板、地图、专业分析、应急台账四类数据加载增加"就绪自检"——如果从子菜单返回后部分数据没加载出来，系统会<b>自动重试 3 次</b>，仍失败会给出红色提示和"点此刷新"按钮，不再出现"数据没了"的空白页；</li>
+      <li><b>缓存 30 分钟自动失效</b>：之前登录一次后，数据和责任人信息会一直用旧缓存，表册更新后手机上看不到最新数据。现在数据缓存最多保留 30 分钟自动刷新，确保责任人和台账始终是最新版本；</li>
+      <li><b>补齐返回刷新</b>：使用说明、系统自检、应急台账、各村防汛图、转移流程、专业分析等页面全部加上"返回强制刷新"，手机浏览器返回看板时不再恢复旧页面；</li>
+      <li>本次为纯前端修复，不涉及表册数据改动，全镇数据仍为 234 户 594 人。</li>
+    </ul>
+  </div>
+
+  <!-- v20260816-13 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v16-13</span>
+      <span class="ver-title">台账数据修正：三级网格乡镇责任人按村补齐、牧羊人按社合并显示</span>
+      <span class="ver-date">2026年8月16日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>三级网格责任</b>：乡镇包抓责任人<b>按村统一</b>——同一个村的各个风险点，乡镇责任人都是同两个人，之前只显示了部分风险点，现全部补齐，并在下方逐村列出；</li>
+      <li>各村乡镇责任人：上塬村杜小刚+贾莉、东塬村李涛+赵树声、刘家湾社区李涛+张新洲、孟塬村李涛+张艳妍、常家坪村杜小刚+王睿强、新塬村李涛+杨春娟、杨坪村杜小刚+王继舜、杨家河坝村杜小刚+赵将、甘岔村李涛+王建军、老庄村杜小刚+王月宏；</li>
+      <li>修正东塬村赵树声联系电话为 18794330170（原误录 18709433652）；</li>
+      <li><b>牧羊人台账</b>：改为按村社分组合并显示——每个社只写一次社名和<b>叫醒叫应责任人</b>（如喜塬社由王建军、何永清负责），并标注该社牧羊人数，一眼看清责任人归属，不会再误以为只有第一人有责任人；</li>
+      <li>其他字段无变动，全镇受威胁群众仍为 234 户 594 人。</li>
+    </ul>
+  </div>
+
+  <!-- v20260816-12 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v16-12</span>
+      <span class="ver-title">应急台账上线：特殊群体 / 牧羊人 / 安置点物资 / 水利工程 / 三级网格 / 各村防汛图</span>
+      <span class="ver-date">2026年8月16日</span>
+    </div>
+    <ul class="ver-list">
+      <li>看板新增<b>「应急台账」</b>入口，整合六类新数据（以最新表册为准）：</li>
+      <li>①<b>特殊群体台账</b>：全镇老弱病残孕幼等特殊人员名单，含类型、独居标记、监护人与一对一转接人电话，撤离时优先转移对象；</li>
+      <li>②<b>牧羊人包保</b>：全镇 388 名牧羊人及所在村组、电话、叫醒叫应责任人，山洪预警时重点叫醒；</li>
+      <li>③<b>安置点物资</b>：36 个安置点的容量、大型机械（装载机及操作人）、防护/抢险/照明/生活物资清单及负责人电话；</li>
+      <li>④<b>水利工程</b>：各村蓄水池、塘坝、泵站、高效节水工程台账（类型、规模、状态、责任人）；</li>
+      <li>⑤<b>三级网格责任</b>：全镇 40 个风险点的村级叫醒叫应责任人与乡镇责任人；</li>
+      <li>⑥<b>各村防汛图</b>：10 个村的一页纸两张图高清图，点开查看大图；</li>
+      <li>数据校正：以新表册为准，全镇受威胁群众更新为<b>234 户 594 人</b>，补齐东塬、常家坪、甘岔（10 个风险点）、老庄（8 个风险点）等缺失风险区，并修正贾莉等责任人电话。</li>
+    </ul>
+  </div>
+
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v13-11</span>
+      <span class="ver-title">四项集中升级：系统自检 / 数据保险箱 / 手机使用说明 / 手机提速</span>
+      <span class="ver-date">2026年8月13日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>系统自检</b>（管理员 / 镇级）：看板顶栏与"更多"菜单新增「系统自检」入口，一键检查天气数据源、飞书连接、业务数据表、云存储、照片存储 5 项是否正常，异常项标红并提示；</li>
+      <li><b>数据保险箱</b>（仅管理员）：系统管理面板新增「数据保险箱」页签，可将四张核心业务表（密钥表、登录记录表、巡查记录表、村庄数据表）全量备份到云存储，保留最近 7 份自动清理旧的；还可一键校验切坡建房照片是否齐全规范；</li>
+      <li><b>村干部手机使用说明</b>：看板顶栏与"更多"菜单新增「使用说明」入口，用通俗的大白话教村干部登录、查预警、传照片、看地图、安置点导航，手机看字号大、照做即可；</li>
+      <li><b>手机端提速</b>：首页与地图/分析页的大数据文件改为加载完页面主体后再读取，首屏打开更快，功能不受影响。</li>
+    </ul>
+  </div>
+
+  <!-- v12-10 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v12-10</span>
+      <span class="ver-title">看板优化：手机两列、队伍滚动、按钮去干涉</span>
+      <span class="ver-date">2026年8月13日</span>
+    </div>
+    <ul class="ver-list">
+      <li>手机端看板<b>村庄卡片由 1 列改为 2 列</b>（640px 以下断点），页面长度缩短约一半，上下滑动更顺手；</li>
+      <li>修复<b>防汛应急队伍展开详情显示不全</b>：村社展开后的队伍详情区增加独立滚动条（最大 60vh 高度），去除成员 40 字截断限制，完整成员名单可滚动查看，负责人/成员文字自动换行；</li>
+      <li>修复 5 处按钮/点击干涉：①村庄卡片内的编辑框/保存按钮/电话 `<a>` 链接点击不会再误跳转地图；②队伍展开头的点击不会误触发手机端"更多"菜单关闭；③更多菜单点击关闭逻辑已白名单村庄卡/队伍/联系人区域，不再误关；④系统管理面板内点按钮/表格不再冒泡到遮罩误关面板；⑤村庄卡片点击链路递归校验所有祖先元素的 `tagName`，表单类元素一律拦截跳转地图；</li>
+      <li>电脑端保持不变，手机端/电脑端体验同步优化。</li>
+    </ul>
+  </div>
+
+  <!-- v20260827-28 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v12-09</span>
+      <span class="ver-title">修复：手机端返回看板数据仍不加载</span>
+      <span class="ver-date">2026年8月12日</span>
+    </div>
+    <ul class="ver-list">
+      <li>修复<b>手机浏览器从雷达/指南等页面返回看板后数据仍不加载</b>的问题（上一版 v12-08 在部分手机上仍复发）；</li>
+      <li>原因：部分手机浏览器（微信/QQ 内置浏览器等）返回时 <b>bfcache 恢复标记不生效</b>，且 <code>reload()</code> 仍命中本地缓存，导致旧修复不触发；</li>
+      <li>处理①：返回导航检测增加 <b>performance API back_forward 判定</b>，覆盖 persisted 标记不生效的手机浏览器；</li>
+      <li>处理②：检测到返回时改用<b>带时间戳的 URL 强制加载</b>（<code>location.replace</code>），彻底绕过手机浏览器缓存；</li>
+      <li>处理③：所有页面的"返回看板"链接<b>自动附加时间戳</b>，前向跳转也强制加载最新页面；</li>
+      <li>覆盖页面：看板、地图、雷达、转移流程、专业分析，手机端与电脑端均生效。</li>
+    </ul>
+  </div>
+
+  <!-- v20260812-07 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v12-07</span>
+      <span class="ver-title">新增地质灾害气象风险预警</span>
+      <span class="ver-date">2026年8月12日</span>
+    </div>
+    <ul class="ver-list">
+      <li>看板"气象预警信息"卡片新增<b>地质灾害气象风险预警</b>区块（自然资源部与中国气象局联合发布），红/橙/黄/蓝中文等级徽章置顶显示；</li>
+      <li>与原有气象预警的区别：原预警是<b>天气现象</b>预警（暴雨/大风/雷电等），地灾预警专指<b>滑坡/泥石流/崩塌</b>等地质灾害风险，正对应本镇切坡建房隐患点；</li>
+      <li>自动按<b>甘肃/白银/会宁/新塬</b>过滤：涉及本地时高亮置顶并提示切坡户及时转移，未涉及本地时显示全国预警概况并注明"未涉及本镇"；</li>
+      <li>数据来自中央气象台免费公开页面，<b>零新增费用</b>，页面加载时自动获取。</li>
+    </ul>
+  </div>
+
+  <!-- v20260812-06 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v12-06</span>
+      <span class="ver-title">气象产品图扩容：预报图全系列</span>
+      <span class="ver-date">2026年8月12日</span>
+    </div>
+    <ul class="ver-list">
+      <li>"气象雷达"板块升级为<b>"气象雷达与预报产品"</b>，页签从 2 个扩展到 6 类：<b>雷达回波、卫星云图、降水预报、气温预报、大风预报、沙尘预报</b>；</li>
+      <li><b>卫星云图</b>新增风云4C 真彩色可选；<b>降水预报</b>支持 24 小时与 6 小时累计降水量切换；</li>
+      <li>降水预报可直观判断<b>未来降雨的量级与落区</b>，与雷达实况相互印证，辅助降雨天气调度与提前部署；</li>
+      <li>所有产品图仍由系统实时抓取中国气象局·中央气象台免费公开产品，<b>零新增费用</b>，每 10 分钟自动刷新。</li>
+    </ul>
+  </div>
+
+  <!-- v20260812-05 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v12-05</span>
+      <span class="ver-title">安置点一键导航</span>
+      <span class="ver-date">2026年8月12日</span>
+    </div>
+    <ul class="ver-list">
+      <li>地图上的<b>转移安置点、备选安置点</b>新增弹窗信息：点击绿色（安置点）或粉色（备选点）圆点，可查看名称、电话（可直接拨打），并一键<b>"导航前往"</b>；</li>
+      <li><b>手机端</b>：自动唤起高德地图 App 直接导航到安置点；</li>
+      <li><b>电脑端</b>：自动获取当前位置，在地图上绘制驾车路线，显示距离与预计时间。</li>
+    </ul>
+  </div>
+
+  <!-- v20260812-04 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v12-04</span>
+      <span class="ver-title">新增气象雷达与卫星云图板块</span>
+      <span class="ver-date">2026年8月12日</span>
+    </div>
+    <ul class="ver-list">
+      <li>看板新增"气象雷达"入口，打开即可查看<b>雷达回波图</b>（西北区域、全国可切换）和<b>风云4B 卫星云图</b>（雷达、云图两个页签）；</li>
+      <li>雷达回波直观显示降水云团的位置和强度，颜色越暖降水越强，页面每 10 分钟自动刷新最新一帧；</li>
+      <li>数据来源为中国气象局·中央气象台免费公开产品，无需额外费用；</li>
+      <li>同时修复：系统管理按钮和降雨天气调度面板此前可能被手机浏览器广告拦截或"无雨时不显示"影响，本次已彻底修复，管理员登录后始终可见。</li>
+    </ul>
+  </div>
+
+  <!-- v20260811-10 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v10</span>
+      <span class="ver-title">新增转移避险流程图模块</span>
+      <span class="ver-date">2026年8月11日</span>
+    </div>
+    <ul class="ver-list">
+      <li>新增"转移流程"独立页面：镇级转移避险总流程（监测预警→叫应→研判→指令→村级响应→组织转移→安置→解除返回）；</li>
+      <li>三个紧急撤离：预警触发撤离、险情突发撤离、指令强制撤离，任一触发必须立即转移；</li>
+      <li>转移避险"四个一律"：雨量达临灾预警值一律转、出现险情征兆一律转、隐患无法预判一律转、夜间遇险连夜一律转；</li>
+      <li>"必须转 / 可转可不转"对照判定表，全镇统一执行、不打折扣；</li>
+      <li>安置点管理规范：转移人员登记在册不漏一人、专人 24 小时值守、生活保障到位、危险信号未解除前严禁擅自返回，统一宣布解除后方可有序返回。</li>
+    </ul>
+  </div>
+
+  <!-- v20260811-07 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v07</span>
+      <span class="ver-title">新增"近期更新"说明页</span>
+      <span class="ver-date">2026年8月11日</span>
+    </div>
+    <ul class="ver-list">
+      <li>看板"近期更新"入口改为直接打开本页，随时查看每个版本的更新内容；</li>
+      <li>不再跳转 PDF 文件，页面加载更快、手机查看更方便。</li>
+    </ul>
+  </div>
+
+  <!-- v20260811-06 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v06</span>
+      <span class="ver-title">切坡建房农户照片录入</span>
+      <span class="ver-date">2026年8月11日</span>
+    </div>
+    <ul class="ver-list">
+      <li>各村可上传本村切坡建房农户的房屋照片，每户最多 2 张（第 1 张房屋全景、第 2 张体现切坡与房屋位置关系）；</li>
+      <li>支持现场拍照或从手机相册选取，上传自动压缩、无需审核直接可用；</li>
+      <li>看板和地图隐患点弹窗都能查看每一户照片，为防汛排查提供直观依据；</li>
+      <li>村级上传后不可修改，传错照片由管理员处理。</li>
+    </ul>
+  </div>
+
+  <!-- v20260811-05 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v05</span>
+      <span class="ver-title">看板展示优化</span>
+      <span class="ver-date">2026年8月11日</span>
+    </div>
+    <ul class="ver-list">
+      <li>气象预警等级改为中文显示（红、橙、黄、蓝），不再显示英文；</li>
+      <li>预警自动过滤：只保留涉及会宁县、新塬镇的预警，其他市州的不再推送；多个村同时受影响时统一汇总为"新塬镇"；</li>
+      <li>乡镇包抓责任人和各村防汛应急队伍合并为左右两列，页面更紧凑。</li>
+    </ul>
+  </div>
+
+  <!-- v20260811-04 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v04</span>
+      <span class="ver-title">各村防汛应急队伍台账</span>
+      <span class="ver-date">2026年8月11日</span>
+    </div>
+    <ul class="ver-list">
+      <li>《新塬镇防汛应急队伍统计表》全部录入系统：10 个村共 58 支队伍、226 名队员；</li>
+      <li>按村即可查看队伍名称、成员和负责人，点击电话号码可直接拨打；</li>
+      <li>队伍资料属内部信息，登录后才能查看。</li>
+    </ul>
+  </div>
+
+  <!-- v20260811-03 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v03</span>
+      <span class="ver-title">降雨天气调度升级（仅管理员）</span>
+      <span class="ver-date">2026年8月11日</span>
+    </div>
+    <ul class="ver-list">
+      <li>调度时长可选 1、3、6、12 小时，到时自动停止，防止忘记关闭一直刷新；</li>
+      <li>调度村庄支持多选，可多个村按同一间隔同时定时刷新；</li>
+      <li>新增"单次刷新全部村"按钮，点一下立即刷新全镇 10 个村的天气。</li>
+    </ul>
+  </div>
+
+  <!-- v20260811-02 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v02</span>
+      <span class="ver-title">村级差异化天气系统</span>
+      <span class="ver-date">2026年8月11日</span>
+    </div>
+    <ul class="ver-list">
+      <li>接入商业气象数据，实现十个村"一村一报"：每村看到本村实时天气和未来三天预报，不再全镇共用一个数据；</li>
+      <li>每天六个整点自动更新，谁打开页面就能看到最新情况，不打开网站不占用额度；</li>
+      <li>自动检测降雨：某村有雨（实况、预报或预警）立即突出显示；</li>
+      <li>管理员遇降雨可对单村设定 10、15、20 分钟定时刷新，随时掌握降雨变化。</li>
+    </ul>
+  </div>
+
+  <!-- v20260811-01 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v01</span>
+      <span class="ver-title">专业防汛分析优化</span>
+      <span class="ver-date">2026年8月11日</span>
+    </div>
+    <ul class="ver-list">
+      <li>积水分析"模拟降雨"选择更直观：选 20、50、80 毫米时圆圈直接变色，一眼看清当前模拟的是哪一档；</li>
+      <li>降水联动提示补全：切换模拟雨量时，分析页的提示、汇总、列表、图例全部同步；</li>
+      <li>图例高亮当前所选等级，洪水影响带提示不再写死为 80 毫米。</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
+
+<script>
+// 权限验证：未登录跳回登录页
+if (sessionStorage.getItem('xyc_auth') !== '1') {
+  window.location.replace('index.html');
+}
+</script>
+<script>
+// 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
+(function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
+</script>
+<script>
+// bfcache 返回强制刷新：从其他页面返回本页时若浏览器恢复旧快照，异步数据可能停留在空状态
+window.addEventListener('pageshow', function(e) {
+  var need = false;
+  if (e.persisted) need = true;
+  if (!need) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) need = true;
+  }
+  if (need) window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+});
+</script>
+<!-- 备案号（ICP 备案通过后全站挂载） -->
+<div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
+  <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
+</div></body>
+</html>

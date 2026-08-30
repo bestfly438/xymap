@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>系统自检 · 新塬镇应急避险指挥系统</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta name="color-scheme" content="light">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #eef2f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f9fc;
+  --border: #e3e8f0;
+  --border-light: #d1d8e6;
+  --text: #14213d;
+  --text-secondary: #8a95ad;
+  --text-muted: #8a95ad;
+  --primary: #2f6fed;
+  --accent: #2f6fed;
+  --success: #22a55b;
+  --warning: #ee8b24;
+  --radius: 12px;
+}
+body {
+  font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+.topbar {
+  background: rgba(255,255,255,0.92);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px; height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.topbar .logo { display: flex; align-items: center; gap: 14px; }
+.topbar .logo-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #1a4a7a, #12314f);
+  border-radius: 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 20px; color: #fff;
+  box-shadow: 0 0 20px rgba(47,111,237,0.25);
+}
+.topbar .logo-text h1 { font-size: 18px; font-weight: 700; letter-spacing: 0.5px; }
+.topbar .logo-text p { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: 0.25s; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-secondary); text-decoration: none;
+}
+.back-link:hover { background: var(--bg-card-hover); color: var(--text); border-color: var(--border-light); }
+.container { max-width: 720px; margin: 0 auto; padding: 28px 24px 60px; }
+.page-head { margin-bottom: 20px; }
+.page-head h2 { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; }
+.page-head .ph-sub { font-size: 13px; color: var(--text-muted); margin-top: 6px; line-height: 1.7; }
+
+/* 检测按钮 */
+.check-btn-wrap { text-align: center; margin: 26px 0; }
+.check-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 15px 48px; border: none; border-radius: 12px;
+  font-size: 17px; font-weight: 700; color: #fff; cursor: pointer;
+  background: linear-gradient(135deg, #1a4a7a, #12314f);
+  box-shadow: 0 6px 24px rgba(239,68,68,0.35);
+  transition: 0.25s;
+}
+.check-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 30px rgba(239,68,68,0.45); }
+.check-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+/* 状态总结 */
+.summary {
+  text-align: center; margin: 10px 0 22px;
+  font-size: 15px; font-weight: 600; color: var(--text-secondary);
+}
+.summary.ok { color: var(--success); }
+.summary.bad { color: #e2444a; }
+.summary .took { color: var(--text-muted); font-weight: 400; font-size: 12px; margin-left: 8px; }
+
+/* 检查项卡片 */
+.item-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 14px;
+  opacity: 0.5; transition: 0.3s;
+}
+.item-card.done { opacity: 1; }
+.item-icon {
+  width: 40px; height: 40px; flex: 0 0 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; background: var(--bg-card-hover);
+}
+.item-card.pass .item-icon { background: rgba(34,197,94,0.15); }
+.item-card.fail .item-icon { background: rgba(47,111,237,0.12); }
+.item-card.loading .item-icon { animation: pulse 1s infinite; }
+@keyframes pulse { 50% { opacity: 0.4; } }
+.item-main { flex: 1; min-width: 0; }
+.item-name { font-size: 15px; font-weight: 700; }
+.item-detail { font-size: 12.5px; color: var(--text-secondary); margin-top: 3px; line-height: 1.6; word-break: break-all; }
+.item-card.fail .item-detail { color: #fca5a5; }
+.item-status { flex: 0 0 auto; font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+.item-card.pass .item-status { color: var(--success); background: rgba(34,197,94,0.12); }
+.item-card.fail .item-status { color: #e2444a; background: rgba(47,111,237,0.1); }
+.item-card.loading .item-status { color: var(--text-muted); background: var(--bg-card-hover); }
+
+/* 说明 */
+.tip-box {
+  background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.25);
+  border-radius: var(--radius); padding: 14px 16px; margin-top: 18px;
+  font-size: 12.5px; color: var(--text-secondary); line-height: 1.8;
+}
+.tip-box b { color: var(--accent); }
+
+/* 权限拒绝 */
+.deny {
+  max-width: 480px; margin: 80px auto; text-align: center;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 40px 30px;
+}
+.deny .deny-icon { font-size: 46px; margin-bottom: 14px; }
+.deny h2 { font-size: 18px; margin-bottom: 10px; }
+.deny p { font-size: 13px; color: var(--text-muted); margin-bottom: 22px; }
+.deny a { display: inline-block; padding: 10px 28px; border-radius: 8px; text-decoration: none; color: #fff; font-weight: 600; font-size: 14px; background: linear-gradient(135deg, #1a4a7a, #12314f); }
+
+.footer { text-align: center; padding: 20px; color: var(--text-muted); font-size: 12px; opacity: 0.6; }
+@media (max-width: 640px) {
+  .topbar { padding: 0 14px; height: 52px; }
+  .topbar .logo-text h1 { font-size: 14px; }
+  .topbar .logo-text p { display: none; }
+  .container { padding: 18px 14px 40px; }
+  .check-btn { width: 100%; justify-content: center; }
+}
+/* ===== 无障碍与动效偏好（reduced-motion / 键盘焦点）===== */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">
+    <div class="logo-icon">&#x1F50D;</div>
+    <div class="logo-text">
+      <h1>新塬镇应急避险指挥系统</h1>
+      <p>系统自检</p>
+    </div>
+  </div>
+  <a href="dashboard.html?v=v20260827-28" class="back-link">&#x2190; 返回看板</a>
+</div>
+
+<div class="container" id="main">
+  <div class="page-head">
+    <h2>&#x1F50D; 系统自检</h2>
+    <div class="ph-sub">逐项检查天气数据、飞书连接、业务数据表、云存储与照片存储是否正常。发现异常项会标红显示并给出提示，请据此联系维护人员处理。</div>
+  </div>
+
+  <div class="check-btn-wrap">
+    <button class="check-btn" id="checkBtn" onclick="runCheck()">&#x1F504; 立即检测</button>
+  </div>
+
+  <div class="summary" id="summary" style="display:none"></div>
+
+  <div id="items"></div>
+
+  <div class="tip-box">
+    <b>使用说明：</b>① 系统自检仅供<b>管理员 / 镇级</b>账号使用，村级账号无权查看；② 首次进入会自动检测一次，也可随时点击「立即检测」重新检查；③ 所有检查均只读、不修改任何数据；④ 单次检测约需 3~8 秒，请耐心等待。
+  </div>
+</div>
+
+<div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
+
+<script>
+// 权限验证：未登录跳回登录页；村级账号无权限
+if (sessionStorage.getItem('xyc_auth') !== '1') {
+  window.location.replace('index.html');
+} else {
+  var ROLE = sessionStorage.getItem('xyc_role') || '';
+  if (ROLE !== '管理员' && ROLE !== '镇级') {
+    document.getElementById('main').style.display = 'none';
+    document.body.insertAdjacentHTML('beforeend',
+      '<div class="deny"><div class="deny-icon">&#x1F512;</div><h2>无权查看系统自检</h2>' +
+      '<p>系统自检仅限管理员与镇级账号使用。如有疑问请联系镇级管理员。</p>' +
+      '<a href="dashboard.html?v=v20260827-28">&#x2190; 返回看板</a></div>');
+    var fp = document.querySelector('.footer'); if (fp) fp.style.display = 'none';
+  }
+}
+</script>
+<script>
+// ========== 系统自检逻辑 ==========
+var ITEMS = [
+  { name: '和风天气接口', icon: '&#x1F326;', desc: '实时天气数据源连通性', expect: '天气查询正常' },
+  { name: '飞书连接', icon: '&#x1F4E1;', desc: '飞书开放平台凭证获取', expect: '凭证获取正常' },
+  { name: '飞书业务表', icon: '&#x1F4CB;', desc: '密钥表等核心业务数据表可读', expect: '业务表读取正常' },
+  { name: 'COS 存储', icon: '&#x2601;', desc: '腾讯云对象存储（数据桶）', expect: '存储连接正常' },
+  { name: '照片存储', icon: '&#x1F4F7;', desc: '切坡建房农户照片存储检查', expect: '照片桶读取正常' }
+];
+var RUNNING = false;
+
+function renderItems() {
+  var h = '';
+  for (var i = 0; i < ITEMS.length; i++) {
+    h += '<div class="item-card" id="ic' + i + '">' +
+      '<div class="item-icon">' + ITEMS[i].icon + '</div>' +
+      '<div class="item-main">' +
+      '  <div class="item-name">' + ITEMS[i].name + '</div>' +
+      '  <div class="item-detail" id="idt' + i + '">' + ITEMS[i].desc + '</div>' +
+      '</div>' +
+      '<div class="item-status" id="ist' + i + '">等待检测</div>' +
+      '</div>';
+  }
+  document.getElementById('items').innerHTML = h;
+}
+
+function setItem(i, cls, status, detail) {
+  var card = document.getElementById('ic' + i);
+  if (!card) return;
+  card.className = 'item-card ' + cls;
+  card.classList.add('done');
+  document.getElementById('ist' + i).textContent = status;
+  if (detail !== undefined) document.getElementById('idt' + i).textContent = detail;
+}
+
+function runCheck() {
+  if (RUNNING) return;
+  var key = sessionStorage.getItem('xyc_key') || '';
+  var device = sessionStorage.getItem('xyc_device') || '';
+  if (!key || !device) { window.location.replace('index.html'); return; }
+
+  RUNNING = true;
+  document.getElementById('checkBtn').disabled = true;
+  document.getElementById('summary').style.display = 'none';
+  for (var i = 0; i < ITEMS.length; i++) {
+    var card = document.getElementById('ic' + i);
+    if (card) { card.className = 'item-card loading'; card.classList.remove('done'); document.getElementById('ist' + i).textContent = '检测中'; }
+  }
+
+  fetch(FEISHU_CONFIG.apiBase + '/api/health', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'x-xyc-key': key,
+      'x-xyc-device': device
+    },
+    body: '{}'
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(d) {
+    if (d && d.code === 401) {
+      try { sessionStorage.clear(); } catch(e) {}
+      window.location.replace('index.html');
+      return;
+    }
+    if (d && d.code === 403) {
+      RUNNING = false;
+      document.getElementById('checkBtn').disabled = false;
+      document.getElementById('summary').style.display = 'block';
+      document.getElementById('summary').className = 'summary bad';
+      document.getElementById('summary').textContent = d.msg || '无权限';
+      return;
+    }
+    var items = (d && d.data && d.data.items) || [];
+    var pass = 0;
+    for (var i = 0; i < ITEMS.length; i++) {
+      var it = items[i];
+      if (it && typeof it.ok === 'boolean') {
+        if (it.ok) { pass++; setItem(i, 'pass', '正常', it.detail || ITEMS[i].expect); }
+        else { setItem(i, 'fail', '异常', it.detail || '检查失败'); }
+      } else {
+        setItem(i, 'fail', '无结果', '未返回检查结果');
+      }
+    }
+    RUNNING = false;
+    document.getElementById('checkBtn').disabled = false;
+    var sm = document.getElementById('summary');
+    sm.style.display = 'block';
+    if (pass === ITEMS.length) {
+      sm.className = 'summary ok';
+      sm.innerHTML = '&#x2705; 全部 ' + pass + ' 项检查正常' + (d.data.took ? '<span class="took">耗时 ' + d.data.took + ' ms</span>' : '');
+    } else {
+      sm.className = 'summary bad';
+      sm.innerHTML = '&#x26A0; ' + (ITEMS.length - pass) + ' 项异常（通过 ' + pass + '/' + ITEMS.length + ' 项）' + (d.data.took ? '<span class="took">耗时 ' + d.data.took + ' ms</span>' : '');
+    }
+  })
+  .catch(function(e) {
+    RUNNING = false;
+    document.getElementById('checkBtn').disabled = false;
+    var sm = document.getElementById('summary');
+    sm.style.display = 'block';
+    sm.className = 'summary bad';
+    sm.textContent = '检测失败：网络错误 ' + (e.message || '');
+  });
+}
+
+renderItems();
+runCheck();
+</script>
+<script>
+// 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
+(function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
+</script>
+<script>
+// bfcache 返回强制刷新：从其他页面返回本页时若浏览器恢复旧快照，异步数据可能停留在空状态
+window.addEventListener('pageshow', function(e) {
+  var need = false;
+  if (e.persisted) need = true;
+  if (!need) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) need = true;
+  }
+  if (need) window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+});
+</script>
+<!-- 备案号（ICP 备案通过后全站挂载） -->
+<div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
+  <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
+</div></body>
+</html>

@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>巡查记录 · 新塬镇应急避险指挥系统</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta name="color-scheme" content="light">
+<style>
+:root {
+  --bg:#eef2f7; --surface:#ffffff; --surface-2:#f7f9fc;
+  --ink:#14213d; --ink-2:#4a5878; --ink-3:#8a95ad;
+  --line:#e3e8f0; --line-2:#d1d8e6;
+  --brand:#0f2e4f; --brand-2:#1a4a7a; --brand-soft:#e7eff8;
+  --accent:#2f6fed; --accent-soft:#eaf0ff;
+  --red:#e2444a; --red-soft:#fdeaea; --orange:#ee8b24; --orange-soft:#fdf1e1;
+  --green:#22a55b; --green-soft:#e6f6ed;
+  --radius-lg:18px; --radius-md:13px; --radius-sm:9px;
+  --shadow-sm:0 1px 3px rgba(20,33,61,.05),0 4px 12px rgba(20,33,61,.05);
+  --sidebar-w:248px; --topbar-h:64px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;color:var(--ink);background:var(--bg)}
+button{font-family:inherit;border:none;background:none;cursor:pointer;color:inherit}
+input,select{font-family:inherit}
+svg{display:block;flex:none}
+a{color:inherit;text-decoration:none}
+.app{display:grid;grid-template-columns:var(--sidebar-w) 1fr;min-height:100vh}
+.sidebar{background:linear-gradient(180deg,#0c2744 0%,#0f2e4f 60%,#113658 100%);color:#e6eef8;padding:22px 0;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;z-index:10}
+.sb-logo{padding:0 22px 22px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.sb-logo .logo-ic{width:42px;height:42px;border-radius:12px;background:linear-gradient(155deg,#2a68b0,#184780);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(30,90,150,.35)}
+.sb-logo .logo-ic svg{width:22px;height:22px}
+.sb-logo .logo-t1{font-size:15.5px;font-weight:800;letter-spacing:.4px}
+.sb-logo .logo-t2{font-size:10.5px;color:#97b4d4;margin-top:3px;letter-spacing:1.2px}
+.sb-role{margin:16px 18px 10px;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+.sb-role .sr-t{font-size:11px;color:#89a7c8;font-weight:500}
+.sb-role .sr-n{font-size:15px;font-weight:700;margin-top:4px;display:flex;align-items:center;gap:8px}
+.sb-role .sr-n .sr-badge{font-size:10.5px;padding:3px 9px;border-radius:7px;font-weight:700;background:var(--accent);color:#fff}
+.sb-menu{flex:1;padding:10px 12px;overflow-y:auto}
+.sb-menu::-webkit-scrollbar{width:4px}
+.sb-menu::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:4px}
+.sb-group-t{font-size:10.5px;color:#718eb0;padding:14px 12px 8px;letter-spacing:1.2px;font-weight:600}
+.sb-item{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:11px;font-size:14px;color:#c7d8ec;font-weight:500;margin-bottom:3px;transition:background-color .18s,color .18s,border-color .18s,transform .18s,opacity .18s,box-shadow .18s;position:relative}
+.sb-item svg{width:19px;height:19px;color:#89a7c8}
+.sb-item:hover{background:rgba(255,255,255,.06);color:#fff}
+.sb-item.active{background:linear-gradient(90deg,rgba(47,111,237,.28),rgba(47,111,237,.08));color:#fff;box-shadow:inset 3px 0 0 var(--accent)}
+.sb-item.active svg{color:#fff}
+.sb-foot{padding:14px 18px;border-top:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px}
+.sb-foot .sf-av{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center}
+.sb-foot .sf-av svg{width:20px;height:20px;color:#c7d8ec}
+.sb-foot .sf-n{font-size:13px;font-weight:600}
+.sb-foot .sf-s{font-size:10.5px;color:#89a7c8;margin-top:2px}
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{height:var(--topbar-h);background:var(--surface);border-bottom:1px solid var(--line);padding:0 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:5}
+.tb-left{display:flex;align-items:center;gap:16px}
+.crumb{display:flex;align-items:center;gap:8px;font-size:13.5px;color:var(--ink-2);font-weight:500}
+.crumb b{color:var(--ink);font-weight:700}
+.crumb svg{width:14px;height:14px;color:var(--ink-3)}
+.tb-right{display:flex;align-items:center;gap:14px}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:9px;font-size:12.5px;font-weight:600;border:1px solid var(--line);background:var(--surface-2);color:var(--ink-2);cursor:pointer;text-decoration:none}
+.btn:hover{background:var(--surface);border-color:var(--line-2);color:var(--ink)}
+.btn-primary{background:linear-gradient(180deg,#1b4a76,#12314f);color:#fff !important;border-color:transparent}
+.time-display{font-size:12.5px;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.content{padding:24px 28px 40px;flex:1}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:22px}
+.card-head{padding:18px 22px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line)}
+.ch-left{display:flex;align-items:center;gap:10px}
+.ch-ic{width:30px;height:30px;border-radius:9px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center}
+.ch-ic svg{width:15px;height:15px;color:var(--brand-2)}
+.ch-t{font-size:16px;font-weight:800}
+.ch-sub{font-size:12px;color:var(--ink-3);margin-top:3px;font-weight:500}
+.ch-act{display:flex;align-items:center;gap:10px}
+.card-body{padding:18px 22px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin:26px 0 14px}
+.section-title{font-size:17px;font-weight:800;display:flex;align-items:center;gap:9px}
+.st-dot{width:9px;height:9px;border-radius:50%}
+.st-dot.red{background:var(--red)} .st-dot.blue{background:var(--accent)} .st-dot.green{background:var(--green)}
+.section-subtitle{font-size:12px;color:var(--ink-3)}
+.empty-box{text-align:center;color:var(--ink-3);padding:36px 0;font-size:13px;line-height:1.8}
+@media (max-width:640px){.content{padding:14px}.app{grid-template-columns:1fr}.sidebar{display:none}}
+/* ===== 无障碍与动效偏好（reduced-motion / 键盘焦点）===== */
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
+/* ===== 界面细节打磨（make-interfaces-feel-better）===== */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+button,a,.btn,input,select{touch-action:manipulation}
+*{-webkit-tap-highlight-color:transparent}
+button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-logo">
+      <div class="logo-ic"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="#fff" stroke-width="1.4" opacity=".55"/><circle cx="12" cy="12" r="5" stroke="#fff" stroke-width="1.4" opacity=".85"/><circle cx="12" cy="12" r="1.8" fill="#ffd166"/><path d="M12 2v2.5M12 19.5v2M2 12h2.5M19.5 12H22" stroke="#7fd1ff" stroke-width="1.3" stroke-linecap="round"/></svg></div>
+      <div>
+        <div class="logo-t1">新塬应急指挥</div>
+        <div class="logo-t2">XINYUAN EMERGENCY</div>
+      </div>
+    </div>
+    <div class="sb-role">
+      <div class="sr-t">当前身份</div>
+      <div class="sr-n"><span id="pcRoleName">管理员</span><span class="sr-badge" id="pcRoleBadge">全部权限</span></div>
+    </div>
+    <nav class="sb-menu">
+<div class="sb-group-t">主功能</div>
+<a class="sb-item " href="dashboard.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>数据看板</a>
+<a class="sb-item " href="map.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>应急地图</a>
+<a class="sb-item " href="analysis.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M10 19V9M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>专业分析</a>
+<a class="sb-item " href="radar.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>雷达 / 预报</a>
+<div class="sb-group-t">数据台账</div>
+<a class="sb-item " href="ledger.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>应急台账</a>
+<a class="sb-item active" href="patrol.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>巡查记录</a>
+<a class="sb-item " href="transfer.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="M3.5 5h17v14h-17z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>转移流程</a>
+<a class="sb-item " href="photo.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v13H4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>照片档案</a>
+<div class="sb-group-t">消息与指令</div>
+<a class="sb-item " href="msg.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="M20 12.5c0 4-3.6 7-8 7-1 0-2-.2-2.9-.5L5 20l1-3.2C4.7 15.6 4 14.1 4 12.5c0-4 3.6-7 8-7s8 3 8 7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>消息中心</a>
+<a class="sb-item " href="team.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>应急队伍</a>
+<div class="sb-group-t">应急模块</div>
+<a class="sb-item" href="guide.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>防汛应急指南</a>
+<a class="sb-item" href="manual.html?v=v20260828-30"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>使用说明</a>
+<div class="sb-group-t">系统</div>
+<div class="sb-item" id="pcMenuAdmin" onclick="location.href='dashboard.html?v=v20260828-30#admin'" style="display:none"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>系统管理</div>
+<a class="sb-item" id="pcMenuHealth" href="health.html?v=v20260828-30" style="display:none"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>系统自检</a>
+<div class="sb-item" onclick="doLogout()"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h3M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>退出登录</div>
+</nav>
+    <div class="sb-foot">
+      <div class="sf-av"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M5 20c1-3.2 3.5-4.8 7-4.8s6 1.6 7 4.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+      <div>
+        <div class="sf-n" id="pcFootName">系统管理员</div>
+        <div class="sf-s" id="pcFootKey">XYC-2024-ADMIN</div>
+      </div>
+    </div>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <div class="tb-left">
+        <div class="crumb"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><b>巡查记录</b></div>
+      </div>
+      <div class="tb-right">
+        <a class="btn" href="dashboard.html?v=v20260828-30">&#x2190; 返回看板</a>
+        <div class="time-display" id="timeDisplay"></div>
+      </div>
+    </header>
+    <div class="content">
+
+<div class="section-header">
+  <div class="section-title"><span class="st-dot green"></span>巡查记录 · 台账汇总</div>
+  <span class="section-subtitle">飞书云端为主，本机缓存为备份；支持按村筛选与导出表格</span>
+</div>
+<div class="card" id="patrolAddCard">
+  <div class="card-head">
+    <div class="ch-left">
+      <div class="ch-ic" style="background:var(--accent-soft)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+      <div><div class="ch-t">新增巡查记录</div><div class="ch-sub">填写巡查人、定位、天气、照片与描述，提交后云端永久保存</div></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="pt-form">
+      <div class="pf-row">
+        <div class="pf-label">&#x1F3E1; 所属村庄</div>
+        <select id="ptAddVillage"></select>
+      </div>
+      <div class="pf-row">
+        <div class="pf-label">&#x1F464; 巡查人姓名</div>
+        <input class="pf-input" id="ptAddInspector" placeholder="请输入巡查人姓名">
+      </div>
+      <div class="pf-row">
+        <div class="pf-label">&#x1F4CD; 巡查点位 <span class="pf-hint">（点击获取当前位置）</span></div>
+        <div class="pf-auto" id="ptAddLocation" onclick="ptGetLocation()">点击获取GPS位置…</div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-label">&#x2600; 天气情况</div>
+        <div class="pf-auto" id="ptAddWeather">点击定位后自动获取</div>
+      </div>
+      <div class="pf-row">
+        <div class="pf-label">&#x1F4F7; 巡查照片</div>
+        <input type="file" id="ptAddPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="ptOnPhotoSelect(this)">
+        <label class="pf-photo-btn" for="ptAddPhotoInput">&#x1F4F7; 拍照 / 选择照片</label>
+        <img class="pf-photo-preview" id="ptAddPhotoPreview" src="" alt="照片预览">
+      </div>
+      <div class="pf-row">
+        <div class="pf-label">&#x1F4DD; 巡查情况描述</div>
+        <textarea class="pf-input" id="ptAddDesc" rows="3" placeholder="请填写巡查发现的问题、处置情况等"></textarea>
+      </div>
+      <button class="pf-submit" onclick="ptSubmit()">&#x2705; 提交巡查记录</button>
+      <div class="pf-msg" id="ptAddMsg"></div>
+    </div>
+  </div>
+</div>
+<style>
+.pt-form{display:flex;flex-direction:column;gap:12px}
+.pt-form .pf-row{display:flex;flex-direction:column;gap:6px}
+.pt-form .pf-label{font-size:12.5px;color:var(--ink-2);font-weight:700;display:flex;align-items:center;gap:5px}
+.pt-form .pf-label .pf-hint{font-weight:400;font-size:11px;color:var(--ink-3)}
+.pt-form select,.pt-form .pf-input{background:var(--surface);color:var(--ink);border:1px solid var(--line-2);border-radius:9px;padding:9px 12px;font-size:13.5px;outline:none;font-family:inherit;transition:border-color .15s}
+.pt-form select:focus,.pt-form .pf-input:focus{border-color:var(--accent)}
+.pt-form .pf-auto{background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font-size:13px;color:var(--ink-2);line-height:1.5;cursor:pointer}
+.pt-form .pf-auto:hover{border-color:var(--accent);color:var(--accent)}
+.pt-form .pf-photo-btn{display:inline-flex;align-items:center;gap:6px;align-self:flex-start;padding:8px 16px;border-radius:9px;font-size:13px;font-weight:600;background:var(--accent-soft);color:#1a5fb8;cursor:pointer}
+.pt-form .pf-photo-preview{display:none;max-width:260px;border-radius:10px;border:1px solid var(--line);margin-top:4px}
+.pt-form .pf-submit{background:linear-gradient(180deg,#1b4a76,#12314f);color:#fff;border:none;border-radius:10px;padding:12px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit}
+.pt-form .pf-submit:disabled{opacity:.6;cursor:not-allowed}
+.pt-form .pf-msg{font-size:12.5px;min-height:18px;margin-top:2px}
+.pt-form .pf-msg.ok{color:var(--green)} .pt-form .pf-msg.err{color:var(--red)}
+</style>
+
+<div class="card">
+  <div class="card-head">
+    <div class="ch-left">
+      <div class="ch-ic" style="background:var(--green-soft)"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+      <div><div class="ch-t">巡查记录查询</div><div class="ch-sub">选择村庄查看该村巡查情况，可一键导出 Excel（CSV）</div></div>
+    </div>
+    <div class="ch-act">
+      <button class="btn btn-green" id="btnExportAll" style="display:none" onclick="exportAllPatrolCSV()">&#x1F4E5; 导出全镇巡查记录</button>
+      <button class="btn btn-green" id="btnExportCur" onclick="exportCurPatrolCSV()">&#x1F4E5; 导出记录</button>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="pt-filter">
+      <select id="ptFilterVillage"><option value="">全部村</option></select>
+      <select id="ptFilterInspector"><option value="">全部巡查人</option></select>
+      <button class="btn" onclick="patrolRefresh()">&#x21BB; 刷新</button>
+      <span class="pt-hint" id="ptHint">正在同步…</span>
+    </div>
+    <div class="pt-stats">
+      <div class="pt-stat">
+        <div class="ps-ic ps-green"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M10 19V9M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+        <div><div class="ps-v" id="ptStatCount">0</div><div class="ps-l">巡查记录总数</div></div>
+      </div>
+      <div class="pt-stat">
+        <div class="ps-ic ps-blue"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+        <div><div class="ps-v" id="ptStatPerson">0</div><div class="ps-l">参与巡查人数</div></div>
+      </div>
+      <div class="pt-stat">
+        <div class="ps-ic ps-orange"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+        <div><div class="ps-v" id="ptStatLast">—</div><div class="ps-l">最近巡查时间</div></div>
+      </div>
+    </div>
+    <div class="pl-list" id="ptList"><div class="pl-loading"><span class="pl-spin"></span>正在加载巡查记录…</div></div>
+  </div>
+</div>
+<div class="pl-lightbox" id="ptLightbox" onclick="this.classList.remove('show')">
+  <button class="pl-close">&#x2715;</button>
+  <img id="ptLightboxImg" src="" alt="巡查照片">
+</div>
+<style>
+.btn-green{background:linear-gradient(180deg,#22a55b,#177a42);color:#fff !important;border-color:transparent}
+.btn-green:hover{filter:brightness(1.06)}
+.pt-filter{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.pt-filter select{background:var(--surface);color:var(--ink);border:1px solid var(--line-2);border-radius:8px;padding:7px 10px;font-size:13px}
+.pt-filter .pt-hint{font-size:12px;color:var(--ink-3);margin-left:auto}
+.pt-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:22px}
+.pt-stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-md);padding:16px 18px;display:flex;align-items:center;gap:13px;box-shadow:var(--shadow-sm)}
+.pt-stat .ps-ic{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none}
+.pt-stat .ps-ic svg{width:19px;height:19px}
+.ps-green{background:var(--green-soft)} .ps-green svg{color:var(--green)}
+.ps-blue{background:var(--accent-soft)} .ps-blue svg{color:var(--accent)}
+.ps-orange{background:var(--orange-soft)} .ps-orange svg{color:var(--orange)}
+.pt-stat .ps-v{font-size:24px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.pt-stat .ps-l{font-size:12px;color:var(--ink-3);margin-top:3px;font-weight:500}
+.pl-list{display:flex;flex-direction:column;gap:11px}
+.pl-item{display:flex;align-items:flex-start;gap:14px;padding:15px 17px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;border-left:2px solid var(--green);transition:background-color .18s,color .18s,border-color .18s,transform .18s,opacity .18s,box-shadow .18s}
+.pl-item:hover{border-color:var(--line-2);background:var(--surface)}
+.pl-item .pl-main{flex:1;min-width:0}
+.pl-item .pl-h{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pl-item .pl-time{font-size:14px;font-weight:800}
+.pl-item .pl-v{font-size:11px;font-weight:700;padding:3px 9px;border-radius:7px;background:var(--brand-soft);color:var(--brand-2)}
+.pl-item .pl-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:7px;font-size:12px;color:var(--ink-2)}
+.pl-item .pl-meta span{display:inline-flex;align-items:center;gap:4px}
+.pl-item .pl-desc{font-size:13px;color:var(--ink-2);margin-top:8px;line-height:1.65;white-space:pre-wrap;word-break:break-all}
+.pl-item .pl-photo{margin-top:10px;max-width:260px;border-radius:10px;border:1px solid var(--line);cursor:zoom-in}
+.pl-lightbox{position:fixed;inset:0;background:rgba(10,20,35,.82);display:none;align-items:center;justify-content:center;z-index:200;padding:24px}
+.pl-lightbox.show{display:flex}
+.pl-lightbox img{max-width:94%;max-height:88%;border-radius:12px;box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.pl-lightbox .pl-close{position:absolute;top:18px;right:22px;width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.14);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center}
+.pl-loading{display:flex;align-items:center;justify-content:center;padding:40px 0;color:var(--ink-3);font-size:13px;gap:8px}
+.pl-spin{width:16px;height:16px;border-radius:50%;border:2px solid var(--line-2);border-top-color:var(--accent);animation:pl-rot .8s linear infinite}
+@keyframes pl-rot{to{transform:rotate(360deg)}}
+@media (max-width:640px){.content{padding:14px}.app{grid-template-columns:1fr}.sidebar{display:none}.pt-stats{grid-template-columns:1fr}.pt-stat{padding:12px 14px}.pl-item .pl-photo{max-width:100%}}
+</style>
+    </div>
+  </div>
+</div>
+
+<script>
+if (sessionStorage.getItem('xyc_auth') !== '1') { window.location.replace('index.html'); }
+window.addEventListener('pageshow', function(e) {
+  var needReload = false;
+  if (e.persisted) needReload = true;
+  if (!needReload) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) needReload = true;
+  }
+  if (needReload) window.location.replace(window.location.pathname + '?_r=' + Date.now());
+});
+</script>
+<script src="feishu_config.js?v=v20260828-30"></script>
+<script>
+var PATROL_STORAGE_KEY = 'xyc_patrol_records';
+var VILLAGES = ['上塬村','东塬村','刘家湾社区','孟塬村','常家坪村','新塬村','杨坪村','杨家河坝村','甘岔村','老庄村'];
+var XYC_ROLE = sessionStorage.getItem('xyc_role') || '';
+var XYC_CUN = sessionStorage.getItem('xyc_village') || '';
+var XYC_IS_STAFF = !(XYC_ROLE === '村级' || XYC_ROLE === '社长');
+
+function fmtTime(v) {
+  if (!v) return '';
+  var s = String(v);
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function out(d) {
+    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate())
+      + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+  }
+  // 纯数字时间戳（秒或毫秒）
+  if (/^\d{10,13}$/.test(s)) {
+    var n = Number(s); if (n < 1e12) n *= 1000;
+    var d = new Date(n);
+    if (!isNaN(d.getTime())) return out(d);
+  }
+  // ISO 格式（含 T 或带时区偏移）
+  if (s.indexOf('T') > -1) {
+    var d2 = new Date(s);
+    if (!isNaN(d2.getTime())) return out(d2);
+  }
+  // 已格式化的 2026-08-28 10:30（无 T）或无法解析：直接规整显示
+  return s.replace(/T/g, ' ').replace(/\.\d+/, '').replace(/(\+|-)\d{2}:?\d{2}$/, '');
+}
+
+var PT_ALL = [];
+var PT_LOADED = false;
+
+function getLocalPatrolRecords(vname) {
+  try {
+    var all = JSON.parse(localStorage.getItem(PATROL_STORAGE_KEY) || '[]');
+    if (vname) return all.filter(function(r) { return r.village === vname; });
+    return all;
+  } catch(e) { return []; }
+}
+
+function getPatrolRecords(vname, callback) {
+  var filter = JSON.stringify({ logic: 'and', conditions: [['村名', '==', vname]] });
+  var path = '/open-apis/base/v3/bases/' + FEISHU_CONFIG.baseToken +
+    '/tables/' + FEISHU_CONFIG.tables.patrol +
+    '/records?page_size=500&filter=' + encodeURIComponent(filter);
+  feishuRequest('GET', path, null, function(data, err) {
+    if (err || !data || data.code !== 0) {
+      if (callback) callback(getLocalPatrolRecords(vname));
+      return;
+    }
+    var records = feishuRowsToObjects(data).map(function(it) {
+      var f = it.fields || {};
+      var lng = f['经度'], lat = f['纬度'];
+      var loc = null;
+      if (lng != null && lat != null) loc = { lng: Number(lng), lat: Number(lat) };
+      return {
+        record_id: it.record_id || '',
+        id: it.record_id || (vname + '-' + (f['巡查时间'] || '')),
+        village: vname,
+        inspector: f['巡查人'] || '',
+        location: loc,
+        locationText: loc ? '经度 ' + loc.lng.toFixed(6) + ' 纬度 ' + loc.lat.toFixed(6) : '',
+        weather: f['天气'] || '',
+        photo: f['照片base64'] || '',
+        description: f['巡查描述'] || '',
+        time: fmtTime(f['巡查时间'])
+      };
+    });
+    try {
+      var all = JSON.parse(localStorage.getItem(PATROL_STORAGE_KEY) || '[]');
+      var others = all.filter(function(r) { return r.village !== vname; });
+      var merged = records.slice();
+      var seenIds = {};
+      records.forEach(function(r) { if (r.record_id) seenIds[r.record_id] = true; });
+      // 本地补充：无 record_id 的暂存记录，或有 record_id 但云端本次未返回的记录（云端可能分页截断，不能丢弃）
+      all.forEach(function(r) {
+        if (r.village !== vname) return;
+        if (r.record_id && seenIds[r.record_id]) return;
+        merged.push(r);
+      });
+      var seen = {};
+      var seenContent = {};
+      merged = merged.filter(function(r) {
+        var k = r.record_id || r.id;
+        if (!k || seen[k]) return false;
+        seen[k] = true;
+        var ck = (r.village||'') + '|' + (r.inspector||'') + '|' + (r.time||'') + '|' + (r.description||'');
+        if (seenContent[ck]) return false;
+        seenContent[ck] = true;
+        return true;
+      });
+      localStorage.setItem(PATROL_STORAGE_KEY, JSON.stringify(others.concat(merged)));
+      if (callback) callback(merged);
+      return;
+    } catch(e) {}
+    if (callback) callback(records);
+  });
+}
+
+function getVisibleVillages() {
+  if (XYC_IS_STAFF) return VILLAGES.slice();
+  return [XYC_CUN].filter(Boolean);
+}
+
+function initVillageFilter() {
+  var fv = document.getElementById('ptFilterVillage');
+  var villages = getVisibleVillages();
+  fv.innerHTML = '<option value="">全部村</option>';
+  villages.forEach(function(v) {
+    var op = document.createElement('option');
+    op.value = v; op.textContent = v;
+    fv.appendChild(op);
+  });
+  if (!XYC_IS_STAFF && XYC_CUN) fv.value = XYC_CUN;
+  var btnAll = document.getElementById('btnExportAll');
+  if (btnAll) btnAll.style.display = XYC_IS_STAFF ? 'inline-flex' : 'none';
+  var btnCur = document.getElementById('btnExportCur');
+  if (btnCur) btnCur.textContent = XYC_IS_STAFF ? '\u21E9 导出当前筛选' : '\u21E9 导出本村记录';
+}
+
+function patrolRefresh() {
+  var fv = document.getElementById('ptFilterVillage');
+  var selVillage = fv ? fv.value : '';
+  var villages = getVisibleVillages();
+  if (selVillage) villages = [selVillage];
+  var hint = document.getElementById('ptHint');
+  if (hint) hint.textContent = '正在同步云端数据…';
+  // 先用本机缓存立刻渲染，避免云端慢时一直转圈
+  PT_ALL = getLocalPatrolRecords('');
+  PT_LOADED = true;
+  renderPatrol();
+  var collected = [];
+  var done = 0;
+  var timedOut = false;
+  function finish() {
+    if (++done < villages.length) return;
+    PT_ALL = collected;
+    PT_LOADED = true;
+    if (hint) hint.textContent = villages.length + ' 个村已同步（飞书云端 + 本机缓存）'
+      + (timedOut ? '，云端响应慢，部分显示本机缓存' : '');
+    renderPatrol();
+  }
+  if (!villages.length) { finish(); return; }
+  villages.forEach(function(v) {
+    var returned = false;
+    var timer = setTimeout(function() {   // 云端 12 秒未响应：用本地缓存兜底，不无限等待
+      if (returned) return;
+      returned = true;
+      timedOut = true;
+      collected = collected.concat(getLocalPatrolRecords(v));
+      finish();
+    }, 12000);
+    getPatrolRecords(v, function(recs) {
+      if (returned) return;
+      returned = true;
+      clearTimeout(timer);
+      collected = collected.concat(recs || []);
+      finish();
+    });
+  });
+}
+
+function renderPatrol() {
+  var fv = document.getElementById('ptFilterVillage');
+  var fi = document.getElementById('ptFilterInspector');
+  var selVillage = fv ? fv.value : '';
+  var list = PT_ALL.slice();
+  if (selVillage) list = list.filter(function(r) { return r.village === selVillage; });
+  list.sort(function(a, b) { return String(b.time).localeCompare(String(a.time)); });
+
+  if (fi) {
+    var persons = {};
+    var base = PT_ALL.filter(function(r) { return !selVillage || r.village === selVillage; });
+    base.forEach(function(r) { if (r.inspector) persons[r.inspector] = true; });
+    var cur = fi.value;
+    fi.innerHTML = '<option value="">全部巡查人</option>';
+    Object.keys(persons).sort().forEach(function(p) {
+      var op = document.createElement('option');
+      op.value = p; op.textContent = p;
+      fi.appendChild(op);
+    });
+    if (cur && persons[cur]) fi.value = cur;
+    var selInspector = fi.value;
+    if (selInspector) list = list.filter(function(r) { return r.inspector === selInspector; });
+  }
+
+  var distinct = {};
+  list.forEach(function(r) { if (r.inspector) distinct[r.inspector] = true; });
+  var stCount = document.getElementById('ptStatCount');
+  var stPerson = document.getElementById('ptStatPerson');
+  var stLast = document.getElementById('ptStatLast');
+  if (stCount) stCount.textContent = list.length;
+  if (stPerson) stPerson.textContent = Object.keys(distinct).length;
+  if (stLast) stLast.textContent = list.length ? (list[0].time || '—') : '—';
+
+  var box = document.getElementById('ptList');
+  if (!PT_LOADED) { box.innerHTML = '<div class="pl-loading"><span class="pl-spin"></span>正在加载巡查记录…</div>'; return; }
+  if (!list.length) {
+    box.innerHTML = '<div class="empty-box">暂无巡查记录' + (selVillage ? '（' + esc(selVillage) + '）' : '') + '<br>可前往 应急地图 → 巡查记录 新增</div>';
+    return;
+  }
+  var h = '';
+  list.forEach(function(r) {
+    h += '<div class="pl-item">'
+      + '<div class="pl-main">'
+      + '<div class="pl-h"><span class="pl-time">&#x1F4C5; ' + esc(r.time || '') + '</span><span class="pl-v">' + esc(r.village || '') + '</span></div>'
+      + '<div class="pl-meta">'
+      + '<span>&#x1F464; ' + esc(r.inspector || '未知') + '</span>'
+      + (r.weather ? '<span>' + esc(r.weather) + '</span>' : '')
+      + (r.locationText ? '<span>&#x1F4CD; ' + esc(r.locationText) + '</span>' : '')
+      + '</div>'
+      + (r.description ? '<div class="pl-desc">' + esc(r.description) + '</div>' : '')
+      + (r.photo ? '<img class="pl-photo" src="' + escAttr(r.photo) + '" onclick="previewPatrolPhoto(this.src)" alt="巡查照片">' : '')
+      + '</div></div>';
+  });
+  box.innerHTML = h;
+}
+
+function previewPatrolPhoto(src) {
+  var box = document.getElementById('ptLightbox');
+  var img = document.getElementById('ptLightboxImg');
+  if (box && img) { img.src = src; box.classList.add('show'); }
+}
+
+function downloadCSV(records, filename) {
+  if (!records.length) { alert('当前筛选条件下没有巡查记录可导出'); return; }
+  var BOM = '\uFEFF';
+  var header = '序号,村名,巡查人,巡查点位（经度）,巡查点位（纬度）,天气情况,巡查情况描述,巡查时间\n';
+  var rows = '';
+  records.forEach(function(r, i) {
+    var desc = (r.description || '').replace(/"/g, '""');
+    rows += (i + 1) + ',' + r.village + ',' + (r.inspector || '') + ',' +
+      (r.location ? r.location.lng.toFixed(6) : '') + ',' +
+      (r.location ? r.location.lat.toFixed(6) : '') + ',' +
+      (r.weather || '').replace(/,/g, ' ') + ',"' + desc + '",' + r.time + '\n';
+  });
+  var csv = BOM + header + rows;
+  var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function exportCurPatrolCSV() {
+  var fv = document.getElementById('ptFilterVillage');
+  var selVillage = fv ? fv.value : '';
+  var villages = getVisibleVillages();
+  if (selVillage) villages = [selVillage];
+  var collected = [];
+  var done = 0;
+  function finish() {
+    if (++done < villages.length) return;
+    downloadCSV(collected, (selVillage || '全镇') + '_巡查记录_' + new Date().toISOString().slice(0,10) + '.csv');
+  }
+  if (!villages.length) { downloadCSV([], '巡查记录.csv'); return; }
+  villages.forEach(function(v) {
+    getPatrolRecords(v, function(recs) {
+      collected = collected.concat(recs || []);
+      finish();
+    });
+  });
+}
+
+function exportAllPatrolCSV() {
+  var collected = [];
+  var done = 0;
+  function finish() {
+    if (++done < VILLAGES.length) return;
+    var seen = {};
+    var out = [];
+    collected.forEach(function(r) {
+      var k = r.id || ((r.village||'') + '|' + (r.inspector||'') + '|' + (r.time||'') + '|' + (r.description||''));
+      if (seen[k]) return;
+      seen[k] = true;
+      out.push(r);
+    });
+    downloadCSV(out, '新塬镇_全镇巡查记录_' + new Date().toISOString().slice(0,10) + '.csv');
+  }
+  VILLAGES.forEach(function(v) {
+    getPatrolRecords(v, function(recs) {
+      collected = collected.concat(recs || []);
+      finish();
+    });
+  });
+}
+
+
+// ========== 新增巡查记录 ==========
+var PT_PI = Math.PI, PT_A = 6378245.0, PT_EE = 0.00669342162296594323;
+function ptOutOfChina(lng, lat) { return lng < 72.004 || lng > 137.8347 || lat < 0.8293 || lat > 55.8271; }
+function ptTransformLat(x, y) {
+  var ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * Math.sqrt(Math.abs(x));
+  ret += (20.0 * Math.sin(6.0 * x * PT_PI) + 20.0 * Math.sin(2.0 * x * PT_PI)) * 2.0 / 3.0;
+  ret += (20.0 * Math.sin(y * PT_PI) + 40.0 * Math.sin(y / 3.0 * PT_PI)) * 2.0 / 3.0;
+  ret += (160.0 * Math.sin(y / 12.0 * PT_PI) + 320.0 * Math.sin(y * PT_PI / 30.0)) * 2.0 / 3.0;
+  return ret;
+}
+function ptTransformLng(x, y) {
+  var ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * Math.sqrt(Math.abs(x));
+  ret += (20.0 * Math.sin(6.0 * x * PT_PI) + 20.0 * Math.sin(2.0 * x * PT_PI)) * 2.0 / 3.0;
+  ret += (20.0 * Math.sin(x * PT_PI) + 40.0 * Math.sin(x / 3.0 * PT_PI)) * 2.0 / 3.0;
+  ret += (150.0 * Math.sin(x / 12.0 * PT_PI) + 300.0 * Math.sin(x / 30.0 * PT_PI)) * 2.0 / 3.0;
+  return ret;
+}
+function ptWgs84ToGcj02(lng, lat) {
+  if (ptOutOfChina(lng, lat)) return [lng, lat];
+  var dLat = ptTransformLat(lng - 105.0, lat - 35.0);
+  var dLng = ptTransformLng(lng - 105.0, lat - 35.0);
+  var radLat = lat / 180.0 * PT_PI;
+  var magic = Math.sin(radLat);
+  magic = 1 - PT_EE * magic * magic;
+  var sqrtMagic = Math.sqrt(magic);
+  dLat = (dLat * 180.0) / ((PT_A * (1 - PT_EE)) / (magic * sqrtMagic) * PT_PI);
+  dLng = (dLng * 180.0) / (PT_A / sqrtMagic * Math.cos(radLat) * PT_PI);
+  return [lng + dLng, lat + dLat];
+}
+var ptLocation = null;
+var ptPhotoData = '';
+var ptWeatherCache = null;
+function ptWeatherText() {
+  if (!ptWeatherCache) return '点击定位后自动获取';
+  var code = ptWeatherCache.weathercode;
+  var names = {0:'晴',1:'晴间多云',2:'多云',3:'阴',45:'雾',48:'雾凇',51:'毛毛雨',53:'毛毛雨',55:'毛毛雨',56:'冻雨',57:'冻雨',61:'小雨',63:'中雨',65:'大雨',66:'冻雨',67:'冻雨',71:'小雪',73:'中雪',75:'大雪',77:'雪粒',80:'阵雨',81:'阵雨',82:'强阵雨',85:'阵雪',86:'阵雪',95:'雷阵雨',96:'雷雨伴冰雹',99:'雷雨伴冰雹'};
+  return (names[code] || '多云') + ' ' + Math.round(ptWeatherCache.temperature_2m) + '°C';
+}
+function ptFetchWeather(lat, lng) {
+  var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lng + '&current=temperature_2m,weathercode&timezone=Asia%2FShanghai';
+  fetch(url).then(function(r){ return r.json(); }).then(function(d){
+    if (d && d.current) {
+      ptWeatherCache = d.current;
+      var el = document.getElementById('ptAddWeather');
+      if (el) el.textContent = ptWeatherText();
+    }
+  }).catch(function(){});
+}
+function ptGetLocation() {
+  if (!navigator.geolocation) { ptMsg('浏览器不支持定位功能', 'err'); return; }
+  var el = document.getElementById('ptAddLocation');
+  if (el) el.textContent = '正在获取位置…';
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    var gcj = ptWgs84ToGcj02(pos.coords.longitude, pos.coords.latitude);
+    ptLocation = { lng: gcj[0], lat: gcj[1] };
+    if (el) el.textContent = '经度 ' + gcj[0].toFixed(6) + '，纬度 ' + gcj[1].toFixed(6);
+    ptFetchWeather(pos.coords.latitude, pos.coords.longitude);
+  }, function() {
+    if (el) el.textContent = '定位失败，可提交（不填位置）';
+    ptMsg('定位失败，请允许浏览器定位权限', 'err');
+  }, { enableHighAccuracy: true, timeout: 10000 });
+}
+function ptOnPhotoSelect(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var img = new Image();
+    img.onload = function() {
+      var canvas = document.createElement('canvas');
+      var maxW = 800;
+      var scale = Math.min(1, maxW / img.width);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ptPhotoData = canvas.toDataURL('image/jpeg', 0.55);
+      var preview = document.getElementById('ptAddPhotoPreview');
+      if (preview && ptPhotoData) { preview.src = ptPhotoData; preview.style.display = 'block'; }
+      ptMsg('照片已压缩（约' + Math.round(ptPhotoData.length / 1024) + 'KB）', 'ok');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function ptMsg(text, type) {
+  var el = document.getElementById('ptAddMsg');
+  if (el) { el.textContent = text; el.className = 'pf-msg ' + (type === 'ok' ? 'ok' : (type === 'err' ? 'err' : '')); }
+}
+function ptSaveLocal(record) {
+  try {
+    var all = JSON.parse(localStorage.getItem(PATROL_STORAGE_KEY) || '[]');
+    all.unshift(record);
+    while (all.length > 300) all.pop();
+    localStorage.setItem(PATROL_STORAGE_KEY, JSON.stringify(all));
+    return true;
+  } catch(e) { return false; }
+}
+function ptSaveCloud(record, callback) {
+  var fields = {
+    '村名': record.village,
+    '巡查人': record.inspector || '',
+    '巡查描述': record.description || '',
+    '天气': record.weather || '',
+    '巡查时间': record.time || ''
+  };
+  if (record.location) { fields['经度'] = record.location.lng; fields['纬度'] = record.location.lat; }
+  if (record.photo && record.photo.length < 120000) fields['照片base64'] = record.photo;
+  var path = '/open-apis/base/v3/bases/' + FEISHU_CONFIG.baseToken + '/tables/' + FEISHU_CONFIG.tables.patrol + '/records';
+  feishuRequest('POST', path, fields, function(data, err) {
+    if (err || !data || data.code !== 0) {
+      ptSaveLocal(record);
+      if (callback) callback(false, err || (data && data.msg) || '云端响应超时，已暂存本机');
+      return;
+    }
+    var rid = (data.data && data.data.record_id_list && data.data.record_id_list[0]) || '';
+    if (rid) { record.record_id = rid; record.id = rid; }
+    ptSaveLocal(record);
+    if (callback) callback(true);
+  });
+}
+function ptSubmit() {
+  var role = sessionStorage.getItem('xyc_role') || '';
+  var myVillage = sessionStorage.getItem('xyc_village') || '';
+  var selV = document.getElementById('ptAddVillage');
+  var village = selV ? selV.value : '';
+  if (role === '村级' && myVillage) village = myVillage;
+  var inspectorEl = document.getElementById('ptAddInspector');
+  var descEl = document.getElementById('ptAddDesc');
+  var inspectorVal = inspectorEl ? inspectorEl.value.trim() : '';
+  var descVal = descEl ? descEl.value.trim() : '';
+  if (!village) { ptMsg('请选择所属村庄', 'err'); return; }
+  if (!inspectorVal) { ptMsg('请填写巡查人姓名', 'err'); return; }
+  var now = new Date();
+  function p2(n) { return (n < 10 ? '0' : '') + n; }
+  var timeStr = now.getFullYear() + '-' + p2(now.getMonth()+1) + '-' + p2(now.getDate())
+    + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes()) + ':' + p2(now.getSeconds());
+  var record = {
+    id: now.getTime(),
+    village: village,
+    inspector: inspectorVal,
+    location: ptLocation,
+    locationText: ptLocation ? ('经度 ' + ptLocation.lng.toFixed(6) + ' 纬度 ' + ptLocation.lat.toFixed(6)) : '',
+    weather: ptWeatherCache ? ptWeatherText() : '',
+    photo: ptPhotoData,
+    description: descVal,
+    time: timeStr
+  };
+  var btn = document.querySelector('#patrolAddCard .pf-submit');
+  if (btn) { btn.disabled = true; btn.textContent = '提交中…'; }
+  ptMsg('正在保存…', '');
+  ptSaveCloud(record, function(ok, err) {
+    if (btn) { btn.disabled = false; btn.textContent = '✅ 提交巡查记录'; }
+    if (ok) {
+      localStorage.setItem('xyc_last_inspector', inspectorVal);
+      ptMsg('巡查记录已保存！', 'ok');
+      ptPhotoData = ''; ptLocation = null;
+      var preview = document.getElementById('ptAddPhotoPreview');
+      if (preview) { preview.src = ''; preview.style.display = 'none'; }
+      var pi = document.getElementById('ptAddPhotoInput'); if (pi) pi.value = '';
+      if (descEl) descEl.value = '';
+      var locEl = document.getElementById('ptAddLocation'); if (locEl) locEl.textContent = '点击获取GPS位置…';
+      var we = document.getElementById('ptAddWeather'); if (we) we.textContent = '点击定位后自动获取';
+      setTimeout(function(){ ptMsg('', ''); }, 4000);
+      patrolRefresh();
+    } else {
+      ptMsg('云端保存失败，已存入本机（' + (err || '未知原因') + '）', 'err');
+      setTimeout(function(){ patrolRefresh(); }, 600);
+    }
+  });
+}
+function ptInitAddForm() {
+  var role = sessionStorage.getItem('xyc_role') || '';
+  var myVillage = sessionStorage.getItem('xyc_village') || '';
+  var isVillage = (role === '村级' || role === '社长');
+  var canAdd = (role === '管理员' || role === '镇级' || role === '村级');
+  var card = document.getElementById('patrolAddCard');
+  if (!card) return;
+  if (!canAdd) { card.style.display = 'none'; return; }
+  var selV = document.getElementById('ptAddVillage');
+  selV.innerHTML = '';
+  getVisibleVillages().forEach(function(v) {
+    var op = document.createElement('option');
+    op.value = v; op.textContent = v;
+    selV.appendChild(op);
+  });
+  if (isVillage && myVillage) { selV.value = myVillage; selV.disabled = true; }
+  else {
+    var fv = document.getElementById('ptFilterVillage');
+    if (fv && fv.value) selV.value = fv.value;
+  }
+  var insp = document.getElementById('ptAddInspector');
+  if (insp) insp.value = localStorage.getItem('xyc_last_inspector') || '';
+}
+ptInitAddForm();
+
+document.getElementById('ptFilterVillage').addEventListener('change', renderPatrol);
+document.getElementById('ptFilterInspector').addEventListener('change', renderPatrol);
+initVillageFilter();
+patrolRefresh();
+
+</script>
+</body>
+</html>

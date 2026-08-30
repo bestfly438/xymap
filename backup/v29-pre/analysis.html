@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta name="color-scheme" content="light">
+<title>专业防汛分析 - 新塬镇应急避险指挥系统</title>
+<link rel="stylesheet" href="leaflet/leaflet.css" />
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100%; color-scheme: light; font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif overflow: hidden; background: #eef2f7; }
+
+#map { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: linear-gradient(135deg, #d32f2f, #b71c1c);
+  color: #fff; padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+#topbar .logo-area { display: flex; align-items: center; gap: 8px; min-width: 0; }
+#topbar .logo-icon {
+  width: 34px; height: 34px; border-radius: 8px; background: rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+}
+#topbar h1 { font-size: 16px; white-space: nowrap; }
+#topbar .sub { font-size: 11px; opacity: .85; margin-top: 2px; }
+#topbar .nav-links { display: flex; align-items: center; gap: 8px; }
+.back-link {
+  color: #fff; text-decoration: none; font-size: 12px;
+  background: rgba(255,255,255,.15); padding: 6px 12px; border-radius: 16px;
+  white-space: nowrap;
+}
+
+/* 顶部 Tab 切换 */
+#tabs {
+  position: fixed; top: 58px; left: 0; right: 0; z-index: 999;
+  display: flex; background: #fff; border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 1px 4px rgba(0,0,0,.06);
+}
+#tabs .tab {
+  flex: 1; text-align: center; padding: 10px 2px; font-size: 13px;
+  color: #64748b; cursor: pointer; border-bottom: 2px solid transparent;
+  white-space: nowrap; user-select: none;
+}
+#tabs .tab.active { color: #b71c1c; border-bottom-color: #d32f2f; font-weight: 700; }
+
+/* 顶部汇总条 */
+#summary {
+  position: fixed; top: 106px; left: 50%; transform: translateX(-50%);
+  z-index: 997; background: rgba(255,255,255,.96); border: 1px solid rgba(15,23,42,.1);
+  border-radius: 20px; padding: 6px 16px; font-size: 13px; font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0,0,0,.12); max-width: 92%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1e293b;
+}
+
+/* 控制面板(PC) */
+#ctrl-panel {
+  position: fixed; right: 12px; top: 106px; z-index: 998;
+  width: 216px; background: rgba(255,255,255,.96); border-radius: 12px;
+  box-shadow: 0 3px 14px rgba(0,0,0,.18); padding: 12px;
+  max-height: calc(100vh - 150px); overflow-y: auto;
+}
+#ctrl-panel .cp-title { font-size: 14px; font-weight: 700; color: #b71c1c; margin-bottom: 10px; }
+.cp-row { margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
+.cp-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.cp-row .cp-name { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.cp-modes { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.cp-modes label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+.cp-modes input[type=radio] { width: 15px; height: 15px; accent-color: #d32f2f; }
+.cp-row .cp-slider { display: flex; align-items: center; gap: 6px; margin-top: 6px; }
+.cp-row .cp-slider input[type=range] { flex: 1; accent-color: #d32f2f; }
+.cp-row .cp-slider span { font-size: 11px; color: #666; width: 38px; text-align: right; }
+.cp-hint { font-size: 11px; color: #888; margin-top: 6px; line-height: 1.6; }
+.cp-hint b { color: #555; }
+.rain-level { margin-top: 6px; font-size: 13px; font-weight: 700; }
+.rain-level .mm { font-size: 18px; }
+.cp-select { width: 100%; padding: 7px 8px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; color: #334155; background: #fff; }
+.cp-chk { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+.cp-chk label { display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+.cp-chk input[type=checkbox] { width: 16px; height: 16px; accent-color: #d32f2f; }
+/* 自定义圆形单选：点中后圆圈本体填充对应颜色（20蓝/50橙/80红） */
+.cp-chk input[type=radio] {
+  -webkit-appearance: none; appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid #cbd5e1; background: #fff; cursor: pointer;
+  display: inline-block; position: relative; flex-shrink: 0;
+  transition: border-color .15s, background .15s, box-shadow .15s;
+}
+.cp-chk input[type=radio]:checked {
+  border-color: var(--rc, #d32f2f); background: var(--rc, #d32f2f);
+  box-shadow: 0 1px 4px rgba(0,0,0,.25);
+}
+.cp-chk input[type=radio]:checked::after {
+  content: ''; position: absolute; inset: 5px; border-radius: 50%; background: #fff;
+}
+.cp-chk label.on { color: var(--rc, #b71c1c); font-weight: 700; }
+
+/* 图例(PC) */
+#legend {
+  position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 996; background: rgba(255,255,255,.95); border-radius: 10px;
+  padding: 8px 14px; display: flex; align-items: center; gap: 12px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.15); font-size: 12px; flex-wrap: wrap;
+  justify-content: center; max-width: 70%;
+}
+#legend .lg-title { font-weight: 700; color: #555; }
+#legend .l-item { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+#legend .l-item.l-on { font-weight: 700; color: #1e293b; }
+#legend .l-item.l-on .l-dot { box-shadow: 0 0 0 2px rgba(30,41,59,.35); }
+#legend .l-dot { width: 12px; height: 12px; border-radius: 3px; border: 1px solid rgba(0,0,0,.25); flex-shrink: 0; }
+#legend .l-dot.circle { border-radius: 50%; }
+
+/* 左侧列表面板(PC) */
+#list-panel {
+  position: fixed; left: 10px; top: 106px; bottom: 16px; width: 300px;
+  background: rgba(255,255,255,.97); border-radius: 12px;
+  box-shadow: 0 3px 14px rgba(0,0,0,.16); overflow-y: auto; z-index: 996; padding: 8px;
+}
+#list-panel .lp-title { font-size: 13px; font-weight: 700; color: #334155; padding: 6px 8px 10px; border-bottom: 1px solid #f0f0f0; margin-bottom: 6px; }
+.vl-row { padding: 8px; border-radius: 8px; border-bottom: 1px solid #f3f4f6; cursor: pointer; }
+.vl-row:active { background: #f8fafc; }
+.vl-row .vl-head { display: flex; align-items: center; justify-content: space-between; }
+.vl-row .vl-head b { font-size: 14px; color: #1e293b; }
+.vl-badge { font-size: 11px; color: #fff; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+.vl-sub { font-size: 12px; color: #64748b; margin-top: 3px; }
+.vl-act { font-size: 12px; color: #334155; margin-top: 4px; line-height: 1.5; }
+.vl-tel { font-size: 12px; color: #b45309; margin-top: 3px; }
+.zl-row { padding: 7px 8px; border-bottom: 1px solid #f3f4f6; font-size: 12px; color: #334155; line-height: 1.5; cursor: pointer; }
+.zl-row b { color: #1e293b; }
+.zl-row .z-tag { font-size: 10px; color: #fff; background: #0284c7; border-radius: 4px; padding: 1px 5px; margin-left: 4px; }
+
+/* 弹出气泡 */
+.leaflet-popup-content { font-size: 13px; line-height: 1.7; }
+.pt-pop b { font-size: 14px; }
+.g-高 { color: #dc2626; font-weight: 700; }
+.g-中 { color: #f97316; font-weight: 700; }
+.g-低 { color: #16a34a; font-weight: 700; }
+
+/* 移动端控件默认隐藏 */
+#legend-toggle, #bottom-bar, #sheet { display: none; }
+
+@media (max-width: 768px) {
+  #topbar { padding: 8px 10px; }
+  #topbar h1 { font-size: 14px; }
+  #topbar .sub { display: none; }
+  #topbar .nav-links .back-link { display: none; }
+  #tabs { top: 48px; }
+  #tabs .tab { font-size: 11px; padding: 9px 1px; letter-spacing: -0.2px; }
+  #summary { top: 92px; font-size: 12px; padding: 5px 12px; }
+  #ctrl-panel { display: none; }
+  #list-panel { display: none; }
+  #list-panel.show {
+    display: block; position: fixed; left: 8px; right: 8px; top: auto;
+    bottom: 66px; max-height: 44vh; width: auto; z-index: 1002;
+    border: 1px solid rgba(15,23,42,.12);
+  }
+  #legend {
+    display: none; bottom: 80px; left: 8px; right: auto; transform: none;
+    justify-content: flex-start; font-size: 11px; max-width: 78%;
+    max-height: 40vh; overflow-y: auto; flex-direction: column; align-items: flex-start; gap: 5px;
+    background: rgba(255,255,255,.97); z-index: 996;
+  }
+  #legend.open { display: flex; }
+  #legend-toggle {
+    display: flex; align-items: center; justify-content: center;
+    position: fixed; bottom: 80px; left: 8px; z-index: 996;
+    height: 34px; padding: 0 14px; border-radius: 17px;
+    background: rgba(255,255,255,.95); border: 1px solid rgba(15,23,42,.12);
+    color: #1e293b; font-size: 12px; font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,.15); cursor: pointer; gap: 5px;
+  }
+  #legend-toggle.active { background: #2f6fed; color: #fff; border-color: #2f6fed; }
+  #bottom-bar {
+    display: flex; align-items: center; justify-content: space-around;
+    position: fixed; left: 8px; right: 8px; bottom: 8px; z-index: 1002;
+    background: rgba(255,255,255,.97); border: 1px solid rgba(15,23,42,.12);
+    border-radius: 26px; box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    padding: 5px 6px;
+  }
+  #bottom-bar button, #bottom-bar .bb-link {
+    flex: 1; max-width: 76px;
+    background: none; border: none; color: #475569;
+    font-size: 10px; cursor: pointer; font-family: inherit;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    padding: 6px 2px; border-radius: 14px; text-decoration: none;
+  }
+  #bottom-bar button .bb-ico, #bottom-bar .bb-link .bb-ico { font-size: 19px; line-height: 1; }
+  #bottom-bar button.active,
+  #bottom-bar button:active { color: #dc2626; background: rgba(220,38,38,.08); }
+  #sheet {
+    position: fixed; left: 8px; right: 8px; bottom: 66px; z-index: 1002;
+    background: rgba(255,255,255,.98); border: 1px solid rgba(15,23,42,.12);
+    border-radius: 14px; box-shadow: 0 4px 16px rgba(0,0,0,.15);
+    padding: 10px 12px; max-height: 46vh; overflow-y: auto;
+  }
+  #sheet.show { display: block; }
+  #sheet .sh-header {
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 13px; font-weight: 700; color: #1e293b;
+    padding-bottom: 8px; border-bottom: 1px solid rgba(15,23,42,.08);
+    margin-bottom: 8px;
+  }
+  #sheet .sh-close { cursor: pointer; color: #64748b; font-size: 16px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; border-radius: 50%; }
+  #sheet .sh-close:active { background: rgba(15,23,42,.08); }
+  #sheet .sheet-legend { margin-top: 10px; padding-top: 8px; border-top: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 5px; font-size: 12px; }
+}
+#loading { display: none; position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%);
+  background: rgba(15,23,42,.85); color: #fff; font-size: 13px; padding: 8px 16px;
+  border-radius: 20px; z-index: 1200; white-space: nowrap; box-shadow: 0 4px 12px rgba(0,0,0,.25); }
+/* ===== 界面细节打磨（make-interfaces-feel-better）===== */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+button,a,.btn,input,select{touch-action:manipulation}
+*{-webkit-tap-highlight-color:transparent}
+button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="topbar">
+  <div class="logo-area">
+    <div class="logo-icon">&#x1F4CA;</div>
+    <div>
+      <h1>专业防汛分析</h1>
+      <div class="sub">雨量响应 · 风险分级 · 洪水影响带 · 易发性叠加</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="map.html?v=v20260827-28" class="back-link">&#x1F5FA; 返回地图</a>
+    <a href="dashboard.html?v=v20260827-28" class="back-link">&#x2190; 返回看板</a>
+  </div>
+</div>
+
+<div id="tabs">
+  <div class="tab active" data-tab="rain">&#x1F4A7; 雨量响应</div>
+  <div class="tab" data-tab="grade">&#x1F534; 风险分级</div>
+  <div class="tab" data-tab="zone">&#x1F30A; 洪水影响带</div>
+  <div class="tab" data-tab="pond">&#x1F30A;&#xFE0F; 积水分析</div>
+  <div class="tab" data-tab="vuln">&#x1F3D4; 易发性叠加</div>
+</div>
+
+<div id="summary"></div>
+
+<div id="ctrl-panel"></div>
+
+<div id="legend"></div>
+
+<!-- 左侧/底部列表面板 -->
+<div id="list-panel"></div>
+
+<!-- 图例折叠按钮（手机端） -->
+<button id="legend-toggle" onclick="toggleLegend()">&#x1F4D0;&nbsp;图例</button>
+
+<!-- 移动端底部工具栏 -->
+<div id="bottom-bar">
+  <button id="bb-sheet" onclick="toggleSheet()"><span class="bb-ico">&#x2699;</span>设置</button>
+  <button id="bb-legend" onclick="toggleLegend()"><span class="bb-ico">&#x1F4D0;</span>图例</button>
+  <button id="bb-list" onclick="toggleList()"><span class="bb-ico">&#x1F4CB;</span>列表</button>
+  <a class="bb-link" href="map.html?v=v20260827-28" title="返回地图">&#x1F5FA;<span>返回地图</span></a>
+</div>
+
+<!-- 移动端设置弹出面板 -->
+<div id="sheet">
+  <div class="sh-header"><span>分析设置</span><span class="sh-close" onclick="toggleSheet()">&#x2715;</span></div>
+  <div id="sheet-body"></div>
+</div>
+
+<script src="feishu_config.js?v=v20260827-28"></script>
+<script src="leaflet/leaflet.js?v=v20260827-28"></script>
+<script src="js_data/village_centers.js?v=v20260827-28"></script>
+<script src="js_data/village_areas.js?v=v20260827-28"></script>
+<script src="js_data/rivers_town.js?v=v20260827-28"></script>
+<script src="js_data/rain_stations.js?v=v20260827-28"></script>
+<script>
+/* ================= 按需加载（首屏只加载必要数据，其余切 Tab 时再下载） ================= */
+var FLOOD_ZONES = null, VULN_FLOOD = null, VULN_MUD = null, FLOOD_DEPRESSION = null, DEPRESSION_META = null;
+var _loading_el = null;
+function _showLoad(txt){
+  if (!_loading_el) {
+    _loading_el = document.createElement('div');
+    _loading_el.id = 'loading';
+    document.body.appendChild(_loading_el);
+  }
+  _loading_el.textContent = txt || '正在加载数据…';
+  _loading_el.style.display = 'block';
+}
+function _hideLoad(){ if (_loading_el) _loading_el.style.display = 'none'; }
+function _loadScript(src, cb){
+  var s = document.createElement('script');
+  s.src = src;
+  s.onload = function(){ cb(); };
+  s.onerror = function(){ _hideLoad(); alert('数据加载失败，请检查网络后重试'); };
+  document.head.appendChild(s);
+}
+function _loadSeq(arr, i, cb){
+  if (i >= arr.length) { cb(); return; }
+  _loadScript(arr[i] + '?v=v20260827-28', function(){ _loadSeq(arr, i + 1, cb); });
+}
+// 切换 Tab 前确保该 Tab 所需数据已加载
+function ensureTabData(tab, cb){
+  var need = [];
+  if (tab === 'zone' && !FLOOD_ZONES) need.push('js_data/flood_zones.js');
+  if (tab === 'vuln' && !VULN_FLOOD) need.push('js_data/vuln_data.js');
+  if (tab === 'pond') {
+    if (!FLOOD_DEPRESSION) need.push('js_data/flood_depression.js');
+    if (!DEPRESSION_META) need.push('js_data/depression_meta.js');
+  }
+  if (!need.length) { cb(); return; }
+  _showLoad('正在加载分析数据…');
+  _loadSeq(need, 0, function(){ _hideLoad(); cb(); });
+}
+/* ================= 基础数据 ================= */
+var map = null;
+var TAB = 'rain';
+var MAP_CENTER = [36.152, 105.39];
+var MAP_BOUNDS = [[35.88, 104.9], [36.42, 105.9]];
+
+var FULL2SHORT = null, SHORT2FULL = null;
+var VILLAGES = [], VILLAGE_MAP = {}, CENTERS = null;
+function centerOf(full){ if (!FULL2SHORT) return null; var s = FULL2SHORT[full] || full; return CENTERS ? CENTERS[s] : null; }
+var PTS = [], STATIONS = [];
+var DEPPTS = [], DEP_MAP = {}, DEP_VILLAGES = [], DEP_STATS = {}, POND_DEPRESSION = null;
+var VILLAGE_AREAS_FC = null, RIVERS_TOWN_FC = null, AREA_NAMES = {};
+// 敏感数据就绪后调用（risk_grading/analysis_meta 经 /api/data 登录取数注入为全局变量）
+function buildBaseData() {
+  FULL2SHORT = {'常家坪村': '常坪村', '杨家河坝村': '河坝村'};
+  SHORT2FULL = {'常坪村': '常家坪村', '河坝村': '杨家河坝村'};
+  VILLAGES = ANALYSIS_META.villages;
+  VILLAGE_MAP = {}; VILLAGES.forEach(function(v){ VILLAGE_MAP[v.name] = v; });
+  CENTERS = VILLAGE_CENTERS;
+  PTS = RISK_GRADING.features.map(function(f){
+    var p = f.properties, c = f.geometry.coordinates;
+    return {name:p.name, cz:p.cz, full:(SHORT2FULL[p.cz]||p.cz), lng:c[0], lat:c[1],
+            score:p.score, grade:p.grade, desc:p.desc, phone:p.phone, resp:p.resp, evac:p.evac,
+            flood:p.flood_grade||0, mud:p.mud_grade||0, z50:p.z50||0, z100:p.z100||0, dep:null};
+  });
+  STATIONS = (DATA_RAIN_STATIONS && DATA_RAIN_STATIONS.features) || [];
+  // 融合 DEM 积水洼地落区（dep: 洼地平均积水深度 / 0 不在洼地）
+  DEPPTS = (DEPRESSION_META && DEPRESSION_META.points) || [];
+  DEP_MAP = {};
+  DEPPTS.forEach(function(d){ DEP_MAP[d.name + '|' + d.cz] = d; });
+  PTS.forEach(function(p){
+    var d = DEP_MAP[p.name + '|' + p.cz] || DEP_MAP[p.name + '|' + SHORT2FULL[p.cz]];
+    if (d) { p.dep = d.depth || 0; }
+  });
+  DEP_VILLAGES = (DEPRESSION_META && DEPRESSION_META.villages) || [];
+  DEP_STATS = (DEPRESSION_META && DEPRESSION_META.stats) || {};
+  POND_DEPRESSION = (typeof FLOOD_DEPRESSION !== 'undefined') ? FLOOD_DEPRESSION : null;
+  VILLAGE_AREAS_FC = (typeof VILLAGE_AREAS !== 'undefined') ? VILLAGE_AREAS : null;
+  RIVERS_TOWN_FC = (typeof RIVERS_TOWN !== 'undefined') ? RIVERS_TOWN : null;
+  AREA_NAMES = {};
+  if (VILLAGE_AREAS_FC) VILLAGE_AREAS_FC.features.forEach(function(f){ AREA_NAMES[f.properties.name] = 1; });
+}
+
+var CLASS_COLORS = ['#00cc66', '#ffdd00', '#ff8800', '#ff1a1a'];  // 1低2较低3较高4高
+var GRADE_COLORS = {高: '#dc2626', 中: '#f97316', 低: '#16a34a'};
+
+var LEVELS = [
+  {mm: 10, name: '蓝色预警', color: '#3b82f6', act: '值班关注'},
+  {mm: 20, name: '黄色预警', color: '#eab308', act: '叫应提醒'},
+  {mm: 50, name: '橙色预警', color: '#f97316', act: '巡查转移'},
+  {mm: 80, name: '红色预警', color: '#dc2626', act: '全面转移'}
+];
+var RAIN_IDX = 1;                 // 默认 20mm 黄色
+var ZSTATE = {z50: true, z100: true, pts: true};
+var PONDSTATE = {heavy: true, mid: true, light: true, pts: true};
+var PRAIN = 80;                   // 积水模拟降雨量 mm（20/50/80）
+var VILLAGE_FILTER = '';
+var MODE = 'flood';               // vuln 叠加模式
+var OPACITY = {flood: 55, mud: 55};
+
+var grpPts = null, grpVillage = null, grpZones = null, grpVuln = null, grpStations = null, grpRivers = null;
+
+/* ================= 地图 ================= */
+function initMap(){
+  map = L.map('map', { center: MAP_CENTER, zoom: 13, minZoom: 10,
+    maxBounds: MAP_BOUNDS, maxBoundsViscosity: 0.8, zoomControl: false });
+  L.control.zoom({ position: 'bottomright' }).addTo(map);
+  L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=6&x={x}&y={y}&z={z}', { subdomains:['1','2','3','4'], maxZoom:18, minZoom:3 }).addTo(map);
+  L.tileLayer('https://webst0{s}.is.autonavi.com/appmaptile?style=8&x={x}&y={y}&z={z}', { subdomains:['1','2','3','4'], maxZoom:18, minZoom:3, opacity:0.6 }).addTo(map);
+
+  grpPts = L.layerGroup().addTo(map);
+  grpVillage = L.layerGroup().addTo(map);
+  grpZones = L.layerGroup().addTo(map);
+  grpVuln = L.layerGroup().addTo(map);
+  grpStations = L.layerGroup().addTo(map);
+  grpRivers = L.layerGroup().addTo(map);
+
+  map.on('click', function(){
+    if (window.innerWidth <= 768) { closeMobile(); }
+  });
+  renderAll();
+}
+
+function closeMobile(){
+  var lg = document.getElementById('legend');
+  if (lg && lg.classList.contains('open')) { lg.classList.remove('open'); var b=document.getElementById('legend-toggle'); if(b) b.classList.remove('active'); }
+  var sh = document.getElementById('sheet');
+  if (sh && sh.classList.contains('show')) { sh.classList.remove('show'); var bb=document.getElementById('bb-sheet'); if(bb) bb.classList.remove('active'); }
+  var lp = document.getElementById('list-panel');
+  if (lp && lp.classList.contains('show')) { lp.classList.remove('show'); var bl=document.getElementById('bb-list'); if(bl) bl.classList.remove('active'); }
+}
+function toggleLegend(){
+  var lg = document.getElementById('legend'); if (!lg) return;
+  var open = lg.classList.toggle('open');
+  var b = document.getElementById('legend-toggle'); if (b) b.classList.toggle('active', open);
+  if (open && window.innerWidth <= 768) {
+    var sh = document.getElementById('sheet'); if (sh && sh.classList.contains('show')) sh.classList.remove('show');
+    var sb = document.getElementById('bb-sheet'); if (sb) sb.classList.remove('active');
+    var lp = document.getElementById('list-panel'); if (lp && lp.classList.contains('show')) lp.classList.remove('show');
+    var bl = document.getElementById('bb-list'); if (bl) bl.classList.remove('active');
+  }
+}
+function toggleSheet(){
+  var sh = document.getElementById('sheet'); if (!sh) return;
+  var open = sh.classList.toggle('show');
+  var b = document.getElementById('bb-sheet'); if (b) b.classList.toggle('active', open);
+  if (open && window.innerWidth <= 768) {
+    var lg = document.getElementById('legend'); if (lg && lg.classList.contains('open')) lg.classList.remove('open');
+    var lb = document.getElementById('legend-toggle'); if (lb) lb.classList.remove('active');
+    var lp = document.getElementById('list-panel'); if (lp && lp.classList.contains('show')) lp.classList.remove('show');
+    var bl = document.getElementById('bb-list'); if (bl) bl.classList.remove('active');
+  }
+}
+function toggleList(){
+  var lp = document.getElementById('list-panel'); if (!lp) return;
+  var open = lp.classList.toggle('show');
+  var b = document.getElementById('bb-list'); if (b) b.classList.toggle('active', open);
+  if (open && window.innerWidth <= 768) {
+    var lg = document.getElementById('legend'); if (lg && lg.classList.contains('open')) lg.classList.remove('open');
+    var lb = document.getElementById('legend-toggle'); if (lb) lb.classList.remove('active');
+    var sh = document.getElementById('sheet'); if (sh && sh.classList.contains('show')) sh.classList.remove('show');
+    var sb = document.getElementById('bb-sheet'); if (sb) sb.classList.remove('active');
+  }
+}
+
+/* ================= Tab 渲染 ================= */
+document.querySelectorAll('#tabs .tab').forEach(function(t){
+  t.addEventListener('click', function(){
+    TAB = t.getAttribute('data-tab');
+    document.querySelectorAll('#tabs .tab').forEach(function(x){ x.classList.toggle('active', x===t); });
+    closeMobile();
+    ensureTabData(TAB, function(){ renderAll(); });
+  });
+});
+
+function renderAll(){
+  document.getElementById('ctrl-panel').innerHTML = ctrlHTML(TAB);
+  document.getElementById('sheet-body').innerHTML = ctrlHTML(TAB) + '<div class="sheet-legend">' + legendHTML(TAB) + '</div>';
+  document.getElementById('legend').innerHTML = legendHTML(TAB);
+  document.getElementById('summary').innerHTML = summaryHTML(TAB);
+  renderList();
+  refreshMap();
+}
+
+function ctrlHTML(tab){
+  if (tab === 'rain') {
+    var lv = LEVELS[RAIN_IDX];
+    var rHint = RAIN_IDX === 0 ? '全镇值班值守，密切关注雨情，各村责任人电话待命。'
+      : (RAIN_IDX === 1 ? '已叫应全镇 ' + VILLAGES.length + ' 个村责任人，提醒威胁户注意防范。'
+      : (RAIN_IDX === 2 ? '洪水影响带与山洪易发区内隐患点重点巡查、逐户叫应，提前组织转移。'
+      : '威胁户全部转移避险，洪水影响带与山洪易发区内隐患点重点巡查、逐户叫应，确保不漏一人。'));
+    return '<div class="cp-title">降雨量响应</div>'
+      + '<div class="cp-row"><div class="cp-name">降水量（mm）</div>'
+      + '<div class="cp-slider"><input type="range" data-rain min="0" max="3" step="1" value="' + RAIN_IDX + '"><span class="rain-val">' + lv.mm + 'mm</span></div>'
+      + '<div class="rain-level" style="color:' + lv.color + '"><span class="mm">' + lv.mm + 'mm</span> · ' + lv.name + ' · ' + lv.act + '</div></div>'
+      + '<div class="cp-hint rain-hint"><b>分级参考：</b>10mm 蓝 / 20mm 黄 / 50mm 橙 / 80mm 红。<br>'
+      + '<b style="color:' + lv.color + '">' + lv.mm + 'mm ' + lv.name + '</b>：' + rHint + '<br>'
+      + '（是否积水受地形高程影响，图中以<u>洪水影响带 + 山洪易发区</u>近似指示高风险积水区域）</div>';
+  }
+  if (tab === 'grade') {
+    var opts = '<option value="">全部村庄</option>';
+    VILLAGES.forEach(function(v){ opts += '<option value="' + v.name + '"' + (VILLAGE_FILTER===v.name?' selected':'') + '>' + v.name + '</option>'; });
+    return '<div class="cp-title">隐患风险分级</div>'
+      + '<div class="cp-row"><div class="cp-name">按村庄筛选</div><select class="cp-select village-filter">' + opts + '</select></div>'
+      + '<div class="cp-hint">按切坡高度、坡度、水平退让距离、临崖临沟等 8 项指标综合评分（0-15 分）：<b>≥9 高 / ≥6 中 / 其余低</b>。点击隐患点查看详情与避险安排。</div>';
+  }
+  if (tab === 'zone') {
+    var ck = function(k, t){ return '<label><input type="checkbox" data-zcb="' + k + '"' + (ZSTATE[k]?' checked':'') + '> ' + t + '</label>'; };
+    return '<div class="cp-title">洪水影响带</div>'
+      + '<div class="cp-row"><div class="cp-name">显示图层</div><div class="cp-chk">'
+      + ck('z50', '50m 影响带') + ck('z100', '100m 影响带') + ck('pts', '带内隐患点') + '</div></div>'
+      + '<div class="cp-hint">以全镇河道为中心线生成的 <b>50m / 100m 缓冲带</b>，近似指示强降雨（暴雨）下的洪水漫溢与积水高风险范围。红色圆点为带内隐患户，灰点为带外对照。</div>';
+  }
+  if (tab === 'pond') {
+    var pk = function(k, t){ return '<label><input type="checkbox" data-pcb="' + k + '"' + (PONDSTATE[k]?' checked':'') + '> ' + t + '</label>'; };
+    var prk = function(mm){
+      var c = mm === 20 ? '#3b82f6' : (mm === 50 ? '#f97316' : '#dc2626');
+      return '<label style="--rc:' + c + '" class="' + (PRAIN===mm?'on':'') + '"><input type="radio" name="prain" data-prain="' + mm + '" value="' + mm + '"' + (PRAIN===mm?' checked':'') + '> ' + mm + 'mm</label>';
+    };
+    var pdHint = PRAIN === 20 ? '20mm 中雨：汇入低洼区的雨量较少，仅最低处洼地出现浅积水，重点提醒村址低洼住户。'
+      : (PRAIN === 50 ? '50mm 暴雨：洼地蓄水量增大，孟塬村等村址洼地平均水深明显抬升，需提前防范内涝。'
+      : '80mm 大暴雨：各洼地接近蓄满，村址洼地积水最深，威胁户按预案提前转移避险。');
+    return '<div class="cp-title">积水分析（12.5m DEM）</div>'
+      + '<div class="cp-row"><div class="cp-name">模拟降雨</div><div class="cp-chk">'
+      + prk(20) + prk(50) + prk(80) + '</div></div>'
+      + '<div class="cp-row"><div class="cp-name">显示图层</div><div class="cp-chk">'
+      + pk('heavy', '重度积水区（平均水深&gt;2.5m）') + pk('mid', '中度积水区（1~2.5m）')
+      + pk('light', '轻度积水区（&lt;1m）') + pk('pts', '隐患点对照') + '</div></div>'
+      + '<div class="cp-hint pond-hint">基于 <b>CGCS2000 高斯克吕格 12.5m 高程数据</b>做降雨汇流模拟（D8 汇水 + 地形填洼，径流系数 0.5）：降雨沿坡面汇入低洼区，洼地颜色越深积水越深。<br>'
+      + '<b style="color:#b91c1c">' + pdHint + '</b><br>'
+      + '切换降雨量，地图、汇总、图例与列表将同步显示对应 mm 的积水范围。经坐标复核，全镇隐患点多位于坡面崖边、不处于低洼蓄水区；洼地积水风险主要影响低处农田与孟塬村等村址（红点警示）。</div>';
+  }
+  /* vuln */
+  return '<div class="cp-title">易发性叠加</div>'
+    + '<div class="cp-row"><div class="cp-name">分析图层</div><div class="cp-modes">'
+    + '<label><input type="radio" data-mode="flood"' + (MODE==='flood'?' checked':'') + '> 山洪易发性</label>'
+    + '<label><input type="radio" data-mode="mud"' + (MODE==='mud'?' checked':'') + '> 泥石流易发性</label>'
+    + '<label><input type="radio" data-mode="both"' + (MODE==='both'?' checked':'') + '> 叠加对比</label>'
+    + '</div></div>'
+    + '<div class="cp-row"><div class="cp-name">山洪透明度</div><div class="cp-slider"><input type="range" data-op="flood" min="0" max="100" value="' + OPACITY.flood + '"><span class="op-val" data-opval="flood">' + OPACITY.flood + '%</span></div></div>'
+    + '<div class="cp-row"><div class="cp-name">泥石流透明度</div><div class="cp-slider"><input type="range" data-op="mud" min="0" max="100" value="' + OPACITY.mud + '"><span class="op-val" data-opval="mud">' + OPACITY.mud + '%</span></div></div>'
+    + '<div class="cp-hint">隐患点颜色 = 所在位置的山洪/泥石流易发性等级（1低 2较低 3较高 4高），灰色为不在区内。单选模式避免色块重叠。</div>';
+}
+
+function ptInPoly(lng, lat, ring){
+  var x = lng, y = lat, inside = false;
+  for (var i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    var xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+    if (((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) inside = !inside;
+  }
+  return inside;
+}
+function pondFaceAt(lng, lat){
+  if (!POND_DEPRESSION) return null;
+  for (var i = 0; i < POND_DEPRESSION.features.length; i++) {
+    var g = POND_DEPRESSION.features[i].geometry, c = g.coordinates;
+    if (g.type === 'Polygon' && ptInPoly(lng, lat, c[0])) return POND_DEPRESSION.features[i];
+  }
+  return null;
+}
+function bboxCenter(ring){
+  var minx = 1e9, miny = 1e9, maxx = -1e9, maxy = -1e9;
+  ring.forEach(function(c){
+    if (c[0] < minx) minx = c[0];
+    if (c[0] > maxx) maxx = c[0];
+    if (c[1] < miny) miny = c[1];
+    if (c[1] > maxy) maxy = c[1];
+  });
+  return [(minx + maxx) / 2, (miny + maxy) / 2];
+}
+
+function legendHTML(tab){
+  var it = function(color, txt, circle){ return '<span class="l-item"><span class="l-dot' + (circle?' circle':'') + '" style="background:' + color + '"></span>' + txt + '</span>'; };
+  var itOn = function(color, txt){ return '<span class="l-item l-on"><span class="l-dot" style="background:' + color + '"></span>' + txt + '</span>'; };
+  if (tab === 'rain') {
+    var l = '<span class="lg-title">响应等级</span>';
+    LEVELS.forEach(function(x, i){
+      l += (i === RAIN_IDX) ? itOn(x.color, x.mm + 'mm') : it(x.color, x.mm + 'mm');
+    });
+    return l + '<span class="lg-title" style="margin-left:6px">隐患点</span>' + it('#dc2626','高',1) + it('#f97316','中',1) + it('#16a34a','低',1) + it('#06b6d4','影响带内',1) + '<span class="lg-title" style="margin-left:6px">其他</span>' + it('#0284c7','河流');
+  }
+  if (tab === 'grade') {
+    return '<span class="lg-title">综合风险</span>' + it('#dc2626','高风险') + it('#f97316','中风险') + it('#16a34a','低风险');
+  }
+  if (tab === 'zone') {
+    return '<span class="lg-title">洪水影响带</span>' + it('#7dd3fc','50m 带') + it('#38bdf8','100m 带') + it('#0284c7','河流') + it('#ef4444','带内隐患户范围',1) + it('#a855f7','带外隐患点',1);
+  }
+  if (tab === 'pond') {
+    return '<span class="lg-title">洼地积水（' + PRAIN + 'mm 降雨模拟）</span>' + it('#1d4ed8','重 &gt;2.5m') + it('#3b82f6','中 1~2.5m') + it('#93c5fd','轻 &lt;1m') + it('#0284c7','河流') + it('#dc2626','洼地内村中心',1);
+  }
+  return '<span class="lg-title">易发性等级</span>' + it('#00cc66','低') + it('#ffdd00','较低') + it('#ff8800','较高') + it('#ff1a1a','高') + it('#94a3b8','区外隐患点',1);
+}
+
+function summaryHTML(tab){
+  if (tab === 'rain') {
+    var idx = RAIN_IDX;
+    if (idx === 3) {
+      var h=0, p=0; VILLAGES.forEach(function(v){ h+=v.hh||0; p+=v.people||0; });
+      return '\uD83D\uDD34 ' + LEVELS[idx].name + '：全镇 ' + h + ' 户 ' + p + ' 人按预案全部转移避险';
+    }
+    if (idx === 2) {
+      var z = PTS.filter(function(x){ return x.z50||x.z100; }).length;
+      var f = PTS.filter(function(x){ return x.flood>0; }).length;
+      return '\uD83D\uDFE7 ' + LEVELS[idx].name + '：洪水影响带内隐患点 ' + z + ' 处 · 山洪易发区内 ' + f + ' 处 · 低洼积水户 ' + (DEPPTS.length||0) + ' 处需重点巡查';
+    }
+    if (idx === 1) return '\uD83D\uDFE1 ' + LEVELS[idx].name + '：已叫应全镇 ' + VILLAGES.length + ' 个村责任人，提醒威胁户';
+    return '\uD83D\uDD35 ' + LEVELS[idx].name + '：全镇值班值守，密切关注雨情';
+  }
+  if (tab === 'grade') {
+    var n = PTS.filter(function(x){ return !VILLAGE_FILTER || x.full===VILLAGE_FILTER; }).length;
+    var g = PTS.filter(function(x){ return (!VILLAGE_FILTER || x.full===VILLAGE_FILTER) && x.grade==='高'; }).length;
+    var m = PTS.filter(function(x){ return (!VILLAGE_FILTER || x.full===VILLAGE_FILTER) && x.grade==='中'; }).length;
+    var l = PTS.filter(function(x){ return (!VILLAGE_FILTER || x.full===VILLAGE_FILTER) && x.grade==='低'; }).length;
+    return '隐患点共 ' + n + ' 处 · 高风险 ' + g + ' · 中风险 ' + m + ' · 低风险 ' + l + (VILLAGE_FILTER ? '（' + VILLAGE_FILTER + '）' : '');
+  }
+  if (tab === 'zone') {
+    var inPts = PTS.filter(function(x){ return x.z50||x.z100; });
+    var n50 = PTS.filter(function(x){ return x.z50; }).length;
+    var n100 = PTS.filter(function(x){ return x.z100; }).length;
+    var vs = {}; inPts.forEach(function(x){ vs[x.full]=1; });
+    return '50m 带内 ' + n50 + ' 处 · 100m 带内 ' + n100 + ' 处 · 涉及 ' + Object.keys(vs).length + ' 个村';
+  }
+  if (tab === 'pond') {
+    var feats = (POND_DEPRESSION && POND_DEPRESSION.features) ? POND_DEPRESSION.features : [];
+    var n3 = 0, n2 = 0, n1 = 0;
+    feats.forEach(function(f){
+      var R = f.properties['r' + PRAIN], g = R ? R.g : (f.properties.grade || 1);
+      if (g === 3) n3++; else if (g === 2) n2++; else if (g === 1) n1++;
+    });
+    var txt = PRAIN + 'mm 降雨汇流模拟：重度积水 ' + n3 + ' 处 · 中度 ' + n2 + ' 处 · 轻度 ' + n1 + ' 处（共 ' + feats.length + ' 个洼地）';
+    var dv = DEP_VILLAGES.filter(function(v){ return v.grade > 0; });
+    if (dv.length) {
+      var pf = pondFaceAt(dv[0].lng, dv[0].lat), R = pf && pf.properties['r' + PRAIN];
+      txt += ' · ' + dv[0].name + ' 村中心位于洼地内（' + PRAIN + 'mm 下最深约 ' + (R ? R.x : (pf ? pf.properties.max : dv[0].depth)) + 'm）';
+    }
+    return txt;
+  }
+  var nf = PTS.filter(function(x){ return x.flood>0; }).length;
+  var nm = PTS.filter(function(x){ return x.mud>0; }).length;
+  return '山洪易发区内隐患点 ' + nf + ' 处 · 泥石流易发区内 ' + nm + ' 处';
+}
+
+/* ================= 列表 ================= */
+function renderList(){
+  var lp = document.getElementById('list-panel');
+  var html = '';
+  if (TAB === 'rain') {
+    var idx = RAIN_IDX, lv = LEVELS[idx];
+    html = '<div class="lp-title">\uD83D\uDCA7 ' + lv.mm + 'mm ' + lv.name + ' · 各村响应（点击定位）</div>';
+    var list = VILLAGES.slice().sort(function(a,b){ return (b.high||0)-(a.high||0); });
+    list.forEach(function(v){
+      var c = centerOf(v.name);
+      html += '<div class="vl-row"' + (c?' data-lng="'+c.lng+'" data-lat="'+c.lat+'"':'') + '>'
+        + '<div class="vl-head"><b>' + v.name + '</b><span class="vl-badge" style="background:' + lv.color + '">' + lv.act + '</span></div>'
+        + '<div class="vl-sub">隐患：高 ' + (v.high||0) + ' / 中 ' + (v.mid||0) + ' / 低 ' + (v.low||0) + ' · 威胁 ' + (v.hh||0) + ' 户 ' + (v.people||0) + ' 人'
+        + ((v.z50||v.z100) ? ' · 影响带内 ' + ((v.z50||0)+(v.z100||0)) + ' 处' : '') + '</div>'
+        + '<div class="vl-act">' + villageAction(v, idx) + '</div>'
+        + '<div class="vl-tel">\uD83D\uDCDE ' + (v.leader||'') + '</div></div>';
+    });
+  } else if (TAB === 'zone') {
+    var inPts = PTS.filter(function(x){ return x.z50||x.z100; });
+    html = '<div class="lp-title">\uD83C\uDF0A 洪水影响带内隐患点（' + inPts.length + ' 处）</div>';
+    if (!inPts.length) html += '<div class="zl-row">暂无</div>';
+    inPts.forEach(function(p){
+      html += '<div class="zl-row" data-lng="' + p.lng + '" data-lat="' + p.lat + '"><b>' + p.name + '</b> · ' + p.full
+        + (p.z50 ? '<span class="z-tag">50m</span>' : '') + (p.z100 ? '<span class="z-tag">100m</span>' : '')
+        + '<div>评分 ' + p.score + ' 分（' + p.grade + '）' + (p.evac ? ' · 避险点：' + p.evac : '') + '</div></div>';
+    });
+  } else if (TAB === 'pond') {
+    var feats = (POND_DEPRESSION && POND_DEPRESSION.features) || [];
+    var psorted = feats.slice().sort(function(a, b){
+      var Ra = a.properties['r' + PRAIN], Rb = b.properties['r' + PRAIN];
+      return (Rb ? Rb.x : 0) - (Ra ? Ra.x : 0);
+    }).slice(0, 10);
+    html = '<div class="lp-title">\uD83C\uDF0A ' + PRAIN + 'mm 降雨 · 最深积水洼地 TOP' + psorted.length + '（点击定位）</div>';
+    psorted.forEach(function(f){
+      var pr = f.properties, R = pr['r' + PRAIN];
+      var g = R ? R.g : (pr.grade || 1), mean = R ? R.m : pr.mean, mx = R ? R.x : pr.max;
+      var c = bboxCenter(f.geometry.coordinates[0]);
+      html += '<div class="zl-row" data-lng="' + c[0] + '" data-lat="' + c[1] + '">'
+        + '<b>' + (g===3?'重度':g===2?'中度':'轻度') + '积水区</b>'
+        + '<span class="z-tag" style="background:' + (g===3?'#1d4ed8':g===2?'#3b82f6':'#93c5fd') + '">均深 ' + mean + 'm / 最深 ' + mx + 'm</span>'
+        + '<div>面积约 ' + (pr.area >= 10000 ? (pr.area/10000).toFixed(1) + ' 万m²' : Math.round(pr.area/1000) + ' 千m²') + '</div></div>';
+    });
+    if (!psorted.length) html += '<div class="zl-row">暂无洼地数据</div>';
+    var dv = DEP_VILLAGES.filter(function(v){ return v.grade > 0; });
+    dv.forEach(function(v){
+      var pf = pondFaceAt(v.lng, v.lat), R = pf && pf.properties['r' + PRAIN];
+      html += '<div class="zl-row" data-lng="' + v.lng + '" data-lat="' + v.lat + '"><b>' + v.name + '</b>（村中心位于洼地内，' + PRAIN + 'mm 下最深 ' + (R ? R.x : v.depth) + 'm）</div>';
+    });
+    html += '<div class="zl-row" style="color:#64748b">注：经坐标复核，全镇隐患点多位于坡面/崖边，不处于低洼蓄水区；低洼积水风险主要集中在村址与农田低地处。</div>';
+  } else if (TAB === 'grade') {
+    // 风险分级：隐患点列表（支持村庄筛选，高风险在前、同等级按评分降序）
+    var gl = PTS.slice();
+    if (VILLAGE_FILTER) gl = gl.filter(function(x){ return x.full === VILLAGE_FILTER; });
+    var gOrder = {'高': 0, '中': 1, '低': 2};
+    gl.sort(function(a, b){ return (gOrder[a.grade] !== undefined ? gOrder[a.grade] : 3) - (gOrder[b.grade] !== undefined ? gOrder[b.grade] : 3) || (b.score || 0) - (a.score || 0); });
+    html = '<div class="lp-title">\uD83D\uDD34 风险分级 · 隐患点（' + gl.length + ' 处' + (VILLAGE_FILTER ? ' · ' + VILLAGE_FILTER : '') + '，点击定位）</div>';
+    if (!gl.length) html += '<div class="zl-row">该条件下暂无隐患点</div>';
+    gl.forEach(function(p){
+      var c = GRADE_COLORS[p.grade] || '#64748b';
+      html += '<div class="zl-row" data-lng="' + p.lng + '" data-lat="' + p.lat + '">'
+        + '<b>' + p.name + '</b> · ' + p.full
+        + '<span class="z-tag" style="background:' + c + '">' + p.grade + '风险</span>'
+        + '<div>综合评分 ' + p.score + ' 分' + (p.evac ? ' · 避险点：' + p.evac : '') + '</div>'
+        + (p.phone ? '<div style="color:#64748b;font-size:11px;">\uD83D\uDCDE ' + p.phone + '</div>' : '')
+        + '</div>';
+    });
+  } else {
+    html = '<div class="lp-title">\uD83D\uDCD0 易发性叠加</div>'
+      + '<div class="zl-row">本视图暂无列表，点击地图上的隐患点查看详情。</div>';
+  }
+  lp.innerHTML = html;
+  lp.querySelectorAll('[data-lng]').forEach(function(r){
+    r.addEventListener('click', function(){
+      var lat = parseFloat(r.getAttribute('data-lat')), lng = parseFloat(r.getAttribute('data-lng'));
+      map.flyTo([lat, lng], 15, {duration: .8});
+      if (window.innerWidth <= 768) { toggleList(); }
+      // 定位后自动弹出对应隐患点信息（存在匹配点时）
+      setTimeout(function(){
+        var hit = null;
+        for (var i = 0; i < PTS.length; i++) {
+          if (Math.abs(PTS[i].lng - lng) < 1e-6 && Math.abs(PTS[i].lat - lat) < 1e-6) { hit = PTS[i]; break; }
+        }
+        if (hit) L.popup().setLatLng([lat, lng]).setContent(ptPopup(hit)).openOn(map);
+      }, 900);
+    });
+  });
+}
+
+function villageAction(v, idx){
+  if (idx >= 3) return '全面转移：' + (v.hh||0) + ' 户 ' + (v.people||0) + ' 人按预案全部转移避险';
+  if (idx === 2) {
+    var n = (v.z50||0) + (v.z100||0);
+    if (n > 0) return '重点巡查洪水影响带内 ' + n + ' 处隐患点，提前转移';
+    if ((v.in_flood||0) > 0) return '巡查山洪易发区内 ' + v.in_flood + ' 处隐患点';
+    return '橙色响应 · 入户提醒威胁户';
+  }
+  if (idx === 1) return '叫应村责任人，提醒威胁户 ' + (v.hh||0) + ' 户 ' + (v.people||0) + ' 人';
+  return '值班关注雨情，责任人电话待命';
+}
+
+/* ================= 地图图层 ================= */
+function ptPopup(p){
+  var inZone = (p.z50||p.z100);
+  return '<div class="pt-pop"><b>' + p.name + '</b> <span class="g-' + p.grade + '">' + p.grade + '风险' + (inZone?'（影响带内）':'') + '</span>'
+    + '<div>' + p.full + ' · 综合评分 ' + p.score + ' 分</div>'
+    + (p.phone ? '<div>电话：' + p.phone + '</div>' : '')
+    + (p.resp ? '<div>责任人：' + p.resp + '</div>' : '')
+    + (p.evac ? '<div>避险点：' + p.evac + '</div>' : '')
+    + '<div style="color:#64748b;font-size:11px;">' + (p.desc||'') + '</div></div>';
+}
+
+// 隐患点 = 淡色范围圆（提示威胁覆盖区域，区域内可能还有其他居住人员）+ 中心点，两者均可点击查看信息
+function addPtRange(p, fill, markerOpts){
+  grpPts.addLayer(L.circle([p.lat, p.lng], { radius: 60, color: 'transparent', weight: 0, fillColor: fill, fillOpacity: .14 }).bindPopup(ptPopup(p)));
+  grpPts.addLayer(L.circleMarker([p.lat, p.lng], markerOpts).bindPopup(ptPopup(p)));
+}
+
+function refreshMap(){
+  grpPts.clearLayers(); grpVillage.clearLayers(); grpZones.clearLayers(); grpVuln.clearLayers(); grpStations.clearLayers(); grpRivers.clearLayers();
+  if (TAB === 'rain') {
+    var idx = RAIN_IDX, lv = LEVELS[idx];
+    // 镇内河流（背景）
+    if (RIVERS_TOWN_FC) grpRivers.addLayer(L.geoJSON(RIVERS_TOWN_FC, { style: { color:'#0284c7', weight:1.4, opacity:.7 } }));
+    // 隐患点（淡色范围圆标注威胁覆盖区域）
+    PTS.forEach(function(p){
+      var inZone = idx >= 2 && (p.z50||p.z100);
+      var r = inZone ? 8 : (p.grade==='高' ? 7 : (p.grade==='中' ? 5 : 4));
+      addPtRange(p, GRADE_COLORS[p.grade], {
+        radius: r, color: inZone ? '#06b6d4' : '#ffffff', weight: inZone ? 2.5 : 1,
+        fillColor: GRADE_COLORS[p.grade], fillOpacity: .95
+      });
+    });
+    // 雨量站
+    STATIONS.forEach(function(f){
+      var c = f.geometry.coordinates;
+      grpStations.addLayer(L.circleMarker([c[1], c[0]], {
+        radius: 5, color: '#7c3aed', weight: 1.5, fillColor: '#a78bfa', fillOpacity: .85
+      }).bindPopup('<b>\uD83C\uDF27\uFE0F 雨量监测站</b>'));
+    });
+    // 村范围：按当前响应等级着色（有村界的村用面，其余回退中心点）
+    if (VILLAGE_AREAS_FC) {
+      grpVillage.addLayer(L.geoJSON(VILLAGE_AREAS_FC, {
+        style: function(f){
+          var v = VILLAGE_MAP[f.properties.name];
+          return { color: '#ffffff', weight: 1.5, opacity: .9,
+                   fillColor: lv.color, fillOpacity: v ? .42 : .3 };
+        },
+        onEachFeature: function(f, layer){
+          var nm = f.properties.name, v = VILLAGE_MAP[nm];
+          layer.bindPopup('<b>' + nm + '</b> <span style="color:' + lv.color + ';font-weight:700;">' + lv.name + '</span>'
+            + '<div>威胁 ' + (v ? (v.hh||0) : '-') + ' 户 ' + (v ? (v.people||0) : '-') + ' 人 · 隐患 高' + (v?(v.high||0):'-') + '/中' + (v?(v.mid||0):'-') + '/低' + (v?(v.low||0):'-') + '</div>'
+            + '<div>' + (v ? villageAction(v, idx) : '') + '</div>'
+            + (v && v.leader ? '<div>村负责人：' + v.leader + '</div>' : ''));
+        }
+      }));
+    }
+    // 无村界的村（如刘家湾社区）回退为中心圆点
+    VILLAGES.forEach(function(v){
+      if (AREA_NAMES[v.name]) return;
+      var c = centerOf(v.name); if (!c) return;
+      grpVillage.addLayer(L.circleMarker([c.lat, c.lng], {
+        radius: 9, color: '#ffffff', weight: 2.5, fillColor: lv.color, fillOpacity: .95
+      }).bindPopup('<b>' + v.name + '</b> <span style="color:' + lv.color + ';font-weight:700;">' + lv.name + '</span>'
+        + '<div>威胁 ' + (v.hh||0) + ' 户 ' + (v.people||0) + ' 人</div>'
+        + '<div>' + villageAction(v, idx) + '</div>'));
+    });
+  }
+  else if (TAB === 'grade') {
+    PTS.forEach(function(p){
+      if (VILLAGE_FILTER && p.full !== VILLAGE_FILTER) return;
+      addPtRange(p, GRADE_COLORS[p.grade], {
+        radius: p.grade==='高' ? 8 : (p.grade==='中' ? 6 : 4.5),
+        color: '#ffffff', weight: 1.5, fillColor: GRADE_COLORS[p.grade], fillOpacity: .95
+      });
+    });
+    if (VILLAGE_FILTER) {
+      var c = centerOf(VILLAGE_FILTER);
+      if (c) { map.flyTo([c.lat, c.lng], 14, {duration: .8}); }
+    }
+  }
+  else if (TAB === 'zone') {
+    // 镇内河流线
+    if (RIVERS_TOWN_FC) grpRivers.addLayer(L.geoJSON(RIVERS_TOWN_FC, { style: { color:'#0284c7', weight:1.8, opacity:.85 } }));
+    if (ZSTATE.z50 && FLOOD_ZONES) grpZones.addLayer(L.geoJSON(FLOOD_ZONES.z50, { style: { color:'#0284c7', weight:1, opacity:.9, fillColor:'#7dd3fc', fillOpacity:.5 } }));
+    if (ZSTATE.z100 && FLOOD_ZONES) grpZones.addLayer(L.geoJSON(FLOOD_ZONES.z100, { style: { color:'#0369a1', weight:1, opacity:.9, fillColor:'#38bdf8', fillOpacity:.35 } }));
+    if (ZSTATE.pts) {
+      PTS.forEach(function(p){
+        var inZone = p.z50||p.z100;
+        if (inZone) {
+          // 带内隐患点画成区域（户周边 60m 范围，区域内可能还有其他居住人员）
+          grpPts.addLayer(L.circle([p.lat, p.lng], { radius: 60,
+            color: '#dc2626', weight: 2, fillColor: '#ef4444', fillOpacity: .4
+          }).bindPopup(ptPopup(p)));
+        } else {
+          // 带外对照点：紫色半透明小点（避免与卫星图大地色混淆）
+          grpPts.addLayer(L.circleMarker([p.lat, p.lng], {
+            radius: 3.5, color: '#7c3aed', weight: 1, fillColor: '#a855f7', fillOpacity: .7
+          }).bindPopup(ptPopup(p)));
+        }
+      });
+    }
+  }
+  else if (TAB === 'pond') {
+    // 镇内河流（背景）
+    if (RIVERS_TOWN_FC) grpRivers.addLayer(L.geoJSON(RIVERS_TOWN_FC, { style: { color:'#0284c7', weight:1.4, opacity:.7 } }));
+    // 洼地积水区（12.5m DEM 降雨汇流模拟，按所选降雨量切换等级与水深）
+    if (POND_DEPRESSION) {
+      var PCOL = {3: '#1d4ed8', 2: '#3b82f6', 1: '#93c5fd'};
+      var POP = {3: '重度积水', 2: '中度积水', 1: '轻度积水'};
+      var pondFeats = POND_DEPRESSION.features.filter(function(f){
+        var R = f.properties['r' + PRAIN];
+        var g = R ? R.g : (f.properties.grade || 1);
+        if (g === 3 && !PONDSTATE.heavy) return false;
+        if (g === 2 && !PONDSTATE.mid) return false;
+        if (g === 1 && !PONDSTATE.light) return false;
+        return true;
+      });
+      if (pondFeats.length) {
+        grpZones.addLayer(L.geoJSON({type:'FeatureCollection', features: pondFeats}, {
+          style: function(f){
+            var R = f.properties['r' + PRAIN];
+            var g = R ? R.g : (f.properties.grade || 1);
+            return { color:'#ffffff', weight:.6, opacity:.7, fillColor: PCOL[g], fillOpacity: g===3 ? .62 : (g===2 ? .52 : .45) };
+          },
+          onEachFeature: function(f, layer){
+            var pr = f.properties, R = pr['r' + PRAIN];
+            var g = R ? R.g : (pr.grade || 1);
+            var mean = R ? R.m : pr.mean, mx = R ? R.x : pr.max;
+            layer.bindPopup('<b>' + (POP[g] || '积水区') + ' · ' + PRAIN + 'mm 降雨模拟</b>'
+              + '<div>平均水深 ' + mean + 'm · 最深 ' + mx + 'm</div>'
+              + '<div>面积约 ' + (pr.area >= 10000 ? (pr.area/10000).toFixed(1) + ' 万m²' : Math.round(pr.area/1000) + ' 千m²') + '</div>'
+              + '<div style="color:#64748b">地形最大蓄水 平均 ' + pr.mean + 'm / 最深 ' + pr.max + 'm</div>');
+          }
+        }));
+      }
+    }
+    if (PONDSTATE.pts) {
+      PTS.forEach(function(p){
+        grpPts.addLayer(L.circleMarker([p.lat, p.lng], {
+          radius: 3.5, color: '#7c3aed', weight: 1, fillColor: '#a855f7', fillOpacity: .65
+        }).bindPopup(ptPopup(p)));
+      });
+    }
+    // 洼地内村中心
+    DEP_VILLAGES.forEach(function(v){
+      if (!(v.grade > 0)) return;
+      var pf = pondFaceAt(v.lng, v.lat), R = pf && pf.properties['r' + PRAIN];
+      var mean = R ? R.m : v.depth, mx = R ? R.x : v.depth;
+      grpVillage.addLayer(L.circleMarker([v.lat, v.lng], {
+        radius: 11, color: '#ffffff', weight: 2.5, fillColor: '#b91c1c', fillOpacity: .95
+      }).bindPopup('<b>' + v.name + '</b> <span style="color:#b91c1c;font-weight:700;">村中心位于积水洼地内</span>'
+        + '<div>' + PRAIN + 'mm 降雨模拟：平均水深约 ' + mean + 'm · 最深 ' + mx + 'm，强降雨时注意防范内涝</div>'));
+    });
+  }
+  else { /* vuln */
+    var showF = (MODE==='flood'||MODE==='both');
+    var showM = (MODE==='mud'||MODE==='both');
+    if (showF && VULN_FLOOD) grpVuln.addLayer(L.geoJSON(VULN_FLOOD, { style: vulnStyle(VULN_FLOOD, OPACITY.flood/100) }));
+    if (showM && VULN_MUD) grpVuln.addLayer(L.geoJSON(VULN_MUD, { style: vulnStyle(VULN_MUD, OPACITY.mud/100) }));
+    PTS.forEach(function(p){
+      var g = MODE==='mud' ? p.mud : p.flood;
+      var on = g > 0;
+      addPtRange(p, on ? CLASS_COLORS[Math.min(g,4)-1] : '#cbd5e1', {
+        radius: on ? 6 : 3.5, color: on ? '#ffffff' : '#94a3b8',
+        weight: on ? 1.5 : 0, fillColor: on ? CLASS_COLORS[Math.min(g,4)-1] : '#cbd5e1', fillOpacity: on ? .95 : .55
+      });
+    });
+  }
+}
+function vulnStyle(data, op){
+  return function(feature){
+    var gc = feature.properties.gridcode || 1;
+    return { color:'#000000', weight:1, opacity:.85,
+      fillColor: CLASS_COLORS[Math.min(Math.max(gc,1),4)-1], fillOpacity: op };
+  };
+}
+
+/* ================= 控件事件（事件委托，防止重渲染丢失） ================= */
+document.addEventListener('input', function(e){
+  if (e.target.hasAttribute('data-rain')) {
+    RAIN_IDX = parseInt(e.target.value, 10);
+    var lv = LEVELS[RAIN_IDX];
+    document.querySelectorAll('[data-rain]').forEach(function(s){ s.value = RAIN_IDX; });
+    document.querySelectorAll('.rain-val').forEach(function(s){ s.textContent = lv.mm + 'mm'; });
+    document.querySelectorAll('.rain-level').forEach(function(s){
+      s.innerHTML = '<span class="mm">' + lv.mm + 'mm</span> · ' + lv.name + ' · ' + lv.act;
+      s.style.color = lv.color;
+    });
+    var rH = RAIN_IDX === 0 ? '全镇值班值守，密切关注雨情，各村责任人电话待命。'
+      : (RAIN_IDX === 1 ? '已叫应全镇 ' + VILLAGES.length + ' 个村责任人，提醒威胁户注意防范。'
+      : (RAIN_IDX === 2 ? '洪水影响带与山洪易发区内隐患点重点巡查、逐户叫应，提前组织转移。'
+      : '威胁户全部转移避险，洪水影响带与山洪易发区内隐患点重点巡查、逐户叫应，确保不漏一人。'));
+    document.querySelectorAll('.rain-hint').forEach(function(h){
+      h.innerHTML = '<b>分级参考：</b>10mm 蓝 / 20mm 黄 / 50mm 橙 / 80mm 红。<br>'
+        + '<b style="color:' + lv.color + '">' + lv.mm + 'mm ' + lv.name + '</b>：' + rH + '<br>'
+        + '（是否积水受地形高程影响，图中以<u>洪水影响带 + 山洪易发区</u>近似指示高风险积水区域）';
+    });
+    var lg = document.getElementById('legend');
+    if (lg) lg.innerHTML = legendHTML('rain');
+    var slg = document.querySelector('#sheet-body .sheet-legend');
+    if (slg) slg.innerHTML = legendHTML('rain');
+    document.getElementById('summary').innerHTML = summaryHTML('rain');
+    renderList();
+    refreshMap();
+  }
+  else if (e.target.hasAttribute('data-op')) {
+    var k = e.target.getAttribute('data-op');
+    OPACITY[k] = parseInt(e.target.value, 10);
+    document.querySelectorAll('.op-val[data-opval="' + k + '"]').forEach(function(s){ s.textContent = OPACITY[k] + '%'; });
+    if (TAB === 'vuln') refreshMap();
+  }
+});
+document.addEventListener('change', function(e){
+  if (e.target.hasAttribute('data-zcb')) {
+    ZSTATE[e.target.getAttribute('data-zcb')] = e.target.checked;
+    refreshMap();
+  }
+  else if (e.target.hasAttribute('data-pcb')) {
+    PONDSTATE[e.target.getAttribute('data-pcb')] = e.target.checked;
+    refreshMap();
+  }
+  else if (e.target.hasAttribute('data-prain')) {
+    PRAIN = parseInt(e.target.getAttribute('data-prain'), 10);
+    document.querySelectorAll('[data-prain]').forEach(function(rb){
+      var sel = (parseInt(rb.getAttribute('data-prain'), 10) === PRAIN);
+      rb.checked = sel;
+      if (rb.parentElement) rb.parentElement.classList.toggle('on', sel);
+    });
+    var pdH = PRAIN === 20 ? '20mm 中雨：汇入低洼区的雨量较少，仅最低处洼地出现浅积水，重点提醒村址低洼住户。'
+      : (PRAIN === 50 ? '50mm 暴雨：洼地蓄水量增大，孟塬村等村址洼地平均水深明显抬升，需提前防范内涝。'
+      : '80mm 大暴雨：各洼地接近蓄满，村址洼地积水最深，威胁户按预案提前转移避险。');
+    document.querySelectorAll('.pond-hint').forEach(function(h){
+      var b = h.querySelector('b[style*="b91c1c"]');
+      if (b) b.textContent = pdH;
+    });
+    var lg2 = document.getElementById('legend');
+    if (lg2) lg2.innerHTML = legendHTML('pond');
+    var slg2 = document.querySelector('#sheet-body .sheet-legend');
+    if (slg2) slg2.innerHTML = legendHTML('pond');
+    document.getElementById('summary').innerHTML = summaryHTML('pond');
+    renderList();
+    refreshMap();
+  }
+  else if (e.target.classList && e.target.classList.contains('village-filter')) {
+    VILLAGE_FILTER = e.target.value;
+    document.querySelectorAll('.village-filter').forEach(function(s){ s.value = VILLAGE_FILTER; });
+    refreshMap();
+    document.getElementById('summary').innerHTML = summaryHTML('grade');
+    renderList();
+  }
+  else if (e.target.hasAttribute('data-mode')) {
+    MODE = e.target.getAttribute('data-mode');
+    document.querySelectorAll('[data-mode]').forEach(function(rb){ rb.checked = (rb.value === MODE); });
+    refreshMap();
+  }
+});
+
+/* ================= 版本自检 ================= */
+fetch('version.txt?t=' + Date.now(), { cache: 'no-store' })
+  .then(function(r){ return r.text(); })
+  .then(function(txt){
+    var v = (txt || '').trim();
+    var cur = localStorage.getItem('xyy_version');
+    if (cur && cur !== v) { localStorage.setItem('xyy_version', v); location.reload(); }
+    localStorage.setItem('xyy_version', v);
+  }).catch(function(){});
+
+// ========== bfcache 往返缓存修复 ==========
+// 从其他页面返回本页时，浏览器可能直接从 bfcache 恢复页面快照（JS 不重新执行），
+// 导致敏感数据/地图停留在空状态。检测到从 bfcache 恢复时强制整页刷新。
+window.addEventListener('pageshow', function(e) {
+  var needReload = false;
+  if (e.persisted) needReload = true;
+  if (!needReload) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) needReload = true;
+  }
+  if (needReload) {
+    window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+  }
+});
+
+window.onload = function() {
+  // 敏感数据（隐患点名册/村情汇总）登录后从云函数取数，就绪后再初始化地图
+  var ANA_DATA_FILES = ['risk_grading.js', 'analysis_meta.js'];
+  function anaDataReady() { return typeof RISK_GRADING !== 'undefined' && typeof ANALYSIS_META !== 'undefined'; }
+  function startAna(attempt) {
+    loadSecureData(ANA_DATA_FILES, function() {
+      if (!anaDataReady()) {
+        if (attempt > 0) { setTimeout(function() { startAna(attempt - 1); }, 600); return; }
+        document.getElementById('map').innerHTML = '<div style="text-align:center;color:#f87171;padding-top:60px;font-size:15px;">&#x26A0; 数据加载失败（网络或服务器异常），<a href="javascript:location.reload()" style="color:#fbbf24;">点此刷新重试</a></div>';
+        return;
+      }
+      buildBaseData();
+      initMap();
+    }, { force: attempt < 3 });
+  }
+  startAna(3);
+};
+</script>
+<script>
+// 返回看板链接附加时间戳，避免手机浏览器缓存导致数据不刷新
+(function(){var l=document.querySelectorAll('a[href*="dashboard.html"]');for(var i=0;i<l.length;i++)l[i].setAttribute('href',l[i].getAttribute('href').split('?')[0]+'?_t='+Date.now());})();
+</script>
+<!-- 备案号（ICP 备案通过后全站挂载） -->
+<div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
+  <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
+</div></body>
+</html>

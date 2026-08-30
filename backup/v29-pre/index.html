@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: blob:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' https: data: blob:; connect-src 'self' https:; frame-ancestors 'none'; object-src 'none'; base-uri 'self'">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>新塬镇应急避险指挥系统</title>
+<meta name="color-scheme" content="light">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<style>
+:root {
+  --bg: #eef2f7;
+  --bg-card: #ffffff;
+  --border: #e2e8f0;
+  --border-light: #cbd5e1;
+  --text: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --primary: #2f6fed;
+  --primary-glow: rgba(47,111,237,0.2);
+  --radius: 12px;
+  --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  color-scheme: light;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif
+  background: var(--bg);
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, rgba(47,111,237,0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.07) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(47,111,237,0.08) 0%, transparent 50%);
+}
+.bg-grid {
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image: linear-gradient(rgba(15,23,42,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15,23,42,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+.login-card {
+  position: relative; z-index: 1;
+  width: 420px; max-width: 92vw;
+  background: var(--bg-card); border-radius: 16px;
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 60px rgba(15,23,42,0.15), 0 0 0 1px rgba(255,255,255,0.6);
+  padding: 48px 40px 40px;
+  animation: cardIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes cardIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+.login-header { text-align: center; margin-bottom: 36px; }
+.login-header .shield {
+  width: 64px; height: 64px; margin: 0 auto 16px;
+  background: linear-gradient(135deg, #2f6fed, #1a4a7a);
+  border-radius: 16px; display: flex; align-items: center; justify-content: center;
+  font-size: 32px; color: #fff; box-shadow: 0 0 24px rgba(47,111,237,0.4);
+}
+.login-header h1 { font-size: 22px; color: var(--text); font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
+.login-header p { font-size: 13px; color: var(--text-muted); }
+.input-group { margin-bottom: 24px; }
+.input-group label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
+.input-group input {
+  width: 100%; height: 48px; padding: 0 16px;
+  border: 1px solid var(--border); border-radius: 10px;
+  background: rgba(15,23,42,0.04); font-size: 15px; color: var(--text); outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
+  letter-spacing: 1px;
+}
+.input-group input::placeholder { color: var(--text-muted); }
+.input-group input:focus { border-color: #2f6fed; box-shadow: 0 0 0 3px rgba(47,111,237,0.18); }
+.input-group input.error { border-color: #e2444a; animation: shake 0.4s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+.login-btn {
+  width: 100%; height: 48px; border: none; border-radius: 10px;
+  background: linear-gradient(135deg, #2f6fed, #1a4a7a);
+  color: #fff; font-size: 16px; font-weight: 600; cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+.login-btn:hover { transform: translateY(-1px); box-shadow: 0 0 30px rgba(47,111,237,0.35); }
+.login-btn:active { transform: translateY(0); }
+.login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+.error-msg { text-align: center; color: #e2444a; font-size: 13px; margin-top: 12px; min-height: 20px; }
+.footer { text-align: center; margin-top: 32px; font-size: 12px; color: var(--text-muted); }
+.footer span { color: #2f6fed; }
+@media (max-width: 480px) {
+  .login-card { padding: 36px 24px 32px; }
+  .login-header h1 { font-size: 19px; }
+}
+/* ===== 无障碍与动效偏好（reduced-motion / 键盘焦点）===== */
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px;border-radius:3px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
+/* ===== 界面细节打磨（make-interfaces-feel-better）===== */
+html{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+button,a,.btn,input,select{touch-action:manipulation}
+*{-webkit-tap-highlight-color:transparent}
+button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<div class="login-card">
+  <div class="login-header">
+    <div class="shield">🛡</div>
+    <h1>新塬镇应急避险指挥系统</h1>
+    <p>甘肃省白银市会宁县新塬镇</p>
+  </div>
+
+  <div class="input-group">
+    <label>请输入访问密钥</label>
+    <input type="text" id="keyInput" placeholder="XYC-2024-XXXXXXXX" autocomplete="off" maxlength="20">
+  </div>
+
+  <button class="login-btn" id="loginBtn" onclick="doLogin()">进入系统</button>
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="footer">
+    如需访问权限，请联系 <span>新塬镇应急管理办公室</span>
+  </div>
+</div>
+
+<script src="feishu_config.js"></script>
+<script>
+// ========== 自动版本检测：发现版本更新强制刷新，避免浏览器缓存旧页面（无需手动清缓存） ==========
+(function() {
+  try {
+    fetch('version.txt?t=' + Date.now(), { cache: 'no-store' })
+      .then(function(r) { return r.text(); })
+      .then(function(v) {
+        v = (v || '').trim();
+        if (!v) return;
+        var cur = sessionStorage.getItem('xyc_app_version');
+        if (cur && cur !== v) {
+          sessionStorage.setItem('xyc_app_version', v);
+          location.reload(true);
+        } else {
+          sessionStorage.setItem('xyc_app_version', v);
+        }
+      })
+      .catch(function() {});
+  } catch(e) {}
+})();
+
+(function() {
+  // 如果已经登录，直接跳转（带版本参数绕过缓存）
+  if (sessionStorage.getItem('xyc_auth') === '1') {
+    window.location.replace('dashboard.html?v=v20260827-28');
+  }
+})();
+
+var input = document.getElementById('keyInput');
+var btn = document.getElementById('loginBtn');
+var error = document.getElementById('errorMsg');
+
+input.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') doLogin();
+  error.textContent = '';
+  input.classList.remove('error');
+});
+
+input.addEventListener('input', function() {
+  // 自动转大写
+  var val = input.value;
+  var upper = val.toUpperCase();
+  if (upper.length <= 20) input.value = upper;
+});
+
+// 生成/复用设备标识（本机固定，用于设备绑定）
+function getDeviceToken() {
+  var d = localStorage.getItem('xyc_device');
+  if (!d) {
+    d = 'dev-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 12);
+    localStorage.setItem('xyc_device', d);
+  }
+  return d;
+}
+
+function doLogin() {
+  var key = input.value.trim();
+  if (!key) {
+    showError('请输入访问密钥');
+    return;
+  }
+  btn.textContent = '正在验证…';
+  btn.disabled = true;
+  fetch(FEISHU_CONFIG.apiBase + '/api/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    body: JSON.stringify({ key: key, device_token: getDeviceToken() })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data && data.code === 0 && data.data) {
+      var d = data.data;
+      sessionStorage.setItem('xyc_auth', '1');
+      sessionStorage.setItem('xyc_key', d.key);
+      sessionStorage.setItem('xyc_label', d.label || '');
+      sessionStorage.setItem('xyc_role', d.role || '村级');
+      sessionStorage.setItem('xyc_village', d.village || '');
+      sessionStorage.setItem('xyc_device', getDeviceToken());
+      btn.textContent = '验证通过，正在进入…';
+      setTimeout(function() {
+        // 带版本参数跳转：绕过浏览器缓存，确保每次都加载最新版看板页面
+        window.location.replace('dashboard.html?v=v20260827-28');
+      }, 500);
+    } else {
+      btn.textContent = '进入系统';
+      btn.disabled = false;
+      showError((data && data.msg) || '登录失败，请稍后重试');
+    }
+  })
+  .catch(function() {
+    btn.textContent = '进入系统';
+    btn.disabled = false;
+    showError('网络错误，请检查网络后重试');
+  });
+}
+
+function showError(msg) {
+  error.textContent = msg;
+  input.classList.add('error');
+  setTimeout(function() { input.classList.remove('error'); }, 400);
+}
+</script>
+<script>
+// bfcache 返回强制刷新：从其他页面返回本页时若浏览器恢复旧快照，异步数据可能停留在空状态
+window.addEventListener('pageshow', function(e) {
+  var need = false;
+  if (e.persisted) need = true;
+  if (!need) {
+    var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+    if ((nav && nav.type === 'back_forward') || (performance.navigation && performance.navigation.type === 2)) need = true;
+  }
+  if (need) window.location.replace(window.location.pathname + '?_r=' + Date.now() + window.location.hash);
+});
+</script>
+<!-- 备案号（ICP 备案通过后全站挂载） -->
+<div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
+  <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
+</div></body>
+</html>
