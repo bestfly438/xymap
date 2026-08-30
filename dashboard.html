@@ -2196,9 +2196,34 @@ button,a,.btn,input,select{touch-action:manipulation}
 *{-webkit-tap-highlight-color:transparent}
 button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </style>
-<link rel="stylesheet" href="css/tokens.css?v=v20260901-36">
-<link rel="stylesheet" href="css/base.css?v=v20260901-36">
-<link rel="stylesheet" href="css/nav.css?v=v20260901-36">
+<link rel="stylesheet" href="css/tokens.css?v=v20260901-37">
+<link rel="stylesheet" href="css/base.css?v=v20260901-37">
+<link rel="stylesheet" href="css/nav.css?v=v20260901-37">
+<link rel="manifest" href="manifest.json?v=v20260901-37">
+<meta name="theme-color" content="#1D4E89">
+
+<style>
+.v29-screen-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 20px}
+.v29-screen-mid{flex:1;text-align:center}
+.v29-screen-page{display:inline-block;font-size:14px;font-weight:700;color:#7FD1FF;background:rgba(127,209,255,.12);padding:5px 16px;border-radius:20px;letter-spacing:.5px}
+.v29-screen-right{display:flex;align-items:center;gap:12px}
+.v29-carousel-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:#F2F6FA;font-size:12.5px;font-weight:700;padding:7px 14px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all .15s}
+.v29-carousel-btn.on{background:#F04438;border-color:#F04438}
+.v29-screen-info{max-width:860px;margin:24px auto 0;padding:26px 28px;background:#10203A;border:1px solid rgba(255,255,255,.1);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.v29-info-title{font-size:20px;font-weight:800;color:#F2F6FA;margin-bottom:18px;letter-spacing:1px}
+.v29-info-empty{color:#8FA3BD;font-size:14px;line-height:1.9}
+.v29-prog-row{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+.v29-prog-name{width:110px;font-size:13.5px;color:#F2F6FA;font-weight:600;flex:none}
+.v29-prog-bar{flex:1;height:11px;background:#0E1B33;border-radius:6px;overflow:hidden}
+.v29-prog-fill{height:100%;background:linear-gradient(90deg,#22C55E,#16A34A);border-radius:6px;transition:width .4s}
+.v29-prog-txt{width:86px;text-align:right;font-size:12px;color:#DCE7F5;flex:none;font-variant-numeric:tabular-nums}
+@media (max-width:767px){
+  .v29-screen-page{font-size:11px;padding:4px 10px}
+  .v29-carousel-btn{font-size:11px;padding:5px 10px}
+  .v29-screen-info{margin:16px 12px 0;padding:18px 16px}
+  .v29-prog-name{width:84px;font-size:12px}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -2219,23 +2244,23 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
         <nav class="sb-menu">
       <div class="sb-group-t">主功能</div>
       <div class="sb-item active" onclick="pcNav('dash',this)"><svg viewBox="0 0 24 24" fill="none"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>数据看板</div>
-      <a class="sb-item" href="map.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.7"/></svg>应急地图</a>
-      <a class="sb-item" href="analysis.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M10 19V9M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>专业分析</a>
-      <a class="sb-item" href="radar.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.4" opacity=".7"/></svg>雷达 / 预报</a>
+      <a class="sb-item" href="map.html?v=v20260901-37"><svg viewBox="0 0 24 24" fill="none"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 4v13M15 7v13" stroke="currentColor" stroke-width="1.7"/></svg>应急地图</a>
+      <a class="sb-item" href="analysis.html?v=v20260901-37"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M10 19V9M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>专业分析</a>
+      <a class="sb-item" href="radar.html?v=v20260901-37"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12" r="4.5" stroke="currentColor" stroke-width="1.4" opacity=".7"/></svg>雷达 / 预报</a>
       <div class="sb-group-t">数据台账</div>
-      <a class="sb-item" href="ledger.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>应急台账</a>
-      <a class="sb-item" href="patrol.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>巡查记录</a>
-      <a class="sb-item" href="transfer.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h10M7 14h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>转移流程</a>
-      <a class="sb-item" href="photo.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>照片档案</a>
+      <a class="sb-item" href="ledger.html?v=v20260901-37"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>应急台账</a>
+      <a class="sb-item" href="patrol.html?v=v20260901-37"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>巡查记录</a>
+      <a class="sb-item" href="transfer.html?v=v20260901-37"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M7 10h10M7 14h7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>转移流程</a>
+      <a class="sb-item" href="photo.html?v=v20260901-37"><svg viewBox="0 0 24 24" fill="none"><rect x="4" y="6" width="16" height="13" rx="2.5" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="12.5" r="3.4" stroke="currentColor" stroke-width="1.7"/><path d="M8 6l1.6-2h4.8L16 6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>照片档案</a>
       <div class="sb-group-t">消息与指令</div>
-      <a class="sb-item" href="msg.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M20 12.5c0 4-3.6 7-8 7-1 0-2-.2-2.9-.5L5 20l1-3.2C4.7 15.6 4 14.1 4 12.5c0-4 3.6-7 8-7s8 3 8 7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>消息中心</a>
-      <a class="sb-item" href="team.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.7"/></svg>应急队伍</a>
+      <a class="sb-item" href="msg.html?v=v20260901-37"><svg viewBox="0 0 24 24" fill="none"><path d="M20 12.5c0 4-3.6 7-8 7-1 0-2-.2-2.9-.5L5 20l1-3.2C4.7 15.6 4 14.1 4 12.5c0-4 3.6-7 8-7s8 3 8 7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>消息中心</a>
+      <a class="sb-item" href="team.html?v=v20260901-37"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.7"/></svg>应急队伍</a>
       <div class="sb-group-t">应急模块</div>
-      <a class="sb-item" href="guide.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>防汛应急指南</a>
-      <a class="sb-item" href="manual.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>使用说明</a>
+      <a class="sb-item" href="guide.html?v=v20260901-37"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>防汛应急指南</a>
+      <a class="sb-item" href="manual.html?v=v20260901-37"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>使用说明</a>
       <div class="sb-group-t">系统</div>
       <div class="sb-item" id="pcMenuAdmin" onclick="openAdminPanel()" style="display:none"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>系统管理</div>
-      <a class="sb-item" id="pcMenuHealth" href="health.html?v=v20260901-36" style="display:none"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>系统自检</a>
+      <a class="sb-item" id="pcMenuHealth" href="health.html?v=v20260901-37" style="display:none"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>系统自检</a>
       <div class="sb-item" onclick="doLogout()"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h3M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>退出登录</div>
     </nav>
     <div class="sb-foot">
@@ -2273,24 +2298,24 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
         <button class="btn v29-screen-btn" id="v29ScreenBtn" onclick="openScreenMode()">&#x1F4D1; 大屏模式</button>
         <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
         <button class="btn" id="akSysBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
-        <a class="btn" id="akHealthBtn" href="health.html?v=v20260901-36" style="display:none">&#x1F50D; 自检</a>
+        <a class="btn" id="akHealthBtn" href="health.html?v=v20260901-37" style="display:none">&#x1F50D; 自检</a>
         <button class="tb-icon" onclick="toggleMoreMenu()" id="moreBtn" title="更多功能">&#x2630;</button>
       </div>
     </header>
 
     <!-- 手机端更多抽屉 -->
     <div class="more-menu" id="moreMenu">
-      <a href="map.html?v=v20260901-36" class="mm-item">&#x1F5FA; 进入地图</a>
-      <a href="analysis.html?v=v20260901-36" class="mm-item">&#x1F4CA; 专业分析</a>
-      <a href="radar.html?v=v20260901-36" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
-      <a href="transfer.html?v=v20260901-36" class="mm-item">&#x1F500; 转移流程</a>
-      <a href="team.html?v=v20260901-36" class="mm-item">&#x1F465; 应急队伍</a>
-      <a href="photo.html?v=v20260901-36" class="mm-item">&#x1F4F7; 照片档案</a>
-      <a href="guide.html?v=v20260901-36" class="mm-item">&#x1F4D6; 防汛应急指南</a>
-      <a href="manual.html?v=v20260901-36" class="mm-item">&#x1F4F1; 使用说明</a>
-      <a href="ledger.html?v=v20260901-36" class="mm-item">&#x1F4CB; 应急台账</a>
-      <a href="updates.html?v=v20260901-36" class="mm-item">&#x1F4C4; 近期更新</a>
-      <a href="health.html?v=v20260901-36" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
+      <a href="map.html?v=v20260901-37" class="mm-item">&#x1F5FA; 进入地图</a>
+      <a href="analysis.html?v=v20260901-37" class="mm-item">&#x1F4CA; 专业分析</a>
+      <a href="radar.html?v=v20260901-37" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
+      <a href="transfer.html?v=v20260901-37" class="mm-item">&#x1F500; 转移流程</a>
+      <a href="team.html?v=v20260901-37" class="mm-item">&#x1F465; 应急队伍</a>
+      <a href="photo.html?v=v20260901-37" class="mm-item">&#x1F4F7; 照片档案</a>
+      <a href="guide.html?v=v20260901-37" class="mm-item">&#x1F4D6; 防汛应急指南</a>
+      <a href="manual.html?v=v20260901-37" class="mm-item">&#x1F4F1; 使用说明</a>
+      <a href="ledger.html?v=v20260901-37" class="mm-item">&#x1F4CB; 应急台账</a>
+      <a href="updates.html?v=v20260901-37" class="mm-item">&#x1F4C4; 近期更新</a>
+      <a href="health.html?v=v20260901-37" class="mm-item" id="akHealthBtn2" style="display:none">&#x1F50D; 系统自检</a>
       <button class="mm-item" id="editModeBtn2" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
       <button class="mm-item" id="akSysBtn2" style="display:none" onclick="openAdminPanel();toggleMoreMenu()">&#x2699; 系统管理</button>
       <button class="mm-item primary" onclick="doLogout()">&#x21BB; 退出登录</button>
@@ -2654,7 +2679,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 
       <!-- 进入地图 -->
       <div class="map-entry">
-        <a href="map.html?v=v20260901-36">&#x1F5FA; 进入应急避险地图</a>
+        <a href="map.html?v=v20260901-37">&#x1F5FA; 进入应急避险地图</a>
       </div>
 
       <div class="page-foot">
@@ -2693,12 +2718,12 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
   </div>
 </div>
 
-<script src="feishu_config.js?v=v20260901-36"></script>
-<script src="weather.js?v=v20260901-36"></script>
-<script src="js_data/village_centers.js?v=v20260901-36" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260901-36" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260901-36" defer></script>
-<script src="js_data/rain_stations.js?v=v20260901-36" defer></script>
+<script src="feishu_config.js?v=v20260901-37"></script>
+<script src="weather.js?v=v20260901-37"></script>
+<script src="js_data/village_centers.js?v=v20260901-37" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260901-37" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260901-37" defer></script>
+<script src="js_data/rain_stations.js?v=v20260901-37" defer></script>
 
 <script>
 
@@ -3862,14 +3887,17 @@ function pcOpenReplyBar(){
   </div>
 
 <script>
-// v29 大屏模式：URL 带 ?screen=1 进入深色态势大屏（只读，隐藏编辑/调度）
+// v29 大屏模式：URL 带 ?screen=1 进入深色态势大屏（只读）+ 自动轮播
 (function(){
   if (location.search.indexOf('screen=1') < 0) return;
   document.documentElement.classList.add('v29-screen');
   document.body.classList.add('v29-screen');
   var head = document.createElement('div');
   head.className = 'v29-screen-head';
-  head.innerHTML = '<div class="v29-screen-title">新塬镇防汛态势</div><div class="v29-screen-clock" id="v29ScreenClock"></div>';
+  head.innerHTML = '<div class="v29-screen-title">新塬镇防汛态势</div>'
+    + '<div class="v29-screen-mid"><span class="v29-screen-page" id="v29ScreenPage">态势总览</span></div>'
+    + '<div class="v29-screen-right"><div class="v29-screen-clock" id="v29ScreenClock"></div>'
+    + '<button class="v29-carousel-btn" id="v29CarouselBtn" onclick="v29ToggleCarousel()">开启轮播</button></div>';
   document.body.insertBefore(head, document.body.firstChild);
   function tick(){ var el = document.getElementById('v29ScreenClock'); if (el) el.textContent = new Date().toLocaleString('zh-CN',{hour12:false}); }
   tick(); setInterval(tick, 1000);
@@ -3887,12 +3915,84 @@ function pcOpenReplyBar(){
     try { list = JSON.parse(localStorage.getItem('xyc_dispatch_todos') || '[]'); } catch(e) {}
     var box = document.getElementById('v29BoardList');
     if (!box) return;
-    var vills = (window.VILLAGE_ORDER || []).length || 10;
-    var recent = list.slice(0,3);
-    box.innerHTML = '<div class="v29-board-vills">全镇 ' + vills + ' 村 · 未响应 <b style="color:#F04438">' + recent.length + '</b> 条最新指令</div>' +
-      (recent.map(function(t,i){ return '<div class="v29-board-item"><b>' + (t.type||'指令') + '</b> · ' + (t.content||'') + '</div>'; }).join('') || '<div class="v29-board-item">暂无指令</div>');
+    var pend = list.filter(function(t){ return t.status === '未读' || t.status === '已读'; });
+    box.innerHTML = '<div class="v29-board-vills">全镇 ' + ((window.VILLAGE_ORDER||[]).length||10) + ' 村 · 未完成 <b style="color:#F04438">' + pend.length + '</b> 条</div>' +
+      (list.slice(0,5).map(function(t){ return '<div class="v29-board-item"><b>' + (t.type||'指令') + '</b> · ' + (t.village||'') + ' · ' + (t.msg||'') + (t.status ? ' <i style="font-style:normal;color:#8FA3BD">[' + t.status + ']</i>' : '') + '</div>'; }).join('') || '<div class="v29-board-item">暂无指令</div>');
   }
   renderBoard(); setInterval(renderBoard, 10000);
+
+  // ===== 轮播 =====
+  var info = document.createElement('div');
+  info.className = 'v29-screen-info';
+  info.id = 'v29ScreenInfo';
+  info.style.display = 'none';
+  document.body.appendChild(info);
+  var contentEl = document.querySelector('.content');
+  function showEl(sel){ var e = document.querySelector(sel); if (e) e.style.display = ''; }
+  function hideEl(sel){ var es = document.querySelectorAll(sel); es.forEach(function(e){ e.style.display = 'none'; }); }
+  function showInfo(kind){ info.style.display = 'block'; contentEl ? contentEl.style.display = 'none' : null; board.style.display = 'none'; renderInfo(kind); }
+  function renderInfo(kind){
+    if (kind === 'transfer') { info.innerHTML = v29TransferHTML(); return; }
+    if (kind === 'radar') { info.innerHTML = v29RadarHTML(); return; }
+    if (kind === 'photo') { info.innerHTML = v29PhotoHTML(); return; }
+  }
+  function v29TransferHTML() {
+    var list = [];
+    try { list = JSON.parse(localStorage.getItem('xyc_dispatch_todos') || '[]'); } catch(e) {}
+    var byVill = {};
+    list.forEach(function(x){ if (x.transfer) { if (!byVill[x.village]) byVill[x.village] = { from: 0, to: 0 }; byVill[x.village].from += (x.transfer.from||0); byVill[x.village].to += (x.transfer.to||0); } });
+    var names = Object.keys(byVill);
+    if (!names.length) return '<div class="v29-info-title">转移进度</div><div class="v29-info-empty">暂无转移指令数据，等待调度下发后展示各村转移进度。</div>';
+    var sumF = 0, sumT = 0;
+    var rows = '';
+    names.forEach(function(v){
+      var d = byVill[v]; sumF += d.from; sumT += d.to;
+      var pct = d.from ? Math.round(d.to / d.from * 100) : 0;
+      rows += '<div class="v29-prog-row"><span class="v29-prog-name">' + v + '</span>'
+        + '<span class="v29-prog-bar"><span class="v29-prog-fill" style="width:' + Math.min(100, pct) + '%"></span></span>'
+        + '<span class="v29-prog-txt">' + d.to + '/' + d.from + ' 人</span></div>';
+    });
+    return '<div class="v29-info-title">转移进度 · 已转 ' + sumT + ' / 应转 ' + sumF + ' 人</div>' + rows;
+  }
+  function v29RadarHTML() {
+    return '<div class="v29-info-title">雷达 / 预报</div><div class="v29-info-empty">雷达回波、卫星云图与降水预报请切换到「雷达 / 预报」页面查看（本大屏每 60 秒轮播到该画面时自动跳转数据页）。</div><div class="v29-info-empty" style="margin-top:10px">提示：值守人员可在大屏电脑上同时打开雷达页，实时掌握降水回波走势。</div>';
+  }
+  function v29PhotoHTML() {
+    return '<div class="v29-info-title">最新现场照片</div><div class="v29-info-empty">现场照片流功能建设中：后续将轮播展示各村最新巡查与切坡建房户照片，帮助值班领导快速掌握现场情况。</div>';
+  }
+  var SCENES = [
+    { name: '态势总览', dur: 60, apply: function(){ info.style.display = 'none'; showEl('.content'); board.style.display = ''; board.style.position = ''; } },
+    { name: '指令看板', dur: 30, apply: function(){ info.style.display = 'none'; hideEl('.content'); board.style.display = 'block'; } },
+    { name: '转移进度', dur: 30, apply: function(){ showInfo('transfer'); } },
+    { name: '雷达态势', dur: 60, apply: function(){ showInfo('radar'); } },
+    { name: '现场照片', dur: 30, apply: function(){ showInfo('photo'); } }
+  ];
+  var carouselOn = false, carouselIdx = 0, carouselTimer = null;
+  function carouselStop() {
+    carouselOn = false;
+    if (carouselTimer) { clearTimeout(carouselTimer); carouselTimer = null; }
+    var b = document.getElementById('v29CarouselBtn');
+    if (b) { b.textContent = '开启轮播'; b.classList.remove('on'); }
+    SCENES[0].apply(); // 回到态势总览
+    var p = document.getElementById('v29ScreenPage'); if (p) p.textContent = '态势总览';
+  }
+  function carouselStep() {
+    carouselIdx = (carouselIdx + 1) % SCENES.length;
+    var s = SCENES[carouselIdx];
+    s.apply();
+    var p = document.getElementById('v29ScreenPage'); if (p) p.textContent = s.name;
+    carouselTimer = setTimeout(carouselStep, s.dur * 1000);
+  }
+  window.v29ToggleCarousel = function() {
+    if (carouselOn) { carouselStop(); return; }
+    carouselOn = true;
+    carouselIdx = 0;
+    SCENES[0].apply();
+    var b = document.getElementById('v29CarouselBtn');
+    if (b) { b.textContent = '停止轮播'; b.classList.add('on'); }
+    var p = document.getElementById('v29ScreenPage'); if (p) p.textContent = SCENES[0].name;
+    carouselTimer = setTimeout(carouselStep, SCENES[0].dur * 1000);
+  };
 })();
 </script>
 
@@ -3906,7 +4006,12 @@ function openScreenMode() {
 }
 </script>
 
-<script src="js/icons.js?v=v20260901-36"></script>
-<script src="js/nav.js?v=v20260901-36"></script>
+<script src="js/icons.js?v=v20260901-37"></script>
+<script src="js/nav.js?v=v20260901-37"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  try { navigator.serviceWorker.register('sw.js?v=v20260901-37').catch(function(){}); } catch(e) {}
+}
+</script>
 </body>
 </html>

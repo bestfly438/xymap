@@ -61,22 +61,43 @@ function photoOf(village, owner) {
   }).sort(function(a, b) { return a.idx - b.idx; });
 }
 
-// 压缩图片：最长边 1280px、JPEG 0.7，兼容老浏览器 toDataURL 兜底
-function photoCompress(file, cb) {
+
+// v29-6 照片压缩 + 时间水印（最长边 1600px、JPEG 0.8、右下角时间戳；开关 xyc_nocompress=1 关闭走原图）
+function v29CompressPhoto(file, cb) {
+  if (typeof localStorage !== 'undefined' && localStorage.getItem('xyc_nocompress') === '1') { cb(file); return; }
   var reader = new FileReader();
   reader.onload = function(e) {
     var img = new Image();
     img.onload = function() {
-      var MAX = 1280;
+      var MAX = 1600;
       var scale = Math.min(1, MAX / Math.max(img.width, img.height));
       var cv = document.createElement('canvas');
       cv.width = Math.max(1, Math.round(img.width * scale));
       cv.height = Math.max(1, Math.round(img.height * scale));
-      cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+      var ctx = cv.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, cv.width, cv.height);
+      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+      // 右下角时间水印
+      try {
+        var d = new Date();
+        var pad2 = function(n) { return String(n).padStart(2, '0'); };
+        var stamp = d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+        var fs = Math.max(12, Math.round(cv.width / 85));
+        ctx.font = fs + 'px "PingFang SC","Microsoft YaHei",sans-serif';
+        ctx.textBaseline = 'bottom';
+        var label = '新塬应急 ' + stamp;
+        var tw = ctx.measureText(label).width;
+        var bx = cv.width - tw - 12, by = cv.height - 8;
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillRect(bx - 6, by - fs - 6, tw + 12, fs + 12);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(label, bx, by);
+      } catch(e2) {}
       if (cv.toBlob) {
-        cv.toBlob(function(blob) { cb(blob); }, 'image/jpeg', 0.7);
+        cv.toBlob(function(blob) { cb(blob); }, 'image/jpeg', 0.8);
       } else {
-        var dataUrl = cv.toDataURL('image/jpeg', 0.7);
+        var dataUrl = cv.toDataURL('image/jpeg', 0.8);
         var bin = atob(dataUrl.split(',')[1]);
         var arr = new Uint8Array(bin.length);
         for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
@@ -88,6 +109,11 @@ function photoCompress(file, cb) {
   };
   reader.onerror = function() { cb(null); };
   reader.readAsDataURL(file);
+}
+
+// 压缩图片：委托 v29CompressPhoto（1600px/0.8+水印），开关可回退原图
+function photoCompress(file, cb) {
+  v29CompressPhoto(file, cb);
 }
 function photoBlobToBase64(blob, cb) {
   var reader = new FileReader();

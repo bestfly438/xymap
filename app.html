@@ -427,6 +427,8 @@ svg{display:block;flex:none}
 .disp-run .dr-dot{width:8px;height:8px;border-radius:50%;background:var(--green);animation:blink 1.2s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
 </style>
+<link rel="manifest" href="manifest.json?v=v20260901-37">
+<meta name="theme-color" content="#1D4E89">
 </head>
 <body>
 <div id="app">
@@ -1363,6 +1365,11 @@ function apLocate(){
   if(C&&C.Plugins&&C.Plugins.App){ C.Plugins.App.addListener('backButton', onBack); }
   else if(document.addEventListener){ document.addEventListener('backbutton', onBack, false); }
 })();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  try { navigator.serviceWorker.register('sw.js?v=v20260901-37').catch(function(){}); } catch(e) {}
+}
 </script>
 </body>
 </html>
