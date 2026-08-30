@@ -209,9 +209,79 @@
         }).catch(function(){});
     } catch(e) {}
   }
+
+  /* ===== v29-4 村级/社长待办温和提醒（30s 轮询本村未读指令，纯前端） ===== */
+  function startVillagePoll() {
+    var role = '', vill = '';
+    try { role = sessionStorage.getItem('xyc_role') || ''; vill = sessionStorage.getItem('xyc_village') || ''; } catch(e) {}
+    if (!(role === '村级' || role === '社长')) return;
+    if (document.getElementById('v29Remind')) return; // msg.html 自带提醒，避免重复
+    var BID = 'v29_global_todo_banner';
+    var audioCtx = null;
+    function beep() {
+      try {
+        if (localStorage.getItem('xyc_mute') === '1') return;
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.type = 'sine'; o.frequency.value = 880;
+        var t = audioCtx.currentTime;
+        g.gain.setValueAtTime(0.001, t);
+        g.gain.exponentialRampToValueAtTime(0.22, t + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+        o.start(t); o.stop(t + 0.55);
+      } catch(e) {}
+    }
+    function pendList() {
+      var list = [];
+      try { list = JSON.parse(localStorage.getItem('xyc_dispatch_todos') || '[]') || []; } catch(e) {}
+      return list.filter(function(x){ return x.village === vill && (x.status === '未读' || x.status === '待回复'); });
+    }
+    function removeBanner() {
+      var el = document.getElementById(BID);
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    }
+    function showBanner(list) {
+      if (document.getElementById(BID)) return;
+      var el = document.createElement('div');
+      el.id = BID;
+      el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(120deg,#DC2626,#B91C1C);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;font-size:13.5px;font-weight:600;box-shadow:0 4px 16px rgba(220,38,38,.3);font-family:"PingFang SC","Microsoft YaHei",sans-serif;box-sizing:border-box';
+      var txt = document.createElement('span');
+      txt.style.cssText = 'flex:1;line-height:1.5';
+      txt.textContent = '新塬应急：您有 ' + list.length + ' 条未读指令（' + (list[0].type || '指令') + '：' + (list[0].msg || '') + '）';
+      var ok = document.createElement('button');
+      ok.textContent = '确认收到';
+      ok.style.cssText = 'background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.4);color:#fff;padding:7px 12px;border-radius:8px;font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit;flex:none';
+      ok.onclick = function() {
+        try {
+          var all = JSON.parse(localStorage.getItem('xyc_dispatch_todos') || '[]') || [];
+          var changed = false;
+          all.forEach(function(x){ if (x.village === vill && (x.status === '未读' || x.status === '待回复')) { x.status = '已读'; x.readAt = Date.now(); changed = true; } });
+          if (changed) localStorage.setItem('xyc_dispatch_todos', JSON.stringify(all));
+        } catch(e) {}
+        removeBanner();
+        if (window.location.pathname.indexOf('msg.html') >= 0 && typeof msgRefresh === 'function') msgRefresh();
+      };
+      var close = document.createElement('button');
+      close.textContent = '\u00d7';
+      close.style.cssText = 'background:none;border:none;color:rgba(255,255,255,.85);font-size:20px;cursor:pointer;line-height:1;flex:none;padding:0 2px';
+      close.onclick = removeBanner;
+      el.appendChild(txt); el.appendChild(ok); el.appendChild(close);
+      document.body.appendChild(el);
+      beep();
+    }
+    function tick() {
+      var pend = pendList();
+      if (pend.length) showBanner(pend); else removeBanner();
+    }
+    setTimeout(tick, 1200);
+    setInterval(tick, 30000);
+  }
+
   function init(){
     checkVersion();
     if (PAGE.page === 'index.html') return; // 登录页不注入导航
+    startVillagePoll();
     ensureDrawer();
     var existing = document.querySelector('aside.sidebar');
     if (IS_MAP) buildMapNav();
