@@ -2270,6 +2270,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
           <span class="wc-s" id="weatherDesc">加载中</span>
         </div>
         <div class="time-display" id="timeDisplay"></div>
+        <button class="btn v29-screen-btn" id="v29ScreenBtn" onclick="openScreenMode()">&#x1F4D1; 大屏模式</button>
         <button class="btn edit-mode-btn" id="editModeBtn" style="display:none" onclick="toggleEditMode()">&#x270F; 编辑模式</button>
         <button class="btn" id="akSysBtn" style="display:none" onclick="openAdminPanel()">&#x2699; 系统管理</button>
         <a class="btn" id="akHealthBtn" href="health.html?v=v20260828-30" style="display:none">&#x1F50D; 自检</a>
@@ -3861,6 +3862,16 @@ function pcOpenReplyBar(){
   }
   renderBoard(); setInterval(renderBoard, 10000);
 })();
+</script>
+
+
+<script>
+// 大屏模式入口：新标签页打开 ?screen=1
+function openScreenMode() {
+  var sep = location.search ? (location.search.indexOf('screen=1') >= 0 ? '' : '&') : '?';
+  var url = location.pathname.split('/').pop() + (sep ? location.search + (location.search.indexOf('screen=1') >= 0 ? '' : '&screen=1') : '?screen=1');
+  window.open(url, '_blank');
+}
 </script>
 
 <script src="js/icons.js?v=20260831"></script>

@@ -174,7 +174,43 @@
     if (d) { d.classList.remove('open'); if (mk) mk.classList.remove('show'); }
   };
 
+
+  // ---------- 版本自动刷新：检测 version.txt，版本变化自动更新资源并刷新（无需手动强刷） ----------
+  function bumpAssetVersion(v) {
+    var els = document.querySelectorAll('link[href*="?v="], script[src*="?v="]');
+    for (var i = 0; i < els.length; i++) {
+      var el = els[i];
+      var attr = el.getAttribute('href') !== null ? 'href' : 'src';
+      var url = el.getAttribute(attr) || '';
+      if (url.indexOf('?v=') >= 0) el.setAttribute(attr, url.replace(/\?v=[^&]*/, '?v=' + v));
+    }
+  }
+  function checkVersion() {
+    try {
+      fetch('version.txt?t=' + Date.now(), { cache: 'no-store' })
+        .then(function(r){ return r.text(); })
+        .then(function(v){
+          v = (v || '').trim();
+          if (!v) return;
+          bumpAssetVersion(v);
+          var cur = '';
+          try { cur = sessionStorage.getItem('xyc_ver') || ''; } catch(e) {}
+          if (cur && cur !== v) {
+            try { sessionStorage.setItem('xyc_ver', v); } catch(e) {}
+            var q = {};
+            try { location.search.replace(/^\?/, '').split('&').forEach(function(s){ if(!s) return; var kv = s.split('='); q[kv[0]] = kv[1]; }); } catch(e) {}
+            delete q.v;
+            var qs = Object.keys(q).map(function(k){ return k + '=' + q[k]; }).join('&');
+            var page = location.pathname.split('/').pop() || 'index.html';
+            location.replace(page + (qs ? '?' + qs + '&v=' + v : '?v=' + v));
+          } else if (!cur) {
+            try { sessionStorage.setItem('xyc_ver', v); } catch(e) {}
+          }
+        }).catch(function(){});
+    } catch(e) {}
+  }
   function init(){
+    checkVersion();
     if (PAGE.page === 'index.html') return; // 登录页不注入导航
     ensureDrawer();
     var existing = document.querySelector('aside.sidebar');
