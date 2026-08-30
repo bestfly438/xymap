@@ -1,0 +1,51 @@
+/* ============================================
+   新塬应急 v29 · 设计令牌 tokens.css
+   全局设计变量：颜色/字体/字级/间距/圆角/阴影
+   改造期间逐步引入各页面，禁止改动数据链路
+   ============================================ */
+:root{
+  /* 品牌色 */
+  --brand-700:#14355C;
+  --brand-600:#1D4E89;
+  --brand-500:#2B6CB0;
+  --brand-100:#E8F0F9;
+
+  /* 底色 */
+  --bg-page:#F4F6F9;
+  --bg-card:#FFFFFF;
+  --border:#E3E8EF;
+
+  /* 文字 */
+  --text-1:#1A2233;
+  --text-2:#5B6B7F;
+  --text-3:#8A97A8;
+
+  /* 风险五色（含浅底） */
+  --risk-blue:#2E90FA;   --risk-blue-bg:#EFF6FF;
+  --risk-yellow:#F59E0B; --risk-yellow-bg:#FEF7E0;
+  --risk-orange:#EA580C; --risk-orange-bg:#FFF3EA;
+  --risk-red:#DC2626;    --risk-red-bg:#FEF2F2;
+  --safe-green:#16A34A;  --safe-green-bg:#F0FDF4;
+
+  /* 字体 */
+  --font-stack:-apple-system,"HarmonyOS Sans SC","MiSans","PingFang SC","Microsoft YaHei",sans-serif;
+
+  /* 字级 */
+  --fs-body:16px; --lh-body:1.7;
+  --fs-card-title:17px; --fs-page-title:20px; --fs-aux:13px;
+
+  /* 间距 */
+  --sp-1:4px; --sp-2:8px; --sp-3:12px; --sp-4:16px; --sp-5:24px; --sp-6:32px;
+
+  /* 圆角 */
+  --rd-tag:6px; --rd-btn:10px; --rd-card:14px;
+
+  /* 阴影 */
+  --shadow-card:0 1px 3px rgba(16,32,58,.08);
+
+  /* 断点 */
+  --bp-tablet:768px;
+  --bp-desktop:1280px;
+}
+/* 数字使用等宽数字（统计卡对齐） */
+.tnum{font-variant-numeric:tabular-nums;}
