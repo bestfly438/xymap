@@ -142,31 +142,31 @@ body {
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
 </style>
-<link rel="stylesheet" href="css/tokens.css?v=v20260901-35">
-<link rel="stylesheet" href="css/base.css?v=v20260901-35">
-<link rel="stylesheet" href="css/nav.css?v=v20260901-35">
+<link rel="stylesheet" href="css/tokens.css?v=v20260901-36">
+<link rel="stylesheet" href="css/base.css?v=v20260901-36">
+<link rel="stylesheet" href="css/nav.css?v=v20260901-36">
 </head>
 <body>
 
 <div class="topbar">
   <div class="logo">
-    <div class="logo-icon">&#x1F50D;</div>
+    <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></div>
     <div class="logo-text">
       <h1>新塬镇应急避险指挥系统</h1>
       <p>系统自检</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260901-35" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260901-36" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container" id="main">
   <div class="page-head">
-    <h2>&#x1F50D; 系统自检</h2>
+    <h2><svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>系统自检</h2>
     <div class="ph-sub">逐项检查天气数据、飞书连接、业务数据表、云存储与照片存储是否正常。发现异常项会标红显示并给出提示，请据此联系维护人员处理。</div>
   </div>
 
   <div class="check-btn-wrap">
-    <button class="check-btn" id="checkBtn" onclick="runCheck()">&#x1F504; 立即检测</button>
+    <button class="check-btn" id="checkBtn" onclick="runCheck()"><svg viewBox="0 0 24 24" fill="none" width="16" height="16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>立即检测</button>
   </div>
 
   <div class="summary" id="summary" style="display:none"></div>
@@ -189,9 +189,9 @@ if (sessionStorage.getItem('xyc_auth') !== '1') {
   if (ROLE !== '管理员' && ROLE !== '镇级') {
     document.getElementById('main').style.display = 'none';
     document.body.insertAdjacentHTML('beforeend',
-      '<div class="deny"><div class="deny-icon">&#x1F512;</div><h2>无权查看系统自检</h2>' +
+      '<div class="deny"><div class="deny-icon"><svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3"/></svg></div><h2>无权查看系统自检</h2>' +
       '<p>系统自检仅限管理员与镇级账号使用。如有疑问请联系镇级管理员。</p>' +
-      '<a href="dashboard.html?v=v20260901-35">&#x2190; 返回看板</a></div>');
+      '<a href="dashboard.html?v=v20260901-36">&#x2190; 返回看板</a></div>');
     var fp = document.querySelector('.footer'); if (fp) fp.style.display = 'none';
   }
 }
@@ -199,11 +199,11 @@ if (sessionStorage.getItem('xyc_auth') !== '1') {
 <script>
 // ========== 系统自检逻辑 ==========
 var ITEMS = [
-  { name: '和风天气接口', icon: '&#x1F326;', desc: '实时天气数据源连通性', expect: '天气查询正常' },
-  { name: '飞书连接', icon: '&#x1F4E1;', desc: '飞书开放平台凭证获取', expect: '凭证获取正常' },
-  { name: '飞书业务表', icon: '&#x1F4CB;', desc: '密钥表等核心业务数据表可读', expect: '业务表读取正常' },
-  { name: 'COS 存储', icon: '&#x2601;', desc: '腾讯云对象存储（数据桶）', expect: '存储连接正常' },
-  { name: '照片存储', icon: '&#x1F4F7;', desc: '切坡建房农户照片存储检查', expect: '照片桶读取正常' }
+  { name: '和风天气接口', icon: '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a5.5 5.5 0 0 1 7-5.3A7 7 0 0 1 17.5 15H5.2A3.2 3.2 0 0 1 4 14Z"/><path d="M12 4v2M19 6l-1.5 1.5M5 6l1.5 1.5"/></svg>', desc: '实时天气数据源连通性', expect: '天气查询正常' },
+  { name: '飞书连接', icon: '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></svg>', desc: '飞书开放平台凭证获取', expect: '凭证获取正常' },
+  { name: '飞书业务表', icon: '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>', desc: '密钥表等核心业务数据表可读', expect: '业务表读取正常' },
+  { name: 'COS 存储', icon: '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a5.5 5.5 0 0 1 7-5.3A7 7 0 0 1 17.5 15H5.2A3.2 3.2 0 0 1 4 14Z"/></svg>', desc: '腾讯云对象存储（数据桶）', expect: '存储连接正常' },
+  { name: '照片存储', icon: '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l1.5-2.5h7L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.5"/></svg>', desc: '切坡建房农户照片存储检查', expect: '照片桶读取正常' }
 ];
 var RUNNING = false;
 
@@ -324,7 +324,7 @@ window.addEventListener('pageshow', function(e) {
 <!-- 备案号（ICP 备案通过后全站挂载） -->
 <div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
   <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
-</div><script src="js/icons.js?v=v20260901-35"></script>
-<script src="js/nav.js?v=v20260901-35"></script>
+</div><script src="js/icons.js?v=v20260901-36"></script>
+<script src="js/nav.js?v=v20260901-36"></script>
 </body>
 </html>

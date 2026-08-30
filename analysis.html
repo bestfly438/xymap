@@ -219,9 +219,19 @@ button,a,.btn,input,select{touch-action:manipulation}
 *{-webkit-tap-highlight-color:transparent}
 button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </style>
-<link rel="stylesheet" href="css/tokens.css?v=v20260901-35">
-<link rel="stylesheet" href="css/base.css?v=v20260901-35">
-<link rel="stylesheet" href="css/nav.css?v=v20260901-35">
+<link rel="stylesheet" href="css/tokens.css?v=v20260901-36">
+<link rel="stylesheet" href="css/base.css?v=v20260901-36">
+<link rel="stylesheet" href="css/nav.css?v=v20260901-36">
+
+<style>
+.v29-lv-btns{display:flex;gap:8px;margin-top:12px}
+.v29-lv-btn{flex:1;padding:11px 0;border-radius:10px;font-size:14.5px;font-weight:800;border:1.5px solid var(--line-2,#d1d8e6);background:#fff;color:#5B6B7F;cursor:pointer;font-family:inherit;transition:all .15s}
+.v29-lv-btn.on{background:var(--lc,#1D4E89);border-color:var(--lc,#1D4E89);color:#fff;box-shadow:0 4px 12px rgba(16,32,58,.18)}
+.v29-lv-badge{display:flex;align-items:center;gap:8px;margin-top:12px;padding:10px 14px;border-radius:10px;color:#fff;font-size:13.5px;font-weight:600;line-height:1.5;box-shadow:0 4px 14px rgba(16,32,58,.15)}
+.v29-lv-badge b{font-size:16px;font-weight:800}
+#tabs .tab{display:flex;align-items:center;gap:4px}
+#tabs .tab svg{flex:none}
+</style>
 </head>
 <body>
 
@@ -236,17 +246,17 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
     </div>
   </div>
   <div class="nav-links">
-    <a href="map.html?v=v20260901-35" class="back-link">&#x1F5FA; 返回地图</a>
-    <a href="dashboard.html?v=v20260901-35" class="back-link">&#x2190; 返回看板</a>
+    <a href="map.html?v=v20260901-36" class="back-link">&#x1F5FA; 返回地图</a>
+    <a href="dashboard.html?v=v20260901-36" class="back-link">&#x2190; 返回看板</a>
   </div>
 </div>
 
 <div id="tabs">
-  <div class="tab active" data-tab="rain">&#x1F4A7; 雨量响应</div>
-  <div class="tab" data-tab="grade">&#x1F534; 风险分级</div>
-  <div class="tab" data-tab="zone">&#x1F30A; 洪水影响带</div>
-  <div class="tab" data-tab="pond">&#x1F30A;&#xFE0F; 积水分析</div>
-  <div class="tab" data-tab="vuln">&#x1F3D4; 易发性叠加</div>
+  <div class="tab active" data-tab="rain"><svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="3.2"/></svg>雨量响应</div>
+  <div class="tab" data-tab="grade"><svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 9v4.5M12 16.8v.2"/></svg>风险分级</div>
+  <div class="tab" data-tab="zone"><svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 3-2M3 16c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 3-2"/></svg>洪水影响带</div>
+  <div class="tab" data-tab="pond"><svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 15c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 3-2M3 10c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 3-2"/></svg>积水分析</div>
+  <div class="tab" data-tab="vuln"><svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18L14 5l-4 8-2-3.5L3 20Z"/></svg>易发性叠加</div>
 </div>
 
 <div id="summary"></div>
@@ -266,7 +276,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
   <button id="bb-sheet" onclick="toggleSheet()"><span class="bb-ico">&#x2699;</span>设置</button>
   <button id="bb-legend" onclick="toggleLegend()"><span class="bb-ico">&#x1F4D0;</span>图例</button>
   <button id="bb-list" onclick="toggleList()"><span class="bb-ico">&#x1F4CB;</span>列表</button>
-  <a class="bb-link" href="map.html?v=v20260901-35" title="返回地图">&#x1F5FA;<span>返回地图</span></a>
+  <a class="bb-link" href="map.html?v=v20260901-36" title="返回地图">&#x1F5FA;<span>返回地图</span></a>
 </div>
 
 <!-- 移动端设置弹出面板 -->
@@ -275,12 +285,12 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
   <div id="sheet-body"></div>
 </div>
 
-<script src="feishu_config.js?v=v20260901-35"></script>
-<script src="leaflet/leaflet.js?v=v20260901-35"></script>
-<script src="js_data/village_centers.js?v=v20260901-35"></script>
-<script src="js_data/village_areas.js?v=v20260901-35"></script>
-<script src="js_data/rivers_town.js?v=v20260901-35"></script>
-<script src="js_data/rain_stations.js?v=v20260901-35"></script>
+<script src="feishu_config.js?v=v20260901-36"></script>
+<script src="leaflet/leaflet.js?v=v20260901-36"></script>
+<script src="js_data/village_centers.js?v=v20260901-36"></script>
+<script src="js_data/village_areas.js?v=v20260901-36"></script>
+<script src="js_data/rivers_town.js?v=v20260901-36"></script>
+<script src="js_data/rain_stations.js?v=v20260901-36"></script>
 <script>
 /* ================= 按需加载（首屏只加载必要数据，其余切 Tab 时再下载） ================= */
 var FLOOD_ZONES = null, VULN_FLOOD = null, VULN_MUD = null, FLOOD_DEPRESSION = null, DEPRESSION_META = null;
@@ -454,6 +464,14 @@ document.querySelectorAll('#tabs .tab').forEach(function(t){
   });
 });
 
+function v29BriefAct() {
+  return ['全镇值班值守', '已叫应全镇 ' + VILLAGES.length + ' 个村', '逐户叫应 · 提前组织转移', '威胁户全部转移避险'][RAIN_IDX] || '';
+}
+function v29SetRain(i) {
+  var s = document.querySelector('[data-rain]');
+  if (s) { s.value = i; s.dispatchEvent(new Event('input', { bubbles: true })); }
+  else { RAIN_IDX = i; renderAll(); }
+}
 function renderAll(){
   document.getElementById('ctrl-panel').innerHTML = ctrlHTML(TAB);
   document.getElementById('sheet-body').innerHTML = ctrlHTML(TAB) + '<div class="sheet-legend">' + legendHTML(TAB) + '</div>';
@@ -470,10 +488,13 @@ function ctrlHTML(tab){
       : (RAIN_IDX === 1 ? '已叫应全镇 ' + VILLAGES.length + ' 个村责任人，提醒威胁户注意防范。'
       : (RAIN_IDX === 2 ? '洪水影响带与山洪易发区内隐患点重点巡查、逐户叫应，提前组织转移。'
       : '威胁户全部转移避险，洪水影响带与山洪易发区内隐患点重点巡查、逐户叫应，确保不漏一人。'));
+    var btnHTML = '';
+    LEVELS.forEach(function(l, j){ btnHTML += '<button type="button" class="v29-lv-btn' + (j === RAIN_IDX ? ' on' : '') + '" style="--lc:' + l.color + '" onclick="v29SetRain(' + j + ')">' + l.mm + 'mm</button>'; });
     return '<div class="cp-title">降雨量响应</div>'
       + '<div class="cp-row"><div class="cp-name">降水量（mm）</div>'
       + '<div class="cp-slider"><input type="range" data-rain min="0" max="3" step="1" value="' + RAIN_IDX + '"><span class="rain-val">' + lv.mm + 'mm</span></div>'
-      + '<div class="rain-level" style="color:' + lv.color + '"><span class="mm">' + lv.mm + 'mm</span> · ' + lv.name + ' · ' + lv.act + '</div></div>'
+      + '<div class="v29-lv-btns">' + btnHTML + '</div>'
+      + '<div class="v29-lv-badge" style="background:' + lv.color + '"><b>' + lv.mm + 'mm</b> · ' + lv.name + ' · ' + v29BriefAct() + '</div></div>'
       + '<div class="cp-hint rain-hint"><b>分级参考：</b>10mm 蓝 / 20mm 黄 / 50mm 橙 / 80mm 红。<br>'
       + '<b style="color:' + lv.color + '">' + lv.mm + 'mm ' + lv.name + '</b>：' + rHint + '<br>'
       + '（是否积水受地形高程影响，图中以<u>洪水影响带 + 山洪易发区</u>近似指示高风险积水区域）</div>';
@@ -905,6 +926,8 @@ document.addEventListener('input', function(e){
     var lv = LEVELS[RAIN_IDX];
     document.querySelectorAll('[data-rain]').forEach(function(s){ s.value = RAIN_IDX; });
     document.querySelectorAll('.rain-val').forEach(function(s){ s.textContent = lv.mm + 'mm'; });
+    document.querySelectorAll('.v29-lv-btn').forEach(function(b, j){ b.classList.toggle('on', j === RAIN_IDX); });
+    document.querySelectorAll('.v29-lv-badge').forEach(function(b){ b.style.background = lv.color; b.innerHTML = '<b>' + lv.mm + 'mm</b> · ' + lv.name + ' · ' + v29BriefAct(); });
     document.querySelectorAll('.rain-level').forEach(function(s){
       s.innerHTML = '<span class="mm">' + lv.mm + 'mm</span> · ' + lv.name + ' · ' + lv.act;
       s.style.color = lv.color;
@@ -1028,7 +1051,7 @@ window.onload = function() {
 <!-- 备案号（ICP 备案通过后全站挂载） -->
 <div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
   <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
-</div><script src="js/icons.js?v=v20260901-35"></script>
-<script src="js/nav.js?v=v20260901-35"></script>
+</div><script src="js/icons.js?v=v20260901-36"></script>
+<script src="js/nav.js?v=v20260901-36"></script>
 </body>
 </html>

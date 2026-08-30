@@ -156,9 +156,18 @@ button,a,.btn,input,select{touch-action:manipulation}
 *{-webkit-tap-highlight-color:transparent}
 button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </style>
-<link rel="stylesheet" href="css/tokens.css?v=v20260901-35">
-<link rel="stylesheet" href="css/base.css?v=v20260901-35">
-<link rel="stylesheet" href="css/nav.css?v=v20260901-35">
+<link rel="stylesheet" href="css/tokens.css?v=v20260901-36">
+<link rel="stylesheet" href="css/base.css?v=v20260901-36">
+<link rel="stylesheet" href="css/nav.css?v=v20260901-36">
+
+<style>
+.lg-toggle{display:inline-flex;align-items:center;gap:5px;margin:10px 0 0;font-size:12.5px;font-weight:700;color:var(--brand-2,#1a4a7a);background:var(--brand-soft,#e7eff8);padding:6px 12px;border-radius:20px;cursor:pointer;border:none;font-family:inherit}
+.lg-toggle svg{flex:none}
+.lg-pop{display:none;margin-top:10px;background:rgba(255,255,255,.95);border:1px solid var(--line,#E3E8EF);border-radius:12px;padding:12px 14px;box-shadow:0 8px 24px rgba(16,32,58,.12)}
+.lg-pop.show{display:block}
+.tab-btn{display:inline-flex;align-items:center;gap:5px}
+.tab-btn svg{flex:none}
+</style>
 </head>
 <body>
 
@@ -171,8 +180,8 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
     </div>
   </div>
   <div class="top-actions">
-    <a href="dashboard.html?v=v20260901-35" class="btn">&#x1F3E2; 返回看板</a>
-    <a href="map.html?v=v20260901-35" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="dashboard.html?v=v20260901-36" class="btn">&#x1F3E2; 返回看板</a>
+    <a href="map.html?v=v20260901-36" class="btn btn-primary">&#x1F5FA; 进入地图</a>
   </div>
 </div>
 
@@ -194,7 +203,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 
 <div class="footer">甘肃省白银市会宁县新塬镇应急管理办公室 &copy; 2024</div>
 
-<script src="feishu_config.js?v=v20260901-35"></script>
+<script src="feishu_config.js?v=v20260901-36"></script>
 <script>
 // 权限验证：未登录跳回登录页
 if (sessionStorage.getItem('xyc_auth') !== '1') {
@@ -217,12 +226,12 @@ window.addEventListener('pageshow', function(e) {
 // payload 为发给 /api/radar 的请求体；legend 为图例说明（可空）
 var PRODUCTS = [
   {
-    key: 'radar', icon: '&#x1F4E1;', name: '雷达回波',
+    key: 'radar', icon: '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/><path d="M12 3.5v3M3.5 12h3M20.5 12h-3M12 20.5v-3"/></svg>', name: '雷达回波',
     variants: [
       { sub: '西北区域（覆盖本镇）', payload: { type: 'radar', area: 'xibei' } },
       { sub: '全国', payload: { type: 'radar', area: 'china' } }
     ],
-    legendTitle: '&#x1F4CB; 回波强度图例（颜色越深越暖，降水越强）',
+    legendTitle: '回波强度图例（颜色越深越暖，降水越强）',
     legend: [
       ['#3fa63f', '小雨'], ['#7acc4d', '小到中雨'], ['#f7ec39', '中雨'], ['#f7a128', '中到大雨'],
       ['#f03b20', '大雨/暴雨'], ['#d92121', '暴雨/大暴雨'], ['#a01818', '大暴雨/特大暴雨']
@@ -230,12 +239,12 @@ var PRODUCTS = [
     tip: ''
   },
   {
-    key: 'satellite', icon: '&#x2601;&#xFE0F;', name: '卫星云图',
+    key: 'satellite', icon: '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a5.5 5.5 0 0 1 7-5.3A7 7 0 0 1 17.5 15H5.2A3.2 3.2 0 0 1 4 14Z"/></svg>', name: '卫星云图',
     variants: [
       { sub: '风云4B 可见光', payload: { type: 'satellite', sat: 'fy4b' } },
       { sub: '风云4C 真彩色', payload: { type: 'satellite', sat: 'fy4c' } }
     ],
-    legendTitle: '&#x1F4CB; 云图怎么看',
+    legendTitle: '云图怎么看',
     legend: [
       ['#ffffff', '白色云层（越亮越厚，云越厚雨越强）'],
       ['#1e3a8a', '蓝色海洋'],
@@ -244,12 +253,12 @@ var PRODUCTS = [
     tip: '&#x1F4A1; 白色云团正向本地移动或在本地上空发展，预示强降水可能，请结合雷达回波与预警信息综合研判。'
   },
   {
-    key: 'precip', icon: '&#x1F327;&#xFE0F;', name: '降水预报',
+    key: 'precip', icon: '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a5.5 5.5 0 0 1 7-5.3A7 7 0 0 1 17.5 15H5.2A3.2 3.2 0 0 1 4 14Z"/><path d="M8.5 16.5v3M12 17.5v3M15.5 16.5v3"/></svg>', name: '降水预报',
     variants: [
       { sub: '24 小时降水量预报', payload: { type: 'precip', dur: '24' } },
       { sub: '6 小时降水量预报', payload: { type: 'precip', dur: '6' } }
     ],
-    legendTitle: '&#x1F4CB; 24 小时累计降水量（毫米）',
+    legendTitle: '24 小时累计降水量（毫米）',
     legend: [
       ['#c6e7c6', '1~10（小雨）'], ['#9adf9a', '10~25（中雨）'], ['#4dbb4d', '25~50（大雨）'],
       ['#f2c14e', '50~100（暴雨）'], ['#f09048', '100~250（大暴雨）'], ['#d23a3a', '&gt;250（特大暴雨）']
@@ -257,29 +266,29 @@ var PRODUCTS = [
     tip: '&#x1F4A1; 关注新塬镇所在位置（甘肃·白银·会宁）未来 24 小时累计降水预报，可与雷达实况相互印证，判断降雨强度与持续时间。'
   },
   {
-    key: 'temp', icon: '&#x1F321;&#xFE0F;', name: '气温预报',
+    key: 'temp', icon: '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0V4Z"/><path d="M12 12v5.5"/></svg>', name: '气温预报',
     variants: [
       { sub: '24 小时气温预报', payload: { type: 'temp' } }
     ],
-    legendTitle: '&#x1F4CB; 24 小时气温预报（℃，等值线）',
+    legendTitle: '24 小时气温预报（℃，等值线）',
     legend: [],
     tip: '&#x1F4A1; 气温骤降多伴随强对流与强降水过程，可作为降雨趋势的辅助判断。'
   },
   {
-    key: 'wind', icon: '&#x1F32C;&#xFE0F;', name: '大风预报',
+    key: 'wind', icon: '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h11a2.5 2.5 0 1 0-2.5-2.5M3 12h15a2.5 2.5 0 1 1-2.5 2.5M3 16h9a2.5 2.5 0 1 1-2.5 2.5"/></svg>', name: '大风预报',
     variants: [
       { sub: '24 小时大风预报', payload: { type: 'wind' } }
     ],
-    legendTitle: '&#x1F4CB; 24 小时最大阵风风力预报',
+    legendTitle: '24 小时最大阵风风力预报',
     legend: [],
     tip: '&#x1F4A1; 大风易导致高空坠物、树木倒伏，强降水时段叠加狂风需重点防范次生灾害。'
   },
   {
-    key: 'dust', icon: '&#x1F9C4;', name: '沙尘预报',
+    key: 'dust', icon: '<svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="5" cy="9" r="1.6"/><circle cx="12" cy="7" r="1.6"/><circle cx="19" cy="9" r="1.6"/><circle cx="8" cy="15" r="1.6"/><circle cx="16" cy="15" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>', name: '沙尘预报',
     variants: [
       { sub: '沙尘天气预报', payload: { type: 'dust' } }
     ],
-    legendTitle: '&#x1F4CB; 沙尘天气强度预报',
+    legendTitle: '沙尘天气强度预报',
     legend: [],
     tip: '&#x1F4A1; 沙尘影响能见度，对转移安置、巡查等应急行动有影响，请提前做好防范。'
   }
@@ -312,7 +321,7 @@ function renderPanels() {
 
     var head = '<div class="card-head"><h3>' + p.icon + ' ' + p.name + '图 <span class="sub-name" style="font-size:12px;color:var(--text-muted);font-weight:400;">' + p.variants[0].sub + '</span></h3>';
     head += '<div class="meta"><span class="t-status">加载中…</span><span class="prod-time"></span>';
-    head += '<button class="btn-refresh" onclick="loadProduct(' + idx + ',true)">&#x21BB; 立即刷新</button></div></div>';
+    head += '<button class="btn-refresh" onclick="loadProduct(' + idx + ',true)"><svg viewBox="0 0 24 24" fill="none" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>立即刷新</button></div></div>';
 
     var areaHtml = '';
     if (p.variants.length > 1) {
@@ -325,7 +334,8 @@ function renderPanels() {
 
     var legendHtml = '';
     if (p.legendTitle) {
-      legendHtml = '<div class="legend"><div class="lg-title">' + p.legendTitle + '</div><div class="lg-row">';
+      legendHtml = '<button type="button" class="lg-toggle" onclick="this.nextElementSibling.classList.toggle(\'show\')"><svg viewBox="0 0 24 24" fill="none" width="14" height="14" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.8.3-1 .8-1 1.7M12 16.5v.2"/></svg>图例</button>'
+        + '<div class="legend lg-pop"><div class="lg-title">' + p.legendTitle + '</div><div class="lg-row">';
       (p.legend || []).forEach(function(l) {
         legendHtml += '<span class="lg-item"><span class="lg-color" style="background:' + l[0] + '"></span>' + l[1] + '</span>';
       });
@@ -451,7 +461,7 @@ restartTimer();
 <!-- 备案号（ICP 备案通过后全站挂载） -->
 <div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
   <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
-</div><script src="js/icons.js?v=v20260901-35"></script>
-<script src="js/nav.js?v=v20260901-35"></script>
+</div><script src="js/icons.js?v=v20260901-36"></script>
+<script src="js/nav.js?v=v20260901-36"></script>
 </body>
 </html>

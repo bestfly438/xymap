@@ -103,25 +103,42 @@ body {
   .ver-date { margin-left: 0; width: 100%; }
 }
 </style>
-<link rel="stylesheet" href="css/tokens.css?v=v20260901-35">
-<link rel="stylesheet" href="css/base.css?v=v20260901-35">
-<link rel="stylesheet" href="css/nav.css?v=v20260901-35">
+<link rel="stylesheet" href="css/tokens.css?v=v20260901-36">
+<link rel="stylesheet" href="css/base.css?v=v20260901-36">
+<link rel="stylesheet" href="css/nav.css?v=v20260901-36">
 </head>
 <body>
 
 <div class="topbar">
   <div class="logo">
-    <div class="logo-icon">&#x1F6E1;</div>
+    <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z"/></svg></div>
     <div class="logo-text">
       <h1>新塬镇应急避险指挥系统</h1>
       <p>近期更新说明</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260901-35" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260901-36" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container">
   <div class="page-head">
+  <!-- v20260901-v29 -->
+  <div class="ver-card">
+    <div class="ver-head">
+      <span class="ver-badge">v29</span>
+      <span class="ver-title">视觉与交互全面升级：统一导航 / 数据看板重构 / 消息中心 / 大屏模式</span>
+      <span class="ver-date">2026年8月30日</span>
+    </div>
+    <ul class="ver-list">
+      <li><b>新增·全站统一导航</b>：手机端底部固定 5 项（态势/地图/消息/台账/更多），桌面端左侧 220px 深蓝侧栏，地图页悬浮导航，全站图标统一为 SVG 线性图标（不再使用 emoji）；</li>
+      <li><b>新增·大屏模式</b>：数据看板右上角一键进入深色态势大屏（新塬镇防汛态势 + 实时时钟 + 指令看板 + 10 村响应灯），适合值班室大屏展示；</li>
+      <li><b>新增·消息中心升级</b>：指令四色状态（未读/已读/响应中/已完成）、领导端 10 村响应矩阵与超时标红催办、村级端确认收到/处置表单（文字+照片+应转已转人数）/执行完毕、叫应台账时间线；村级未读指令 30 秒温和提醒 + 提示音 + 静音开关；</li>
+      <li><b>优化·数据看板重构</b>：吸顶预警条、6 统计卡与 10 村卡视觉统一（风险色竖条+电话按钮 44px 热区）、调度中心折叠面板、版本自动刷新（无需手动强刷）；</li>
+      <li><b>优化·页面视觉统一</b>：应急台账手机端表格转卡片、转移流程垂直步骤条+口号红底横幅+打印、照片档案农户卡片式、巡查表单大块上传、专业分析四级降雨按钮+响应等级大标签、雷达 6 源图标化+图例浮层、地图 SVG 水源标记+桌面图层浮层+图例折叠；</li>
+      <li><b>修复·若干体验问题</b>：手机宽度下侧栏挤压看板、大屏模式横向溢出与深色不彻底、旧浏览器缓存导致看不到更新（版本号统一管理）。</li>
+    </ul>
+  </div>
+
   <!-- v20260827-28 -->
   <div class="ver-card">
     <div class="ver-head">
@@ -235,7 +252,7 @@ body {
     </ul>
   </div>
 
-    <h2>&#x1F4DD; 近期更新说明</h2>
+    <h2><svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h14v16H5z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>近期更新说明</h2>
     <div class="ph-sub">本次集中升级涵盖天气、预警、应急队伍、照片采集等功能，均为本次防汛备汛新增，各村可直接使用。</div>
   </div>
 
@@ -613,7 +630,7 @@ window.addEventListener('pageshow', function(e) {
 <!-- 备案号（ICP 备案通过后全站挂载） -->
 <div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
   <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
-</div><script src="js/icons.js?v=v20260901-35"></script>
-<script src="js/nav.js?v=v20260901-35"></script>
+</div><script src="js/icons.js?v=v20260901-36"></script>
+<script src="js/nav.js?v=v20260901-36"></script>
 </body>
 </html>

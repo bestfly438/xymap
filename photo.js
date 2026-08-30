@@ -360,15 +360,15 @@ function photoRenderList() {
     var badge = arr.length === 0 ? '<span class="ph-badge none">未传</span>'
       : arr.length === 2 ? '<span class="ph-badge full">已满</span>'
       : '<span class="ph-badge part">' + arr.length + '/2</span>';
-    html += '<div class="ph-row">';
-    html += '<span class="ph-row-name">' + o + '</span>' + badge;
+    html += '<div class="ph-card">';
+    html += '<div class="ph-card-top"><span class="ph-card-name">' + o + '</span>' + badge + '</div>';
     html += '<span class="ph-row-imgs" id="phRow' + idx + '">';
     if (arr.length) {
       arr.forEach(function(item) {
         html += '<span class="ph-thumb" data-key="' + item.key + '">加载中...</span>';
       });
     } else {
-      html += '<span class="ph-muted" style="font-size:11px;">—</span>';
+      html += '<span class="ph-slot">待上传</span>';
     }
     html += '</span></div>';
     (function(rid, items) {

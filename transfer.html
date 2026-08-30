@@ -124,7 +124,7 @@ body {
   position: relative; z-index: 1;
 }
 .flow-num.warn { background: linear-gradient(135deg, #ee8b24, #ea580c); box-shadow: 0 0 16px rgba(238,139,36,0.3); }
-.flow-num.danger { background: linear-gradient(135deg, #1a4a7a, #12314f); box-shadow: 0 0 16px rgba(47,111,237,0.25); }
+.flow-num.danger { background: linear-gradient(135deg, #DC2626, #B91C1C); box-shadow: 0 0 16px rgba(220,38,38,0.3); }
 .flow-body { flex: 1; background: rgba(20,33,61,0.05); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 14px 16px; }
 .flow-body h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 6px; color: var(--text); }
 .flow-body p { font-size: 13px; color: var(--text-secondary); line-height: 1.75; }
@@ -198,9 +198,26 @@ b { color: var(--text); }
   th, td { padding: 10px 10px; font-size: 12px; }
 }
 </style>
-<link rel="stylesheet" href="css/tokens.css?v=v20260901-35">
-<link rel="stylesheet" href="css/base.css?v=v20260901-35">
-<link rel="stylesheet" href="css/nav.css?v=v20260901-35">
+<link rel="stylesheet" href="css/tokens.css?v=v20260901-36">
+<link rel="stylesheet" href="css/base.css?v=v20260901-36">
+<link rel="stylesheet" href="css/nav.css?v=v20260901-36">
+
+<style>
+.ph-badge{display:inline-flex;align-items:center;gap:5px;margin-top:10px;background:rgba(220,38,38,.08);color:#B91C1C;font-size:12px;font-weight:700;padding:6px 12px;border-radius:20px}
+.page-head h2{display:flex;align-items:center;gap:8px}
+.slogan-banner{background:linear-gradient(120deg,#DC2626,#B91C1C);color:#fff;font-size:16.5px;font-weight:800;text-align:center;padding:14px 16px;border-radius:12px;margin:14px 0 6px;letter-spacing:1px;box-shadow:0 6px 18px rgba(220,38,38,.22);line-height:1.6}
+.sec-icon svg{flex:none}
+.flow-item{transition:transform .15s}
+.v29-print-wrap{text-align:center;margin:26px 0 10px}
+.v29-print-btn{padding:12px 28px;font-size:14px}
+@media print{
+  .topbar, .slogan-banner, .v29-print-wrap, .ph-badge{display:none !important}
+  body{background:#fff}
+  .page-head h2{font-size:20px}
+  .card{border:none;box-shadow:none;page-break-inside:avoid}
+  .flow-item::before{background:#ccc}
+}
+</style>
 </head>
 <body>
 
@@ -213,22 +230,23 @@ b { color: var(--text); }
     </div>
   </div>
   <div class="top-actions">
-    <a href="dashboard.html?v=v20260901-35" class="btn">&#x1F3E2; 返回看板</a>
-    <a href="guide.html?v=v20260901-35" class="btn btn-primary">&#x1F4D6; 防汛应急指南</a>
+    <a href="dashboard.html?v=v20260901-36" class="btn">&#x1F3E2; 返回看板</a>
+    <a href="guide.html?v=v20260901-36" class="btn btn-primary">&#x1F4D6; 防汛应急指南</a>
   </div>
 </div>
 
 <div class="container">
   <div class="page-head">
-    <h2>&#x1F500; 转移避险流程图</h2>
-    <div class="ph-sub">转移避险是防汛工作的重中之重，本流程适用于全镇 10 个村。核心原则：<b>宁可错转、不可漏转，宁听骂声、不听哭声。</b></div>
-    <span class="ph-badge">&#x26A0; 全镇统一执行 · 危险区人员务必牢记</span>
+    <h2><svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 17.5 15.5 7.5"/></svg>转移避险流程图</h2>
+    <div class="slogan-banner">宁可错转、不可漏转 &nbsp;·&nbsp; 宁听骂声、不听哭声</div>
+    <div class="ph-sub">转移避险是防汛工作的重中之重，本流程适用于全镇 10 个村。</div>
+    <span class="ph-badge"><svg viewBox="0 0 24 24" fill="none" width="13" height="13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 9v4.5M12 16.8v.2"/></svg>全镇统一执行 · 危险区人员务必牢记</span>
   </div>
 
   <!-- 1 主流程 -->
   <div class="card">
     <div class="sec-title">
-      <div class="sec-icon blue">&#x1F4E2;</div>
+      <div class="sec-icon blue"><svg viewBox="0 0 24 24" fill="none" width="17" height="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10v4M5 9v6M7 8v8M9 7v10M11 6.5v11M13 6v12M15 7v10M17 8v8M19 9v6M21 10v4"/><path d="M3 10h18v4H3z"/></svg></div>
       <h3>一、镇级转移避险总流程</h3>
       <span class="sec-sub">从预警到返回的完整链条</span>
     </div>
@@ -295,7 +313,7 @@ b { color: var(--text); }
   <!-- 2 三个紧急撤离 -->
   <div class="card">
     <div class="sec-title">
-      <div class="sec-icon red">&#x26A0;</div>
+      <div class="sec-icon red"><svg viewBox="0 0 24 24" fill="none" width="17" height="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 9v4.5M12 16.8v.2"/></svg></div>
       <h3>二、三个紧急撤离（必须立即撤离）</h3>
       <span class="sec-sub">出现以下任一情况，立即撤离</span>
     </div>
@@ -326,7 +344,7 @@ b { color: var(--text); }
   <!-- 3 四个一律 -->
   <div class="card">
     <div class="sec-title">
-      <div class="sec-icon red">&#x1F6AB;</div>
+      <div class="sec-icon red"><svg viewBox="0 0 24 24" fill="none" width="17" height="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M6.5 6.5l11 11"/></svg></div>
       <h3>三、转移避险"四个一律"</h3>
       <span class="sec-sub">刚性底线 · 严禁突破</span>
     </div>
@@ -364,7 +382,7 @@ b { color: var(--text); }
   <!-- 4 必须转 / 可转可不转 -->
   <div class="card">
     <div class="sec-title">
-      <div class="sec-icon orange">&#x1F4CD;</div>
+      <div class="sec-icon orange"><svg viewBox="0 0 24 24" fill="none" width="17" height="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 1 1 13 0C18.5 15.4 12 21 12 21Z"/><circle cx="12" cy="10" r="2.4"/></svg></div>
       <h3>四、哪些情况必须转 · 哪些可转可不转</h3>
       <span class="sec-sub">对照判定，不打折扣</span>
     </div>
@@ -407,7 +425,7 @@ b { color: var(--text); }
   <!-- 5 五个关键环节 -->
   <div class="card">
     <div class="sec-title">
-      <div class="sec-icon green">&#x1F4CB;</div>
+      <div class="sec-icon green"><svg viewBox="0 0 24 24" fill="none" width="17" height="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h4"/></svg></div>
       <h3>五、转移全流程"五个关键环节"</h3>
       <span class="sec-sub">一个都不能少</span>
     </div>
@@ -424,7 +442,7 @@ b { color: var(--text); }
   <!-- 6 安置点管理 -->
   <div class="card">
     <div class="sec-title">
-      <div class="sec-icon blue">&#x1F3D6;</div>
+      <div class="sec-icon blue"><svg viewBox="0 0 24 24" fill="none" width="17" height="17" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7M5 10v10h14V10"/></svg></div>
       <h3>六、安置点管理规范</h3>
       <span class="sec-sub">把人转出来，更要管好安置好</span>
     </div>
@@ -495,7 +513,13 @@ window.addEventListener('pageshow', function(e) {
 <!-- 备案号（ICP 备案通过后全站挂载） -->
 <div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
   <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
-</div><script src="js/icons.js?v=v20260901-35"></script>
-<script src="js/nav.js?v=v20260901-35"></script>
+</div><script src="js/icons.js?v=v20260901-36"></script>
+<script src="js/nav.js?v=v20260901-36"></script>
+
+<div class="v29-print-wrap">
+  <button class="btn btn-primary v29-print-btn" onclick="window.print()">
+    <svg viewBox="0 0 24 24" fill="none" width="16" height="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8V4h10v4M7 16H5a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2"/><rect x="7" y="14" width="10" height="7" rx="1.5"/></svg>打印本流程
+  </button>
+</div>
 </body>
 </html>

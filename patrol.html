@@ -89,9 +89,17 @@ button,a,.btn,input,select{touch-action:manipulation}
 *{-webkit-tap-highlight-color:transparent}
 button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </style>
-<link rel="stylesheet" href="css/tokens.css?v=v20260901-35">
-<link rel="stylesheet" href="css/base.css?v=v20260901-35">
-<link rel="stylesheet" href="css/nav.css?v=v20260901-35">
+<link rel="stylesheet" href="css/tokens.css?v=v20260901-36">
+<link rel="stylesheet" href="css/base.css?v=v20260901-36">
+<link rel="stylesheet" href="css/nav.css?v=v20260901-36">
+
+<style>
+.pt-form .pf-auto{min-height:44px;display:flex;align-items:center;gap:8px}
+.pt-form .pf-auto svg{flex:none;color:var(--accent,#2f6fed)}
+.pf-photo-btn{width:100%;min-height:60px;justify-content:center;padding:16px !important;border:1.5px dashed var(--line-2,#d1d8e6);background:var(--surface-2,#f7f9fc) !important;font-size:14px;box-sizing:border-box;transition:border-color .15s,background .15s}
+.pf-photo-btn:hover{border-color:var(--accent,#2f6fed);background:#eef4ff !important}
+.pf-photo-btn svg{flex:none;color:#1D4E89}
+</style>
 </head>
 <body>
 <div class="app">
@@ -109,24 +117,24 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
     </div>
     <nav class="sb-menu">
 <div class="sb-group-t">主功能</div>
-<a class="sb-item " href="dashboard.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>数据看板</a>
-<a class="sb-item " href="map.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>应急地图</a>
-<a class="sb-item " href="analysis.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M10 19V9M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>专业分析</a>
-<a class="sb-item " href="radar.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>雷达 / 预报</a>
+<a class="sb-item " href="dashboard.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M4 13h6V4H4v9Zm0 7h6v-5H4v5Zm10 0h6v-9h-6v9Zm0-16v5h6V4h-6Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>数据看板</a>
+<a class="sb-item " href="map.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>应急地图</a>
+<a class="sb-item " href="analysis.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5M10 19V9M16 19v-7M22 19V3" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>专业分析</a>
+<a class="sb-item " href="radar.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>雷达 / 预报</a>
 <div class="sb-group-t">数据台账</div>
-<a class="sb-item " href="ledger.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>应急台账</a>
-<a class="sb-item active" href="patrol.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>巡查记录</a>
-<a class="sb-item " href="transfer.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="M3.5 5h17v14h-17z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>转移流程</a>
-<a class="sb-item " href="photo.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v13H4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>照片档案</a>
+<a class="sb-item " href="ledger.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>应急台账</a>
+<a class="sb-item active" href="patrol.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>巡查记录</a>
+<a class="sb-item " href="transfer.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M3.5 5h17v14h-17z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>转移流程</a>
+<a class="sb-item " href="photo.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M4 6h16v13H4z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>照片档案</a>
 <div class="sb-group-t">消息与指令</div>
-<a class="sb-item " href="msg.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="M20 12.5c0 4-3.6 7-8 7-1 0-2-.2-2.9-.5L5 20l1-3.2C4.7 15.6 4 14.1 4 12.5c0-4 3.6-7 8-7s8 3 8 7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>消息中心</a>
-<a class="sb-item " href="team.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>应急队伍</a>
+<a class="sb-item " href="msg.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M20 12.5c0 4-3.6 7-8 7-1 0-2-.2-2.9-.5L5 20l1-3.2C4.7 15.6 4 14.1 4 12.5c0-4 3.6-7 8-7s8 3 8 7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>消息中心</a>
+<a class="sb-item " href="team.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-5.3-7-11a7 7 0 1 1 14 0c0 5.7-7 11-7 11Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>应急队伍</a>
 <div class="sb-group-t">应急模块</div>
-<a class="sb-item" href="guide.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>防汛应急指南</a>
-<a class="sb-item" href="manual.html?v=v20260901-35"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>使用说明</a>
+<a class="sb-item" href="guide.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M4 14a6 6 0 1 1 7.6-5.8A4.5 4.5 0 1 1 16 17H5.5A3 3 0 0 1 4 14Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>防汛应急指南</a>
+<a class="sb-item" href="manual.html?v=v20260901-36"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>使用说明</a>
 <div class="sb-group-t">系统</div>
 <div class="sb-item" id="pcMenuAdmin" onclick="location.href='dashboard.html?v=v20260828-30#admin'" style="display:none"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.7"/></svg>系统管理</div>
-<a class="sb-item" id="pcMenuHealth" href="health.html?v=v20260901-35" style="display:none"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>系统自检</a>
+<a class="sb-item" id="pcMenuHealth" href="health.html?v=v20260901-36" style="display:none"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7"/><path d="M12 8v5l3 2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>系统自检</a>
 <div class="sb-item" onclick="doLogout()"><svg viewBox="0 0 24 24" fill="none"><path d="M9 21H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3h3M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>退出登录</div>
 </nav>
     <div class="sb-foot">
@@ -143,7 +151,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
         <div class="crumb"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><b>巡查记录</b></div>
       </div>
       <div class="tb-right">
-        <a class="btn" href="dashboard.html?v=v20260901-35">&#x2190; 返回看板</a>
+        <a class="btn" href="dashboard.html?v=v20260901-36">&#x2190; 返回看板</a>
         <div class="time-display" id="timeDisplay"></div>
       </div>
     </header>
@@ -181,7 +189,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
       <div class="pf-row">
         <div class="pf-label">&#x1F4F7; 巡查照片</div>
         <input type="file" id="ptAddPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="ptOnPhotoSelect(this)">
-        <label class="pf-photo-btn" for="ptAddPhotoInput">&#x1F4F7; 拍照 / 选择照片</label>
+        <label class="pf-photo-btn" for="ptAddPhotoInput"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l1.5-2.5h7L17 7h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.5"/></svg>拍照 / 选择照片</label>
         <img class="pf-photo-preview" id="ptAddPhotoPreview" src="" alt="照片预览">
       </div>
       <div class="pf-row">
@@ -217,8 +225,8 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
       <div><div class="ch-t">巡查记录查询</div><div class="ch-sub">选择村庄查看该村巡查情况，可一键导出 Excel（CSV）</div></div>
     </div>
     <div class="ch-act">
-      <button class="btn btn-green" id="btnExportAll" style="display:none" onclick="exportAllPatrolCSV()">&#x1F4E5; 导出全镇巡查记录</button>
-      <button class="btn btn-green" id="btnExportCur" onclick="exportCurPatrolCSV()">&#x1F4E5; 导出记录</button>
+      <button class="btn btn-green" id="btnExportAll" style="display:none" onclick="exportAllPatrolCSV()"><svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10M8 10l4 4 4-4"/><path d="M4 18h16"/></svg>导出全镇巡查记录</button>
+      <button class="btn btn-green" id="btnExportCur" onclick="exportCurPatrolCSV()"><svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10M8 10l4 4 4-4"/><path d="M4 18h16"/></svg>导出记录</button>
     </div>
   </div>
   <div class="card-body">
@@ -250,7 +258,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
   <img id="ptLightboxImg" src="" alt="巡查照片">
 </div>
 <style>
-.btn-green{background:linear-gradient(180deg,#22a55b,#177a42);color:#fff !important;border-color:transparent}
+.btn-green{background:linear-gradient(180deg,#1D4E89,#14355C);color:#fff !important;border-color:transparent}
 .btn-green:hover{filter:brightness(1.06)}
 .pt-filter{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
 .pt-filter select{background:var(--surface);color:var(--ink);border:1px solid var(--line-2);border-radius:8px;padding:7px 10px;font-size:13px}
@@ -300,7 +308,7 @@ window.addEventListener('pageshow', function(e) {
   if (needReload) window.location.replace(window.location.pathname + '?_r=' + Date.now());
 });
 </script>
-<script src="feishu_config.js?v=v20260901-35"></script>
+<script src="feishu_config.js?v=v20260901-36"></script>
 <script>
 var PATROL_STORAGE_KEY = 'xyc_patrol_records';
 var VILLAGES = ['上塬村','东塬村','刘家湾社区','孟塬村','常家坪村','新塬村','杨坪村','杨家河坝村','甘岔村','老庄村'];
@@ -796,7 +804,7 @@ initVillageFilter();
 patrolRefresh();
 
 </script>
-<script src="js/icons.js?v=v20260901-35"></script>
-<script src="js/nav.js?v=v20260901-35"></script>
+<script src="js/icons.js?v=v20260901-36"></script>
+<script src="js/nav.js?v=v20260901-36"></script>
 </body>
 </html>

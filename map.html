@@ -383,9 +383,11 @@ html, body { width: 100%; height: 100%; font-family: "PingFang SC","Microsoft Ya
   text-align: center; padding: 24px 10px; color: #8a95ad; font-size: 12px;
 }
 
-/* ===== 图例收起/展开按钮（手机端显示，PC端隐藏） ===== */
-#legend-toggle { display: none; }
-#legend .l-head { display: none; }
+/* ===== 图例收起/展开按钮（PC 也折叠为左下角按钮） ===== */
+#legend-toggle { display: inline-flex; align-items: center; gap: 4px; }
+#legend .l-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; font-weight: 700; color: #14213d; }
+#legend { display: none; }
+#legend.open { display: block; }
 
 /* ===== 移动端底部工具栏：信息/转移/巡查/图层/定位 集中到底部一条 ===== */
 #bottom-bar, #layer-sheet { display: none; }
@@ -594,9 +596,26 @@ button,a,.btn,input,select{touch-action:manipulation}
 *{-webkit-tap-highlight-color:transparent}
 button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </style>
-<link rel="stylesheet" href="css/tokens.css?v=v20260901-35">
-<link rel="stylesheet" href="css/base.css?v=v20260901-35">
-<link rel="stylesheet" href="css/nav.css?v=v20260901-35">
+<link rel="stylesheet" href="css/tokens.css?v=v20260901-36">
+<link rel="stylesheet" href="css/base.css?v=v20260901-36">
+<link rel="stylesheet" href="css/nav.css?v=v20260901-36">
+
+<style>
+#layers-toggle { display: inline-flex; align-items: center; gap: 5px; }
+@media (min-width:769px){
+  #layer-sheet { display: none; position: fixed; top: 64px; right: 12px; z-index: 1000; width: 236px; background: rgba(255,255,255,.95); border: 1px solid rgba(20,33,61,.1); border-radius: 12px; padding: 12px 14px; box-shadow: 0 8px 24px rgba(16,32,58,.16); backdrop-filter: blur(10px); }
+  #layer-sheet.show { display: block; }
+  #layers-toggle { position: fixed; top: 64px; right: 64px; z-index: 999; }
+  #legend-toggle { position: fixed; left: 16px; bottom: 30px; z-index: 999; }
+  #legend { bottom: 74px; }
+}
+@media (max-width:768px){
+  #layers-toggle { display: none; }
+}
+.ls-grid button{display:flex;align-items:center;gap:6px;width:100%;text-align:left}
+.ls-grid button svg{flex:none}
+#layer-ctrl button{display:flex;align-items:center;justify-content:center}
+</style>
 </head>
 <body>
 
@@ -608,8 +627,8 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
     <h1>新塬镇应急避险指挥系统</h1>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="analysis.html?v=v20260901-35" class="back-link">&#x1F4CA; 专业分析</a>
-    <a href="dashboard.html?v=v20260901-35" class="back-link">&#x2190; 返回看板</a>
+    <a href="analysis.html?v=v20260901-36" class="back-link">&#x1F4CA; 专业分析</a>
+    <a href="dashboard.html?v=v20260901-36" class="back-link">&#x2190; 返回看板</a>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
       <span class="arrow">&#x25BC;</span>
@@ -653,7 +672,8 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
   <div class="sp-body" id="sp-body"></div>
 </div>
 
-<button id="legend-toggle" onclick="toggleLegend()">&#x1F4D0;&nbsp;图例</button>
+<button id="legend-toggle" onclick="toggleLegend()"><svg viewBox="0 0 24 24" fill="none" width="14" height="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 8v4l3 2"/></svg>图例</button>
+<button id="layers-toggle" title="图层" onclick="toggleLayerSheet()"><svg viewBox="0 0 24 24" fill="none" width="15" height="15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 3 8l9 5 9-5-9-5Z"/><path d="M3 13l9 5 9-5"/></svg>图层</button>
 
 <div id="legend">
   <div class="l-head"><span>图例</span><span class="l-close" onclick="toggleLegend()" title="收起">&#x2715;</span></div>
@@ -668,12 +688,12 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </div>
 
 <div id="layer-ctrl">
-  <button id="btn-hazards" title="隐患点" onclick="toggleLayer('hazards')">&#x26A0;</button>
-  <button id="btn-threatened" title="受威胁区域" onclick="toggleLayer('threatened')">&#x1F3D8;</button>
-  <button id="btn-routes" title="撤离路线" onclick="toggleLayer('routes')">&#x27A1;</button>
-  <button id="btn-sites" title="安置点" onclick="toggleLayer('sites')">&#x1F3E0;</button>
-  <button id="btn-majorRoads" title="主要道路" onclick="toggleLayer('majorRoads')">&#x1F6E3;</button>
-  <button id="btn-locate" title="定位" onclick="locateMe()">&#x1F4CD;</button>
+  <button id="btn-hazards" title="隐患点" onclick="toggleLayer('hazards')"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 9v4.5M12 16.8v.2"/></svg></button>
+  <button id="btn-threatened" title="受威胁区域" onclick="toggleLayer('threatened')"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z"/></svg></button>
+  <button id="btn-routes" title="撤离路线" onclick="toggleLayer('routes')"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+  <button id="btn-sites" title="安置点" onclick="toggleLayer('sites')"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7M5 10v10h14V10"/></svg></button>
+  <button id="btn-majorRoads" title="主要道路" onclick="toggleLayer('majorRoads')"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-1.5 18h-9L6 3Z"/><path d="M9 9h6M8.8 15h6.4"/></svg></button>
+  <button id="btn-locate" title="定位" onclick="locateMe()"><svg viewBox="0 0 24 24" fill="none" width="18" height="18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-10.5a6.5 6.5 0 1 1 13 0C18.5 15.4 12 21 12 21Z"/><circle cx="12" cy="10" r="2.4"/></svg></button>
 </div>
 
 <!-- 移动端底部工具栏：手机上看地图不再被分散按钮遮挡，常用功能集中到底部一条 -->
@@ -699,13 +719,13 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
   <span class="plb-close">&#x2715;</span>
 </div>
 
-<script src="leaflet/leaflet.js?v=v20260901-35" defer></script>
-<script src="feishu_config.js?v=v20260901-35" defer></script>
-<script src="photo.js?v=v20260901-35" defer></script>
-<script src="js_data/village_centers.js?v=v20260901-35" defer></script>
-<script src="js_data/hazard_areas.js?v=v20260901-35" defer></script>
-<script src="js_data/evacuation_routes.js?v=v20260901-35" defer></script>
-<script src="js_data/rain_stations.js?v=v20260901-35" defer></script>
+<script src="leaflet/leaflet.js?v=v20260901-36" defer></script>
+<script src="feishu_config.js?v=v20260901-36" defer></script>
+<script src="photo.js?v=v20260901-36" defer></script>
+<script src="js_data/village_centers.js?v=v20260901-36" defer></script>
+<script src="js_data/hazard_areas.js?v=v20260901-36" defer></script>
+<script src="js_data/evacuation_routes.js?v=v20260901-36" defer></script>
+<script src="js_data/rain_stations.js?v=v20260901-36" defer></script>
 
 <script>
 // ========== 权限验证 ==========
@@ -1213,7 +1233,7 @@ function loadRainStations() {
   L.geoJSON(data, {
     pointToLayer: function(feature, latlng) {
       return L.marker(latlng, {
-        icon: L.divIcon({ className: 'rain-icon', html: '&#x1F4A7;', iconSize: [20, 20], iconAnchor: [10, 10] })
+        icon: L.divIcon({ className: 'rain-icon', html: '<svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="#2196f3" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3c2.8 3.4 5.5 6.6 5.5 9.5a5.5 5.5 0 0 1-11 0C6.5 9.6 9.2 6.4 12 3Z"/></svg>', iconSize: [20, 20], iconAnchor: [10, 10] })
       });
     }
   }).addTo(layers.stations);
@@ -1598,11 +1618,11 @@ function toggleLegend() {
 
 // ========== 移动端图层弹出面板 ==========
 var LS_LAYERS = [
-  ['hazards', '&#x26A0;', '隐患点'],
-  ['threatened', '&#x1F3D8;', '受威胁区'],
-  ['routes', '&#x27A1;', '撤离路线'],
-  ['sites', '&#x1F3E0;', '安置点'],
-  ['majorRoads', '&#x1F6E3;', '道路']
+  ['hazards', '<svg viewBox="0 0 24 24" fill="none" width="16" height="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 9v4.5M12 16.8v.2"/></svg>', '隐患点'],
+  ['threatened', '<svg viewBox="0 0 24 24" fill="none" width="16" height="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m9 4-6 3v13l6-3 6 3 6-3V4l-6 3-6-3Z"/></svg>', '受威胁区'],
+  ['routes', '<svg viewBox="0 0 24 24" fill="none" width="16" height="16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>', '撤离路线'],
+  ['sites', '<svg viewBox="0 0 24 24" fill="none" width="16" height="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11 12 4l9 7M5 10v10h14V10"/></svg>', '安置点'],
+  ['majorRoads', '<svg viewBox="0 0 24 24" fill="none" width="16" height="16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l-1.5 18h-9L6 3Z"/><path d="M9 9h6M8.8 15h6.4"/></svg>', '道路']
 ];
 
 function renderLayerSheet() {
@@ -2357,7 +2377,7 @@ window.onload = function() {
 <!-- 备案号（ICP 备案通过后全站挂载） -->
 <div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
   <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
-</div><script src="js/icons.js?v=v20260901-35"></script>
-<script src="js/nav.js?v=v20260901-35"></script>
+</div><script src="js/icons.js?v=v20260901-36"></script>
+<script src="js/nav.js?v=v20260901-36"></script>
 </body>
 </html>
