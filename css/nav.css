@@ -140,7 +140,8 @@ body.v29-screen .v29-tabbar,body.v29-screen .topbar,body.v29-screen .v29-sidebar
 /* 大屏模式：隐藏侧栏后 .app 仍保留 248px grid 列，需改单列否则内容被挤压横向溢出 */
 body.v29-screen .app{grid-template-columns:1fr !important;display:block;}
 body.v29-screen .main{width:100% !important;min-width:0;}
-body.v29-screen{overflow-x:hidden;}
+html.v29-screen,body.v29-screen{overflow-x:hidden;}
+html.v29-screen,body.v29-screen svg{max-width:100%;}
 body.v29-screen .content svg{max-width:100%;}
 body.v29-screen .vill-banner,body.v29-screen .weather-card,body.v29-screen .dec-card{overflow:hidden;}
 body.v29-screen .content{margin-top:70px;}
