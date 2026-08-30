@@ -185,6 +185,12 @@
       if (url.indexOf('?v=') >= 0) el.setAttribute(attr, url.replace(/\?v=[^&]*/, '?v=' + v));
     }
   }
+  function verNum(s) {
+    var m = String(s || '').match(/(\d+)-(\d+)$/);
+    if (m) return parseInt(m[1], 10) * 10000 + parseInt(m[2], 10);
+    var m2 = String(s || '').match(/(\d+)$/);
+    return m2 ? parseInt(m2[1], 10) * 10000 : 0;
+  }
   function checkVersion() {
     try {
       fetch('version.txt?t=' + Date.now(), { cache: 'no-store' })
@@ -196,6 +202,7 @@
           var cur = '';
           try { cur = sessionStorage.getItem('xyc_ver') || ''; } catch(e) {}
           if (cur && cur !== v) {
+            if (verNum(v) < verNum(cur)) return; // CDN 传播中读到旧版本：忽略，避免刷新循环
             try { sessionStorage.setItem('xyc_ver', v); } catch(e) {}
             var q = {};
             try { location.search.replace(/^\?/, '').split('&').forEach(function(s){ if(!s) return; var kv = s.split('='); q[kv[0]] = kv[1]; }); } catch(e) {}
