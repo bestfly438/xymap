@@ -223,6 +223,7 @@ function renderAllWeather() {
   renderTopBadge();
   renderVillageWeather();
   if (typeof proRenderAnalysis === 'function') { try { proRenderAnalysis(); } catch(e) {} }
+  if (typeof v29RenderDecisions === 'function') { try { v29RenderDecisions(); } catch(e) {} }
   renderWarnings();
   renderGeoHazard();
   renderNmcWeather();
