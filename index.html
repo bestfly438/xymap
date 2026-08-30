@@ -100,7 +100,7 @@ button,a,.btn,input,select{touch-action:manipulation}
 *{-webkit-tap-highlight-color:transparent}
 button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </style>
-<link rel="manifest" href="manifest.json?v=v20260901-37">
+<link rel="manifest" href="manifest.json?v=v20260901-38">
 <meta name="theme-color" content="#1D4E89">
 </head>
 <body>
@@ -151,7 +151,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 (function() {
   // 如果已经登录，直接跳转（带版本参数绕过缓存）
   if (sessionStorage.getItem('xyc_auth') === '1') {
-    window.location.replace('dashboard.html?v=v20260827-28');
+    window.location.replace('dashboard.html?v=v20260901-37');
   }
 })();
 
@@ -208,7 +208,7 @@ function doLogin() {
       btn.textContent = '验证通过，正在进入…';
       setTimeout(function() {
         // 带版本参数跳转：绕过浏览器缓存，确保每次都加载最新版看板页面
-        window.location.replace('dashboard.html?v=v20260827-28');
+        window.location.replace('dashboard.html?v=v20260901-37');
       }, 500);
     } else {
       btn.textContent = '进入系统';
@@ -246,7 +246,7 @@ window.addEventListener('pageshow', function(e) {
   <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
 </div><script>
 if ('serviceWorker' in navigator) {
-  try { navigator.serviceWorker.register('sw.js?v=v20260901-37').catch(function(){}); } catch(e) {}
+  try { navigator.serviceWorker.register('sw.js?v=v20260901-38').catch(function(){}); } catch(e) {}
 }
 </script>
 </body>
