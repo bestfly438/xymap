@@ -26,14 +26,37 @@
 }
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif
+  font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
   background: var(--bg);
   min-height: 100vh; display: flex; align-items: center; justify-content: center;
   overflow: hidden;
-  background-image:
-    radial-gradient(ellipse at 20% 50%, rgba(47,111,237,0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(124,58,237,0.07) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(47,111,237,0.08) 0%, transparent 50%);
+}
+.css-bg {
+  position: fixed; inset: 0; z-index: 0; overflow: hidden;
+  background: linear-gradient(180deg, #4a93dc 0%, #7db8ee 36%, #abd6f6 62%, #e3f4fd 85%, #f4faff 100%);
+}
+.css-bg .sun {
+  position: absolute; top: 8%; right: 11%; width: 220px; height: 220px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(255,250,225,0.55) 32%, rgba(255,255,255,0) 68%);
+  filter: blur(3px);
+}
+.css-bg .cloud {
+  position: absolute; height: 32px; border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.85) 50%, rgba(255,255,255,0) 100%);
+  filter: blur(5px);
+}
+.css-bg svg.mountain { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 46%; display: block; }
+.css-bg svg.birds { position: absolute; left: 0; right: 0; top: 0; width: 100%; height: 50%; display: block; pointer-events: none; }
+.css-bg .river {
+  fill: none; stroke: rgba(255,255,255,0.55); stroke-width: 3; stroke-linecap: round;
+  stroke-dasharray: 14 9;
+  filter: drop-shadow(0 0 5px rgba(190,232,255,0.9));
+}
+.bg-veil {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(15,23,42,0.32) 0%, rgba(15,23,42,0.18) 55%, rgba(15,23,42,0.46) 100%),
+    linear-gradient(rgba(15,23,42,0.16) 0%, rgba(15,23,42,0.30) 100%);
 }
 .bg-grid {
   position: fixed; inset: 0; pointer-events: none; z-index: 0;
@@ -44,11 +67,17 @@ body {
 .login-card {
   position: relative; z-index: 1;
   width: 420px; max-width: 92vw;
-  background: var(--bg-card); border-radius: 16px;
-  border: 1px solid var(--border);
-  box-shadow: 0 20px 60px rgba(15,23,42,0.15), 0 0 0 1px rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.10);
+  -webkit-backdrop-filter: blur(18px) saturate(1.5);
+  backdrop-filter: blur(18px) saturate(1.5);
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.22);
+  box-shadow: 0 20px 60px rgba(15,23,42,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
   padding: 48px 40px 40px;
-  animation: cardIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+/* 老浏览器不支持 backdrop-filter 时回退为实底白卡片，保证可读 */
+@supports not ((backdrop-filter: blur(0)) or (-webkit-backdrop-filter: blur(0))) {
+  .login-card { background: rgba(255,255,255,0.96); }
 }
 @keyframes cardIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 .login-header { text-align: center; margin-bottom: 36px; }
@@ -58,20 +87,20 @@ body {
   border-radius: 16px; display: flex; align-items: center; justify-content: center;
   font-size: 32px; color: #fff; box-shadow: 0 0 24px rgba(47,111,237,0.4);
 }
-.login-header h1 { font-size: 22px; color: var(--text); font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; }
-.login-header p { font-size: 13px; color: var(--text-muted); }
+.login-header h1 { font-size: 22px; color: rgba(255,255,255,0.96); font-weight: 700; margin-bottom: 6px; letter-spacing: 0.5px; text-shadow: 0 1px 4px rgba(15,23,42,0.35); }
+.login-header p { font-size: 13px; color: rgba(255,255,255,0.72); }
 .input-group { margin-bottom: 24px; }
-.input-group label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 500; }
+.input-group label { display: block; font-size: 13px; color: rgba(255,255,255,0.85); margin-bottom: 8px; font-weight: 500; }
 .input-group input {
   width: 100%; height: 48px; padding: 0 16px;
-  border: 1px solid var(--border); border-radius: 10px;
-  background: rgba(15,23,42,0.04); font-size: 15px; color: var(--text); outline: none;
+  border: 1px solid rgba(255,255,255,0.28); border-radius: 10px;
+  background: rgba(255,255,255,0.14); font-size: 15px; color: #fff; outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
   font-family: 'SF Mono', 'Consolas', 'Monaco', monospace;
   letter-spacing: 1px;
 }
-.input-group input::placeholder { color: var(--text-muted); }
-.input-group input:focus { border-color: #2f6fed; box-shadow: 0 0 0 3px rgba(47,111,237,0.18); }
+.input-group input::placeholder { color: rgba(255,255,255,0.5); }
+.input-group input:focus { border-color: #7aa6ff; box-shadow: 0 0 0 3px rgba(122,166,255,0.28); }
 .input-group input.error { border-color: #e2444a; animation: shake 0.4s ease; }
 @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
 .login-btn {
@@ -84,9 +113,9 @@ body {
 .login-btn:hover { transform: translateY(-1px); box-shadow: 0 0 30px rgba(47,111,237,0.35); }
 .login-btn:active { transform: translateY(0); }
 .login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-.error-msg { text-align: center; color: #e2444a; font-size: 13px; margin-top: 12px; min-height: 20px; }
-.footer { text-align: center; margin-top: 32px; font-size: 12px; color: var(--text-muted); }
-.footer span { color: #2f6fed; }
+.error-msg { text-align: center; color: #ff7a80; font-size: 13px; margin-top: 12px; min-height: 20px; text-shadow: 0 1px 3px rgba(15,23,42,0.4); }
+.footer { text-align: center; margin-top: 32px; font-size: 12px; color: rgba(255,255,255,0.6); }
+.footer span { color: #8ab6ff; }
 @media (max-width: 480px) {
   .login-card { padding: 36px 24px 32px; }
   .login-header h1 { font-size: 19px; }
@@ -100,10 +129,44 @@ button,a,.btn,input,select{touch-action:manipulation}
 *{-webkit-tap-highlight-color:transparent}
 button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </style>
-<link rel="manifest" href="manifest.json?v=v20260901-43">
+<link rel="manifest" href="manifest.json?v=v20260901-44">
 <meta name="theme-color" content="#1D4E89">
 </head>
 <body>
+<div class="css-bg">
+  <div class="sun"></div>
+  <div class="cloud" style="top:15%;left:6%;width:180px"></div>
+  <div class="cloud" style="top:24%;left:58%;width:240px"></div>
+  <div class="cloud" style="top:10%;left:32%;width:110px;opacity:.55"></div>
+  <div class="cloud" style="top:33%;left:22%;width:150px;opacity:.7"></div>
+  <svg class="birds" viewBox="0 0 1440 260" preserveAspectRatio="none" aria-hidden="true">
+    <g stroke="#2f4356" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.5">
+      <path d="M30 90 L42 72 L54 90"/>
+      <path d="M170 120 L180 105 L190 120"/>
+      <path d="M330 78 L342 62 L354 78"/>
+      <path d="M520 134 L530 122 L540 134"/>
+    </g>
+  </svg>
+  <svg class="mountain" viewBox="0 0 1440 320" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="mFar" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#ffffff" stop-opacity="0.5"/>
+        <stop offset="1" stop-color="#c4e3f8" stop-opacity="0.08"/>
+      </linearGradient>
+      <linearGradient id="mNear" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#3a6ea5"/>
+        <stop offset="1" stop-color="#1d3f66"/>
+      </linearGradient>
+    </defs>
+    <path fill="url(#mFar)" d="M0,178 L160,94 L330,158 L540,68 L740,143 L950,84 L1160,148 L1360,94 L1440,128 L1440,320 L0,320 Z"/>
+    <path fill="rgba(96,158,220,0.32)" d="M0,224 L240,134 L450,198 L700,108 L940,188 L1180,128 L1440,204 L1440,320 L0,320 Z"/>
+    <path fill="rgba(56,108,168,0.45)" d="M0,268 L300,174 L520,238 L780,148 L1030,232 L1290,174 L1440,244 L1440,320 L0,320 Z"/>
+    <path fill="url(#mNear)" d="M0,320 L0,288 L180,238 L380,283 L600,224 L820,278 L1050,238 L1260,283 L1440,256 L1440,320 Z"/>
+    <path class="river" d="M140,320 C260,300 340,306 420,290 C520,272 640,286 740,268 C860,247 990,262 1110,240 C1200,225 1300,236 1420,218"/>
+    <path fill="rgba(255,255,255,0.30)" d="M0,314 C300,300 620,306 900,296 C1120,288 1300,296 1440,292 L1440,320 L0,320 Z"/>
+  </svg>
+</div>
+<div class="bg-veil"></div>
 <div class="bg-grid"></div>
 
 <div class="login-card">
@@ -246,8 +309,62 @@ window.addEventListener('pageshow', function(e) {
   <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
 </div><script>
 if ('serviceWorker' in navigator) {
-  try { navigator.serviceWorker.register('sw.js?v=v20260901-43').catch(function(){}); } catch(e) {}
+  try { navigator.serviceWorker.register('sw.js?v=v20260901-44').catch(function(){}); } catch(e) {}
 }
+</script>
+<script src="js/gsap/gsap.min.js"></script>
+<script>
+// ===== 登录页 GSAP 入场动画（测试站）=====
+(function () {
+  if (typeof gsap === 'undefined') return;
+  // 尊重系统"减少动态效果"设置：不播动画，直接显示
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var card = document.querySelector('.login-card');
+  var shield = document.querySelector('.shield');
+  var h1 = document.querySelector('.login-header h1');
+  var sub = document.querySelector('.login-header p');
+  var groups = document.querySelectorAll('.input-group');
+  var btn = document.querySelector('.login-btn');
+  var footer = document.querySelector('.footer');
+  if (!card) return;
+
+  // 初始状态（隐藏 + 位移）
+  gsap.set(card, { autoAlpha: 0, y: 40, scale: 0.96 });
+  gsap.set(shield, { y: -70, scale: 0.4, rotation: -180, autoAlpha: 0 });
+  gsap.set([h1, sub], { autoAlpha: 0, y: 24 });
+  gsap.set(groups, { autoAlpha: 0, x: -28 });
+  gsap.set(btn, { autoAlpha: 0, y: 20 });
+  gsap.set(footer, { autoAlpha: 0, y: 12 });
+
+  var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+  tl.to(card, { autoAlpha: 1, y: 0, scale: 1, duration: 0.7, clearProps: 'transform' })
+    .to(shield, { y: 0, scale: 1, rotation: 0, autoAlpha: 1, duration: 0.9, ease: 'elastic.out(1, 0.45)' }, '-=0.4')
+    .to(h1, { autoAlpha: 1, y: 0, duration: 0.55 }, '-=0.55')
+    .to(sub, { autoAlpha: 1, y: 0, duration: 0.45 }, '-=0.4')
+    .to(groups, { autoAlpha: 1, x: 0, duration: 0.55, stagger: 0.12, clearProps: 'transform' }, '-=0.35')
+    .to(btn, { autoAlpha: 1, y: 0, duration: 0.5, clearProps: 'transform' }, '-=0.4')
+    .to(footer, { autoAlpha: 1, y: 0, duration: 0.4 }, '-=0.3');
+
+  // 护盾呼吸光效（入场完成后持续循环，仅光晕不碰 transform）
+  gsap.to(shield, { boxShadow: '0 0 36px rgba(47,111,237,0.6)', duration: 1.8, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: 1.4 });
+
+  // ===== 背景多动效编排（reduced-motion 已在开头整体跳过）=====
+  var sky = document.querySelector('.css-bg');
+  if (sky) gsap.to(sky, { scale: 1.08, duration: 26, yoyo: true, repeat: -1, ease: 'none' });
+
+  var clouds = document.querySelectorAll('.css-bg .cloud');
+  if (clouds.length) gsap.to(clouds, { x: 80, duration: 26, yoyo: true, repeat: -1, ease: 'sine.inOut', stagger: 7 });
+
+  var sun = document.querySelector('.css-bg .sun');
+  if (sun) gsap.to(sun, { scale: 1.18, opacity: 0.7, duration: 4.5, yoyo: true, repeat: -1, ease: 'sine.inOut', delay: 2 });
+
+  var birds = document.querySelector('.css-bg .birds');
+  if (birds) gsap.to(birds, { x: 55, y: -10, duration: 32, yoyo: true, repeat: -1, ease: 'sine.inOut' });
+
+  var river = document.querySelector('.css-bg .river');
+  if (river) gsap.to(river, { strokeDashoffset: -46, duration: 7, repeat: -1, ease: 'none' });
+})();
 </script>
 </body>
 </html>
