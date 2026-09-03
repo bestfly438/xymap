@@ -206,3 +206,91 @@ body.v29-screen .content{margin-top:70px;}
   /* ---- 消除杂散固定角标在手机上错位 ---- */
   .v29-screen-btn,.v29-screen-head{display:none !important;}
 }
+
+
+/* ============================================================
+   修改清单 v1（UI 整改）· 全站修复段
+   1) 触控目标：可点控件最小高度（桌面 40 / 手机 44 由下方 media 强化）
+   2) 底部 Tab 文字放大
+   3) 侧栏/徽标/辅助文字字号上调（≥11px，避免 10px 级别操作文字）
+   ============================================================ */
+
+/* ---- 2) 底部 Tab 文字 ---- */
+.v29-tabbar .tb-item{font-size:12px !important;gap:3px;}
+.v29-tabbar .tb-item svg{width:21px !important;height:21px !important;}
+
+/* ---- 3) 侧栏与辅助文字字号（仅文本，不改布局） ---- */
+.v29-sidebar .logo-t2{font-size:11px !important;}
+.v29-sidebar .sb-group-t{font-size:12px !important;letter-spacing:.6px;}
+.v29-sidebar .sr-t{font-size:11px !important;}
+.v29-sidebar .sr-n{font-size:14px !important;}
+.v29-sidebar .sr-badge{font-size:11px !important;}
+.v29-sidebar .sb-item{font-size:14.5px !important;}
+.v29-sidebar .sf-n{font-size:13.5px !important;}
+.v29-sidebar .sf-s{font-size:11.5px !important;}
+/* 页面自带侧栏同规范 */
+.sidebar .logo-t2,.sb-logo .logo-t2{font-size:11px !important;}
+.sidebar .sb-group-t{font-size:12px !important;}
+.sidebar .sr-t{font-size:11px !important;}
+.sidebar .sr-badge{font-size:11px !important;}
+.sidebar .sb-item{font-size:14.5px !important;}
+.sidebar .sf-s{font-size:11.5px !important;}
+/* KPI 副标签等辅助文字 */
+.kpi .k-foot,.kpi .k-label,.stat-card .sc-label{font-size:11.5px !important;}
+
+/* ---- 1) 触控目标：可点控件最小高度（跨端） ---- */
+button,.btn,a.sb-item,.tab-btn,.tab,.tag-opt,.rs-opt,.more-btn,.tb-icon,
+.v29-tabbar .tb-item,.dr-item,.mm-item,.v29-drawer .dr-item{min-height:40px;}
+/* 仅对带文字+图标的通用按钮启用弹性布局；纯图标/特殊结构按钮保持原 display */
+.btn,a.btn,.mm-item,.dr-item,.rs-opt{display:inline-flex;align-items:center;justify-content:center;gap:6px;}
+.btn svg,.mm-item svg,.dr-item svg,.rs-opt svg{flex:none;}
+button:not(.btn):not(.mm-item):not(.dr-item):not(.rs-opt){display:inline-flex;align-items:center;justify-content:center;gap:6px;}
+button:not(.btn):not(.mm-item):not(.dr-item):not(.rs-opt) svg{flex:none;}
+/* msg 消息中心 */
+.v29-send-card .tag-opt,.tag-opt{min-height:44px;padding:9px 16px;display:inline-flex;align-items:center;}
+/* ledger / radar Tab */
+.tab-btn{min-height:44px;padding:9px 14px;}
+/* analysis 模式 Tab */
+.analysis-tabs .tab,.mode-tabs .tab{min-height:44px;}
+/* 巡查表单 */
+.pt-form select,.pt-form .pf-input,.patrol-form .pf-input{min-height:44px;}
+/* dashboard 角色切换 */
+.rs-opt{min-height:40px;}
+/* 弹窗内按钮不强制 flex 以防破布局 */
+.modal button,.dialog button,.popup button{display:inline-flex;}
+
+/* ---- 语义/可访问：全局 focus 环已由页面定义，这里兜底按钮 focus ---- */
+button:focus-visible,a:focus-visible{outline:2px solid #2f6fed;outline-offset:2px;}
+
+/* ---- 5.1 桌面 ≥1280：analysis/vuln #map 占侧栏右侧（修 220px 横向滚动） ---- */
+@media (min-width:1280px){
+  body.v29-with-sidebar #map{left:220px;width:calc(100% - 220px);}
+}
+/* 小屏不留空：≤1279 地图正常全宽 */
+@media (max-width:1279px){
+  #map{left:0;width:100%;}
+}
+
+/* ---- 4.1 手机：grid-2 单列，气象预警不再裁切 ---- */
+@media (max-width:767px){
+  .grid-2,.two-col,.stats-grid-2{grid-template-columns:1fr !important;}
+  .grid-2 > *,.two-col > *{min-width:0 !important;max-width:100% !important;}
+  /* 4.2 卡片头可换行，导出按钮不溢出 */
+  .card-head{flex-wrap:wrap;row-gap:10px;}
+  .ch-act{flex-wrap:wrap;width:100%;justify-content:flex-start;}
+  .ch-act .btn{max-width:100%;}
+  /* 4.4 兜底：文本与容器防溢出（真溢出已修，此条仅兜底） */
+  .content{overflow-x:hidden;}
+}
+
+
+/* ===== 修改清单 v1 · data-ic 渲染图标与文字对齐 / 折叠箭头兜底 ===== */
+[data-ic]{display:inline-flex;align-items:center;justify-content:center;vertical-align:-2px;}
+[data-ic] svg{display:block;}
+/* v29 折叠箭头（原 emoji ▶ 移除后以 CSS 三角形兜底） */
+.v29-sched-arrow{
+  width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;
+  border-top:6px solid #8A97A8;transition:transform .2s;flex:none;
+}
+.v29-sched-head.open .v29-sched-arrow,body:not(.open) .v29-sched-arrow{transform:rotate(0)}
+.v29-sched-head[aria-expanded="true"] .v29-sched-arrow{transform:rotate(180deg);}

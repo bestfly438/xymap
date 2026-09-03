@@ -1901,13 +1901,13 @@ function flushOfflinePatrol() {
   getOfflineQueue(function(queue) {
     var bar = document.getElementById('pf-offline-bar');
     if (!queue.length) { if (bar) bar.style.display = 'none'; return; }
-    if (bar) { bar.style.display = 'block'; bar.textContent = '🔄 正在补传 ' + queue.length + ' 条离线巡查记录…'; }
+    if (bar) { bar.style.display = 'block'; bar.textContent = '正在补传 ' + queue.length + ' 条离线巡查记录…'; }
     var done = 0;
     queue.forEach(function(rec) {
       saveCloudOfflinePatrol(rec, function(ok) {
         if (ok) delOfflineQueue(rec.id);
         if (++done >= queue.length) {
-          if (bar) { bar.textContent = ok ? '✅ 离线记录补传完成' : '部分离线记录补传失败，稍后再试'; setTimeout(function(){ bar.style.display = 'none'; }, 3000); }
+          if (bar) { bar.textContent = ok ? '离线记录补传完成' : '部分离线记录补传失败，稍后再试'; setTimeout(function(){ bar.style.display = 'none'; }, 3000); }
           var listEl = document.querySelector('.patrol-list');
           if (listEl && currentPatrolVid) refreshPatrolList(currentPatrolVid);
         }
@@ -2316,7 +2316,7 @@ function submitPatrol(vid) {
   if (navigator.onLine === false) {
     record.ptPhotos = patrolPhotos.slice();
     queueOfflinePatrol(record);
-    if (btn) { btn.disabled = false; btn.textContent = '✅ 提交巡查记录'; }
+    if (btn) { btn.disabled = false; btn.textContent = '提交巡查记录'; }
     localStorage.setItem('xyc_last_inspector', inspectorVal);
     showPfMsg('无网络，已离线保存，有网后自动补传', 'success');
     clearForm();
@@ -2329,7 +2329,7 @@ function submitPatrol(vid) {
   function finishSave() {
     record.photoUrls = urls;
     savePatrolRecord(record, function(ok, err) {
-      if (btn) { btn.disabled = false; btn.textContent = '✅ 提交巡查记录'; }
+      if (btn) { btn.disabled = false; btn.textContent = '提交巡查记录'; }
       if (ok) {
         localStorage.setItem('xyc_last_inspector', inspectorVal);
         showPfMsg('巡查记录已同步保存！', 'success');
@@ -2382,7 +2382,7 @@ function refreshPatrolList(vid) {
         h += '<div class="pl-time">' + esc(r.time) + '</div>';
         h += '<div class="pl-inspector">&#x1F464; ' + esc(r.inspector || '未知') + ' <span style="color:#8a95ad;font-weight:400;">' + esc(r.weather || '') + '</span></div>';
         h += '<div class="pl-loc">&#x1F4CD; ' + esc(r.locationText || '') + '</div>';
-        if (r.locationDesc) h += '<div class="pl-loc" style="color:#2f6fed;">📍 ' + esc(r.locationDesc) + '</div>';
+        if (r.locationDesc) h += '<div class="pl-loc" style="color:#2f6fed;"><span data-ic="location" data-ic-size="12"></span> ' + esc(r.locationDesc) + '</div>';
         if (r.description) h += '<div class="pl-desc">' + esc(r.description) + '</div>';
         var imgs = '';
         if (r.photoUrls && r.photoUrls.length) {

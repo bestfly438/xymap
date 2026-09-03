@@ -997,7 +997,7 @@ function ptSubmit() {
   if (navigator.onLine === false) {
     record.ptPhotos = ptPhotos;
     ptQueueOffline(record);
-    if (btn) { btn.disabled = false; btn.textContent = '✅ 提交巡查记录'; }
+    if (btn) { btn.disabled = false; btn.textContent = '提交巡查记录'; }
     ptMsg('无网络，已离线保存，有网后自动补传', 'ok');
     ptClearForm();
     patrolRefresh();
@@ -1008,7 +1008,7 @@ function ptSubmit() {
   function finishSave() {
     record.photoUrls = urls;
     ptSaveCloud(record, function(ok, err) {
-      if (btn) { btn.disabled = false; btn.textContent = '✅ 提交巡查记录'; }
+      if (btn) { btn.disabled = false; btn.textContent = '提交巡查记录'; }
       if (ok) {
         localStorage.setItem('xyc_last_inspector', inspectorVal);
         ptMsg('巡查记录已保存！', 'ok');
@@ -1099,5 +1099,22 @@ if ('serviceWorker' in navigator) {
   if (fl.length) gsap.from(fl, { y: 18, autoAlpha: 0, duration: 0.5, stagger: 0.1, delay: 0.3 });
 })();
 </script>
+<script>
+// ===== 修改清单 v1 · 5.2：侧栏身份随登录角色刷新 =====
+(function(){
+  try {
+    var role = sessionStorage.getItem('xyc_role') || '';
+    var key  = sessionStorage.getItem('xyc_key')  || '';
+    var myVillage = sessionStorage.getItem('xyc_village') || '';
+    var roleName = { '管理员':'管理员','镇级':'镇级干部','村级':'村级干部','社长':'社长' }[role] || role || '村级干部';
+    var badge = { '管理员':'全部权限','镇级':'全镇调度','村级': (myVillage||'本村')+'数据','社长':'本社数据' }[role] || '';
+    var n = document.getElementById('pcRoleName'); if (n && n.tagName !== 'INPUT') n.textContent = roleName;
+    var b = document.getElementById('pcRoleBadge'); if (b) b.textContent = badge;
+    var f = document.getElementById('pcFootName');  if (f) f.textContent = roleName;
+    var k = document.getElementById('pcFootKey');   if (k) k.textContent = key;
+  } catch(e) {}
+})();
+</script>
+
 </body>
 </html>

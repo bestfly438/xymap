@@ -1312,7 +1312,7 @@ function loadApMapData(){
           pointToLayer:function(f,ll){
             var p=f.properties||{};
             return L.circleMarker(ll,{radius:6,fillColor:'#e2444a',color:'#fff',weight:1.5,fillOpacity:1})
-              .bindPopup('<b>'+esc(p.owner||'隐患点')+'</b><br>'+(p.name||p.place||'')+(p.phone?'<br>📞 '+esc(p.phone):''));
+              .bindPopup('<b>'+esc(p.owner||'隐患点')+'</b><br>'+(p.name||p.place||'')+(p.phone?'<br><span data-ic=\"phone\" data-ic-size=\"12\"></span> '+esc(p.phone):''));
           }
         }).addTo(apMap);
       }
