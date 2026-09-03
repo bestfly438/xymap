@@ -158,3 +158,47 @@ body.v29-screen .content{margin-top:70px;}
   body.v29-screen .content{display:flex;flex-direction:column;}
   body.v29-screen .content > *:not(.v29-screen-board){order:3;}
 }
+
+
+/* ============ 方案三 · 手机 APP 皮肤（≤767px 生效，桌面零影响） ============ */
+@media (max-width:767px){
+  html,body{overflow-x:hidden !important;}
+  /* ---- 顶部：压缩成 APP 导航条 ---- */
+  .topbar,header.topbar,header.top{height:52px !important;padding:0 12px !important;}
+  .topbar .crumb b,.topbar h1,.topbar .tb-title{font-size:15px !important;}
+  .topbar .crumb svg,.topbar .tb-left .icon{width:16px !important;height:16px !important;}
+  .topbar .time-display,.topbar .weather-badge,.topbar .btn{display:none !important;}
+  .topbar .more-btn{display:flex !important;}
+  /* ---- 主体 ---- */
+  .content,.container,.main .content{padding:12px 12px 78px !important;}
+  body{padding-bottom:0;}
+  /* ---- KPI 双列卡片 ---- */
+  .kpi-row,.stats-row,.kpis{grid-template-columns:repeat(2,1fr) !important;gap:10px !important;margin-bottom:14px !important;}
+  .kpi,.stat-card,.metric-card{padding:13px 12px !important;border-radius:14px !important;}
+  .kpi .k-val,.stat-card .sc-num{font-size:26px !important;}
+  .kpi .k-label,.stat-card .sc-label{font-size:11px !important;}
+  /* ---- 村卡 2 列紧凑（APP 演示版观感） ---- */
+  .vill-grid,.village-grid,.v-grid{grid-template-columns:1fr 1fr !important;gap:10px !important;}
+  .vill-card,.v-card,.vill-card2{padding:11px 10px !important;border-radius:14px !important;}
+  /* ---- 表格防横向溢出 ---- */
+  .content table,.card table{display:block !important;overflow-x:auto !important;-webkit-overflow-scrolling:touch;}
+  /* ---- 卡片 ---- */
+  .card,.panel,.widget-box{border-radius:14px !important;}
+  .section-header,.sec-header{margin:16px 0 10px !important;}
+  .section-title,.sec-title{font-size:15px !important;}
+  /* ---- 底部 Tab 悬停区留白（nav.js 已注入 .v29-tabbar） ---- */
+  body{padding-bottom:calc(58px + env(safe-area-inset-bottom,0));}
+  body > .v29-tabbar{height:calc(56px + env(safe-area-inset-bottom,0));}
+  body > .v29-tabbar .tb-item{font-size:10px !important;min-height:50px !important;}
+  body > .v29-tabbar .tb-item svg{width:21px !important;height:21px !important;}
+  body > .v29-tabbar .tb-item.active{color:#1D4E89 !important;}
+  /* ---- 侧栏/抽屉重置为手机抽屉 ---- */
+  body.v29-with-sidebar{margin-left:0 !important;}
+  aside.sidebar,.v29-sidebar{display:none !important;}
+  /* ---- 通用弹层/表格容器安全间距 ---- */
+  .modal,.dialog{max-width:94vw !important;}
+  /* ---- 按钮触控加大 ---- */
+  .btn,button{padding:9px 14px;}
+  /* ---- 消除杂散固定角标在手机上错位 ---- */
+  .v29-screen-btn,.v29-screen-head{display:none !important;}
+}

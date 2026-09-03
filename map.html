@@ -416,6 +416,16 @@ html, body { width: 100%; height: 100%; font-family: "PingFang SC","Microsoft Ya
   width: 100%; max-height: 160px; border-radius: 8px; object-fit: cover;
   margin-top: 8px; display: none; border: 1px solid rgba(20,33,61,0.08);
 }
+/* 多照片预览网格 */
+.patrol-form .ptp-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.patrol-form .ptp-btns .pf-photo-btn { flex: 1; min-width: 120px; justify-content: center; border: 1.5px dashed rgba(47,111,237,0.35); background: rgba(47,111,237,0.04) !important; }
+.patrol-form .ptp-thumbs { display:none; gap:8px; flex-wrap:wrap; margin-top:8px; }
+.patrol-form .ptp-item { width: calc(33.33% - 6px); aspect-ratio: 1/1; border-radius:8px; overflow:hidden; position:relative; border:1px solid rgba(20,33,61,0.08); background:#000; }
+.patrol-form .ptp-item img { width:100%; height:100%; object-fit:cover; display:block; cursor:pointer; }
+.patrol-form .ptp-del { position:absolute; top:3px; right:3px; width:22px; height:22px; border-radius:50%; background:rgba(226,68,74,0.92); color:#fff; font-size:13px; line-height:22px; text-align:center; cursor:pointer; padding:0; border:none; }
+.patrol-form .ptp-off { position:absolute; bottom:3px; left:3px; font-size:10px; padding:2px 6px; border-radius:4px; background:rgba(238,139,36,0.92); color:#fff; }
+.patrol-form .pf-offline-bar { display:none; padding:8px 12px; border-radius:8px; background:rgba(238,139,36,0.1); border:1px solid rgba(238,139,36,0.35); color:#c56912; font-size:12px; margin-bottom:10px; }
+.patrol-form .pf-label .pf-hint { font-size:10px; color:#8a95ad; font-weight:400; margin-left:2px; }
 .patrol-form .pf-photo-btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 16px; border-radius: 8px; font-size: 13px; cursor: pointer;
@@ -1728,7 +1738,9 @@ var WMO_MAP = {
 var weatherCache = null;
 var currentPatrolVid = '';
 var currentPatrolLocation = null;
-var patrolPhotoData = '';
+var patrolPhotos = [];   // 升级 v20260901-m1：多照片 [{dataUrl, url}]
+var PT_DB_NAME = 'xyc_patrol_offline';
+var PT_DB = null;
 
 function wmoInfo(code) { return WMO_MAP[code] || ['未知', '&#x2600;']; }
 
@@ -1776,24 +1788,139 @@ function previewPhoto(dataUrl) {
 }
 
 function compressPhoto(file, callback) {
-  if (!file) { callback(''); return; }
+  v29CompressPhoto(file, function(blob) {
+    if (!blob) { callback(''); return; }
+    var r = new FileReader();
+    r.onload = function(e) { callback(e.target.result); };
+    r.readAsDataURL(blob);
+  });
+}
+function v29CompressPhoto(file, cb) {
+  if (!file) { cb(null); return; }
+  if (typeof localStorage !== 'undefined' && localStorage.getItem('xyc_nocompress') === '1') { cb(file); return; }
   var reader = new FileReader();
   reader.onload = function(e) {
     var img = new Image();
     img.onload = function() {
-      var canvas = document.createElement('canvas');
-      var maxW = 800;
-      var scale = Math.min(1, maxW / img.width);
-      canvas.width = img.width * scale;
-      canvas.height = img.height * scale;
-      var ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      callback(canvas.toDataURL('image/jpeg', 0.55));
+      var MAX = 1600;
+      var scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      var cv = document.createElement('canvas');
+      cv.width = Math.max(1, Math.round(img.width * scale));
+      cv.height = Math.max(1, Math.round(img.height * scale));
+      var ctx = cv.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, cv.width, cv.height);
+      ctx.drawImage(img, 0, 0, cv.width, cv.height);
+      try {
+        var d = new Date();
+        var pad2 = function(n) { return String(n).padStart(2, '0'); };
+        var stamp = d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + ' ' + pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+        var fs = Math.max(12, Math.round(cv.width / 85));
+        ctx.font = fs + 'px "PingFang SC","Microsoft YaHei",sans-serif';
+        ctx.textBaseline = 'bottom';
+        var label = '新塬应急 ' + stamp;
+        var tw = ctx.measureText(label).width;
+        var bx = cv.width - tw - 12, by = cv.height - 8;
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.fillRect(bx - 6, by - fs - 6, tw + 12, fs + 12);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillText(label, bx, by);
+      } catch(e2) {}
+      if (cv.toBlob) { cv.toBlob(function(blob) { cb(blob); }, 'image/jpeg', 0.8); }
+      else {
+        var dataUrl = cv.toDataURL('image/jpeg', 0.8);
+        var bin = atob(dataUrl.split(',')[1]);
+        var arr = new Uint8Array(bin.length);
+        for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+        cb(new Blob([arr], { type: 'image/jpeg' }));
+      }
     };
+    img.onerror = function() { cb(null); };
     img.src = e.target.result;
   };
+  reader.onerror = function() { cb(null); };
   reader.readAsDataURL(file);
 }
+
+// ===== IndexedDB 巡查离线队列（升级 v20260901-m1）=====
+function openPatrolDB(cb) {
+  if (PT_DB) { cb(PT_DB); return; }
+  try {
+    var req = indexedDB.open(PT_DB_NAME, 1);
+    req.onupgradeneeded = function(e) {
+      var db = e.target.result;
+      if (!db.objectStoreNames.contains('queue')) db.createObjectStore('queue', { keyPath: 'id' });
+    };
+    req.onsuccess = function(e) { PT_DB = e.target.result; cb(PT_DB); };
+    req.onerror = function() { cb(null); };
+  } catch(e2) { cb(null); }
+}
+function queueOfflinePatrol(record) {
+  openPatrolDB(function(db) {
+    if (!db) { try { var all = JSON.parse(localStorage.getItem(PATROL_STORAGE_KEY) || '[]'); all.unshift(record); localStorage.setItem(PATROL_STORAGE_KEY, JSON.stringify(all)); } catch(e2){} return; }
+    try { var tx = db.transaction('queue', 'readwrite'); tx.objectStore('queue').put(record); } catch(e2){}
+  });
+  saveLocalPatrolRecord(record);
+}
+function getOfflineQueue(cb) {
+  openPatrolDB(function(db) {
+    if (!db) { cb([]); return; }
+    try {
+      var tx = db.transaction('queue', 'readonly');
+      var req = tx.objectStore('queue').getAll();
+      req.onsuccess = function() { cb(req.result || []); };
+      req.onerror = function() { cb([]); };
+    } catch(e2) { cb([]); }
+  });
+}
+function delOfflineQueue(id) {
+  openPatrolDB(function(db) {
+    if (!db) return;
+    try { var tx = db.transaction('queue', 'readwrite'); tx.objectStore('queue').delete(id); } catch(e2){}
+  });
+}
+function saveCloudOfflinePatrol(record, callback) {
+  var photos = record.ptPhotos || [];
+  var urls = [];
+  var step = 0;
+  function next() {
+    if (step < photos.length) {
+      uploadPatrolPhoto(photos[step].dataUrl, record.village).then(function(url) {
+        if (url) urls.push(url);
+        step++; next();
+      });
+    } else {
+      record.photoUrls = urls;
+      savePatrolRecord(record, function(ok) { callback(ok); });
+    }
+  }
+  next();
+}
+function flushOfflinePatrol() {
+  if (navigator.onLine === false) return;
+  getOfflineQueue(function(queue) {
+    var bar = document.getElementById('pf-offline-bar');
+    if (!queue.length) { if (bar) bar.style.display = 'none'; return; }
+    if (bar) { bar.style.display = 'block'; bar.textContent = '🔄 正在补传 ' + queue.length + ' 条离线巡查记录…'; }
+    var done = 0;
+    queue.forEach(function(rec) {
+      saveCloudOfflinePatrol(rec, function(ok) {
+        if (ok) delOfflineQueue(rec.id);
+        if (++done >= queue.length) {
+          if (bar) { bar.textContent = ok ? '✅ 离线记录补传完成' : '部分离线记录补传失败，稍后再试'; setTimeout(function(){ bar.style.display = 'none'; }, 3000); }
+          var listEl = document.querySelector('.patrol-list');
+          if (listEl && currentPatrolVid) refreshPatrolList(currentPatrolVid);
+        }
+      });
+    });
+  });
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(flushOfflinePatrol, 2000); });
+} else {
+  setTimeout(flushOfflinePatrol, 2000);
+}
+window.addEventListener('online', flushOfflinePatrol);
 
 function getWeatherText() {
   if (weatherCache) {
@@ -1844,15 +1971,18 @@ function getPatrolRecords(vname, callback) {
       var lng = f['经度'], lat = f['纬度'];
       var loc = null;
       if (lng != null && lat != null) loc = { lng: Number(lng), lat: Number(lat) };
+      var photoUrls = (f['照片URLs'] || '').split(',').map(function(s){ return s.trim(); }).filter(Boolean);
       return {
         record_id: it.record_id || '',
         id: it.record_id || (vname + '-' + (f['巡查时间'] || '')),
         village: vname,
         inspector: f['巡查人'] || '',
         location: loc,
-        locationText: loc ? '经度' + loc.lng.toFixed(6) + ' 纬度' + loc.lat.toFixed(6) : '',
+        locationText: loc ? '经度 ' + loc.lng.toFixed(6) + ' 纬度 ' + loc.lat.toFixed(6) : '',
+        locationDesc: f['位置描述'] || '',
         weather: f['天气'] || '',
         photo: f['照片base64'] || '',
+        photoUrls: photoUrls,
         description: f['巡查描述'] || '',
         time: fmtTime(f['巡查时间'])
       };
@@ -1899,9 +2029,9 @@ function savePatrolRecord(record, callback) {
     fields['经度'] = record.location.lng;
     fields['纬度'] = record.location.lat;
   }
-  if (record.photo && record.photo.length < 120000) {
-    fields['照片base64'] = record.photo;
-  }
+  if (record.locationDesc) fields['位置描述'] = record.locationDesc;
+  if (record.photoUrls && record.photoUrls.length) fields['照片URLs'] = record.photoUrls.join(',');
+  else if (record.photo && record.photo.length < 120000) fields['照片base64'] = record.photo;
   var path = '/open-apis/base/v3/bases/' + FEISHU_CONFIG.baseToken +
     '/tables/' + FEISHU_CONFIG.tables.patrol + '/records';
   feishuRequest('POST', path, fields, function(data, err) {
@@ -1963,13 +2093,14 @@ function renderPatrolTab(vid) {
     if (role === '村级' && myVillage && myVillage !== vid) {
       h += '<div style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.3);border-radius:8px;padding:8px 12px;font-size:12px;color:#2f6fed;margin-bottom:12px;line-height:1.6;">您的账号为村级密钥，巡查记录将自动记入<b>本村（' + esc(myVillage) + '）</b></div>';
     }
+    h += '<div class="pf-offline-bar" id="pf-offline-bar"></div>';
     h += '<div class="pf-row">';
     h += '<div class="pf-label">&#x1F464; 巡查人姓名</div>';
     h += '<input class="pf-input" id="pf-inspector" value="' + esc(lastInspector) + '" placeholder="请输入巡查人姓名">';
     h += '</div>';
 
     h += '<div class="pf-row">';
-    h += '<div class="pf-label">&#x1F4CD; 巡查点位 <span style="font-weight:400;font-size:10px;">（点击获取当前位置）</span></div>';
+    h += '<div class="pf-label">&#x1F4CD; 巡查点位 <span class="pf-hint">（点击获取当前位置，失败时可填下方位置描述）</span></div>';
     h += '<div class="pf-auto" id="pf-location" style="cursor:pointer;" onclick="getPatrolLocation()">';
     if (currentPatrolLocation) {
       h += '经度：' + currentPatrolLocation.lng.toFixed(6) + '，纬度：' + currentPatrolLocation.lat.toFixed(6);
@@ -1980,14 +2111,24 @@ function renderPatrolTab(vid) {
     h += '</div>';
 
     h += '<div class="pf-row">';
+    h += '<div class="pf-label">&#x1F4CD; 位置描述 <span class="pf-hint">（定位失败时填文字，如"村口桥头"）</span></div>';
+    h += '<input class="pf-input" id="pf-loc-desc" placeholder="选填：定位失败时填写当前位置的文字描述">';
+    h += '</div>';
+
+    h += '<div class="pf-row">';
     h += '<div class="pf-label">&#x2600; 天气情况</div>';
     h += '<div class="pf-auto" id="patrol-weather-' + escAttr(vid) + '">' + getWeatherText() + '</div>';
     h += '</div>';
 
     h += '<div class="pf-row">';
-    h += '<div class="pf-label">&#x1F4F7; 巡查照片</div>';
-    h += '<input type="file" id="pf-photo-input" accept="image/*" capture="environment" style="display:none;" onchange="onPatrolPhotoSelect(this)">';
-    h += '<label class="pf-photo-btn" for="pf-photo-input">&#x1F4F7; 拍照/选择照片</label>';
+    h += '<div class="pf-label">&#x1F4F7; 巡查照片 <span class="pf-hint">（可多张，支持离线暂存）</span></div>';
+    h += '<div class="ptp-btns">';
+    h += '<input type="file" id="pf-photo-cam" accept="image/*" capture="environment" style="display:none;" onchange="onPatrolPhotoSelect(this)">';
+    h += '<label class="pf-photo-btn" for="pf-photo-cam">&#x1F4F7; 拍照</label>';
+    h += '<input type="file" id="pf-photo-album" accept="image/*" multiple style="display:none;" onchange="onPatrolPhotoSelect(this)">';
+    h += '<label class="pf-photo-btn" for="pf-photo-album">&#x1F4F8; 相册（可多张）</label>';
+    h += '</div>';
+    h += '<div class="ptp-thumbs" id="pf-photo-thumbs"></div>';
     h += '<img class="pf-photo-preview" id="pf-photo-preview" src="" alt="照片预览">';
     h += '</div>';
 
@@ -2027,7 +2168,9 @@ function renderPatrolTab(vid) {
 
 function getPatrolLocation() {
   if (!navigator.geolocation) {
-    showPfMsg('浏览器不支持定位功能', 'error');
+    showPfMsg('浏览器不支持定位功能，可手动填写位置描述', 'error');
+    var ld = document.getElementById('pf-loc-desc');
+    if (ld) ld.focus();
     return;
   }
   var el = document.getElementById('pf-location');
@@ -2038,23 +2181,74 @@ function getPatrolLocation() {
     if (el) el.textContent = '经度：' + gcj[0].toFixed(6) + '，纬度：' + gcj[1].toFixed(6);
     fetchPatrolWeather(pos.coords.latitude, pos.coords.longitude);
   }, function(err) {
-    if (el) el.textContent = '定位失败';
-    showPfMsg('定位失败（请允许浏览器定位权限）。可直接提交，将使用地图中心点位', 'error');
-  }, { enableHighAccuracy: true, timeout: 10000 });
+    if (el) el.textContent = '定位失败，可手动填写位置描述';
+    showPfMsg('定位失败，请允许定位权限或在下方填写位置描述（将兜底使用地图中心点）', 'error');
+    var ld = document.getElementById('pf-loc-desc');
+    if (ld) ld.focus();
+  }, { enableHighAccuracy: true, timeout: 20000 });
 }
 
 function onPatrolPhotoSelect(input) {
-  var file = input.files[0];
-  if (!file) return;
-  showPfMsg('正在压缩照片…', '');
-  compressPhoto(file, function(dataUrl) {
-    patrolPhotoData = dataUrl;
-    var preview = document.getElementById('pf-photo-preview');
-    if (preview && dataUrl) {
-      preview.src = dataUrl;
-      preview.style.display = 'block';
-    }
-    showPfMsg('照片已压缩（约' + Math.round(dataUrl.length / 1024) + 'KB）', 'success');
+  var files = input.files;
+  if (!files || !files.length) return;
+  var total = files.length, done = 0;
+  showPfMsg('正在压缩 ' + total + ' 张照片…', '');
+  var village = currentPatrolVid;
+  var role = sessionStorage.getItem('xyc_role') || '';
+  var myVillage = sessionStorage.getItem('xyc_village') || '';
+  if (role === '村级' && myVillage) village = myVillage;
+  Array.prototype.forEach.call(files, function(file) {
+    v29CompressPhoto(file, function(blob) {
+      done++;
+      if (!blob) { if (done >= total) renderPatrolPhotoPreviews(); return; }
+      var r = new FileReader();
+      r.onload = function(e) {
+        var dataUrl = e.target.result;
+        patrolPhotos.push({ dataUrl: dataUrl, url: '' });
+        if (navigator.onLine !== false && village) {
+          uploadPatrolPhoto(dataUrl, village).then(function(url) {
+            for (var i = 0; i < patrolPhotos.length; i++) {
+              if (patrolPhotos[i].dataUrl === dataUrl) { patrolPhotos[i].url = url || ''; break; }
+            }
+            renderPatrolPhotoPreviews();
+            showPfMsg('已上传云端（共 ' + patrolPhotos.length + ' 张，约 ' + Math.round(patrolPhotos.reduce(function(s,p){return s+p.dataUrl.length/1024;},0)) + 'KB）', 'success');
+          });
+        } else {
+          renderPatrolPhotoPreviews();
+          showPfMsg('已离线暂存 ' + patrolPhotos.length + ' 张照片，提交后自动补传', 'success');
+        }
+      };
+      r.readAsDataURL(blob);
+    });
+  });
+  input.value = '';
+}
+function renderPatrolPhotoPreviews() {
+  var box = document.getElementById('pf-photo-thumbs');
+  if (!box) return;
+  var h = '';
+  patrolPhotos.forEach(function(p, i) {
+    h += '<div class="ptp-item">'
+      + '<img src="' + p.dataUrl + '" alt="照片' + (i + 1) + '" onclick="event.stopPropagation();previewPhoto(this.src)">'
+      + '<button type="button" class="ptp-del" onclick="event.stopPropagation();delPatrolPhoto(' + i + ')">&#10005;</button>'
+      + (p.url ? '' : '<span class="ptp-off">待传</span>')
+      + '</div>';
+  });
+  box.innerHTML = h;
+  box.style.display = patrolPhotos.length ? 'flex' : 'none';
+}
+function delPatrolPhoto(i) { patrolPhotos.splice(i, 1); renderPatrolPhotoPreviews(); }
+function uploadPatrolPhoto(dataUrl, village) {
+  return new Promise(function(resolve) {
+    fetch(FEISHU_CONFIG.apiBase + '/api/patrol_upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json; charset=utf-8',
+        'x-xyc-key': sessionStorage.getItem('xyc_key') || '',
+        'x-xyc-device': sessionStorage.getItem('xyc_device') || '' },
+      body: JSON.stringify({ village: village || '', img: dataUrl })
+    }).then(function(r){ return r.json(); })
+      .then(function(d){ resolve((d && d.code === 0 && d.data && d.data.url) ? d.data.url : null); })
+      .catch(function(){ resolve(null); });
   });
 }
 
@@ -2064,8 +2258,10 @@ function submitPatrol(vid) {
   var recordVillage = (role === '村级' && myVillage) ? myVillage : vid;
   var inspector = document.getElementById('pf-inspector');
   var desc = document.getElementById('pf-desc');
+  var locDescEl = document.getElementById('pf-loc-desc');
   var inspectorVal = inspector ? inspector.value.trim() : '';
   var descVal = desc ? desc.value.trim() : '';
+  var locDescVal = locDescEl ? locDescEl.value.trim() : '';
 
   if (!inspectorVal) { showPfMsg('请填写巡查人姓名', 'error'); return; }
   if (!currentPatrolLocation) {
@@ -2073,7 +2269,7 @@ function submitPatrol(vid) {
     if (mapCenter) currentPatrolLocation = { lng: mapCenter.lng, lat: mapCenter.lat };
   }
 
-  var dupKey = vid + '|' + inspectorVal + '|' + descVal;
+  var dupKey = vid + '|' + inspectorVal + '|' + descVal + '|' + locDescVal + '|' + patrolPhotos.length;
   if (window._lastPatrolSubmit && window._lastPatrolSubmit.key === dupKey && Date.now() - window._lastPatrolSubmit.ts < 3000) {
     showPfMsg('正在提交中，请勿重复点击', 'error');
     return;
@@ -2084,45 +2280,80 @@ function submitPatrol(vid) {
   window._lastPatrolSubmit = { key: dupKey, ts: Date.now() };
 
   var now = new Date();
-  var timeStr = now.getFullYear() + '-' +
-    String(now.getMonth()+1).padStart(2,'0') + '-' +
-    String(now.getDate()).padStart(2,'0') + ' ' +
-    String(now.getHours()).padStart(2,'0') + ':' +
-    String(now.getMinutes()).padStart(2,'0') + ':' +
-    String(now.getSeconds()).padStart(2,'0');
+  function p2(n) { return String(n).padStart(2,'0'); }
+  var timeStr = now.getFullYear() + '-' + p2(now.getMonth()+1) + '-' + p2(now.getDate())
+    + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes()) + ':' + p2(now.getSeconds());
 
   var record = {
     id: now.getTime(),
     village: recordVillage,
     inspector: inspectorVal,
     location: currentPatrolLocation,
-    locationText: '经度' + currentPatrolLocation.lng.toFixed(6) + ' 纬度' + currentPatrolLocation.lat.toFixed(6),
+    locationText: currentPatrolLocation ? ('经度 ' + currentPatrolLocation.lng.toFixed(6) + ' 纬度 ' + currentPatrolLocation.lat.toFixed(6)) : '',
+    locationDesc: locDescVal,
     weather: getWeatherText(),
-    photo: patrolPhotoData,
+    photo: '',
     description: descVal,
     time: timeStr
   };
 
-  savePatrolRecord(record, function(ok, err) {
-    if (ok) {
-      localStorage.setItem('xyc_last_inspector', inspectorVal);
-      showPfMsg('巡查记录已同步保存！', 'success');
-      patrolPhotoData = '';
-      currentPatrolLocation = null;
-      var preview = document.getElementById('pf-photo-preview');
-      if (preview) { preview.src = ''; preview.style.display = 'none'; }
-      var photoInput = document.getElementById('pf-photo-input');
-      if (photoInput) photoInput.value = '';
-      if (desc) desc.value = '';
-      var locEl = document.getElementById('pf-location');
-      if (locEl) locEl.textContent = '点击获取GPS位置…';
-      refreshPatrolList(vid);
-    } else {
-      showPfMsg('云端保存失败，已存入本机（' + (err || '未知原因') + '）', 'error');
-      refreshPatrolList(vid);
-    }
+  function clearForm() {
+    patrolPhotos = [];
+    currentPatrolLocation = null;
+    var box = document.getElementById('pf-photo-thumbs');
+    if (box) { box.innerHTML = ''; box.style.display = 'none'; }
+    var preview = document.getElementById('pf-photo-preview');
+    if (preview) { preview.src = ''; preview.style.display = 'none'; }
+    var pi1 = document.getElementById('pf-photo-cam'); if (pi1) pi1.value = '';
+    var pi2 = document.getElementById('pf-photo-album'); if (pi2) pi2.value = '';
+    if (desc) desc.value = '';
+    if (locDescEl) locDescEl.value = '';
+    var locEl = document.getElementById('pf-location');
+    if (locEl) locEl.textContent = '点击获取GPS位置…';
+  }
+
+  // 无网络：整条记录（含照片）入离线队列 IndexedDB
+  if (navigator.onLine === false) {
+    record.ptPhotos = patrolPhotos.slice();
+    queueOfflinePatrol(record);
     if (btn) { btn.disabled = false; btn.textContent = '✅ 提交巡查记录'; }
-  });
+    localStorage.setItem('xyc_last_inspector', inspectorVal);
+    showPfMsg('无网络，已离线保存，有网后自动补传', 'success');
+    clearForm();
+    refreshPatrolList(vid);
+    return;
+  }
+
+  var pending = patrolPhotos.filter(function(p){ return !p.url; });
+  var urls = patrolPhotos.filter(function(p){ return p.url; }).map(function(p){ return p.url; });
+  function finishSave() {
+    record.photoUrls = urls;
+    savePatrolRecord(record, function(ok, err) {
+      if (btn) { btn.disabled = false; btn.textContent = '✅ 提交巡查记录'; }
+      if (ok) {
+        localStorage.setItem('xyc_last_inspector', inspectorVal);
+        showPfMsg('巡查记录已同步保存！', 'success');
+        clearForm();
+        refreshPatrolList(vid);
+      } else {
+        showPfMsg('云端保存失败，已存入本机（' + (err || '未知原因') + '）', 'error');
+        setTimeout(function(){ refreshPatrolList(vid); }, 500);
+      }
+    });
+  }
+  if (pending.length) {
+    showPfMsg('正在上传 ' + pending.length + ' 张照片…', '');
+    var step = 0;
+    function upNext() {
+      if (step < pending.length) {
+        uploadPatrolPhoto(pending[step].dataUrl, recordVillage).then(function(url) {
+          if (url) { pending[step].url = url; urls.push(url); }
+          step++; upNext();
+        });
+      } else { finishSave(); }
+    }
+    upNext();
+  } else { finishSave(); }
 }
 
 function delPatrol(id, vid) {
@@ -2151,8 +2382,17 @@ function refreshPatrolList(vid) {
         h += '<div class="pl-time">' + esc(r.time) + '</div>';
         h += '<div class="pl-inspector">&#x1F464; ' + esc(r.inspector || '未知') + ' <span style="color:#8a95ad;font-weight:400;">' + esc(r.weather || '') + '</span></div>';
         h += '<div class="pl-loc">&#x1F4CD; ' + esc(r.locationText || '') + '</div>';
+        if (r.locationDesc) h += '<div class="pl-loc" style="color:#2f6fed;">📍 ' + esc(r.locationDesc) + '</div>';
         if (r.description) h += '<div class="pl-desc">' + esc(r.description) + '</div>';
-        if (r.photo) h += '<img class="pl-photo" src="' + r.photo + '" onclick="event.stopPropagation();previewPhoto(\'' + escAttr(r.photo) + '\')" alt="巡查照片">';
+        var imgs = '';
+        if (r.photoUrls && r.photoUrls.length) {
+          r.photoUrls.forEach(function(u) {
+            imgs += '<img class="pl-photo" src="' + escAttr(u) + '" onclick="event.stopPropagation();previewPhoto(\'' + escAttr(u) + '\')" alt="巡查照片" loading="lazy">';
+          });
+        } else if (r.photo) {
+          imgs += '<img class="pl-photo" src="' + r.photo + '" onclick="event.stopPropagation();previewPhoto(\'' + escAttr(r.photo) + '\')" alt="巡查照片">';
+        }
+        h += imgs;
         h += '</div>';
       });
     }
@@ -2167,14 +2407,16 @@ function exportPatrolCSV(vid) {
       return;
     }
     var BOM = '\uFEFF';
-    var header = '序号,村名,巡查人,巡查点位（经度）,巡查点位（纬度）,天气情况,巡查情况描述,巡查时间\n';
+    var header = '序号,村名,巡查人,巡查点位（经度）,巡查点位（纬度）,位置描述,天气情况,巡查情况描述,照片链接,巡查时间\n';
     var rows = '';
     records.forEach(function(r, i) {
       var desc = (r.description || '').replace(/"/g, '""');
+      var locDesc = (r.locationDesc || '').replace(/"/g, '""');
+      var photoLink = (r.photoUrls && r.photoUrls.length) ? r.photoUrls.join(';') : '';
       rows += (i + 1) + ',' + r.village + ',' + (r.inspector || '') + ',' +
         (r.location ? r.location.lng.toFixed(6) : '') + ',' +
-        (r.location ? r.location.lat.toFixed(6) : '') + ',' +
-        (r.weather || '').replace(/,/g, ' ') + ',"' + desc + '",' + r.time + '\n';
+        (r.location ? r.location.lat.toFixed(6) : '') + ',"' + locDesc + '",' +
+        (r.weather || '').replace(/,/g, ' ') + ',"' + desc + '",' + photoLink.replace(/,/g, ';') + ',' + r.time + '\n';
     });
     var csv = BOM + header + rows;
     var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
