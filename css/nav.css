@@ -299,3 +299,22 @@ button:focus-visible,a:focus-visible{outline:2px solid #2f6fed;outline-offset:2p
 }
 .v29-sched-head.open .v29-sched-arrow,body:not(.open) .v29-sched-arrow{transform:rotate(0)}
 .v29-sched-head[aria-expanded="true"] .v29-sched-arrow{transform:rotate(180deg);}
+
+
+/* ============================================================
+   修改清单 v1 · 第二批：字号收敛 + 语义工具类
+   ============================================================ */
+/* ---- Tab / 筛选 / 标签字号 ≥13px（含各页内联同名类） ---- */
+.tab-btn,.tab,.tag-opt,.mode-tab,.radio-btn,.seg-btn,
+.analysis-tabs .tab,.msg-tabs .tab,.filter-chip{font-size:14px !important;}
+.pt-form select,.pt-form .pf-input,.patrol-form .pf-input{font-size:14px !important;}
+/* 辅助小字最小 12px（剔除纯徽标角标） */
+.section-subtitle,.ch-sub,.k-foot,.flat,.table-aux{font-size:12px !important;}
+/* ---- 语义 h1 视觉隐藏（无障碍朗读用，不占布局） ---- */
+.xyc-vh{
+  position:absolute !important;width:1px;height:1px;margin:-1px;padding:0;
+  overflow:hidden;clip:rect(0 0 0 0);clip-path:inset(50%);
+  white-space:nowrap;border:0;
+}
+/* ---- 底部 Tab 图标与文字间距/对齐 ---- */
+.v29-tabbar .tb-item svg{margin-bottom:1px;}

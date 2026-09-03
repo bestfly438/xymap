@@ -43,6 +43,23 @@
   // ---------- 桌面侧栏 ----------
   function bindExistingSidebar(sb){
     sb.classList.add('v29-skin');
+    // 修改清单 v1：非 <a> 的可点项(div/span onclick)补键盘可达
+    var clickables = sb.querySelectorAll('div[onclick], span[onclick]');
+    for (var ci = 0; ci < clickables.length; ci++) {
+      var el = clickables[ci];
+      if (!el.getAttribute('role')) el.setAttribute('role', 'button');
+      if (el.tabIndex < 0) el.tabIndex = 0;
+      if (!el.getAttribute('data-xyc-key')) {
+        el.setAttribute('data-xyc-key', '1');
+        el.addEventListener('keydown', function(e){
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            var fn = this.getAttribute('onclick');
+            if (fn) { try { (new Function(fn))(); } catch(err) {} }
+          }
+        });
+      }
+    }
     var links = sb.querySelectorAll('a.sb-item');
     for (var i = 0; i < links.length; i++) {
       var h = links[i].getAttribute('href') || '';
@@ -90,6 +107,7 @@
     btn.setAttribute('onclick', 'v29OpenDrawer()');
     btn.innerHTML = svg('menu', 22);
     btn.title = '菜单';
+    btn.setAttribute('aria-label', '打开菜单');
     el.appendChild(btn);
     document.body.appendChild(el);
   }
@@ -149,7 +167,7 @@
     TABS.forEach(function(t){
       var a = document.createElement('a');
       a.className = 'tb-item';
-      if (t.more) { a.href = 'javascript:void(0)'; a.setAttribute('onclick', 'v29OpenDrawer()'); }
+      if (t.more) { a.href = 'javascript:void(0)'; a.setAttribute('onclick', 'v29OpenDrawer()'); a.setAttribute('aria-label', '更多功能'); }
       else { a.href = t.page + q(); if (c.page === t.page) a.classList.add('active'); }
       a.innerHTML = svg(t.ic, 22) + '<span>' + t.name + '</span>';
       bar.appendChild(a);
@@ -285,11 +303,35 @@
     setInterval(tick, 30000);
   }
 
+  // ---------- 修改清单 v1：语义 h1（视觉隐藏，页面标题） ----------
+  function injectPageH1(){
+    if (document.querySelector('h1')) return;
+    var name = cur().name || '';
+    if (!name) return;
+    var h1 = document.createElement('h1');
+    h1.className = 'xyc-vh';
+    h1.textContent = name;
+    (document.body.firstElementChild ? document.body : document.body).insertBefore(h1, document.body.firstChild);
+  }
+  // ---------- 修改清单 v1：抽屉 Esc 关闭 / 焦点进入 ----------
+  function bindDrawerKeys(){
+    if (window.__xycDrawerKeys) return; window.__xycDrawerKeys = true;
+    document.addEventListener('keydown', function(e){
+      if (e.key !== 'Escape') return;
+      var d = document.getElementById('v29Drawer');
+      if (d && d.classList.contains('open')) { v29CloseDrawer(); return; }
+      var mm = document.getElementById('moreMenu');
+      if (mm && mm.style.display && mm.style.display !== 'none') { if (window.toggleMoreMenu) toggleMoreMenu(); }
+    });
+  }
+
   function init(){
     checkVersion();
     if (PAGE.page === 'index.html') return; // 登录页不注入导航
     startVillagePoll();
+    injectPageH1();
     ensureDrawer();
+    bindDrawerKeys();
     var existing = document.querySelector('aside.sidebar');
     if (IS_MAP) buildMapNav();
     else if (existing) bindExistingSidebar(existing);
