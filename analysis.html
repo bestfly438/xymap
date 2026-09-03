@@ -603,15 +603,15 @@ function summaryHTML(tab){
     var idx = RAIN_IDX;
     if (idx === 3) {
       var h=0, p=0; VILLAGES.forEach(function(v){ h+=v.hh||0; p+=v.people||0; });
-      return '\uD83D\uDD34 ' + LEVELS[idx].name + '：全镇 ' + h + ' 户 ' + p + ' 人按预案全部转移避险';
+      return '全镇 ' + h + ' 户 ' + p + ' 人按预案全部转移避险';
     }
     if (idx === 2) {
       var z = PTS.filter(function(x){ return x.z50||x.z100; }).length;
       var f = PTS.filter(function(x){ return x.flood>0; }).length;
-      return '\uD83D\uDFE7 ' + LEVELS[idx].name + '：洪水影响带内隐患点 ' + z + ' 处 · 山洪易发区内 ' + f + ' 处 · 低洼积水户 ' + (DEPPTS.length||0) + ' 处需重点巡查';
+      return '洪水影响带内隐患点 ' + z + ' 处 · 山洪易发区内 ' + f + ' 处 · 低洼积水户 ' + (DEPPTS.length||0) + ' 处需重点巡查';
     }
-    if (idx === 1) return '\uD83D\uDFE1 ' + LEVELS[idx].name + '：已叫应全镇 ' + VILLAGES.length + ' 个村责任人，提醒威胁户';
-    return '\uD83D\uDD35 ' + LEVELS[idx].name + '：全镇值班值守，密切关注雨情';
+    if (idx === 1) return '已叫应全镇 ' + VILLAGES.length + ' 个村责任人，提醒威胁户';
+    return '全镇值班值守，密切关注雨情';
   }
   if (tab === 'grade') {
     var n = PTS.filter(function(x){ return !VILLAGE_FILTER || x.full===VILLAGE_FILTER; }).length;
@@ -653,7 +653,7 @@ function renderList(){
   var html = '';
   if (TAB === 'rain') {
     var idx = RAIN_IDX, lv = LEVELS[idx];
-    html = '<div class="lp-title">\uD83D\uDCA7 ' + lv.mm + 'mm ' + lv.name + ' · 各村响应（点击定位）</div>';
+    html = '<div class="lp-title">' + lv.mm + 'mm ' + lv.name + ' · 各村响应（点击定位）</div>';
     var list = VILLAGES.slice().sort(function(a,b){ return (b.high||0)-(a.high||0); });
     list.forEach(function(v){
       var c = centerOf(v.name);
@@ -662,11 +662,11 @@ function renderList(){
         + '<div class="vl-sub">隐患：高 ' + (v.high||0) + ' / 中 ' + (v.mid||0) + ' / 低 ' + (v.low||0) + ' · 威胁 ' + (v.hh||0) + ' 户 ' + (v.people||0) + ' 人'
         + ((v.z50||v.z100) ? ' · 影响带内 ' + ((v.z50||0)+(v.z100||0)) + ' 处' : '') + '</div>'
         + '<div class="vl-act">' + villageAction(v, idx) + '</div>'
-        + '<div class="vl-tel">\uD83D\uDCDE ' + (v.leader||'') + '</div></div>';
+        + '<div class="vl-tel"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.6 3.5 9 6l1.6 1.6a1.5 1.5 0 0 1 0 2.1L9.2 11a12 12 0 0 0 3.8 3.8l1.3-1.4a1.5 1.5 0 0 1 2.1 0L18 15l2.5 2.4a1.5 1.5 0 0 1 0 2.2c-.5.5-1.2 1-2 1.2-2.6.7-6.4-.4-10.4-4.4S3.6 7.6 4.3 5c.2-.8.7-1.5 1.2-2a1.5 1.5 0 0 1 1.1-.4Z"/></svg> ' + (v.leader||'') + '</div></div>';
     });
   } else if (TAB === 'zone') {
     var inPts = PTS.filter(function(x){ return x.z50||x.z100; });
-    html = '<div class="lp-title">\uD83C\uDF0A 洪水影响带内隐患点（' + inPts.length + ' 处）</div>';
+    html = '<div class="lp-title">洪水影响带内隐患点（' + inPts.length + ' 处）</div>';
     if (!inPts.length) html += '<div class="zl-row">暂无</div>';
     inPts.forEach(function(p){
       html += '<div class="zl-row" data-lng="' + p.lng + '" data-lat="' + p.lat + '"><b>' + p.name + '</b> · ' + p.full
@@ -679,7 +679,7 @@ function renderList(){
       var Ra = a.properties['r' + PRAIN], Rb = b.properties['r' + PRAIN];
       return (Rb ? Rb.x : 0) - (Ra ? Ra.x : 0);
     }).slice(0, 10);
-    html = '<div class="lp-title">\uD83C\uDF0A ' + PRAIN + 'mm 降雨 · 最深积水洼地 TOP' + psorted.length + '（点击定位）</div>';
+    html = '<div class="lp-title">' + PRAIN + 'mm 降雨 · 最深积水洼地 TOP' + psorted.length + '（点击定位）</div>';
     psorted.forEach(function(f){
       var pr = f.properties, R = pr['r' + PRAIN];
       var g = R ? R.g : (pr.grade || 1), mean = R ? R.m : pr.mean, mx = R ? R.x : pr.max;
@@ -702,7 +702,7 @@ function renderList(){
     if (VILLAGE_FILTER) gl = gl.filter(function(x){ return x.full === VILLAGE_FILTER; });
     var gOrder = {'高': 0, '中': 1, '低': 2};
     gl.sort(function(a, b){ return (gOrder[a.grade] !== undefined ? gOrder[a.grade] : 3) - (gOrder[b.grade] !== undefined ? gOrder[b.grade] : 3) || (b.score || 0) - (a.score || 0); });
-    html = '<div class="lp-title">\uD83D\uDD34 风险分级 · 隐患点（' + gl.length + ' 处' + (VILLAGE_FILTER ? ' · ' + VILLAGE_FILTER : '') + '，点击定位）</div>';
+    html = '<div class="lp-title">风险分级 · 隐患点（' + gl.length + ' 处' + (VILLAGE_FILTER ? ' · ' + VILLAGE_FILTER : '') + '，点击定位）</div>';
     if (!gl.length) html += '<div class="zl-row">该条件下暂无隐患点</div>';
     gl.forEach(function(p){
       var c = GRADE_COLORS[p.grade] || '#64748b';
@@ -710,11 +710,11 @@ function renderList(){
         + '<b>' + p.name + '</b> · ' + p.full
         + '<span class="z-tag" style="background:' + c + '">' + p.grade + '风险</span>'
         + '<div>综合评分 ' + p.score + ' 分' + (p.evac ? ' · 避险点：' + p.evac : '') + '</div>'
-        + (p.phone ? '<div style="color:#64748b;font-size:11px;">\uD83D\uDCDE ' + p.phone + '</div>' : '')
+        + (p.phone ? '<div style="color:#64748b;font-size:11px;"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6.6 3.5 9 6l1.6 1.6a1.5 1.5 0 0 1 0 2.1L9.2 11a12 12 0 0 0 3.8 3.8l1.3-1.4a1.5 1.5 0 0 1 2.1 0L18 15l2.5 2.4a1.5 1.5 0 0 1 0 2.2c-.5.5-1.2 1-2 1.2-2.6.7-6.4-.4-10.4-4.4S3.6 7.6 4.3 5c.2-.8.7-1.5 1.2-2a1.5 1.5 0 0 1 1.1-.4Z"/></svg> ' + p.phone + '</div>' : '')
         + '</div>';
     });
   } else {
-    html = '<div class="lp-title">\uD83D\uDCD0 易发性叠加</div>'
+    html = '<div class="lp-title">易发性叠加</div>'
       + '<div class="zl-row">本视图暂无列表，点击地图上的隐患点查看详情。</div>';
   }
   lp.innerHTML = html;
@@ -784,7 +784,7 @@ function refreshMap(){
       var c = f.geometry.coordinates;
       grpStations.addLayer(L.circleMarker([c[1], c[0]], {
         radius: 5, color: '#7c3aed', weight: 1.5, fillColor: '#a78bfa', fillOpacity: .85
-      }).bindPopup('<b>\uD83C\uDF27\uFE0F 雨量监测站</b>'));
+      }).bindPopup('<b>雨量监测站</b>'));
     });
     // 村范围：按当前响应等级着色（有村界的村用面，其余回退中心点）
     if (VILLAGE_AREAS_FC) {
