@@ -195,6 +195,10 @@ body.v29-screen .content{margin-top:70px;}
   /* ---- 侧栏/抽屉重置为手机抽屉 ---- */
   body.v29-with-sidebar{margin-left:0 !important;}
   aside.sidebar,.v29-sidebar{display:none !important;}
+  /* ---- 关键修复：.app 两列 grid（248px 侧栏轨）强制单列，避免手机内容被压到半屏 ---- */
+  .app{display:block !important;grid-template-columns:1fr !important;width:100% !important;max-width:100% !important;}
+  .app > .main{width:100% !important;min-width:0 !important;max-width:100% !important;}
+  .app > .sidebar,.app > aside.sidebar{display:none !important;}
   /* ---- 通用弹层/表格容器安全间距 ---- */
   .modal,.dialog{max-width:94vw !important;}
   /* ---- 按钮触控加大 ---- */
