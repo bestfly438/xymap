@@ -72,10 +72,10 @@
   function icon(name, size){
     var p = PATHS[name] || PATHS['x'];
     size = size || 20;
-    var segs = p.split('M').filter(Boolean).map(function(s){ return 'M' + s; });
+    // 修正：path 数据必须用 <path d> 包裹，否则 SVG 只渲染出不可见文本（图标不显示）
     return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size +
       '" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-      segs.join('') + '</svg>';
+      '<path d="' + p + '"/></svg>';
   }
   // 自动渲染 [data-ic] 元素
   function render(){

@@ -3082,10 +3082,16 @@ function refreshVillageGrid() {
     var phone = info ? info.leader_phone || '' : '';
     var townContact = info ? info.town_contact || '' : '';
     var townPhone = info ? info.town_phone || '' : '';
-    var risk = (stats.hazards > 0) ? '较重' : (stats.households > 0 ? '注意' : '正常');
+    // 村风险标签：隐患点>0 → 直接显示隐患点数；仅切坡户 → 需关注；否则 → 正常
+    var risk = (stats.hazards > 0) ? ('隐患点' + stats.hazards + '处') : (stats.households > 0 ? '需关注' : '正常');
     var cls = (stats.hazards > 5) ? 'r' : (stats.households > 10 ? 'o' : 'g');
     if (vname.indexOf('社区') >= 0) cls = 'g';
     var tagCls = cls === 'r' ? 'tag-r' : cls === 'o' ? 'tag-o' : 'tag-g';
+    var tagTitle = (stats.hazards > 0)
+      ? ('该村有 ' + stats.hazards + ' 处隐患点，请重点关注巡查')
+      : (stats.households > 0
+        ? ('该村有 ' + stats.households + ' 户切坡建房，请留意')
+        : '该村暂无隐患点与切坡建房户');
     var leaderName = leader.replace(/灾害防御总指挥\s*/, '').replace(/\d{11}/g, '').trim();
     if (leaderName.length > 8) leaderName = leaderName.substring(0, 8) + '…';
     var baoName = townContact.replace(/乡镇包抓责任人\s*/, '').replace(/谁组织\s*/, '').replace(/\d{11}/g, '').trim();
@@ -3120,7 +3126,7 @@ function refreshVillageGrid() {
 
     var html = '';
     html += '<div class="v-head"><span class="v-name"><span class="v-dot"></span>' + esc(vname) + '</span>'
-      + '<span class="v-tag ' + tagCls + '">' + risk + '</span></div>';
+      + '<span class="v-tag ' + tagCls + '" title="' + esc(tagTitle) + '">' + risk + '</span></div>';
     html += '<div class="v-weather"><span class="v-w-ic">' + wIcon + '</span><span class="v-w-txt">' + esc(wTxt) + (wTemp ? ' ' + wTemp : '') + '</span></div>';
     html += '<div class="v-stats"><span class="v-num">' + (stats.households > 0 ? stats.households : '-') + '</span>'
       + '<span class="v-cap">切坡建房户 · 隐患点' + stats.hazards + '处</span></div>';
