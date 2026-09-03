@@ -164,7 +164,8 @@ body.v29-screen .content{margin-top:70px;}
 @media (max-width:767px){
   html,body{overflow-x:hidden !important;}
   /* ---- 顶部：压缩成 APP 导航条 ---- */
-  .topbar,header.topbar,header.top{height:52px !important;padding:0 12px !important;}
+  .topbar,header.topbar,header.top{min-height:52px !important;height:auto !important;padding:8px 12px !important;flex-wrap:wrap;row-gap:8px;}
+  .topbar .tb-left,.topbar .tb-right{flex-wrap:wrap;row-gap:6px;}
   .topbar .crumb b,.topbar h1,.topbar .tb-title{font-size:15px !important;}
   .topbar .crumb svg,.topbar .tb-left .icon{width:16px !important;height:16px !important;}
   .topbar .time-display,.topbar .weather-badge,.topbar .btn{display:none !important;}
@@ -172,6 +173,10 @@ body.v29-screen .content{margin-top:70px;}
   /* ---- 主体 ---- */
   .content,.container,.main .content{padding:12px 12px 78px !important;}
   body{padding-bottom:0;}
+  /* ---- 顶栏角色切换：紧凑化，防溢出 ---- */
+  .role-switcher{padding:2px;gap:2px;flex-wrap:wrap;}
+  .rs-opt{padding:6px 10px !important;font-size:12px !important;min-height:38px !important;}
+  .rs-opt svg{width:12px !important;height:12px !important;}
   /* ---- KPI 双列卡片 ---- */
   .kpi-row,.stats-row,.kpis{grid-template-columns:repeat(2,1fr) !important;gap:10px !important;margin-bottom:14px !important;}
   .kpi,.stat-card,.metric-card{padding:13px 12px !important;border-radius:14px !important;}
@@ -189,7 +194,7 @@ body.v29-screen .content{margin-top:70px;}
   /* ---- 底部 Tab 悬停区留白（nav.js 已注入 .v29-tabbar） ---- */
   body{padding-bottom:calc(58px + env(safe-area-inset-bottom,0));}
   body > .v29-tabbar{height:calc(56px + env(safe-area-inset-bottom,0));}
-  body > .v29-tabbar .tb-item{font-size:10px !important;min-height:50px !important;}
+  body > .v29-tabbar .tb-item{font-size:12px !important;min-height:50px !important;}
   body > .v29-tabbar .tb-item svg{width:21px !important;height:21px !important;}
   body > .v29-tabbar .tb-item.active{color:#1D4E89 !important;}
   /* ---- 侧栏/抽屉重置为手机抽屉 ---- */
