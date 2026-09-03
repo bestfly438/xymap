@@ -56,17 +56,22 @@ function wxApi(lng, lat, type, cb) {
 
 // 天气图标映射（和风 text → emoji）
 var WX_ICON = {
-  '晴': '&#x2600;', '多云': '&#x26C5;', '晴间多云': '&#x26C5;', '阴': '&#x2601;',
-  '雾': '&#x1F32B;', '霾': '&#x1F32B;', '浮尘': '&#x1F32B;', '扬沙': '&#x1F32B;', '沙尘暴': '&#x1F32B;',
-  '小雨': '&#x1F327;', '中雨': '&#x1F327;', '大雨': '&#x1F327;', '暴雨': '&#x1F327;',
-  '阵雨': '&#x1F327;', '雷阵雨': '&#x26A1;', '冻雨': '&#x1F327;',
-  '小雪': '&#x1F328;', '中雪': '&#x1F328;', '大雪': '&#x1F328;', '阵雪': '&#x1F328;',
-  '雨夹雪': '&#x1F327;', '冰雹': '&#x1F327;',
+  '晴': 'sun', '多云': 'cloud', '晴间多云': 'partly', '阴': 'cloud',
+  '雾': 'haze', '霾': 'haze', '浮尘': 'haze', '扬沙': 'haze', '沙尘暴': 'haze',
+  '小雨': 'rain', '中雨': 'rain', '大雨': 'rain', '暴雨': 'rain',
+  '阵雨': 'rain', '雷阵雨': 'thunder', '冻雨': 'rain',
+  '小雪': 'snow', '中雪': 'snow', '大雪': 'snow', '阵雪': 'snow',
+  '雨夹雪': 'snow', '冰雹': 'rain',
 };
+function _wxSvg(name, size) {
+  var s = size || 18;
+  if (typeof window.icon === 'function') return window.icon(name, s);
+  return '<svg viewBox="0 0 24 24" width="' + s + '" height="' + s + '" fill="none" stroke="currentColor" stroke-width="1.75"></svg>';
+}
 function wxIcon(text) {
   var t = text || '';
-  for (var k in WX_ICON) { if (t.indexOf(k) >= 0) return WX_ICON[k]; }
-  return '&#x2600;';
+  for (var k in WX_ICON) { if (t.indexOf(k) >= 0) return _wxSvg(WX_ICON[k]); }
+  return _wxSvg('sun');
 }
 
 // 刷新单个村天气并缓存

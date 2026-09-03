@@ -639,8 +639,8 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
     <h1>新塬镇应急避险指挥系统</h1>
   </div>
   <div style="display:flex;align-items:center;gap:10px">
-    <a href="analysis.html?v=v20260901-45" class="back-link">&#x1F4CA; 专业分析</a>
-    <a href="dashboard.html?v=v20260901-45" class="back-link">&#x2190; 返回看板</a>
+    <a href="analysis.html?v=v20260901-45" class="back-link"><span data-ic="bar-chart" data-ic-size="14"></span>专业分析</a>
+    <a href="dashboard.html?v=v20260901-45" class="back-link"><span data-ic="back" data-ic-size="14"></span>返回看板</a>
     <div class="village-select" id="villageSelect" onclick="toggleVillageDropdown()">
       <span id="currentVillage">全部村庄</span>
       <span class="arrow">&#x25BC;</span>
@@ -671,7 +671,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
   <div class="stat-card"><div class="stat-num" id="stat-villages">-</div><div class="stat-label">村/社区</div></div>
 </div>
 
-<button id="side-panel-toggle" title="信息面板" onclick="toggleSidePanel()">&#x1F4CB;</button>
+<button id="side-panel-toggle" title="信息面板" onclick="toggleSidePanel()"><span data-ic="list" data-ic-size="20"></span></button>
 
 <div id="side-panel">
   <div class="sp-header">
@@ -710,18 +710,18 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 
 <!-- 移动端底部工具栏：手机上看地图不再被分散按钮遮挡，常用功能集中到底部一条 -->
 <div id="bottom-bar">
-  <button id="bb-panel" title="信息面板" onclick="toggleSidePanel()"><span class="bb-ico">&#x1F4CB;</span>信息</button>
-  <button id="bb-transfer" title="转移谁" onclick="openVillageTab('transfer')"><span class="bb-ico">&#x26A0;</span>转移</button>
-  <button id="bb-patrol" title="巡查记录" onclick="openVillageTab('patrol')"><span class="bb-ico">&#x1F4DD;</span>巡查</button>
-  <button id="bb-layers" title="图层" onclick="toggleLayerSheet()"><span class="bb-ico">&#x1F5FA;</span>图层</button>
-  <button id="bb-locate" title="定位" onclick="locateMe()"><span class="bb-ico">&#x1F4CD;</span>定位</button>
+  <button id="bb-panel" title="信息面板" onclick="toggleSidePanel()"><span class="bb-ico"><span data-ic="list" data-ic-size="19"></span></span>信息</button>
+  <button id="bb-transfer" title="转移谁" onclick="openVillageTab('transfer')"><span class="bb-ico"><span data-ic="alert-triangle" data-ic-size="19"></span></span>转移</button>
+  <button id="bb-patrol" title="巡查记录" onclick="openVillageTab('patrol')"><span class="bb-ico"><span data-ic="edit" data-ic-size="19"></span></span>巡查</button>
+  <button id="bb-layers" title="图层" onclick="toggleLayerSheet()"><span class="bb-ico"><span data-ic="layers" data-ic-size="19"></span></span>图层</button>
+  <button id="bb-locate" title="定位" onclick="locateMe()"><span class="bb-ico"><span data-ic="location" data-ic-size="19"></span></span>定位</button>
 </div>
 
 <!-- 移动端图层弹出面板 -->
 <div id="layer-sheet">
   <div class="ls-header"><span>图层显示</span><span class="ls-close" onclick="toggleLayerSheet()">&#x2715;</span></div>
   <div class="ls-grid" id="ls-grid"></div>
-  <button class="ls-legend-btn" onclick="toggleLayerSheet();toggleLegend();">&#x1F4D0;&nbsp;查看图例</button>
+  <button class="ls-legend-btn" onclick="toggleLayerSheet();toggleLegend();"><span data-ic="legend" data-ic-size="14"></span>查看图例</button>
 </div>
 
 <div id="status"></div>
@@ -1450,7 +1450,7 @@ function renderVpTabContent(vid, tab, plan) {
   }
 
   if (tab === 'transfer') {
-    var h = '<div class="vp-sec-title"><span class="sp-icon">&#x26A0;</span>转移谁（隐患点明细）</div>';
+    var h = '<div class="vp-sec-title"><span class="sp-icon"><span data-ic="alert-triangle" data-ic-size="15"></span></span>转移谁（隐患点明细）</div>';
     if (!has || !plan.hazards || plan.hazards.length === 0) return h + '<div class="vp-empty">暂无隐患点数据</div>';
     plan.hazards.forEach(function(hz, idx) {
       h += '<div class="vp-hazard">';
@@ -2095,12 +2095,12 @@ function renderPatrolTab(vid) {
     }
     h += '<div class="pf-offline-bar" id="pf-offline-bar"></div>';
     h += '<div class="pf-row">';
-    h += '<div class="pf-label">&#x1F464; 巡查人姓名</div>';
+    h += '<div class="pf-label"><span data-ic="user" data-ic-size="14"></span>巡查人姓名</div>';
     h += '<input class="pf-input" id="pf-inspector" value="' + esc(lastInspector) + '" placeholder="请输入巡查人姓名">';
     h += '</div>';
 
     h += '<div class="pf-row">';
-    h += '<div class="pf-label">&#x1F4CD; 巡查点位 <span class="pf-hint">（点击获取当前位置，失败时可填下方位置描述）</span></div>';
+    h += '<div class="pf-label"><span data-ic="location" data-ic-size="14"></span>巡查点位 <span class="pf-hint">（点击获取当前位置，失败时可填下方位置描述）</span></div>';
     h += '<div class="pf-auto" id="pf-location" style="cursor:pointer;" onclick="getPatrolLocation()">';
     if (currentPatrolLocation) {
       h += '经度：' + currentPatrolLocation.lng.toFixed(6) + '，纬度：' + currentPatrolLocation.lat.toFixed(6);
@@ -2111,17 +2111,17 @@ function renderPatrolTab(vid) {
     h += '</div>';
 
     h += '<div class="pf-row">';
-    h += '<div class="pf-label">&#x1F4CD; 位置描述 <span class="pf-hint">（定位失败时填文字，如"村口桥头"）</span></div>';
+    h += '<div class="pf-label"><span data-ic="location" data-ic-size="14"></span>位置描述 <span class="pf-hint">（定位失败时填文字，如"村口桥头"）</span></div>';
     h += '<input class="pf-input" id="pf-loc-desc" placeholder="选填：定位失败时填写当前位置的文字描述">';
     h += '</div>';
 
     h += '<div class="pf-row">';
-    h += '<div class="pf-label">&#x2600; 天气情况</div>';
+    h += '<div class="pf-label"><span data-ic="sun" data-ic-size="14"></span>天气情况</div>';
     h += '<div class="pf-auto" id="patrol-weather-' + escAttr(vid) + '">' + getWeatherText() + '</div>';
     h += '</div>';
 
     h += '<div class="pf-row">';
-    h += '<div class="pf-label">&#x1F4F7; 巡查照片 <span class="pf-hint">（可多张，支持离线暂存）</span></div>';
+    h += '<div class="pf-label"><span data-ic="camera" data-ic-size="14"></span>巡查照片 <span class="pf-hint">（可多张，支持离线暂存）</span></div>';
     h += '<div class="ptp-btns">';
     h += '<input type="file" id="pf-photo-cam" accept="image/*" capture="environment" style="display:none;" onchange="onPatrolPhotoSelect(this)">';
     h += '<label class="pf-photo-btn" for="pf-photo-cam">&#x1F4F7; 拍照</label>';
@@ -2133,7 +2133,7 @@ function renderPatrolTab(vid) {
     h += '</div>';
 
     h += '<div class="pf-row">';
-    h += '<div class="pf-label">&#x1F4DD; 巡查情况描述</div>';
+    h += '<div class="pf-label"><span data-ic="edit" data-ic-size="14"></span>巡查情况描述</div>';
     h += '<textarea class="pf-input" id="pf-desc" placeholder="请描述巡查情况（如：隐患点状态、有无异常、需要关注的事项等）"></textarea>';
     h += '</div>';
 
@@ -2146,7 +2146,7 @@ function renderPatrolTab(vid) {
   }
 
   h += '<div class="patrol-list">';
-  h += '<div class="pl-title">&#x1F4CB; 历史巡查记录（' + records.length + '条）</div>';
+  h += '<div class="pl-title"><span data-ic="list" data-ic-size="14"></span>历史巡查记录（' + records.length + '条）</div>';
   if (records.length === 0) {
     h += '<div class="pl-empty">暂无巡查记录</div>';
   } else {
@@ -2155,7 +2155,7 @@ function renderPatrolTab(vid) {
       if (canDel) h += '<button class="pl-del" onclick="event.stopPropagation();delPatrol(\'' + escAttr(r.id) + '\',\'' + escAttr(vid) + '\')">&#x2716;</button>';
       h += '<div class="pl-time">' + esc(r.time) + '</div>';
       h += '<div class="pl-inspector">&#x1F464; ' + esc(r.inspector || '未知') + ' <span style="color:#8a95ad;font-weight:400;">' + esc(r.weather || '') + '</span></div>';
-      h += '<div class="pl-loc">&#x1F4CD; ' + esc(r.locationText || '') + '</div>';
+      h += '<div class="pl-loc"><span data-ic="location" data-ic-size="12"></span>' + esc(r.locationText || '') + '</div>';
       if (r.description) h += '<div class="pl-desc">' + esc(r.description) + '</div>';
       if (r.photo) h += '<img class="pl-photo" src="' + r.photo + '" onclick="event.stopPropagation();previewPhoto(\'' + escAttr(r.photo) + '\')" alt="巡查照片">';
       h += '</div>';
@@ -2372,7 +2372,7 @@ function refreshPatrolList(vid) {
   getPatrolRecords(vid, function(records) {
     var listEl = document.querySelector('.patrol-list');
     if (!listEl) return;
-    var h = '<div class="pl-title">&#x1F4CB; 历史巡查记录（' + records.length + '条）</div>';
+    var h = '<div class="pl-title"><span data-ic="list" data-ic-size="14"></span>历史巡查记录（' + records.length + '条）</div>';
     if (records.length === 0) {
       h += '<div class="pl-empty">暂无巡查记录</div>';
     } else {
@@ -2497,7 +2497,7 @@ function showSidePanelOverview() {
   html += '<div class="sp-contact-row"><span class="sp-label">副总指挥</span><span class="sp-value">李涛（镇长候选人）</span><span class="sp-phone">15097135070</span></div>';
   html += '</div>';
 
-  html += '<div class="sp-section"><h4><span class="sp-icon">&#x1F4CA;</span>全镇数据</h4>';
+  html += '<div class="sp-section"><h4><span class="sp-icon"><span data-ic="bar-chart" data-ic-size="15"></span></span>全镇数据</h4>';
   html += '<div class="sp-contact-row"><span class="sp-label">行政村</span><span class="sp-value">' + VILLAGE_ORDER.length + ' 个</span></div>';
   html += '<div class="sp-contact-row"><span class="sp-label">切坡建房</span><span class="sp-value" style="color:#ee8b24;">' + totalHouseholds + ' 户</span></div>';
   html += '<div class="sp-contact-row"><span class="sp-label">隐患区域</span><span class="sp-value" style="color:#e2444a;">' + totalHazards + ' 处</span></div>';
@@ -2506,7 +2506,7 @@ function showSidePanelOverview() {
   html += '<div class="sp-contact-row"><span class="sp-label">撤离路线</span><span class="sp-value" style="color:#2f6fed;">' + routeCount + ' 条</span></div>';
   html += '</div>';
 
-  html += '<div class="sp-section"><h4><span class="sp-icon">&#x1F4CD;</span>各村隐患点概览</h4>';
+  html += '<div class="sp-section"><h4><span class="sp-icon"><span data-ic="location" data-ic-size="15"></span></span>各村隐患点概览</h4>';
   VILLAGE_ORDER.forEach(function(vname) {
     var s = getVillagePlanStats(vname);
     var color = s.hazards > 0 ? '#e2444a' : '#555';

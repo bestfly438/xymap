@@ -318,3 +318,67 @@ button:focus-visible,a:focus-visible{outline:2px solid #2f6fed;outline-offset:2p
 }
 /* ---- 底部 Tab 图标与文字间距/对齐 ---- */
 .v29-tabbar .tb-item svg{margin-bottom:1px;}
+
+
+/* ============================================================
+   整改方案 v2 · M3 地图指挥模式（analysis / vuln 桌面骨架）
+   仅对带 v29 深蓝侧栏的页面生效，不动手机全屏布局
+   ============================================================ */
+/* 防止 body 因 margin-left + fixed 子级产生 1660px 横滚 */
+html.v29-with-sidebar, body.v29-with-sidebar{
+  overflow-x:hidden !important;
+}
+/* 桌面 ≥1280：地图占侧栏右侧 */
+@media (min-width:1280px){
+  body.v29-with-sidebar #map{
+    left:220px; width:calc(100% - 220px);
+  }
+  /* analysis/vuln 顶部固定条整体右移，不再与侧栏叠压 */
+  body.v29-with-sidebar #topbar,
+  body.v29-with-sidebar #tabs,
+  body.v29-with-sidebar #summary,
+  body.v29-with-sidebar #list-panel,
+  body.v29-with-sidebar #legend{
+    left:220px; width:calc(100% - 220px); right:auto;
+  }
+  body.v29-with-sidebar #topbar{box-sizing:border-box;}
+}
+/* ≤1279：地图页全屏（无侧栏） */
+@media (max-width:1279px){
+  #map{left:0;width:100%;}
+  #topbar,#tabs,#summary,#list-panel,#legend{left:0;right:0;width:auto;}
+}
+
+/* 地图指挥页（analysis/vuln）：布局为 fixed #map，body 不再需要 margin-left 撑位（否则 220+100% 造成 1660px 横滚） */
+body.v29-map-page.v29-with-sidebar{margin-left:0 !important;}
+body.v29-map-page .v29-sidebar{display:flex;} /* 桌面保留深蓝侧栏 */
+@media (min-width:1280px){
+  body.v29-map-page .v29-sidebar{display:flex;position:fixed;left:0;top:0;bottom:0;}
+}
+@media (max-width:1279px){
+  body.v29-map-page .v29-sidebar{display:none !important;}
+}
+
+
+/* ============================================================
+   整改方案 v2 · 手机端补齐
+   ============================================================ */
+@media (max-width:767px){
+  /* 1.3 dashboard 快捷区 2 列，杜绝 500px 横向裁切 */
+  .quick-row,.quick-grid,[class*="quick-row"],[class*="quick-grid"]{
+    grid-template-columns:repeat(2,1fr) !important;gap:10px !important;
+  }
+  .quick,.quick-item{min-width:0 !important;max-width:100% !important;}
+  /* 1.5 状态标签字号下限 */
+  .v-tag,.tag-r,.tag-o,.tag-g,.risk-tag,.st,.pl-tag,.status-badge{font-size:11px !important;padding:2px 7px !important;}
+  /* 1.5 地图/分析底部工具：≥44px、文字 ≥12px */
+  #bottom-bar,#bottom-bar button,#bottom-bar .bb-link,
+  .legend-toggle,#legend-toggle,.map-tool-btn{
+    min-height:44px !important;font-size:12.5px !important;
+  }
+  /* analysis/vuln 顶部 Tab 文字 ≥13px */
+  #tabs .tab{font-size:13px !important;min-height:44px !important;display:flex;align-items:center;justify-content:center;}
+}
+
+/* ---- 分析/易发性状态标签通用：色点+文案，字号下限 11px（桌面同样受益）---- */
+.analysis-status,.an-status{font-size:12px;}

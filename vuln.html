@@ -12,16 +12,19 @@
 <link rel="stylesheet" href="leaflet/leaflet.css" />
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; height: 100%; color-scheme: light; font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif overflow: hidden; background: #eef2f7; }
+html, body { width: 100%; height: 100%; color-scheme: light; font-family: "PingFang SC","Microsoft YaHei","Noto Sans CJK SC",sans-serif; overflow: hidden; background: #eef2f7; }
 
 #map { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
 
 #topbar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  background: linear-gradient(135deg, #d32f2f, #b71c1c);
-  color: #fff; padding: 10px 16px;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #14213d; padding: 8px 16px;
   display: flex; align-items: center; justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  border-bottom: 1px solid rgba(20,33,61,.08);
+  box-shadow: 0 1px 8px rgba(20,33,61,.06);
 }
 #topbar .logo-area { display: flex; align-items: center; gap: 8px; min-width: 0; }
 #topbar .logo-icon {
@@ -29,11 +32,11 @@ html, body { width: 100%; height: 100%; color-scheme: light; font-family: "PingF
   display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
 }
 #topbar h1 { font-size: 16px; white-space: nowrap; }
-#topbar .sub { font-size: 11px; opacity: .85; margin-top: 2px; }
+#topbar .sub { font-size: 11px; color: #4a5878; margin-top: 2px; }
 #topbar .nav-links { display: flex; align-items: center; gap: 8px; }
 .back-link {
-  color: #fff; text-decoration: none; font-size: 12px;
-  background: rgba(255,255,255,.15); padding: 6px 12px; border-radius: 16px;
+  color: #1a4a7a; text-decoration: none; font-size: 12px;
+  background: rgba(47,111,237,.10); padding: 7px 14px; border-radius: 16px;
   white-space: nowrap;
 }
 
@@ -154,7 +157,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 <link rel="manifest" href="manifest.json?v=v20260901-45">
 <meta name="theme-color" content="#1D4E89">
 </head>
-<body>
+<body class="v29-map-page">
 
 <div id="map"></div>
 
@@ -167,8 +170,8 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
     </div>
   </div>
   <div class="nav-links">
-    <a href="map.html?v=v20260901-45" class="back-link">&#x1F5FA; 返回地图</a>
-    <a href="dashboard.html?v=v20260901-45" class="back-link">&#x2190; 返回看板</a>
+    <a href="map.html?v=v20260901-45" class="back-link"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 4 6v14l5-2 6 2 5-2V4l-5 2-6-2zM9 4v14M15 6v14"/></svg>返回地图</a>
+    <a href="dashboard.html?v=v20260901-45" class="back-link"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>返回看板</a>
   </div>
 </div>
 
@@ -208,13 +211,13 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
 </div>
 
 <!-- 图例折叠按钮（手机端显示） -->
-<button id="legend-toggle" onclick="toggleLegend()">&#x1F4D0;&nbsp;图例</button>
+<button id="legend-toggle" onclick="toggleLegend()"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h14M5 8h9M5 12h14M5 16h9M5 20h14"/></svg>图例</button>
 
 <!-- 移动端底部工具栏：图层/图例/返回（类APP） -->
 <div id="bottom-bar">
   <button id="bb-layers" title="图层控制" onclick="toggleLayerSheet()"><span class="bb-ico">&#x1F3D4;</span>图层</button>
-  <button id="bb-legend" title="图例" onclick="toggleLegend()"><span class="bb-ico">&#x1F4D0;</span>图例</button>
-  <a class="bb-link" href="map.html?v=v20260901-45" title="返回地图">&#x1F5FA;<span>返回地图</span></a>
+  <button id="bb-legend" title="图例" onclick="toggleLegend()"><span class="bb-ico"><span data-ic="legend" data-ic-size="19"></span></span>图例</button>
+  <a class="bb-link" href="map.html?v=v20260901-45" title="返回地图"><span data-ic="back" data-ic-size="14"></span><span>返回地图</span></a>
 </div>
 
 <!-- 移动端图层控制弹出面板 -->

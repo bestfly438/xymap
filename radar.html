@@ -183,7 +183,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
   </div>
   <div class="top-actions">
     <a href="dashboard.html?v=v20260901-45" class="btn">&#x1F3E2; 返回看板</a>
-    <a href="map.html?v=v20260901-45" class="btn btn-primary">&#x1F5FA; 进入地图</a>
+    <a href="map.html?v=v20260901-45" class="btn btn-primary"><span data-ic="map" data-ic-size="15"></span>进入地图</a>
   </div>
 </div>
 
@@ -415,7 +415,7 @@ function setImg(p, img, load, st, data) {
   img.onload = function() {
     img.style.display = 'block';
     if (load) load.style.display = 'none';
-    if (st) { st.textContent = '&#x2705; 已更新'; st.className = 't-status'; }
+    if (st) { st.textContent = '已更新'; st.className = 't-status'; }
   };
   img.onerror = function() {
     img.style.display = 'none';

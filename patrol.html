@@ -153,7 +153,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
         <div class="crumb"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3 4.5 6.5v5C4.5 16 7.6 19.7 12 21c4.4-1.3 7.5-5 7.5-9.5v-5L12 3Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><b>巡查记录</b></div>
       </div>
       <div class="tb-right">
-        <a class="btn" href="dashboard.html?v=v20260901-45">&#x2190; 返回看板</a>
+        <a class="btn" href="dashboard.html?v=v20260901-45"><span data-ic="back" data-ic-size="14"></span>返回看板</a>
         <div class="time-display" id="timeDisplay"></div>
       </div>
     </header>
@@ -181,7 +181,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
         <input class="pf-input" id="ptAddInspector" placeholder="请输入巡查人姓名">
       </div>
       <div class="pf-row">
-        <div class="pf-label">&#x1F4CD; 巡查点位 <span class="pf-hint">（点击获取当前位置）</span></div>
+        <div class="pf-label"><span data-ic="location" data-ic-size="14"></span>巡查点位 <span class="pf-hint">（点击获取当前位置）</span></div>
         <div class="pf-auto" id="ptAddLocation" onclick="ptGetLocation()">点击获取GPS位置…</div>
       </div>
       <div class="pf-row">
@@ -189,24 +189,24 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
         <div class="pf-auto" id="ptAddWeather">点击定位后自动获取</div>
       </div>
       <div class="pf-row">
-        <div class="pf-label">&#x1F4F7; 巡查照片 <span class="pf-hint">（可多张，自动压缩，离线也能拍）</span></div>
+        <div class="pf-label"><span data-ic="camera" data-ic-size="14"></span>巡查照片 <span class="pf-hint">（可多张，自动压缩，离线也能拍）</span></div>
         <div class="ptp-btns">
           <input type="file" id="ptAddPhotoCam" accept="image/*" capture="environment" style="display:none" onchange="ptOnPhotoSelect(this)">
-          <label class="pf-photo-btn" for="ptAddPhotoCam">&#x1F4F7; 拍照</label>
+          <label class="pf-photo-btn" for="ptAddPhotoCam"><span data-ic="camera" data-ic-size="15"></span>拍照</label>
           <input type="file" id="ptAddPhotoAlbum" accept="image/*" multiple style="display:none" onchange="ptOnPhotoSelect(this)">
-          <label class="pf-photo-btn" for="ptAddPhotoAlbum">&#x1F4F8; 从相册选择（可多张）</label>
+          <label class="pf-photo-btn" for="ptAddPhotoAlbum"><span data-ic="camera" data-ic-size="15"></span>从相册选择（可多张）</label>
         </div>
         <div class="ptp-thumbs" id="ptPhotoPreviews" style="display:none"></div>
       </div>
       <div class="pf-row">
-        <div class="pf-label">&#x1F4CD; 位置描述 <span class="pf-hint">（定位失败时填文字，如"村口桥头"）</span></div>
+        <div class="pf-label"><span data-ic="location" data-ic-size="14"></span>位置描述 <span class="pf-hint">（定位失败时填文字，如"村口桥头"）</span></div>
         <input class="pf-input" id="ptAddLocationDesc" placeholder="选填：定位失败时填写当前位置描述">
       </div>
       <div class="pf-row">
-        <div class="pf-label">&#x1F4DD; 巡查情况描述</div>
+        <div class="pf-label"><span data-ic="edit" data-ic-size="14"></span>巡查情况描述</div>
         <textarea class="pf-input" id="ptAddDesc" rows="3" placeholder="请填写巡查发现的问题、处置情况等"></textarea>
       </div>
-      <button class="pf-submit" onclick="ptSubmit()">&#x2705; 提交巡查记录</button>
+      <button class="pf-submit" onclick="ptSubmit()"><span data-ic="check" data-ic-size="15"></span>提交巡查记录</button>
       <div class="pf-msg" id="ptAddMsg"></div>
     </div>
   </div>
@@ -253,7 +253,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
     <div class="pt-filter">
       <select id="ptFilterVillage"><option value="">全部村</option></select>
       <select id="ptFilterInspector"><option value="">全部巡查人</option></select>
-      <button class="btn" onclick="patrolRefresh()">&#x21BB; 刷新</button>
+      <button class="btn" onclick="patrolRefresh()"><span data-ic="refresh" data-ic-size="14"></span>刷新</button>
       <span class="pt-hint" id="ptHint">正在同步…</span>
     </div>
     <div class="pt-stats">
@@ -550,8 +550,8 @@ function renderPatrol() {
       + '<div class="pl-meta">'
       + '<span>&#x1F464; ' + esc(r.inspector || '未知') + '</span>'
       + (r.weather ? '<span>' + esc(r.weather) + '</span>' : '')
-      + (r.locationText ? '<span>&#x1F4CD; ' + esc(r.locationText) + '</span>' : '')
-      + (r.locationDesc ? '<span>&#x1F4CD; ' + esc(r.locationDesc) + '</span>' : '')
+      + (r.locationText ? '<span><span data-ic=\"location\" data-ic-size=\"12\"></span> ' + esc(r.locationText) + '</span>' : '')
+      + (r.locationDesc ? '<span><span data-ic=\"location\" data-ic-size=\"12\"></span> ' + esc(r.locationDesc) + '</span>' : '')
       + '</div>'
       + (r.description ? '<div class="pl-desc">' + esc(r.description) + '</div>' : '')
       + (imgs ? '<div class="pl-photos">' + imgs + '</div>' : '')

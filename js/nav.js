@@ -305,13 +305,30 @@
 
   // ---------- 修改清单 v1：语义 h1（视觉隐藏，页面标题） ----------
   function injectPageH1(){
-    if (document.querySelector('h1')) return;
     var name = cur().name || '';
     if (!name) return;
-    var h1 = document.createElement('h1');
-    h1.className = 'xyc-vh';
-    h1.textContent = name;
-    (document.body.firstElementChild ? document.body : document.body).insertBefore(h1, document.body.firstChild);
+    var SITE = '新塬镇应急避险指挥系统';
+    var h1 = document.querySelector('h1');
+    if (h1) {
+      // h1 内容是站点名 → 改为当前页名（站点名属 Logo 区，不作为页面 h1）
+      var txt = (h1.textContent || '').trim();
+      if (txt.indexOf(SITE) >= 0 || txt.indexOf('新塬') >= 0) {
+        var isLogoH1 = h1.parentElement && (h1.parentElement.className||'').indexOf('logo') >= 0;
+        if (isLogoH1) {
+          // 顶栏 Logo 区：h1 改为页名，原系统名移到标题属性避免语义重复
+          h1.textContent = name;
+          var p = h1.parentElement.querySelector('p, .sub, .logo-sub');
+          if (p && !p.getAttribute('data-role')) { p.setAttribute('data-role', 'site'); p.textContent = SITE; }
+        } else {
+          h1.textContent = name;
+        }
+      }
+      return;
+    }
+    var nh = document.createElement('h1');
+    nh.className = 'xyc-vh';
+    nh.textContent = name;
+    document.body.insertBefore(nh, document.body.firstChild);
   }
   // ---------- 修改清单 v1：抽屉 Esc 关闭 / 焦点进入 ----------
   function bindDrawerKeys(){

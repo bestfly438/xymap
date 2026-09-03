@@ -2296,7 +2296,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
       </div>
       <div class="tb-right">
         <div class="weather-badge" id="weatherBadge">
-          <span class="wt">&#x2600;</span>
+          <span class="wt"><span data-ic="sun" data-ic-size="16"></span></span>
           <span id="weatherCity">会宁县</span>
           <span class="wtemp" id="weatherTemp">--°C</span>
           <span class="wc-s" id="weatherDesc">加载中</span>
@@ -2314,7 +2314,7 @@ button:not(:disabled):active,.btn:not(:disabled):active{transform:scale(.96)}
     <div class="more-menu" id="moreMenu">
       <a href="map.html?v=v20260901-45" class="mm-item">&#x1F5FA; 进入地图</a>
       <a href="analysis.html?v=v20260901-45" class="mm-item">&#x1F4CA; 专业分析</a>
-      <a href="radar.html?v=v20260901-45" class="mm-item">&#x1F32B;&#xFE0F; 雷达/预报</a>
+      <a href="radar.html?v=v20260901-45" class="mm-item"><span data-ic="radar" data-ic-size="15"></span>雷达/预报</a>
       <a href="transfer.html?v=v20260901-45" class="mm-item">&#x1F500; 转移流程</a>
       <a href="team.html?v=v20260901-45" class="mm-item">&#x1F465; 应急队伍</a>
       <a href="photo.html?v=v20260901-45" class="mm-item">&#x1F4F7; 照片档案</a>
@@ -3102,7 +3102,7 @@ function refreshVillageGrid() {
     try { if (typeof WEATHER !== 'undefined' && WEATHER.cache) wd = WEATHER.cache[vname]; } catch(e) {}
     var wTxt = '', wIcon = '', wTemp = '';
     if (wd) {
-      wIcon = wd.rain ? '&#x1F327;' : (typeof wxIcon === 'function' ? wxIcon(wd.now && wd.now.text) : '&#x2600;');
+      wIcon = wd.rain ? (typeof window.icon==='function'?window.icon('rain',18):'') : (typeof wxIcon === 'function' ? wxIcon(wd.now && wd.now.text) : (typeof window.icon==='function'?window.icon('sun',18):''));
       var wt = wd.rain ? (wd.rainNote || '降雨') : (wd.now && wd.now.text || '');
       wTxt = String(wt).indexOf('undefined') >= 0 ? '降雨' : wt;
       wTemp = (wd.now && wd.now.temp) ? Math.round(wd.now.temp) + '°' : '';
