@@ -382,3 +382,31 @@ body.v29-map-page .v29-sidebar{display:flex;} /* 桌面保留深蓝侧栏 */
 
 /* ---- 分析/易发性状态标签通用：色点+文案，字号下限 11px（桌面同样受益）---- */
 .analysis-status,.an-status{font-size:12px;}
+
+/* ============================================================
+   v55 手机端长页治理：折叠区块（≤767px 生效，桌面强制展开不受影响）
+   用法：容器加 data-v29-fold="<子选择器>" 由 nav.js 自动折叠
+   ============================================================ */
+@media (max-width:767px){
+  .v29-acc-tbar{display:flex;align-items:center;gap:8px;margin:14px 0 4px}
+  .v29-acc-tbtn{flex:0 0 auto;display:inline-flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:#1a4a7a;background:#fff;border:1px solid #c9d4e4;border-radius:20px;padding:7px 15px;box-shadow:0 1px 4px rgba(16,32,58,.08);cursor:pointer;min-height:38px;font-family:inherit}
+  .v29-acc-tbtn:active{opacity:.7}
+  .v29-acc-item.closed>.v29-acc-body{display:none !important}
+  .v29-acc-head{cursor:pointer;-webkit-tap-highlight-color:rgba(0,0,0,.05)}
+  .v29-acc-head:active{opacity:.6}
+  .v29-acc-head .v29-fchev{margin-left:auto;flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:rgba(47,111,237,.08);color:#1a5fb8;display:inline-flex;align-items:center;justify-content:center}
+  .v29-acc-head .v29-fchev svg{transition:transform .2s ease}
+  .v29-acc-item.open>.v29-acc-head .v29-fchev svg{transform:rotate(180deg)}
+  /* dashboard 分组头（合成） */
+  .v29-dg-head{display:flex;align-items:center;gap:9px;padding:13px 2px;margin:8px 0 2px;border-bottom:1px dashed #d9e0ec;font-size:15.5px;font-weight:800;color:#14213d;cursor:pointer;min-height:44px}
+  .v29-dg-head .dg-dot{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+  .v29-dg-head .dg-t{flex:0 0 auto}
+  .v29-dg-head .dg-sub{font-size:11.5px;color:#8a95ad;font-weight:500;margin-left:2px}
+  .v29-dg-head .v29-fchev{margin-left:auto}
+  .v29-dg-head:active{opacity:.6}
+}
+@media (min-width:768px){
+  .v29-acc-item>.v29-acc-body{display:block !important}
+  .v29-acc-head .v29-fchev{display:none}
+  .v29-acc-tbar{display:none}
+}
