@@ -142,10 +142,10 @@ body {
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important}}
 </style>
-<link rel="stylesheet" href="css/tokens.css?v=v20260901-56">
-<link rel="stylesheet" href="css/base.css?v=v20260901-56">
-<link rel="stylesheet" href="css/nav.css?v=v20260901-56">
-<link rel="manifest" href="manifest.json?v=v20260901-56">
+<link rel="stylesheet" href="css/tokens.css?v=v20260901-57">
+<link rel="stylesheet" href="css/base.css?v=v20260901-57">
+<link rel="stylesheet" href="css/nav.css?v=v20260901-57">
+<link rel="manifest" href="manifest.json?v=v20260901-57">
 <meta name="theme-color" content="#1D4E89">
 </head>
 <body>
@@ -158,7 +158,7 @@ body {
       <p>系统自检</p>
     </div>
   </div>
-  <a href="dashboard.html?v=v20260901-56" class="back-link">&#x2190; 返回看板</a>
+  <a href="dashboard.html?v=v20260901-57" class="back-link">&#x2190; 返回看板</a>
 </div>
 
 <div class="container" id="main">
@@ -193,7 +193,7 @@ if (sessionStorage.getItem('xyc_auth') !== '1') {
     document.body.insertAdjacentHTML('beforeend',
       '<div class="deny"><div class="deny-icon"><svg viewBox="0 0 24 24" fill="none" width="20" height="20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 1 1 8 0v3"/></svg></div><h2>无权查看系统自检</h2>' +
       '<p>系统自检仅限管理员与镇级账号使用。如有疑问请联系镇级管理员。</p>' +
-      '<a href="dashboard.html?v=v20260901-56">&#x2190; 返回看板</a></div>');
+      '<a href="dashboard.html?v=v20260901-57">&#x2190; 返回看板</a></div>');
     var fp = document.querySelector('.footer'); if (fp) fp.style.display = 'none';
   }
 }
@@ -326,11 +326,11 @@ window.addEventListener('pageshow', function(e) {
 <!-- 备案号（ICP 备案通过后全站挂载） -->
 <div id="akIcp" style="position:fixed;bottom:4px;left:0;right:0;text-align:center;z-index:9999;font-size:10px;color:rgba(0,0,0,.5);background:rgba(255,255,255,.7);padding:2px 0;line-height:1.4;pointer-events:none;white-space:nowrap;">
   <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;pointer-events:auto;">陇ICP备2026007741号-1</a>
-</div><script src="js/icons.js?v=v20260901-56"></script>
-<script src="js/nav.js?v=v20260901-56"></script>
+</div><script src="js/icons.js?v=v20260901-57"></script>
+<script src="js/nav.js?v=v20260901-57"></script>
 <script>
 if ('serviceWorker' in navigator) {
-  try { navigator.serviceWorker.register('sw.js?v=v20260901-56').catch(function(){}); } catch(e) {}
+  try { navigator.serviceWorker.register('sw.js?v=v20260901-57').catch(function(){}); } catch(e) {}
 }
 </script>
 <script src="js/gsap/gsap.min.js"></script>
