@@ -277,6 +277,55 @@ function renderCurrent() {
   else if (CUR_TAB === 'grid') renderGrid();
   else if (CUR_TAB === 'maps') renderMaps();
   v29LabelTable();
+  mobPaging();
+}
+
+/* ============ 手机端长表格分组分页（翻不到底修复） ============ */
+var __mobPgIdx = 0;   // 已展开组数（0=用默认 PAGE）
+function mobPaging() {
+  if (window.innerWidth > 767) return;   // 仅手机端
+  if (CUR_TAB === 'maps') return;        // 防汛图为图片卡
+  var tbl = document.querySelector('#tabContent table.ak-tbl');
+  if (!tbl) return;
+  var pWrap = tbl.parentNode;
+  var old = document.getElementById('mobPgBar');
+  if (old) old.parentNode.removeChild(old);
+  // 1) 把所有数据行按"组"切好（rowspan 首行开新组；普通表每行一组）
+  var groups = [];
+  var cur = null;
+  tbl.querySelectorAll('tr').forEach(function(tr, i) {
+    if (i === 0) return;                       // 表头
+    var span = tr.querySelector('td[rowspan]');
+    if (span) { cur = [tr]; groups.push(cur); }
+    else {
+      if (!cur || groups.length === 0) { cur = [tr]; groups.push(cur); }
+      else cur.push(tr);
+    }
+  });
+  var totalRows = 0;
+  groups.forEach(function(g) { totalRows += g.length; });
+  var PAGE = 15;                               // 每组批 15（对无合并表=15 行）
+  var maxShown = __mobPgIdx > 0 ? __mobPgIdx + PAGE : PAGE;
+  if (groups.length <= PAGE) { __mobPgIdx = 0; return; }
+  var shownG = Math.min(maxShown, groups.length);
+  var shownRows = 0;
+  groups.forEach(function(g, gi) {
+    var vis = gi < shownG;
+    g.forEach(function(tr) { tr.style.display = vis ? '' : 'none'; });
+    if (vis) shownRows += g.length;
+  });
+  // 2) 底部"查看更多 / 收起"栏
+  var bar = document.createElement('div');
+  bar.id = 'mobPgBar';
+  bar.style.cssText = 'display:flex;gap:10px;justify-content:center;padding:14px 0 2px;flex-wrap:wrap;';
+  if (shownG < groups.length) {
+    bar.innerHTML = '<button class="ak-more-btn" style="min-height:44px;padding:0 24px;border:1px solid #c9d4e4;background:#fff;color:#1a4a7a;font-size:14px;font-weight:600;border-radius:22px;cursor:pointer;box-shadow:0 2px 6px rgba(16,32,58,.08)">已显示 ' + shownRows + ' / 共 ' + totalRows + ' 条 · 加载更多</button>';
+    bar.onclick = function() { __mobPgIdx = shownG; renderCurrent(); };
+  } else {
+    bar.innerHTML = '<span style="color:#8a95ad;font-size:12.5px">已全部显示 ' + totalRows + ' 条</span>';
+    __mobPgIdx = 0;
+  }
+  pWrap.appendChild(bar);
 }
 
 function v29LabelTable() {
