@@ -479,7 +479,7 @@ window.__v55f = (function(){
     content.insertBefore(villWrap, vh);
     villWrap.appendChild(vh);
     if (vg && vg.parentNode === content) villWrap.appendChild(vg);
-    foldItem(villWrap, true);
+    foldItem(villWrap, false);
     window.__v55f.__dash['vill'] = villWrap;
     /* 2) 快捷入口卡上移（紧随各村之后） */
     var quickCard = findCardOf(q('.quick-grid'));
